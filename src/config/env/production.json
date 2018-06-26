@@ -1,0 +1,12 @@
+{
+	"project_name" : "pitch-and-switch",
+	"version" : "v1",
+	"base_url" : "http://localhost/",	
+	"db":{
+		"host":"localhost",
+		"user":"",
+		"pass":"",
+		"name":"pitch-and-switch"		
+	}
+   
+}
