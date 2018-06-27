@@ -9,187 +9,166 @@ export default {
         text: 'NEW',
       },
     },
+    
     {
-      title: true,
-      name: 'Theme',
-      wrapper: {            // optional wrapper object
-        element: '',        // required valid HTML5 element tag
-        attributes: {}        // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
-      },
-      class: ''             // optional class names space delimited list for title item ex: "text-center"
+      name: 'Manage User',
+      url: '/',
+      icon: 'icon-people icons',
+      children: [
+        {
+          name: 'Users',
+          url: '/users',
+          icon: 'icon-people icons',
+        },
+        {
+          name: 'New User',
+          url: '/users/add',
+          icon: 'icon-user',
+        },       
+      ],
     },
     {
-      name: 'Colors',
-      url: '/theme/colors',
-      icon: 'icon-drop',
-    },
-    {
-      name: 'Typography',
-      url: '/theme/typography',
-      icon: 'icon-pencil',
-    },
-    {
-      title: true,
-      name: 'Components',
-      wrapper: {
-        element: '',
-        attributes: {},
-      },
-    },
-    {
-      name: 'Base',
-      url: '/base',
+      name: 'Manage Category',
+      url: '/categories',
       icon: 'icon-puzzle',
       children: [
         {
-          name: 'Breadcrumbs',
-          url: '/base/breadcrumbs',
+          name: 'Categories',
+          url: '/categories',
           icon: 'icon-puzzle',
         },
         {
-          name: 'Cards',
-          url: '/base/cards',
+          name: 'New Category',
+          url: '/categories/add',
           icon: 'icon-puzzle',
-        },
-        {
-          name: 'Carousels',
-          url: '/base/carousels',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Collapses',
-          url: '/base/collapses',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Dropdowns',
-          url: '/base/dropdowns',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Forms',
-          url: '/base/forms',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Jumbotrons',
-          url: '/base/jumbotrons',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'List groups',
-          url: '/base/list-groups',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Navs',
-          url: '/base/navs',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Paginations',
-          url: '/base/paginations',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Popovers',
-          url: '/base/popovers',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Progress Bar',
-          url: '/base/progress-bar',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Switches',
-          url: '/base/switches',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Tables',
-          url: '/base/tables',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Tabs',
-          url: '/base/tabs',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Tooltips',
-          url: '/base/tooltips',
-          icon: 'icon-puzzle',
-        },
+        },       
       ],
     },
     {
-      name: 'Buttons',
-      url: '/buttons',
+      name: 'Manage Product',
+      url: '/products',
       icon: 'icon-cursor',
       children: [
         {
-          name: 'Buttons',
-          url: '/buttons/buttons',
+          name: 'Products',
+          url: '/products',
           icon: 'icon-cursor',
         },
         {
-          name: 'Button dropdowns',
-          url: '/buttons/button-dropdowns',
+          name: 'New Category',
+          url: '/products/add',
           icon: 'icon-cursor',
-        },
-        {
-          name: 'Button groups',
-          url: '/buttons/button-groups',
-          icon: 'icon-cursor',
-        },
-        {
-          name: 'Brand Buttons',
-          url: '/buttons/brand-buttons',
-          icon: 'icon-cursor',
-        },
+        },       
       ],
     },
     {
-      name: 'Charts',
-      url: '/charts',
-      icon: 'icon-pie-chart',
+      name: 'Manage Trades',
+      url: '/trades',
+      icon: 'icon-calculator',
+      children: [
+        {
+          name: 'Trades',
+          url: '/trades',
+          icon: 'icon-calculator',
+        },              
+      ],
     },
     {
-      name: 'Icons',
-      url: '/icons',
+      name: 'Manage Subscription',
+      url: '/subscriptions',
+      icon: 'icon-pie-chart',
+      children: [
+        {
+          name: 'Subscriptions',
+          url: '/subscriptions',
+          icon: 'icon-pie-chart',
+        },
+        {
+          name: 'New Subscription',
+          url: '/subscriptions/add',
+          icon: 'icon-pie-chart',
+        },
+        {
+          name: 'Addon Packages',
+          url: '/packages',
+          icon: 'icon-pie-chart',
+        }, 
+        {
+          name: 'New Package',
+          url: '/packages/add',
+          icon: 'icon-pie-chart',
+        },        
+      ],
+    },
+     {
+      name: 'Manage Donation',
+      url: '/donations',
+      icon: 'icon-present',
+      children: [
+        {
+          name: 'Donations',
+          url: '/donations',
+          icon: 'icon-present',
+        },
+        {
+          name: 'New Donation',
+          url: '/donations/add',
+          icon: 'icon-present',
+        },       
+      ],
+    },
+     {
+      name: 'Manage Transactions',
+      url: '/transactions',
+      icon: 'icon-layers',
+      children: [
+        {
+          name: 'Transactions',
+          url: '/transactions',
+          icon: 'icon-layers',
+        },     
+      ],
+    },
+      {
+      name: 'Manage Ads',
+      url: '/advertisement',
+      icon: 'icon-cursor',
+      children: [
+        {
+          name: 'Advertisement',
+          url: '/advertisement',
+          icon: 'icon-cursor',
+        },
+        {
+          name: 'New Ads',
+          url: '/ddvertisement/add',
+          icon: 'icon-cursor',
+        },       
+      ],
+    },
+    {
+      title: true,
+      name: 'Extras',
+    },
+  
+    {
+      name: 'Manage CMS Page',
+      url: '/cms-page',
       icon: 'icon-star',
       children: [
         {
-          name: 'CoreUI Icons',
-          url: '/icons/coreui-icons',
-          icon: 'icon-star',
-          badge: {
-            variant: 'info',
-            text: 'NEW',
-          },
-        },
-        {
-          name: 'Flags',
-          url: '/icons/flags',
+          name: 'CMS Page',
+          url: '/pages',
           icon: 'icon-star',
         },
         {
-          name: 'Font Awesome',
-          url: '/icons/font-awesome',
+          name: 'New Page',
+          url: '/pages/add',
           icon: 'icon-star',
-          badge: {
-            variant: 'secondary',
-            text: '4.7',
-          },
-        },
-        {
-          name: 'Simple Line Icons',
-          url: '/icons/simple-line-icons',
-          icon: 'icon-star',
-        },
+        },       
       ],
     },
+   
     {
       name: 'Notifications',
       url: '/notifications',
@@ -212,22 +191,19 @@ export default {
         },
       ],
     },
-    {
-      name: 'Widgets',
-      url: '/widgets',
-      icon: 'icon-calculator',
-      badge: {
-        variant: 'info',
-        text: 'NEW',
-      },
-    },
-    {
-      divider: true,
-    },
-    {
-      title: true,
-      name: 'Extras',
-    },
+    //~ {
+      //~ name: 'Widgets',
+      //~ url: '/widgets',
+      //~ icon: 'icon-calculator',
+      //~ badge: {
+        //~ variant: 'info',
+        //~ text: 'NEW',
+      //~ },
+    //~ },
+    //~ {
+      //~ divider: true,
+    //~ },
+    
     {
       name: 'Pages',
       url: '/pages',

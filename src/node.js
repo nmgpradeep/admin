@@ -7,6 +7,12 @@ const mongoose = require('mongoose')
 const path = require('path')
 const bodyParser=require('body-parser')
 const user = require('./routes/user')
+const category = require('./routes/category')
+const product = require('./routes/product')
+const subscription = require('./routes/subscription')
+const donation = require('./routes/donation')
+const advertisemet = require('./routes/advertisemet')
+const page = require("./routes/page")
 const morgan=require('morgan')
 const http = require('http');
 const fs = require('fs');
@@ -30,5 +36,11 @@ app.use(function(req, res, next) {
 
 app.use(morgan('dev'));
 app.use('/user', user);
+app.use('/category', category);
+app.use('/product', product);
+app.use('/subscription',subscription);
+app.use('/donation',donation);
+app.use('/advertisemet',advertisemet);
+app.use('/page',page);
 app.listen(app.get('port'), () => console.log('Server running on ' + app.get('port')));
 module.exports = app;

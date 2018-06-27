@@ -1,12 +1,11 @@
-//'use strict';
+'use strict';
 var mongoose = require('mongoose');
-
 var Schema = mongoose.Schema;
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var UserSchema = new Schema({
-firstName:{
+firstName:{ 
  type:String,
  trim:true
 },
@@ -58,11 +57,11 @@ trim:true
 },
 country:{
 type:String,
-trim:true
+trim:true    
 },
 zipCode:{
 type:String,
-trim:true
+trim:true    
 },
 subscriptionPlan:{
 type:String,
@@ -80,7 +79,7 @@ userStatus:{
  type:String,
  trim:true,
  sparse:true,
- default:0
+ default:0   
 },
 latitude: {
  type: String,
