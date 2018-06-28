@@ -120,7 +120,12 @@ class Products extends Component {
                   <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Parent</th>
+                    <th>Category</th>
+                    <th>User</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                    <th>Brand</th>
+                    <th>Age</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>

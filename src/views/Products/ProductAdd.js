@@ -81,7 +81,13 @@ class ProductAdd extends Component {
         let addProduct = this.state.addProduct;
         addProduct.productName = this.productName.value;
         addProduct.description = this.description.value;
-        addProduct.parent = this.parent.value;
+        addProduct.productCategory = this.category.value;
+        addProduct.size = this.size.value;
+        addProduct.color = this.color.value;
+        addProduct.brand = this.brand.value;
+        addProduct.age = this.age.value;
+        addProduct.userId = this.description.value;
+        addProduct.productCategory = this.category.value;
         addProduct.status = this.status.value;       
         axios.post('/product/create', addProduct).then(result => {
           if(result.data.code == '200'){
@@ -107,28 +113,51 @@ class ProductAdd extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="company">Name</Label>
-                      <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.categoryName = input)} placeholder="Category Name" />
-
-                      <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.categoryName.message}</FormFeedback>
-
+                      <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.productName = input)} placeholder="Product Name" />
+                      
+                      <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback>
+                      
                     </FormGroup>
                     </Col>                  
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
                   <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
-                 
                 </FormGroup>
                
                 <FormGroup>
-                  <Label htmlFor="parent">Parent</Label>
+                  <Label htmlFor="category">Category</Label>
                    <select innerRef={input => (this.parent = input)} id="select" class="form-control" >
 					  <option value="0">Please select</option>
 					  <option value="1">Samsung</option>
 					  <option value="2">Television</option>
 					  <option value="3">Nokia</option>
-                  </select>           
-                 
+                  </select> 
+                </FormGroup>
+                 <FormGroup>
+                  <Label htmlFor="user">User</Label>
+                   <select innerRef={input => (this.user = input)} id="select" class="form-control" >
+					  <option value="0">Please select</option>
+					  <option value="1">JJ</option>
+					  <option value="2">Dekwano</option>
+					  <option value="3">Paul</option>
+                  </select> 
+                </FormGroup>
+                 <FormGroup>
+                  <Label htmlFor="size">Size</Label>
+                  <Input type="text" innerRef={input => (this.size = input)} placeholder="Size" />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="color">Color</Label>
+                  <Input type="text" innerRef={input => (this.color = input)} placeholder="Color" />
+                </FormGroup>
+                   <FormGroup>
+                  <Label htmlFor="brand">Brand</Label>
+                  <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
+                </FormGroup>
+                   <FormGroup>
+                  <Label htmlFor="age">Age</Label>
+                  <Input type="text" innerRef={input => (this.age = input)} placeholder="Age" />
                 </FormGroup>
                 
                  <FormGroup>
@@ -137,8 +166,6 @@ class ProductAdd extends Component {
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>
-                  
-                 
                 </FormGroup>
                 
                 <Row>

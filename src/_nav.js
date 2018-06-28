@@ -55,7 +55,7 @@ export default {
           icon: 'icon-cursor',
         },
         {
-          name: 'New Category',
+          name: 'New Product',
           url: '/products/add',
           icon: 'icon-cursor',
         },       
@@ -94,7 +94,7 @@ export default {
           icon: 'icon-pie-chart',
         }, 
         {
-          name: 'New Package',
+          name: 'New Addon Package',
           url: '/packages/add',
           icon: 'icon-pie-chart',
         },        
