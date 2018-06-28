@@ -27,14 +27,17 @@ const port=5001;
 axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    console.log('TOken', localStorage.getItem('jwtToken'));
+    if(localStorage.getItem('jwtToken') === null){
+      window.location.href="#/login";
+    }
+  }
   componentDidMount() {
-    //
+
   }
 
-  logout = () => {
-    localStorage.removeItem('jwtToken');
-    window.location.reload();
-  }
   render() {
     return (
       <HashRouter>
