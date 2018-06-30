@@ -175,20 +175,20 @@ export default {
       icon: 'icon-bell',
       children: [
         {
-          name: 'Alerts',
+          name: 'Alert',
           url: '/notifications/alerts',
           icon: 'icon-bell',
         },
-        {
-          name: 'Badges',
-          url: '/notifications/badges',
-          icon: 'icon-bell',
-        },
-        {
-          name: 'Modals',
-          url: '/notifications/modals',
-          icon: 'icon-bell',
-        },
+        //~ {
+          //~ name: 'Badges',
+          //~ url: '/notifications/badges',
+          //~ icon: 'icon-bell',
+        //~ },
+        //~ {
+          //~ name: 'Modals',
+          //~ url: '/notifications/modals',
+          //~ icon: 'icon-bell',
+        //~ },
       ],
     },
     //~ {
@@ -204,45 +204,45 @@ export default {
       //~ divider: true,
     //~ },
     
+    //~ {
+      //~ name: 'Pages',
+      //~ url: '/pages',
+      //~ icon: 'icon-star',
+      //~ children: [
+        //~ {
+          //~ name: 'Login',
+          //~ url: '/login',
+          //~ icon: 'icon-star',
+        //~ },
+        //~ {
+          //~ name: 'Register',
+          //~ url: '/register',
+          //~ icon: 'icon-star',
+        //~ },
+        //~ {
+          //~ name: 'Error 404',
+          //~ url: '/404',
+          //~ icon: 'icon-star',
+        //~ },
+        //~ {
+          //~ name: 'Error 500',
+          //~ url: '/500',
+          //~ icon: 'icon-star',
+        //~ },
+      //~ ],
+    //~ },
     {
-      name: 'Pages',
-      url: '/pages',
-      icon: 'icon-star',
-      children: [
-        {
-          name: 'Login',
-          url: '/login',
-          icon: 'icon-star',
-        },
-        {
-          name: 'Register',
-          url: '/register',
-          icon: 'icon-star',
-        },
-        {
-          name: 'Error 404',
-          url: '/404',
-          icon: 'icon-star',
-        },
-        {
-          name: 'Error 500',
-          url: '/500',
-          icon: 'icon-star',
-        },
-      ],
-    },
-    {
-      name: 'Download CoreUI',
-      url: 'http://coreui.io/react/',
+      name: 'Download Reports',
+      url: '#',
       icon: 'icon-cloud-download',
       class: 'mt-auto',
       variant: 'success',
     },
-    {
-      name: 'Try CoreUI PRO',
-      url: 'http://coreui.io/pro/react/',
-      icon: 'icon-layers',
-      variant: 'danger',
-    },
+    //~ {
+      //~ name: 'Try CoreUI PRO',
+      //~ url: 'http://coreui.io/pro/react/',
+      //~ icon: 'icon-layers',
+      //~ variant: 'danger',
+    //~ },
   ],
 };

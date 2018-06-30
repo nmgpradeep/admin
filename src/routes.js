@@ -223,6 +223,12 @@ const ProductView = Loadable({
   loader: () => import('./views/Products/ProductView'),
   loading: Loading,
 });
+//~ //loader for product
+const Trades = Loadable({
+  loader: () => import('./views/Trades/Trades'),
+  loading: Loading,
+});
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -239,6 +245,7 @@ const routes = [
   { path: '/products/edit/:id', exact: true,name: 'Edit Product', component: ProductEdit },
   { path: '/products/view/:id', name: 'View Product', component: ProductView },
   { path: '/products', name: 'Products', component: Products },
+  { path: '/trades', name: 'Trades', component: Trades },
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },

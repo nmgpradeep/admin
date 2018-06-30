@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
 import Moment from 'moment';
 // import PropTypes from 'prop-types';
-class User extends Component {
+class Trade extends Component {
   constructor(props){
     super(props);
   }
@@ -31,4 +31,4 @@ class User extends Component {
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
 // };
-export default User;
+export default Trade;
