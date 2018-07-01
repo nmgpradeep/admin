@@ -13,8 +13,6 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 // import PropTypes from 'prop-types';
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 class UserView extends Component {
   constructor(props){
     super(props);
@@ -99,7 +97,7 @@ class UserView extends Component {
               </CardBody>
             </Card>
           </Col>
-        </Row>        
+        </Row>
         </div>
     );
   }

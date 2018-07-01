@@ -7,9 +7,6 @@ import Trade from './Trade';
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
 // console.log('newpassport', passport);
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
-
 class Trades extends Component {
   constructor(props){
     super(props);
@@ -127,7 +124,7 @@ class Trades extends Component {
                     <th>Action</th>
                   </tr>
                   </thead>
-                  <tbody>                  
+                  <tbody>
                   {/*users*/}
                   </tbody>
                 </Table>
@@ -141,7 +138,7 @@ class Trades extends Component {
                     <PaginationItem active>
                       <PaginationLink tag="button">1</PaginationLink>
                     </PaginationItem>
-                    
+
                     <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
                   </Pagination>
                 </nav>
