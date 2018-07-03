@@ -153,7 +153,7 @@ export default {
   
     {
       name: 'Manage CMS Page',
-      url: '/cms-page',
+      url: '/pages',
       icon: 'icon-star',
       children: [
         {

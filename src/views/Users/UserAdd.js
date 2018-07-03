@@ -183,8 +183,8 @@ class UserAdd extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
-                <small> Edit</small>
+                <strong>Add New User</strong>
+                <small></small>
               </CardHeader>
               <CardBody>
               <Form noValidate>

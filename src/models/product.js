@@ -53,4 +53,14 @@ ProductSchema.methods.toJSON = function() {
     return obj;
    }
 
+ProductSchema.methods.getCategory = function(callback) {
+  var product = this;
+  var productCategoryID = this.productCategory.map(function(productCategory) {
+    return productCategory.product_id;
+  });
+  Post.find({'user._id': {$in: productCategoryID}}, function(err, posts) {
+    callback(posts);
+  });
+};
+
 module.exports = mongoose.model('Product', ProductSchema);

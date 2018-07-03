@@ -242,6 +242,20 @@ const DonationView = Loadable({
   loader: () => import('./views/Donations/DonationView'),
   loading: Loading,
 });
+
+//loader for product
+const CmsPages = Loadable({
+  loader: () => import('./views/CmsPages/CmsPages'),
+  loading: Loading,
+});
+const CmsPageAdd = Loadable({
+  loader: () => import('./views/CmsPages/CmsPageAdd'),
+  loading: Loading,
+});
+const CmsPageEdit = Loadable({
+  loader: () => import('./views/CmsPages/CmsPageEdit'),
+  loading: Loading,
+});
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -262,6 +276,9 @@ const routes = [
   { path: '/donations/add', exact: true,name: 'Add Donation', component: DonationAdd },
   { path: '/donations/view/:id', exact: true, name:'View Donation', component:DonationView },
   { path: '/donations', name: 'Donations', component: Donations },
+  { path: '/pages/add', exact: true,name: 'New Page', component: CmsPageAdd},
+  { path: '/pages/edit/:id', exact: true, name:'Edit Page', component:CmsPageEdit},
+  { path: '/pages', name: 'CMS Pages', component: CmsPages },
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },

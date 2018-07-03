@@ -5,6 +5,7 @@ const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
+const constant =  require('../../common/constant')
 
 /** Auther	: Rajiv kumar
  *  Date	: June 25, 2018
@@ -51,19 +52,25 @@ const create = (req, res) => {
  */
 /// function to list all advertisemet
 const pages = (req, res) => { 
-  Page.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+	var perPage = constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    Page.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, pages) {
+          Page.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: pages,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 
