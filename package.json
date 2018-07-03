@@ -43,6 +43,7 @@
     "paginate": "^0.2.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "pm2": "^2.10.4",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-chartjs-2": "^2.7.2",
@@ -76,5 +77,8 @@
   },
   "bugs": {
     "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

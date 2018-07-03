@@ -13,6 +13,7 @@ const subscription = require('./routes/subscription')
 const donation = require('./routes/donation')
 const advertisemet = require('./routes/advertisemet')
 const page = require("./routes/page")
+const trade = require("./routes/trade")
 const morgan=require('morgan')
 const http = require('http');
 const fs = require('fs');
@@ -42,5 +43,6 @@ app.use('/subscription',subscription);
 app.use('/donation',donation);
 app.use('/advertisemet',advertisemet);
 app.use('/page',page);
+app.use('/trade',trade);
 app.listen(app.get('port'), () => console.log('Server running on ' + app.get('port')));
 module.exports = app;

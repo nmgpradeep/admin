@@ -6,23 +6,25 @@ import Moment from 'moment';
 class Trade extends Component {
   constructor(props){
     super(props);
+    this.props.user.tradeStatus = 1;
   }
   render() {
     return (
       <tr key={this.props.user._id}>
-        <td>{this.props.user.firstName} {this.props.user.middleName} {this.props.user.lastName}</td>
-        <td>{this.props.user.userName}</td>
-        <td>{this.props.user.email}</td>
+        <td>1</td>
+        <td>{this.props.user.senderId}</td>
+        <td>{this.props.user.receiverId}</td>
+        <td>{this.props.user.senderProductId}</td><td>{this.props.user.receiverProductId}</td>
         <td>{Moment(this.props.user.createdAt).format('d MMM YYYY')}</td>
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this, this.props.user)} color={(this.props.user.userStatus === '1')?'success':'danger'}>
-            {(this.props.user.userStatus === '1')?'Active':'Inctive'}
+          <Badge  color={(this.props.user.tradeStatus === '1')?'success':'danger'}>
+            {(this.props.user.tradeStatus === '1')?'Active':'Inctive'}
           </Badge>
         </td>
         <td>
-          <Link to={'/users/edit/' + this.props.user._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
-          <Link to={'/users/view/' + this.props.user._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
-          <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteUser.bind(this, this.props.user._id)} ></i>&nbsp;
+         
+          <Link to={'#'}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
+         
         </td>
       </tr>
     );

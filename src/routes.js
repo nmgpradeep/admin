@@ -229,6 +229,19 @@ const Trades = Loadable({
   loading: Loading,
 });
 
+//loader for product
+const Donations = Loadable({
+  loader: () => import('./views/Donations/Donations'),
+  loading: Loading,
+});
+const DonationAdd = Loadable({
+  loader: () => import('./views/Donations/DonationAdd'),
+  loading: Loading,
+});
+const DonationView = Loadable({
+  loader: () => import('./views/Donations/DonationView'),
+  loading: Loading,
+});
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -246,6 +259,9 @@ const routes = [
   { path: '/products/view/:id', name: 'View Product', component: ProductView },
   { path: '/products', name: 'Products', component: Products },
   { path: '/trades', name: 'Trades', component: Trades },
+  { path: '/donations/add', exact: true,name: 'Add Donation', component: DonationAdd },
+  { path: '/donations/view/:id', exact: true, name:'View Donation', component:DonationView },
+  { path: '/donations', name: 'Donations', component: Donations },
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },

@@ -26,12 +26,12 @@ class Trades extends Component {
       this.setState({currentPage: this.props.match.params.page});
     }
     this.toggle = this.toggle.bind(this);
-    this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
+    //this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/users/:page').then(result => {
+      axios.get('/trade/trades/:page').then(result => {
         if(result.data.code == '200'){
           this.setState({
             users: result.data.result,
@@ -45,62 +45,26 @@ class Trades extends Component {
       })
       .catch((error) => {
 		  console.log('error', error)
-        if(error.response.code === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
 
   }
-  userDeleteHandler (id){
-    this.setState({
-      approve: false,
-      approveId: id
-    });
-    this.toggle();
-  }
-  changeStatusHandler(user){
-    user.userStatus = (1 - parseInt(user.userStatus)).toString();
-    axios.post('/user/changeStatus', user).then(result => {
-      if(result.data.code === 200){
-        let users = this.state.users;
-        let userIndex = users.findIndex(x => x._id === user._id);
-        users[userIndex].userStatus = user.userStatus.toString();
-        this.setState({ users: users});
-      }
-    });
-  }
+ 
+  
   toggle() {
     this.setState({
       modal: !this.state.modal
     });
   }
-  approveDeleteHandler(){
-    this.setState({
-      approve: true
-    }, function(){
-      if(this.state.approve){
-        axios.delete('/user/deleteUser/' + this.state.approveId).then(result => {
-          if(result.data.code == '200'){
-            let users = this.state.users;
-            let userIndex = users.findIndex(x => x._id === this.state.approveId);
-            users.splice(userIndex, 1);
-            this.setState({
-              users: users,
-              approveId: null,
-              approve: false
-            });
-            this.toggle();
-          }
-        });
-      }
-    });
-  }
+  
   render() {
    let users;
-    /* if(this.state.users){
+     if(this.state.users){
        let userList = this.state.users;
-       users = userList.map(user => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user}/>);
-     }*/
+       users = userList.map(user => <Trade key={user._id}  changeStatus={(user) => this.changeStatusHandler(user)}   user={user}/>);
+     }
 
      let paginationItems =[];
 
@@ -128,7 +92,7 @@ class Trades extends Component {
                   </tr>
                   </thead>
                   <tbody>                  
-                  {/*users*/}
+                  {users}
                   </tbody>
                 </Table>
                 <nav>
@@ -149,16 +113,7 @@ class Trades extends Component {
             </Card>
           </Col>
         </Row>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} external={externalCloseBtn}>
-          <ModalHeader>Modal title</ModalHeader>
-          <ModalBody>
-            Are you sure to delete?
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.approveDeleteHandler}>Yes</Button>{' '}
-            <Button color="secondary" onClick={this.toggle}>No</Button>
-          </ModalFooter>
-        </Modal>
+       
       </div>
 
     );

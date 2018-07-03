@@ -4,6 +4,7 @@ const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
+const constant = require("../../common/constant");
 const nodemailer = require('nodemailer');
 
 /** Auther	: Rajiv kumar
@@ -51,19 +52,41 @@ const create = (req, res) => {
  */
 /// function to list all dinated products
 const donations = (req, res) => { 
-  Donation.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+  //~ Donation.find({},(err,result)=>{
+		//~ if (!result) {
+			//~ res.json({
+			  //~ message: httpResponseMessage.ITEM_NOT_FOUND,
+			  //~ code: httpResponseMessage.BAD_REQUEST
+			//~ });
+		  //~ }else {				
+			//~ return res.json({
+				  //~ code: httpResponseCode.EVERYTHING_IS_OK,				
+				  //~ result: result
+				//~ });
+		  //~ }
+	  //~ })
+	  
+	  
+	  
+	   var perPage = constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    Donation.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, donation) {
+          Donation.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: donation,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 

@@ -131,7 +131,7 @@ const login = (req, res) => {
     })
   }
   const data = req.body;
-  console.log("body", data);
+  
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if (flag) {
     return res.json(flag);
