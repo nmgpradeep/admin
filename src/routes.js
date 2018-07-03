@@ -229,6 +229,25 @@ const Trades = Loadable({
   loading: Loading,
 });
 
+
+
+// loader for advertisement by saurabh
+const Advertisements = Loadable({
+  loader: () => import('./views/Advertisement/Advertisements'),
+  loading: Loading,
+});
+const AdvertisementAdd = Loadable({
+  loader: () => import('./views/Advertisement/AdvertisementAdd'),
+  loading: Loading,
+});
+const AdvertisementEdit = Loadable({
+  loader: () => import('./views/Advertisement/AdvertisementEdit'),
+  loading: Loading, 
+});
+const AdvertisementView = Loadable({
+  loader: () => import('./views/Advertisement/AdvertisementView'),
+  loading: Loading,
+})
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -246,6 +265,10 @@ const routes = [
   { path: '/products/view/:id', name: 'View Product', component: ProductView },
   { path: '/products', name: 'Products', component: Products },
   { path: '/trades', name: 'Trades', component: Trades },
+  { path: '/advertisement/add', exact: true,name: 'Add Advertisement', component: AdvertisementAdd },
+  { path: '/advertisement/edit/:id', exact: true,name: 'Edit Advertisement', component: AdvertisementEdit },
+  { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
+  { path: '/advertisement', name: 'Advertisement', component: Advertisements },
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },

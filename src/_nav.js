@@ -141,7 +141,7 @@ export default {
         },
         {
           name: 'New Ads',
-          url: '/ddvertisement/add',
+          url: '/advertisement/add',
           icon: 'icon-cursor',
         },       
       ],
