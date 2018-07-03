@@ -88,13 +88,9 @@ class Trades extends Component {
                     <th>Action</th>
                   </tr>
                   </thead>
-<<<<<<< HEAD
+
                   <tbody>                  
                   {users}
-=======
-                  <tbody>
-                  {/*users*/}
->>>>>>> 2891207836c09bc97c5043e13d320644c6c0407a
                   </tbody>
                 </Table>
                 <nav>

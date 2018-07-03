@@ -27,7 +27,7 @@ class Advertisements extends Component {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/advertisemet/list-ads').then(result => {
-        if(result.data.code == '200'){
+        if(result.data.code === 200){
           this.setState({
             advs: result.data.result,
             currentPage: result.data.current,
