@@ -26,7 +26,7 @@ const nodemailer = require('nodemailer');
 
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
- *	Description : Function to create a new user 
+ *	Description : Function to create a new user
  **/
 const signup = (req, res) => {
 
@@ -67,21 +67,21 @@ const signup = (req, res) => {
 
 				// Generate test SMTP service account from ethereal.email
 				// Only needed if you don't have a real mail account for testing
-				
+
 					// create reusable transporter object using the default SMTP transport
 					let transporter = nodemailer.createTransport({
 						host: constant.SMTP_HOST,
 						port: constant.SMTP_PORT,
 						secure: false, // true for 465, false for other ports
-						auth: {						
+						auth: {
 							user: constant.SMTP_USERNAME, // generated ethereal user
 							pass: constant.SMTP_PASSWORD // generated ethereal password
 						}
 					});
-					
+
 					host=req.get('host');
 					link="http://"+req.get('host')+"/user/verifyEmail/"+result._id;
-										
+
 					// setup email data with unicode symbols
 					let mailOptions = {
 						from: constant.SMTP_FROM_EMAIL, // sender address
@@ -131,7 +131,7 @@ const login = (req, res) => {
     })
   }
   const data = req.body;
-  
+
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if (flag) {
     return res.json(flag);
@@ -372,7 +372,7 @@ const deleteUser = (req, res) => {
  *  Date	: June 20, 2018
  *	Description : Function to verify user email
  **/
-const verifyEmail = (req, res) => { 
+const verifyEmail = (req, res) => {
   User.update({ _id:req.params.id },  { "$set": { "emailVerified": 1 } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -393,7 +393,7 @@ const verifyEmail = (req, res) => {
             });
 
       }
-    }    
+    }
   })
 }
 
@@ -408,7 +408,7 @@ exports.logout = function(req, res, next) {
     return;
   }
   var updateObj = {};
-  updateObj.accessToken = null;  
+  updateObj.accessToken = null;
   User.findOneAndUpdate({
     _id: req.body.userId
   }, {
@@ -418,13 +418,13 @@ exports.logout = function(req, res, next) {
       email: 1,
       name: 1,
       phoneNumber: 1,
-      accessToken: 1,      
+      accessToken: 1,
       profilePic: 1,
       subscriptionPlan: 1,
       userType: 1,
       address: 1,
       zipCode: 1,
-      userStatus: 1,     
+      userStatus: 1,
       emailVerified: 1
     },
     new: true
@@ -451,15 +451,15 @@ exports.logout = function(req, res, next) {
   });
 }
 
-//contactus form 
-const contustUs = (req, res) => { 
+//contactus form
+const contustUs = (req, res) => {
 	console.log('COntact us form');
 	res.render('contactus');
  }
 
-const send = (req, res) => { 
-	console.log(req.body.name);  
-	
+const send = (req, res) => {
+	console.log(req.body.name);
+
   const output =`<p>You have a new contact request</p>
   <h3>Contact Deatils</h3>
   <ul>
@@ -467,10 +467,10 @@ const send = (req, res) => {
 	<li>${req.body.email}</li>
   </ul>
   <h4>${req.body.message}</h4>`;
-  
+
   // Generate test SMTP service account from ethereal.email
 	// Only needed if you don't have a real mail account for testing
-	
+
 		// create reusable transporter object using the default SMTP transport
 		let transporter = nodemailer.createTransport({
 			host: constant.SMTP_HOST,

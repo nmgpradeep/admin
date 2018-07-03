@@ -229,7 +229,11 @@ const Trades = Loadable({
   loading: Loading,
 });
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+>>>>>>> 961ef5d9a2e8bccb48790560e77ae0ffeaebe887
 //loader for product
 const Donations = Loadable({
   loader: () => import('./views/Donations/Donations'),
@@ -276,7 +280,11 @@ const AdvertisementView = Loadable({
   loader: () => import('./views/Advertisement/AdvertisementView'),
   loading: Loading,
 })
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2891207836c09bc97c5043e13d320644c6c0407a
+>>>>>>> 961ef5d9a2e8bccb48790560e77ae0ffeaebe887
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -294,7 +302,11 @@ const routes = [
   { path: '/products/view/:id', name: 'View Product', component: ProductView },
   { path: '/products', name: 'Products', component: Products },
   { path: '/trades', name: 'Trades', component: Trades },
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+>>>>>>> 961ef5d9a2e8bccb48790560e77ae0ffeaebe887
   { path: '/donations/add', exact: true,name: 'Add Donation', component: DonationAdd },
   { path: '/donations/view/:id', exact: true, name:'View Donation', component:DonationView },
   { path: '/donations', name: 'Donations', component: Donations },
@@ -306,7 +318,11 @@ const routes = [
   { path: '/advertisement/edit/:id', exact: true,name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2891207836c09bc97c5043e13d320644c6c0407a
+>>>>>>> 961ef5d9a2e8bccb48790560e77ae0ffeaebe887
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },

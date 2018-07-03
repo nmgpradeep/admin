@@ -35,12 +35,12 @@ class Login extends Component {
         }
       })
       .catch((error) => {
-        console.log('error', error); 
-        if (!error.status) {			
+        console.log('error', error);
+        if (!error.status) {
 			 this.setState({ message: 'Login failed. Username or password not match' });
 			// network error
 		}
-        
+
       });
   }
 
