@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, Form, Button, Card, CardBody, CardGroup, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 class Login extends Component {
   constructor() {
     super();
@@ -37,12 +35,12 @@ class Login extends Component {
         }
       })
       .catch((error) => {
-        console.log('error', error); 
-        if (!error.status) {			
+        console.log('error', error);
+        if (!error.status) {
 			 this.setState({ message: 'Login failed. Username or password not match' });
 			// network error
 		}
-        
+
       });
   }
 

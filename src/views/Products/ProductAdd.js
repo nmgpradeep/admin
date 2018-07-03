@@ -26,8 +26,6 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 // import PropTypes from 'prop-types';
 class ProductAdd extends Component {
   constructor(props){
@@ -35,7 +33,7 @@ class ProductAdd extends Component {
     this.productName = React.createRef();
     this.description = React.createRef();
     this.parent = React.createRef();
-    this.status = React.createRef();    
+    this.status = React.createRef();
     this.state = {
       addProduct: {},
       validation:{
@@ -48,7 +46,7 @@ class ProductAdd extends Component {
           },
           valid: null,
           message: ''
-        }        
+        }
       }
     };
   }
@@ -72,7 +70,7 @@ class ProductAdd extends Component {
                   addProduct[field].message = addProduct[field].addProduct[fieldCheck].message;
 
                }
-              break;          
+              break;
           }
         }
         this.setState({ validation: addProduct});
@@ -88,7 +86,7 @@ class ProductAdd extends Component {
         addProduct.age = this.age.value;
         addProduct.userId = this.description.value;
         addProduct.productCategory = this.category.value;
-        addProduct.status = this.status.value;       
+        addProduct.status = this.status.value;
         axios.post('/product/create', addProduct).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/products");
@@ -105,7 +103,7 @@ class ProductAdd extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>Add Product</strong>              
+                <strong>Add Product</strong>
               </CardHeader>
               <CardBody>
               <Form noValidate>
@@ -114,17 +112,17 @@ class ProductAdd extends Component {
                     <FormGroup>
                       <Label htmlFor="company">Name</Label>
                       <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.productName = input)} placeholder="Product Name" />
-                      
+
                       <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback>
-                      
+
                     </FormGroup>
-                    </Col>                  
+                    </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
                   <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
                 </FormGroup>
-               
+
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
                    <select innerRef={input => (this.parent = input)} id="select" class="form-control" >
@@ -132,7 +130,7 @@ class ProductAdd extends Component {
 					  <option value="1">Samsung</option>
 					  <option value="2">Television</option>
 					  <option value="3">Nokia</option>
-                  </select> 
+                  </select>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="user">User</Label>
@@ -141,7 +139,7 @@ class ProductAdd extends Component {
 					  <option value="1">JJ</option>
 					  <option value="2">Dekwano</option>
 					  <option value="3">Paul</option>
-                  </select> 
+                  </select>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="size">Size</Label>
@@ -159,15 +157,15 @@ class ProductAdd extends Component {
                   <Label htmlFor="age">Age</Label>
                   <Input type="text" innerRef={input => (this.age = input)} placeholder="Age" />
                 </FormGroup>
-                
+
                  <FormGroup>
                   <Label htmlFor="status" >Status</Label>
                   <select innerRef={input => (this.status = input)} id="status" class="form-control" >
 					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
+					  <option value="0">Inactive</option>
                   </select>
                 </FormGroup>
-                
+
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
