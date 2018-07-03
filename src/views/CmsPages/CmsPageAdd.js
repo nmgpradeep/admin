@@ -141,10 +141,7 @@ class CmsPageAdd extends Component {
                       <Input type="text" innerRef={input => (this.description = input)} placeholder="Contents" />
                     </FormGroup>
                   </Col>
-                   <Col xs="4" sm="12">
-					<FroalaEditor model={this.state.content}  onModelChange={this.handleModelChange} />
-					<FroalaEditorView model={this.state.content}/>
-                    
+                   <Col xs="4" sm="12">					
                     <FormGroup>
                       <Label htmlFor="lastname">Banner Image</Label>
                       <Input type="file" innerRef={input => (this.bannerImage = input)} placeholder="Banner Image" />
