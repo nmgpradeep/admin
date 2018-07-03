@@ -1,11 +1,12 @@
 'use strict';
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var Schema = mongoose.Schema,
+  relationship = require("mongoose-relationship");
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var ProductSchema = new Schema({
-productName:{ 
+productName:{
  type:String,
  trim:true
 },
@@ -41,16 +42,17 @@ productStatus:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
-}
+ default:0
+},
+parent: { type:Schema.ObjectId, ref:"Category", childPath:"child" }
 },
 {
 timestamps:true
 });
 
 ProductSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
+    var obj = this.toObject();
     return obj;
    }
-
+ProductSchema.plugin(relationship, { relationshipPathName:'parent' });
 module.exports = mongoose.model('Product', ProductSchema);
