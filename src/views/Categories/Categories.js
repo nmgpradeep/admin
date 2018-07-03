@@ -7,8 +7,6 @@ import Category from './Category';
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
 // console.log('newpassport', passport);
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 
 class Categories extends Component {
   constructor(props){

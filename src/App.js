@@ -24,7 +24,8 @@ import { Login, Page404, Page500, Register } from './views/Pages';
 //import http from 'http';
 
 const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
+const basePath ='';// '/react-test';
+axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port + basePath;
 
 class App extends Component {
   constructor(props){

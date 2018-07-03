@@ -2,22 +2,19 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import User from './User';
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
+import Advertisement from './Advertisement'
 
-class Users extends Component {
+
+class Advertisements extends Component {
   constructor(props){
     super(props);
     this.state = {
-      users: [],
+      advs: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
-      usersCount: 0
+      advsCount: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -29,17 +26,17 @@ class Users extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/users/:page').then(result => {
+      axios.get('/advertisemet/list-ads').then(result => {
         if(result.data.code == '200'){
           this.setState({
-            users: result.data.result,
+            advs: result.data.result,
             currentPage: result.data.current,
             PerPage: result.data.perPage,
             totalPages: result.data.pages,
-            usersCount:result.data.total
+            advsCount:result.data.total
           });
         }
-        console.log(this.state.users);
+        console.log(this.state.advs);
       })
       .catch((error) => {
 		  console.log('error', error)
@@ -49,21 +46,21 @@ class Users extends Component {
       });
 
   }
-  userDeleteHandler (id){
+  advDeleteHandler (id){
     this.setState({
       approve: false,
       approveId: id
     });
     this.toggle();
   }
-  changeStatusHandler(user){
-    user.userStatus = (1 - parseInt(user.userStatus)).toString();
-    axios.post('/user/changeStatus', user).then(result => {
+  changeStatusHandler(adv){
+    adv.advStatus = (1 - parseInt(adv.advStatus)).toString();
+    axios.post('/advertisemet/updateStatus', adv).then(result => {
       if(result.data.code === 200){
-        let users = this.state.users;
-        let userIndex = users.findIndex(x => x._id === user._id);
-        users[userIndex].userStatus = user.userStatus.toString();
-        this.setState({ users: users});
+        let advs = this.state.advs;
+        let advIndex = advs.findIndex(x => x._id === adv._id);
+        advs[advIndex].advStatus = adv.advStatus.toString();
+        this.setState({ advs: advs});
       }
     });
   }
@@ -77,13 +74,13 @@ class Users extends Component {
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/user/deleteUser/' + this.state.approveId).then(result => {
+        axios.delete('/advertisemet/deleteAds/:id' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
-            let users = this.state.users;
-            let userIndex = users.findIndex(x => x._id === this.state.approveId);
-            users.splice(userIndex, 1);
+            let advs = this.state.advs;
+            let advIndex = advs.findIndex(x => x._id === this.state.approveId);
+            advs.splice(advIndex, 1);
             this.setState({
-              users: users,
+              advs: advs,
               approveId: null,
               approve: false
             });
@@ -94,10 +91,10 @@ class Users extends Component {
     });
   }
   render() {
-   let users;
-     if(this.state.users){
-       let userList = this.state.users;
-       users = userList.map(user => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user}/>);
+   let advs;
+     if(this.state.advs){
+       let advList = this.state.advs;
+       advs = advList.map(adv => <Advertisement key={adv._id} onDeleteAdv={this.advDeleteHandler.bind(this)} changeStatus={(adv) => this.changeStatusHandler(adv)}   adv={adv}/>);
      }
 
      let paginationItems =[];
@@ -109,23 +106,26 @@ class Users extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Users Listing
-                <Link to="users/add" className="btn btn-success btn-sm pull-right">Add User</Link>
+                <i className="fa fa-align-justify"></i> Advertisements Listing
+                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    {/* <th>ID</th> */}
                     <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Date registered</th>
+                    {/* <th>Description</th> */}
+                    
+                    <th>Logo</th>
+                    
+                    <th>URL</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {users}
+                  {advs}
                   </tbody>
                 </Table>
                 <nav>
@@ -164,4 +164,4 @@ class Users extends Component {
   }
 }
 
-export default Users;
+export default Advertisements;

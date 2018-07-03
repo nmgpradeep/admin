@@ -7,9 +7,6 @@ import Product from './Product';
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
 // console.log('newpassport', passport);
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
-
 class Products extends Component {
   constructor(props){
     super(props);

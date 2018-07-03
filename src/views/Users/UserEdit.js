@@ -26,8 +26,6 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 // import PropTypes from 'prop-types';
 class UserEdit extends Component {
   constructor(props){

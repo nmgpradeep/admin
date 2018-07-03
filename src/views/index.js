@@ -18,6 +18,8 @@ import {
   Tooltips,
 } from './Base';
 
+import { Advertisements, Advertisement, AdvertisementEdit} from './Advertisement'
+
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
@@ -28,6 +30,9 @@ import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
 
 export {
+  Advertisement,
+  Advertisements,
+  AdvertisementEdit,
   Badges,
   Typography,
   Colors,
