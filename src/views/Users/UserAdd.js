@@ -26,7 +26,10 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2891207836c09bc97c5043e13d320644c6c0407a
 // import PropTypes from 'prop-types';
 class UserAdd extends Component {
   constructor(props){

@@ -26,8 +26,6 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
 // import PropTypes from 'prop-types';
 class CategoryAdd extends Component {
   constructor(props){
@@ -35,7 +33,7 @@ class CategoryAdd extends Component {
     this.categoryName = React.createRef();
     this.description = React.createRef();
     this.parent = React.createRef();
-    this.status = React.createRef();    
+    this.status = React.createRef();
     this.state = {
       addCategory: {},
       validation:{
@@ -48,7 +46,7 @@ class CategoryAdd extends Component {
           },
           valid: null,
           message: ''
-        }        
+        }
       }
     };
   }
@@ -72,7 +70,7 @@ class CategoryAdd extends Component {
                   addCategory[field].message = addCategory[field].addCategory[fieldCheck].message;
 
                }
-              break;          
+              break;
           }
         }
         this.setState({ validation: addCategory});
@@ -82,7 +80,7 @@ class CategoryAdd extends Component {
         addCategory.categoryName = this.categoryName.value;
         addCategory.description = this.description.value;
         addCategory.parent = this.parent.value;
-        addCategory.status = this.status.value;       
+        addCategory.status = this.status.value;
         axios.post('/category/create', addCategory).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/categories");
@@ -99,7 +97,7 @@ class CategoryAdd extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>Add Category</strong>              
+                <strong>Add Category</strong>
               </CardHeader>
               <CardBody>
               <Form noValidate>
@@ -112,14 +110,14 @@ class CategoryAdd extends Component {
                       <FormFeedback invalid={this.state.validation.categoryName.valid === false}>{this.state.validation.categoryName.message}</FormFeedback>
 
                     </FormGroup>
-                    </Col>                  
+                    </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
                   <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
-                 
+
                 </FormGroup>
-               
+
                 <FormGroup>
                   <Label htmlFor="parent">Parent</Label>
                    <select innerRef={input => (this.parent = input)} id="select" class="form-control" >
@@ -127,20 +125,20 @@ class CategoryAdd extends Component {
 					  <option value="1">Samsung</option>
 					  <option value="2">Television</option>
 					  <option value="3">Nokia</option>
-                  </select>           
-                 
+                  </select>
+
                 </FormGroup>
-                
+
                  <FormGroup>
                   <Label htmlFor="status" >Status</Label>
                   <select innerRef={input => (this.status = input)} id="status" class="form-control" >
 					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
+					  <option value="0">Inactive</option>
                   </select>
-                  
-                 
+
+
                 </FormGroup>
-                
+
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

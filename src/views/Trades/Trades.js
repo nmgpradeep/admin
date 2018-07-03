@@ -7,7 +7,10 @@ import Trade from './Trade';
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
 // console.log('newpassport', passport);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2891207836c09bc97c5043e13d320644c6c0407a
 class Trades extends Component {
   constructor(props){
     super(props);
@@ -90,7 +93,11 @@ class Trades extends Component {
                   </tr>
                   </thead>
                   <tbody>
+<<<<<<< HEAD
                   {users}
+=======
+                  {/*users*/}
+>>>>>>> 2891207836c09bc97c5043e13d320644c6c0407a
                   </tbody>
                 </Table>
                 <nav>

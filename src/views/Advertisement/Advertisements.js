@@ -2,22 +2,19 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import Category from './Category';
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
+import Advertisement from './Advertisement'
 
-class Categories extends Component {
+
+class Advertisements extends Component {
   constructor(props){
     super(props);
     this.state = {
-      Categories: [],
+      advs: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
-      categoriesCount: 0
+      advsCount: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -29,41 +26,41 @@ class Categories extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/category/categories').then(result => {
-		  console.log("DATA",result.data)
+      axios.get('/advertisemet/list-ads').then(result => {
         if(result.data.code == '200'){
           this.setState({
-            categories: result.data.result,
+            advs: result.data.result,
             currentPage: result.data.current,
             PerPage: result.data.perPage,
             totalPages: result.data.pages,
-            categoriesCount:result.data.total
+            advsCount:result.data.total
           });
         }
-        console.log(this.state.categories);
+        console.log(this.state.advs);
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+		  console.log('error', error)
+        if(error.response.code === 401) {
           this.props.history.push("/login");
         }
       });
 
   }
-  categoryDeleteHandler (id){
+  advDeleteHandler (id){
     this.setState({
       approve: false,
       approveId: id
     });
     this.toggle();
   }
-  changeStatusHandler(category){
-    category.categoryStatus = (1 - parseInt(category.categoryStatus)).toString();
-    axios.post('/category/changeStatus', category).then(result => {
+  changeStatusHandler(adv){
+    adv.advStatus = (1 - parseInt(adv.advStatus)).toString();
+    axios.post('/advertisemet/updateStatus', adv).then(result => {
       if(result.data.code === 200){
-        let categories = this.state.categories;
-        let categoryIndex = categories.findIndex(x => x._id === category._id);
-        categories[categoryIndex].categoryStatus = category.categoryStatus.toString();
-        this.setState({ categories: categories});
+        let advs = this.state.advs;
+        let advIndex = advs.findIndex(x => x._id === adv._id);
+        advs[advIndex].advStatus = adv.advStatus.toString();
+        this.setState({ advs: advs});
       }
     });
   }
@@ -77,13 +74,13 @@ class Categories extends Component {
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/category/deleteCategory/' + this.state.approveId).then(result => {
+        axios.delete('/advertisemet/deleteAds/:id' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
-            let categories = this.state.categories;
-            let categoryIndex = categories.findIndex(x => x._id === this.state.approveId);
-            categories.splice(categoryIndex, 1);
+            let advs = this.state.advs;
+            let advIndex = advs.findIndex(x => x._id === this.state.approveId);
+            advs.splice(advIndex, 1);
             this.setState({
-              categories: categories,
+              advs: advs,
               approveId: null,
               approve: false
             });
@@ -94,10 +91,10 @@ class Categories extends Component {
     });
   }
   render() {
-   let categories;
-     if(this.state.categories){
-       let categoryList = this.state.categories;
-       categories = categoryList.map(category => <Category key={category._id} onDeleteCategory={this.categoryDeleteHandler.bind(this)} changeStatus={(category) => this.changeStatusHandler(category)}   category={category}/>);
+   let advs;
+     if(this.state.advs){
+       let advList = this.state.advs;
+       advs = advList.map(adv => <Advertisement key={adv._id} onDeleteAdv={this.advDeleteHandler.bind(this)} changeStatus={(adv) => this.changeStatusHandler(adv)}   adv={adv}/>);
      }
 
      let paginationItems =[];
@@ -109,22 +106,26 @@ class Categories extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Categories Listing
-                <Link to="categories/add" className="btn btn-success btn-sm pull-right">Add Category</Link>
+                <i className="fa fa-align-justify"></i> Advertisements Listing
+                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    {/* <th>ID</th> */}
                     <th>Name</th>
-                    <th>Description</th>
-                    <th>Parent</th>
+                    {/* <th>Description</th> */}
+                    
+                    <th>Logo</th>
+                    
+                    <th>URL</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {categories}
+                  {advs}
                   </tbody>
                 </Table>
                 <nav>
@@ -163,4 +164,4 @@ class Categories extends Component {
   }
 }
 
-export default Categories;
+export default Advertisements;
