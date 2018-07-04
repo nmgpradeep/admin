@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
 
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+
+import FroalaEditor from 'react-froala-wysiwyg';
 
 import {
   Badge,
@@ -138,7 +148,8 @@ class CmsPageAdd extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">Contents</Label>
-                      <Input type="text" innerRef={input => (this.description = input)} placeholder="Contents" />
+                      { /*<Input type="text" innerRef={input => (this.description = input)} placeholder="Contents" /> */}
+                      <FroalaEditor innerRef={input => (this.description = input)} placeholder="Contents" tag='textarea'/>
                     </FormGroup>
                   </Col>
                    <Col xs="4" sm="12">					
