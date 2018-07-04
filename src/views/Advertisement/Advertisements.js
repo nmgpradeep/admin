@@ -54,12 +54,14 @@ class Advertisements extends Component {
     this.toggle();
   }
   changeStatusHandler(adv){
-    adv.advStatus = (1 - parseInt(adv.advStatus)).toString();
-    axios.post('/advertisemet/updateStatus', adv).then(result => {
+	  console.log("STATUS",adv)
+    adv.status = (1 - parseInt(adv.status)).toString();
+    console.log("CHABGE-STATUS",adv)
+    axios.post('/advertisemet/updateStatus',adv).then(result => {
       if(result.data.code === 200){
         let advs = this.state.advs;
         let advIndex = advs.findIndex(x => x._id === adv._id);
-        advs[advIndex].advStatus = adv.advStatus.toString();
+        advs[advIndex].status = adv.status.toString();
         this.setState({ advs: advs});
       }
     });
@@ -74,7 +76,7 @@ class Advertisements extends Component {
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/advertisemet/deleteAds/:id' + this.state.approveId).then(result => {
+        axios.delete('/advertisemet/deleteAds/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
             let advs = this.state.advs;
             let advIndex = advs.findIndex(x => x._id === this.state.approveId);
@@ -113,12 +115,8 @@ class Advertisements extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    {/* <th>ID</th> */}
-                    <th>Name</th>
-                    {/* <th>Description</th> */}
-                    
+                    <th>Name</th>                  
                     <th>Logo</th>
-                    
                     <th>URL</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -136,7 +134,7 @@ class Advertisements extends Component {
                     {paginationItems}
 
                     <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
+                    <PaginationLink tag="button">1</PaginationLink>
                     </PaginationItem>
                     <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
                     <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>

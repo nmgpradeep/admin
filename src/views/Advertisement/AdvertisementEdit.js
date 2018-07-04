@@ -104,8 +104,9 @@ class AdvertisementEdit extends Component {
         editAdv.description = this.description.value;
         editAdv.redirectURL = this.redirectURL.value;
         editAdv.image = this.image.value;
-        axios.post('/advertisemet/updateAds', editAdv).then(result => {
-          if(result.data.code == '200'){
+        console.log("editAdv",editAdv)
+        axios.put('/advertisemet/updateAds', editAdv).then(result => {
+          if(result.data.code ===200){
             this.props.history.push("/advertisement");
           }
         });
@@ -116,17 +117,19 @@ class AdvertisementEdit extends Component {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/advertisemet/viewAds/' + this.state.advId).then(result => {
-        if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          this.setState({ editAdv: result.data.result});
-          this.advertisemetName.value = result.data.result.advertisemetName;
-          this.description.value = result.data.result.description;
-          this.redirectURL.value = result.data.result.redirectURL;
-          this.image.value = result.data.result.image;
+       // console.log(result); 
+         if(result.data.code === 200){
+        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
+           this.setState({ editAdv: result.data.result});
+          
+           this.advertisemetName.value = result.data.result.advertisemetName;
+           this.description.value = result.data.result.description;
+           this.redirectURL.value = result.data.result.redirectURL;
+           this.image.value = result.data.result.image;
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -139,18 +142,18 @@ class AdvertisementEdit extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
+                <strong>Advertisement</strong>
                 <small> Edit</small>
               </CardHeader>
               <CardBody>
-              <Form noValidate>
+              
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">Advertisement Name</Label>
-                      <Input type="text" value={this.state.editAdv.advertisemetName} invalid={this.state.validation.advertisemetName.valid === false} innerRef={input => (this.advertisemetName = input)} placeholder="First name" />
+                      <Label >Advertisement Name</Label>
+                      <Input type="text" innerRef={input => (this.advertisemetName = input)}   placeholder="First name" />
 
-                      <FormFeedback invalid={this.state.validation.advertisemetName.valid === false}>{this.state.validation.advertisemetName.message}</FormFeedback>
+                      {/* <FormFeedback invalid={this.state.validation.advertisemetName.valid === false}>{this.state.validation.advertisemetName.message}</FormFeedback> */}
 
                     </FormGroup>
                     </Col>
@@ -167,9 +170,9 @@ class AdvertisementEdit extends Component {
                     </FormGroup>
                   </Col>
                 </Row>
-                <FormGroup>
+                 <FormGroup>
                   <Label htmlFor="username">Image</Label>
-                  <Input type="file"   innerRef={input => (this.image = input)} placeholder="Image" />
+                  <Input type="file" innerRef={input => (this.image = File)} placeholder="Image" />
                   {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
                 </FormGroup>
                 <Row>
@@ -180,8 +183,7 @@ class AdvertisementEdit extends Component {
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
                 </Row>
-                </Form>
-              </CardBody>
+               </CardBody>
             </Card>
           </Col>
         </Row>

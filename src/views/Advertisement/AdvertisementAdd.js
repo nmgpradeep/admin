@@ -132,7 +132,7 @@ class AdvertisementAdd extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="redirectURL">redirectURL</Label>
+                      <Label htmlFor="redirectURL">Redirect URL</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.redirectURL.valid === false} innerRef={input => (this.redirectURL = input)}  placeholder="redirectURL" />
@@ -140,15 +140,17 @@ class AdvertisementAdd extends Component {
                       <FormFeedback invalid={this.state.validation.redirectURL.valid === false}>{this.state.validation.redirectURL.message}</FormFeedback>
                     </Col>
                   </FormGroup>
-                  {/* <FormGroup row>
+                  <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="Text" id="Status" name="Status" placeholder="Status" autoComplete="new-password" />
-                      <FormText className="help-block">Mention the Status of Advertisement</FormText>
+                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+					  <option value="1">Active</option>
+					  <option value="0">Inactive</option>					
+                  </select>
                     </Col>
-                  </FormGroup> */}
+                  </FormGroup>
                   
                   <FormGroup row>
                     <Col md="3">

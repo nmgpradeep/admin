@@ -302,8 +302,8 @@ const routes = [
   { path: '/pages/edit/:id', exact: true, name:'Edit Page', component:CmsPageEdit},
   { path: '/pages', name: 'CMS Pages', component: CmsPages },
 
-  { path: '/advertisement/add', exact: true,name: 'Add Advertisement', component: AdvertisementAdd },
-  { path: '/advertisement/edit/:id', exact: true,name: 'Edit Advertisement', component: AdvertisementEdit },
+  { path: '/advertisement/add',name: 'Add Advertisement', component: AdvertisementAdd },
+  { path: '/advertisement/edit/:id',name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
 

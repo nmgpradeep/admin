@@ -103,7 +103,7 @@ const viewAdvertisemet = (req, res) => {
  *	Description : Function to update the advertisemet
  **/
 const updateAdvertisemet = (req, res) => { 
-  Advertisement.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+  Advertisement.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -134,7 +134,7 @@ const deleteAdvertisemet = (req, res) => {
 	Advertisement.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
+          message: httpResponseMessage.ITEM_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
     }
@@ -152,7 +152,8 @@ const deleteAdvertisemet = (req, res) => {
  *	Description : Function to update the advertisemet status.
  **/
 const updateStatus = (req, res) => { 
-  Advertisement.update({ _id:req.body.id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+	console.log("REQ0",req.body)
+  Advertisement.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
