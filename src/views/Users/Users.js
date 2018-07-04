@@ -30,7 +30,7 @@ class Users extends Component {
   }
   loadCommentsFromServer() {
     axios.get('/user/users/' + this.state.currentPage).then(result => {
-      if(result.data.code == '200'){
+      if(result.data.code ===200){
         this.setState({
           users: result.data.result,
           currentPage: result.data.current,

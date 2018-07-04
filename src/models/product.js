@@ -54,7 +54,7 @@ ProductSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
    }
-<<<<<<< HEAD
+
 
 ProductSchema.methods.getCategory = function(callback) {
   var product = this;
@@ -66,7 +66,7 @@ ProductSchema.methods.getCategory = function(callback) {
   });
 };
 
-=======
+
 ProductSchema.plugin(relationship, { relationshipPathName:'parent' });
->>>>>>> 961ef5d9a2e8bccb48790560e77ae0ffeaebe887
+
 module.exports = mongoose.model('Product', ProductSchema);
