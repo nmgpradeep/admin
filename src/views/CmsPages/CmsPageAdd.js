@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-// Require Editor JS files.
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-
-// Require Editor CSS files.
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
-
-// Require Font Awesome.
-import 'font-awesome/css/font-awesome.css';
-
-import FroalaEditor from 'react-froala-wysiwyg';
-
 import {
   Badge,
   Button,
@@ -39,6 +27,9 @@ import {
   Row,
 } from 'reactstrap';
 
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
+
 // import PropTypes from 'prop-types';
 class CmsPageAdd extends Component {
   constructor(props){
@@ -52,6 +43,7 @@ class CmsPageAdd extends Component {
     this.email = React.createRef();
     this.state = {
       addUser: {},
+      text: '',
       validation:{
         pageTitle:{
           rules: {
@@ -75,6 +67,9 @@ class CmsPageAdd extends Component {
         }
       }
     };
+  }
+  handleChange(value) {
+    this.setState({ text: value })
   }
   cancelHandler(){
     this.props.history.push("/pages");
@@ -148,8 +143,8 @@ class CmsPageAdd extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">Contents</Label>
-                      { /*<Input type="text" innerRef={input => (this.description = input)} placeholder="Contents" /> */}
-                      <FroalaEditor innerRef={input => (this.description = input)} placeholder="Contents" tag='textarea'/>
+                      <ReactQuill  innerRef={input => (this.description = input)}  value={this.state.text}
+                  onChange={(value) => this.handleChange} />
                     </FormGroup>
                   </Col>
                    <Col xs="4" sm="12">					
