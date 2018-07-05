@@ -230,20 +230,6 @@ const Trades = Loadable({
 });
 
 
-//loader for product
-const Donations = Loadable({
-  loader: () => import('./views/Donations/Donations'),
-  loading: Loading,
-});
-const DonationAdd = Loadable({
-  loader: () => import('./views/Donations/DonationAdd'),
-  loading: Loading,
-});
-const DonationView = Loadable({
-  loader: () => import('./views/Donations/DonationView'),
-  loading: Loading,
-});
-
 //loader for CMS Pages
 const CmsPages = Loadable({
   loader: () => import('./views/CmsPages/CmsPages'),
@@ -277,18 +263,40 @@ const AdvertisementView = Loadable({
   loading: Loading,
 })
 
+//loader for donations by saurabh
+const Donations = Loadable({
+  loader: () => import('./views/Donation/Donations'),
+  loading: Loading,
+});
+const DonationAdd = Loadable({
+  loader: () => import('./views/Donation/DonationAdd'),
+  loading: Loading,
+});
+const DonationView = Loadable({
+  loader: () => import('./views/Donation/DonationView'),
+  loading: Loading,
+});
+const DonationEdit = Loadable({
+  loader: () => import('./views/Donation/DonationEdit'),
+  loading: Loading,
+})
+
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  
   { path: '/users/add', exact: true,name: 'Add User', component: UserAdd },
   { path: '/users/edit/:id',name: 'Edit User', component: UserEdit },
   { path: '/users/view/:id', name: 'View User', component: UserView },
   { path: '/users', name: 'Users', component: Users },
+  
   { path: '/categories/add', exact: true,name: 'Add Category', component: CategoryAdd },
   { path: '/categories/edit/:id', name: 'Edit Category', component: CategoryEdit },
   { path: '/categories/view/:id', name: 'View Category', component: CategoryView },
   { path: '/categories', name: 'Categories', component: Categories },
+  
   { path: '/products/add', exact: true,name: 'Add Product', component: ProductAdd },
   { path: '/products/edit/:id',name: 'Edit Product', component: ProductEdit },
   { path: '/products/view/:id', name: 'View Product', component: ProductView },
@@ -296,8 +304,10 @@ const routes = [
   { path: '/trades', name: 'Trades', component: Trades },
 
   { path: '/donations/add', exact: true,name: 'Add Donation', component: DonationAdd },
+  { path: '/donations/edit/:id', name: 'Edit Donation', component: DonationEdit},
   { path: '/donations/view/:id', name:'View Donation', component:DonationView },
   { path: '/donations', name: 'Donations', component: Donations },
+  
   { path: '/pages/add', exact: true,name: 'New Page', component: CmsPageAdd},
   { path: '/pages/edit/:id',  name:'Edit Page', component:CmsPageEdit},
   { path: '/pages', name: 'CMS Pages', component: CmsPages },

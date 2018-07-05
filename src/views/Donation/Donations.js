@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import Advertisement from './Advertisement'
+import Donation from './Donation'
 
 
-class Advertisements extends Component {
+class Donations extends Component {
   constructor(props){
     super(props);
     this.state = {
-      advs: [],
+      donations: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
-      advsCount: 0
+      donationsCount: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -26,17 +26,17 @@ class Advertisements extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/advertisement/list-ads').then(result => {
+      axios.get('/donation/donations').then(result => {
         if(result.data.code === 200){
           this.setState({
-            advs: result.data.result,
+            donations: result.data.result,
             currentPage: result.data.current,
             PerPage: result.data.perPage,
             totalPages: result.data.pages,
-            advsCount:result.data.total
+            donationsCount:result.data.total
           });
         }
-        console.log(this.state.advs);
+        console.log(this.state.donations);
       })
       .catch((error) => {
 		  console.log('error', error)
@@ -46,23 +46,23 @@ class Advertisements extends Component {
       });
 
   }
-  advDeleteHandler (id){
+  donationDeleteHandler (id){
     this.setState({
       approve: false,
       approveId: id
     });
     this.toggle();
   }
-  changeStatusHandler(adv){
-	  console.log("STATUS",adv)
-    adv.status = (1 - parseInt(adv.status)).toString();
-    console.log("CHANGE-STATUS",adv)
-    axios.post('/advertisement/updateStatus',adv).then(result => {
+  changeStatusHandler(donation){
+	  console.log("STATUS",donation)
+    donation.productStatus = (1 - parseInt(donation.productStatus)).toString();
+    console.log("CHANGE-STATUS",donation)
+    axios.post('/donation/updateStatus',donation).then(result => {
       if(result.data.code === 200){
-        let advs = this.state.advs;
-        let advIndex = advs.findIndex(x => x._id === adv._id);
-        advs[advIndex].status = adv.status.toString();
-        this.setState({ advs: advs});
+        let donations = this.state.donations;
+        let donationIndex = donations.findIndex(x => x._id === donation._id);
+        donations[donationIndex].productStatus = donation.productStatus.toString();
+        this.setState({ donations: donations});
       }
     });
   }
@@ -76,13 +76,13 @@ class Advertisements extends Component {
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/advertisement/deleteAds/' + this.state.approveId).then(result => {
+        axios.delete('/donation/deleteDonation/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
-            let advs = this.state.advs;
-            let advIndex = advs.findIndex(x => x._id === this.state.approveId);
-            advs.splice(advIndex, 1);
+            let donations = this.state.donations;
+            let donationIndex = donations.findIndex(x => x._id === this.state.approveId);
+            donations.splice(donationIndex, 1);
             this.setState({
-              advs: advs,
+              donations: donations,
               approveId: null,
               approve: false
             });
@@ -93,10 +93,10 @@ class Advertisements extends Component {
     });
   }
   render() {
-   let advs;
-     if(this.state.advs){
-       let advList = this.state.advs;
-       advs = advList.map(adv => <Advertisement key={adv._id} onDeleteAdv={this.advDeleteHandler.bind(this)} changeStatus={(adv) => this.changeStatusHandler(adv)}   adv={adv}/>);
+   let donations;
+     if(this.state.donations){
+       let donationList = this.state.donations;
+       donations = donationList.map(donation => <Donation key={donation._id} onDeleteDonation={this.donationDeleteHandler.bind(this)} changeStatus={(donation) => this.changeStatusHandler(donation)}   donation={donation}/>);
      }
 
      let paginationItems =[];
@@ -108,23 +108,27 @@ class Advertisements extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Advertisements Listing
+                <i className="fa fa-align-justify"></i> Donation Listing
                 {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Name</th>  
+                    <th>Product Name</th>  
                     <th>Description</th>                
-                    <th>Logo</th>
-                    <th>URL</th>
+                    <th>Category</th>
+                    <th>User</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                    <th>Brand</th>
+                    <th>Age</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {advs}
+                  {donations}
                   </tbody>
                 </Table>
                 <nav>
@@ -163,4 +167,4 @@ class Advertisements extends Component {
   }
 }
 
-export default Advertisements;
+export default Donations;

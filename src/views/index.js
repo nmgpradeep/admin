@@ -19,7 +19,7 @@ import {
 } from './Base';
 
 import { Advertisements, Advertisement, AdvertisementEdit} from './Advertisement'
-
+import { Donations, Donation, DonationEdit} from './Donation'
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
@@ -30,6 +30,9 @@ import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
 
 export {
+  DonationEdit,
+  Donations,
+  Donations,
   Advertisement,
   Advertisements,
   AdvertisementEdit,
