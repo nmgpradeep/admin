@@ -30,7 +30,7 @@ import {
 class AdvertisementEdit extends Component {
   constructor(props){
     super(props);
-    this.advertisemetName = React.createRef();
+    this.advertisementName = React.createRef();
     this.description = React.createRef();
     this.redirectURL = React.createRef();
     this.image = React.createRef();
@@ -39,7 +39,7 @@ class AdvertisementEdit extends Component {
       editAdv: {},
       advId: advId,
       validation:{
-        advertisemetName:{
+        advertisementName:{
           rules: {
             notEmpty: {
               message: 'Advertisement name field can\'t be left blank',
@@ -100,12 +100,12 @@ class AdvertisementEdit extends Component {
 
       if(formSubmitFlag){
         let editAdv = this.state.editAdv;
-        editAdv.advertisemetName = this.advertisemetName.value;
+        editAdv.advertisementName = this.advertisementName.value;
         editAdv.description = this.description.value;
         editAdv.redirectURL = this.redirectURL.value;
         editAdv.image = this.image.value;
         console.log("editAdv",editAdv)
-        axios.put('/advertisemet/updateAds', editAdv).then(result => {
+        axios.put('/advertisement/updateAds', editAdv).then(result => {
           if(result.data.code ===200){
             this.props.history.push("/advertisement");
           }
@@ -116,13 +116,13 @@ class AdvertisementEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/advertisemet/viewAds/' + this.state.advId).then(result => {
+      axios.get('/advertisement/viewAds/' + this.state.advId).then(result => {
        // console.log(result); 
          if(result.data.code === 200){
         //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
            this.setState({ editAdv: result.data.result});
           
-           this.advertisemetName.value = result.data.result.advertisemetName;
+           this.advertisementName.value = result.data.result.advertisementName;
            this.description.value = result.data.result.description;
            this.redirectURL.value = result.data.result.redirectURL;
            this.image.value = result.data.result.image;
@@ -151,9 +151,9 @@ class AdvertisementEdit extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Advertisement Name</Label>
-                      <Input type="text" innerRef={input => (this.advertisemetName = input)}   placeholder="First name" />
+                      <Input type="text" innerRef={input => (this.advertisementName = input)}   placeholder="First name" />
 
-                      {/* <FormFeedback invalid={this.state.validation.advertisemetName.valid === false}>{this.state.validation.advertisemetName.message}</FormFeedback> */}
+                      {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
 
                     </FormGroup>
                     </Col>
@@ -166,7 +166,7 @@ class AdvertisementEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">URL</Label>
-                      <Input type="text" innerRef={input => (this.redirectURL = input)} placeholder="Last name" />
+                      <Input type="url"  pattern="(http|https)://.+" innerRef={input => (this.redirectURL = input)} placeholder="Last name" required/>
                     </FormGroup>
                   </Col>
                 </Row>

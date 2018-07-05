@@ -253,9 +253,9 @@ const validate_request = {
                         return [403, "Package Name is required"];
                     }
                     break;
-                case 'advertisemetName':
-                    if (!request_body['advertisemetName']) {
-                        return [403, "Advertisemet Name is required"];
+                case 'advertisementName':
+                    if (!request_body['advertisementName']) {
+                        return [403, "Advertisement Name is required"];
                     }
                     break;
             }

@@ -27,11 +27,11 @@ class AdvertisementView extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/advertisemet/viewAds/' + this.state.advId).then(result => {
+      axios.get('/advertisement/viewAds/' + this.state.advId).then(result => {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ viewAdv: result.data.result});
-          this.advertisemetName.value = result.data.result.advertisemetName;
+          this.advertisementName.value = result.data.result.advertisementName;
           this.description.value = result.data.result.description;
           this.redirectURL.value = result.data.result.redirectURL;
           //this.image.value = result.data.result.image;
@@ -62,7 +62,7 @@ class AdvertisementView extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="company">Advertisement name</Label>
-                      <Input type="text" value={this.state.viewAdv.advertisemetName} />
+                      <Input type="text" value={this.state.viewAdv.advertisementName} />
                     </FormGroup>
                     </Col>
                     {/* <Col xs="4" sm="12">
@@ -84,7 +84,7 @@ class AdvertisementView extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">URL</Label>
-                  <Input type="text" value={this.state.viewAdv.redirectURL} />
+                  <Input type="url"  pattern="(http|https)://.+" value={this.state.viewAdv.redirectURL} required/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="status">Status</Label>

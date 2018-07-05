@@ -26,7 +26,7 @@ class Advertisements extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/advertisemet/list-ads').then(result => {
+      axios.get('/advertisement/list-ads').then(result => {
         if(result.data.code === 200){
           this.setState({
             advs: result.data.result,
@@ -57,7 +57,7 @@ class Advertisements extends Component {
 	  console.log("STATUS",adv)
     adv.status = (1 - parseInt(adv.status)).toString();
     console.log("CHABGE-STATUS",adv)
-    axios.post('/advertisemet/updateStatus',adv).then(result => {
+    axios.post('/advertisement/updateStatus',adv).then(result => {
       if(result.data.code === 200){
         let advs = this.state.advs;
         let advIndex = advs.findIndex(x => x._id === adv._id);
@@ -76,7 +76,7 @@ class Advertisements extends Component {
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/advertisemet/deleteAds/' + this.state.approveId).then(result => {
+        axios.delete('/advertisement/deleteAds/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
             let advs = this.state.advs;
             let advIndex = advs.findIndex(x => x._id === this.state.approveId);
@@ -115,7 +115,8 @@ class Advertisements extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Name</th>                  
+                    <th>Name</th>  
+                    <th>Description</th>                
                     <th>Logo</th>
                     <th>URL</th>
                     <th>Status</th>

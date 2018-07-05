@@ -5,7 +5,7 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var AdvertisementSchema = new Schema({
-advertisemetName:{ 
+advertisementName:{ 
  type:String,
  trim:true
 },

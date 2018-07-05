@@ -10,8 +10,8 @@ class Advertisement extends Component {
   render() {
     return (
       <tr key={this.props.adv._id}>
-        <td>{this.props.adv.advertisemetName}</td>
-        {/* <td>{this.props.adv.Description}</td> */}
+        <td>{this.props.adv.advertisementName}</td>
+        <td>{this.props.adv.description}</td>
         <td>{this.props.adv.image}</td>
         <td>{this.props.adv.redirectURL}</td>   
         <td>

@@ -11,7 +11,7 @@ const category = require('./routes/category')
 const product = require('./routes/product')
 const subscription = require('./routes/subscription')
 const donation = require('./routes/donation')
-const advertisemet = require('./routes/advertisemet')
+const advertisement = require('./routes/advertisement')
 const page = require("./routes/page")
 const trade = require("./routes/trade")
 const transaction = require("./routes/transaction")
@@ -41,7 +41,7 @@ app.use('/category', category);
 app.use('/product', product);
 app.use('/subscription',subscription);
 app.use('/donation',donation);
-app.use('/advertisemet',advertisemet);
+app.use('/advertisement',advertisement);
 app.use('/page',page);
 app.use('/trade',trade);
 app.use('/transaction',transaction);

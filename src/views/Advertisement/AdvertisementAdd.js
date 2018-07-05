@@ -29,19 +29,31 @@ class AdvertisementAdd extends Component {
 
   constructor(props){
     super(props)
-    this.advertisemetName = React.createRef(),
+    this.advertisementName = React.createRef(),
+    this.description = React.createRef(),
     this.redirectURL = React.createRef(),
     this.image = React.createRef(),
+
     
     this.state = {
       addAdv: {},
       validation:{
-        advertisemetName: {
+        advertisementName: {
           rules: {
             notEmpty: {
               message: 'Advertisement name can\'t be left blank',
               valid: false
 
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        description:{
+          rules: {
+            notEmpty: {
+              message: 'Advertisement description can\'t be left blank',
+              valid: false
             }
           },
           valid: null,
@@ -98,10 +110,11 @@ class AdvertisementAdd extends Component {
     }
     if(formSubmitFlag){
       let addAdv = this.state.addAdv;
-      addAdv.advertisemetName = this.advertisemetName.value;
+      addAdv.advertisementName = this.advertisementName.value;
+      addAdv.description = this.description.value;
       addAdv.redirectURL = this.redirectURL.value;
       addAdv.image = this.image.value;
-      axios.post('/advertisemet/newAds', addAdv).then(result => {
+      axios.post('/advertisement/newAds', addAdv).then(result => {
         if(result.data.code == '200'){
           this.props.history.push('./Advertisements.js');
         }
@@ -122,21 +135,31 @@ class AdvertisementAdd extends Component {
                   
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="advertisemetName">Advertisememt Name</Label>
+                      <Label htmlFor="advertisementName">Advertisememt Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.advertisemetName.valid === false} innerRef={input => (this.advertisemetName = input)} placeholder="Name" />
-                      <FormFeedback invalid={this.state.validation.advertisemetName.valid === false}>{this.state.validation.advertisemetName.message}</FormFeedback>
+                      <Input type="text" invalid={this.state.validation.advertisementName.valid === false} innerRef={input => (this.advertisementName = input)} placeholder="Advertisement Name" />
+                      <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback>
                       <FormText color="muted">Enter name for Advertisement</FormText>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="redirectURL">Redirect URL</Label>
+                      <Label htmlFor="description">Description</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.redirectURL.valid === false} innerRef={input => (this.redirectURL = input)}  placeholder="redirectURL" />
-                      <FormText className="help-block">Enter the redirectURL for the Advertisement</FormText>
+                      <Input type="text" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
+                      <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
+                      <FormText color="muted">Enter description for Advertisement</FormText>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="redirectURL">URL</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="url"  pattern="(http|https)://.+" invalid={this.state.validation.redirectURL.valid === false} innerRef={input => (this.redirectURL = input)}  placeholder="URL" required/>
+                      <FormText className="help-block">Enter the Redirected URL for the Advertisement</FormText>
                       <FormFeedback invalid={this.state.validation.redirectURL.valid === false}>{this.state.validation.redirectURL.message}</FormFeedback>
                     </Col>
                   </FormGroup>
