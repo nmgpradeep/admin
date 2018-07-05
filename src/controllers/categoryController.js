@@ -23,8 +23,7 @@ const create = (req, res) => {
   if (flag) {
     return res.json(flag);
   }
-  Category.findOne({ categoryName: req.body.categoryName }, (err, result) => {
-	
+  Category.findOne({ categoryName: req.body.categoryName }, (err, result) => {	
     if (result) {
 
       return res.send({

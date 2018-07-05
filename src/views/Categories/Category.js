@@ -10,7 +10,6 @@ class Category extends Component {
   render() {
     return (
       <tr key={this.props.category._id}>
-		
         <td>{this.props.category.categoryName}</td>
         <td>{this.props.category.description}</td>
         <td>{this.props.category.parent}</td>       

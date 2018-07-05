@@ -6,6 +6,7 @@ var express = require('express');
 var jwt = require('jsonwebtoken');
 var router = express.Router();
 var User = require("../models/User");
+var Category = require("../models/Category");
 
 router.post('/login', function(req, res) {
   console.log(res.body);
