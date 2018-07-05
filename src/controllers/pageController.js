@@ -138,6 +138,7 @@ const updatePage = (req, res) => {
  *	Description : Function to delete the advertisemet
  **/
 const deletePage = (req, res) => {	
+	console.log("DELETE",req.params.id)
 	Page.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
@@ -159,7 +160,7 @@ const deletePage = (req, res) => {
  *	Description : Function to update the advertisemet status.
  **/
 const updateStatus = (req, res) => { 
-  Page.update({ _id:req.body.id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+  Page.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,

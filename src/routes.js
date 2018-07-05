@@ -244,7 +244,7 @@ const DonationView = Loadable({
   loading: Loading,
 });
 
-//loader for product
+//loader for CMS Pages
 const CmsPages = Loadable({
   loader: () => import('./views/CmsPages/CmsPages'),
   loading: Loading,

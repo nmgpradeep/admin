@@ -4,5 +4,5 @@ import CmsPageAdd from './CmsPageAdd';
 import CmsPageEdit from './CmsPageEdit';
 
 export {
-  CmsPages, CmsPage
+  CmsPages, CmsPage ,CmsPageAdd , CmsPageEdit
 };

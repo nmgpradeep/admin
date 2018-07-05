@@ -59,12 +59,12 @@ class CmsPages extends Component {
     this.toggle();
   }
   changeStatusHandler(cmspage){
-    cmspage.cmsPageStatatus = (1 - parseInt(cmspage.cmsPageStatatus)).toString();
+    cmspage.status = (1 - parseInt(cmspage.status)).toString();
     axios.post('/page/updateStatus', cmspage).then(result => {
       if(result.data.code === 200){
         let cmsPages = this.state.cmsPages;
         let pageIndex = cmsPages.findIndex(x => x._id === cmspage._id);
-        cmsPages[pageIndex].status = cmspage.cmsPageStatatus.toString();
+        cmsPages[pageIndex].status = cmspage.status.toString();
         this.setState({ cmsPages: cmsPages});
       }
     });
@@ -81,11 +81,11 @@ class CmsPages extends Component {
       if(this.state.approve){
         axios.delete('/page/deletePage/' + this.state.approveId).then(result => {
           if(result.data.code === 200){
-            let users = this.state.users;
-            let userIndex = users.findIndex(x => x._id === this.state.approveId);
-            users.splice(userIndex, 1);
+            let cmsPages = this.state.cmsPages;
+            let pageIndex = cmsPages.findIndex(x => x._id === this.state.approveId);
+            cmsPages.splice(pageIndex, 1);
             this.setState({
-              users: users,
+              cmsPages: cmsPages,
               approveId: null,
               approve: false
             });
@@ -114,7 +114,7 @@ class CmsPages extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> CMS Page Listing
-                <Link to="users/add" className="btn btn-success btn-sm pull-right">Add New Page</Link>
+                <Link to="/pages/add" className="btn btn-success btn-sm pull-right">Add New Page</Link>
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">

@@ -34,15 +34,13 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 class CmsPageAdd extends Component {
   constructor(props){
     super(props);
-    this.firstName = React.createRef();
-    this.middleName = React.createRef();
-    this.lastName = React.createRef();
-    this.username = React.createRef();
-    this.password = React.createRef();
-    this.confirmPassword = React.createRef();
-    this.email = React.createRef();
+    this.pageTitle = React.createRef();
+    this.pageHeading = React.createRef();
+    this.description = React.createRef();
+    this.bannerImage = React.createRef();	
+    
     this.state = {
-      addUser: {},
+      newPage: {},
       text: '',
       validation:{
         pageTitle:{
@@ -67,9 +65,11 @@ class CmsPageAdd extends Component {
         }
       }
     };
+    this.handleContentChange = this.handleContentChange.bind(this)
   }
-  handleChange(value) {
+  handleContentChange(value) {	  
     this.setState({ text: value })
+    
   }
   cancelHandler(){
     this.props.history.push("/pages");
@@ -98,10 +98,11 @@ class CmsPageAdd extends Component {
         this.setState({ validation: newPage});
       }
       if(formSubmitFlag){
+		  console.log("state",this.state)
         let newPage = this.state.newPage;
         newPage.pageTitle = this.pageTitle.value;
         newPage.pageHeading = this.pageHeading.value;
-        newPage.description = this.description.value;
+        newPage.description = this.state.text;
         newPage.bannerImage = this.bannerImage.value;        
         axios.post('/page/newPage', newPage).then(result => {
           if(result.data.code === 200){
@@ -127,7 +128,7 @@ class CmsPageAdd extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">Page Title</Label>
+                      <Label htmlFor="pagetitle">Page Title</Label>
                       <Input type="text" invalid={this.state.validation.pageTitle.valid === false} innerRef={input => (this.pageTitle = input)} placeholder="Page Title" />
 
                       <FormFeedback invalid={this.state.validation.pageTitle.valid === false}>{this.state.validation.pageTitle.message}</FormFeedback>
@@ -136,15 +137,15 @@ class CmsPageAdd extends Component {
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="middlename">Page Heading</Label>
+                      <Label htmlFor="pageheading">Page Heading</Label>
                       <Input type="text" innerRef={input => (this.pageHeading = input)} placeholder="Page heading" />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="lastname">Contents</Label>
+                      <Label htmlFor="content">Contents</Label>
                       <ReactQuill  innerRef={input => (this.description = input)}  value={this.state.text}
-                  onChange={(value) => this.handleChange} />
+                   onChange={this.handleContentChange} />
                     </FormGroup>
                   </Col>
                    <Col xs="4" sm="12">					
