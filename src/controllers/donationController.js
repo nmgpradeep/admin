@@ -66,9 +66,7 @@ const donations = (req, res) => {
 		  //~ }
 	  //~ })
 	  
-	  
-	  
-	   var perPage = constant.PER_PAGE_RECORD
+	var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     Donation.find({})
       .skip((perPage * page) - perPage)

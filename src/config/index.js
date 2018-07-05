@@ -17,5 +17,5 @@ module.exports =(()=> {
         console.error('NODE_ENV environment variable not set');
         process.exit(1);
     }  
-    return config;
+     return config;
   })();

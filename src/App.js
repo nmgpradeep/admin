@@ -43,7 +43,6 @@ class App extends Component {
     return (
       <HashRouter>
         <Switch>
-
           <Route exact path="/login" exact name="admin Login Page" component={Login} />
           { /*<Route exact path="/register" name="Register Page" component={Register} /> */}
           <Route exact path="/404" name="Page 404" component={Page404} />

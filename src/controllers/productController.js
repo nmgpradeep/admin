@@ -37,7 +37,7 @@ const create = (req, res) => {
     } else {
       let now = new Date();
 		
-	const user = User.findById(req.body.userId);
+	 const user = User.findById(req.body.userId);
 	  //~ req.body.userId = user;
 	  //~ console.log(req.body); return;
     //~ const category = User.findById(req.body.productCategory);
@@ -165,11 +165,11 @@ const deleteProduct = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
     }
-		return res.json({
+	return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
-            });
+      });
   })
 }
 
