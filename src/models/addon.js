@@ -25,10 +25,6 @@ totalInventoryAllowed:{
 type:String,
 trim:true
 },
-timePeriod:{
-type:String,
-trim:true
-},
 status:{
  type:String,
  trim:true,

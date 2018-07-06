@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { Link } from "react-router-dom";
-import axios from 'axios';
+import React,{ Component }from 'react'
+import axios from 'axios'
 import {
   Badge,
   Button,
@@ -26,228 +25,195 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+class AddonAdd extends Component {
 
-// import PropTypes from 'prop-types';
-class UserAdd extends Component {
   constructor(props){
-    super(props);
-    this.firstName = React.createRef();
-    this.middleName = React.createRef();
-    this.lastName = React.createRef();
-    this.username = React.createRef();
-    this.password = React.createRef();
-    this.confirmPassword = React.createRef();
-    this.email = React.createRef();
+    super(props)
+    this.packageName = React.createRef(),
+    this.description = React.createRef(),
+    this.price = React.createRef(),
+    this.totalTradePermitted = React.createRef(),
+    this.totalInventoryAllowed = React.createRef(),    
     this.state = {
-      addUser: {},
+      addonAdd: {},
       validation:{
-        firstName:{
+        packageName: {
           rules: {
             notEmpty: {
-              message: 'First name field can\'t be left blank',
+              message: 'Package Name can\'t be left blank',
+              valid: false
+
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        description:{
+          rules: {
+            notEmpty: {
+              message: 'Addon description can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        userName:{
+        price: {
           rules: {
             notEmpty: {
-              message: 'Username field can\'t be left blank',
+              message: 'Price can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        password:{
+        totalTradePermitted: {
           rules: {
             notEmpty: {
-              message: 'Password field can\'t be left blank',
-              valid: false
-            },
-            minLength: {
-              length: 6,
-              message: 'Password field must have at least 6 characters long',
+              message: 'Total Trade can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        confirmPassword:{
+        totalInventoryAllowed: {
           rules: {
             notEmpty: {
-              message: 'Confirm password field can\'t be left blank',
-              valid: false
-            },
-            matchWith: {
-              matchWithField: 'password',
-              message: 'Confirm password must be validate with password',
+              message: 'Total Inventory can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        email: {
-          rules: {
-            notEmpty: {
-              message: 'Email field can\'t be left blank',
-              valid: false
-            },
-            emailCheck: {
-              message: 'must be a valid email',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        }
       }
-    };
+    } 
   }
-  cancelHandler(){
-    this.props.history.push("/users");
-  }
+
   submitHandler(e){
-      e.preventDefault();
-      let formSubmitFlag = true;
-      for (let field in this.state.validation) {
-        let lastValidFieldFlag = true;
-        let addUser = this.state.validation;
-        addUser[field].valid = null;
-        for(let fieldCheck in this.state.validation[field].rules){
-          switch(fieldCheck){
-            case 'notEmpty':
-              if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  lastValidFieldFlag = false;
-                  formSubmitFlag = false;
-                  addUser[field].valid = false;
-                  addUser[field].message = addUser[field].rules[fieldCheck].message;
+    e.preventDefault()
+    let formSubmitFlag = true;
+    for (let field in this.state.validation) {
+      let lastValidFieldFlag = true;
+      let addonAdd = this.state.validation;
+      addonAdd[field].valid = null;
+      for(let fieldCheck in this.state.validation[field].rules){
+        switch(fieldCheck){
+          case 'notEmpty':
+            if(lastValidFieldFlag === true && this[field].value.length === 0){
+                lastValidFieldFlag = false;
+                formSubmitFlag = false;
+                addonAdd[field].valid = false;
+                addonAdd[field].message = addonAdd[field].rules[fieldCheck].message;
 
-               }
-              break;
-            case 'emailCheck':
-              if(lastValidFieldFlag === true && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this[field].value)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'minLength':
-              if(lastValidFieldFlag === true && this[field].value.length < parseInt(this.state.validation[field].rules[fieldCheck].length)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'matchWith':
-              if(lastValidFieldFlag === true && this[field].value !== this[this.state.validation[field].rules[fieldCheck].matchWithField].value){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-          }
+             }
+            break;
+          
         }
-        this.setState({ validation: addUser});
       }
-      if(formSubmitFlag){
-        let addUser = this.state.addUser;
-        addUser.firstName = this.firstName.value;
-        addUser.middleName = this.middleName.value;
-        addUser.lastName = this.lastName.value;
-        addUser.userName = this.userName.value;
-        addUser.password = this.password.value;
-        addUser.email = this.email.value;
-        addUser.userType = 2;
-        axios.post('/user/signup', addUser).then(result => {
-          if(result.data.code == '200'){
-            this.props.history.push("/users");
-          }
-        });
-      }
+      this.setState({ validation: addonAdd});
+    }
+    if(formSubmitFlag){
+      let addonAdd = this.state.addonAdd;
+      addonAdd.packageName = this.packageName.value;
+      addonAdd.description = this.description.value;
+      addonAdd.price = this.price.value;
+      addonAdd.totalTradePermitted = this.totalTradePermitted.value;
+      addonAdd.totalInventoryAllowed = this.totalInventoryAllowed.value;
+      axios.post('/subscription/newAddon', addonAdd  ).then(result => {
+        if(result.data.code == '200'){
+          this.props.history.push('./Addon');
+        }
+      })
+    }
   }
 
-  render() {
 
+  render(){
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" sm="12">
-            <Card>
+      <div>
+        <Card>
               <CardHeader>
-                <strong>Add New User</strong>
-                <small></small>
+                <strong>New Addon Form</strong>
               </CardHeader>
               <CardBody>
-              <Form noValidate>
-                <Row>
-                  <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="company">First name</Label>
-                      <Input type="text" invalid={this.state.validation.firstName.valid === false} innerRef={input => (this.firstName = input)} placeholder="First name" />
-
-                      <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
-
-                    </FormGroup>
+                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                  
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="title">Package Name</Label>
                     </Col>
-                    <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="middlename">Middle name</Label>
-                      <Input type="text" innerRef={input => (this.middleName = input)} placeholder="Middle name" />
-                    </FormGroup>
+                    <Col xs="12" md="9">
+                      <Input type="text" invalid={this.state.validation.packageName.valid === false} innerRef={input => (this.packageName = input)} placeholder="Package Name" required/>
+                      <FormFeedback invalid={this.state.validation.packageName.valid === false}>{this.state.validation.packageName.message}</FormFeedback>
+                      
                     </Col>
-                    <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="lastname">Last name</Label>
-                      <Input type="text" innerRef={input => (this.lastName = input)} placeholder="Last name" />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <FormGroup>
-                  <Label htmlFor="username">Username</Label>
-                  <Input type="text" invalid={this.state.validation.userName.valid === false}  innerRef={input => (this.userName = input)} placeholder="Username" />
-                  <FormFeedback invalid={this.state.validation.userName.valid === false}>{this.state.validation.userName.message}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="password">Password</Label>
-                  <Input type="password" invalid={this.state.validation.password.valid === false}  innerRef={input => (this.password = input)} placeholder="Password" />
-                  <FormFeedback invalid={this.state.validation.password.valid === false}>{this.state.validation.password.message}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="conform-password">Confirm Password</Label>
-                  <Input type="password" invalid={this.state.validation.confirmPassword.valid === false}  innerRef={input => (this.confirmPassword = input)} placeholder="Confirm Password" />
-                  <FormFeedback invalid={this.state.validation.confirmPassword.valid === false}>{this.state.validation.confirmPassword.message}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="username">Email</Label>
-                  <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
-                  <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
-                </FormGroup>
-                <Row>
-                  <Col xs="6" className="text-right">
-                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
-                  </Col>
-                  <Col xs="6">
-                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
-                  </Col>
-                </Row>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="description">Description</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="textarea" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" required/>
+                      <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
+                      
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Price</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="number"  invalid={this.state.validation.price.valid === false} innerRef={input => (this.price = input)}  placeholder="Price" required/>
+                      
+                      <FormFeedback invalid={this.state.validation.price.valid === false}>{this.state.validation.price.message}</FormFeedback>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Total Trade Permitted</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="number"  invalid={this.state.validation.totalTradePermitted.valid === false} innerRef={input => (this.totalTradePermitted = input)}  placeholder="Tptal Trade permitted" required/>
+                      
+                      <FormFeedback invalid={this.state.validation.totalTradePermitted.valid === false}>{this.state.validation.totalTradePermitted.message}</FormFeedback>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Total Inventory Allowed</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="number"  invalid={this.state.validation.totalInventoryAllowed.valid === false} innerRef={input => (this.totalInventoryAllowed = input)}  placeholder="Total Inventory Allowed" required/>
+                      
+                      <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="Status">Status</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+					  <option value="1">Active</option>
+					  <option value="0">Inactive</option>					
+                  </select>
+                    </Col>
+                  </FormGroup>                    
                 </Form>
               </CardBody>
+              <CardFooter>
+                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+              </CardFooter>
             </Card>
-          </Col>
-        </Row>
-        </div>
-    );
+        
+      </div>
+    )
   }
+
 }
-// ProjectItem.propTypes = {
-//   project: PropTypes.object
-// };
-export default UserAdd;
+
+export default AddonAdd;

@@ -13,5 +13,6 @@ router.get('/list-addon',subscriptionController.listAddon)
 router.put('/updateAddon',subscriptionController.updateAddon)
 router.get('/viewAddon/:id',subscriptionController.viewAddon)
 router.delete('/deleteAddon/:id',subscriptionController.deleteAddon)
+router.post('/updateStatus',subscriptionController.updateStatus)
 
 module.exports = router;

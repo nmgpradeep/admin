@@ -90,12 +90,12 @@ export default {
         },
         {
           name: 'Addon Packages',
-          url: '/packages',
+          url: '/addon',
           icon: 'icon-pie-chart',
         }, 
         {
           name: 'New Addon Package',
-          url: '/packages/add',
+          url: '/addon/add',
           icon: 'icon-pie-chart',
         },        
       ],

@@ -141,7 +141,7 @@ class Users extends Component {
                 </Table>
                 <nav>
                     <ReactPaginate
-                       initialPage={this.state.currentPage}
+                       initialPage={this.state.currentPage-1}
                        previousLabel={"<<"}
                        previousClassName={"page-item"}
                        previousLinkClassName={"page-link"}
