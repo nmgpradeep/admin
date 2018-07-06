@@ -80,7 +80,7 @@ const pages = (req, res) => {
 **/
 const viewPage = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<advertisemet>>>>',id);  
+	console.log('<<<<<<<<<<<cmsPage>>>>',id);  
 	Page.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -98,7 +98,6 @@ const viewPage = (req, res) => {
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
             });
-
       }
     }
   })
@@ -110,7 +109,9 @@ const viewPage = (req, res) => {
  *	Description : Function to update the advertisemet
  **/
 const updatePage = (req, res) => { 
-  Page.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+	 //console.log('<asdasdfasfdasdfasdfsad>',req);
+     //Page.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+	 Page.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -119,7 +120,7 @@ const updatePage = (req, res) => {
     }else {
       if (!result) {
         res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
+          message: httpResponseMessage.DATA_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
       }else {
@@ -159,14 +160,15 @@ const deletePage = (req, res) => {
  *  Date	: June 25, 2018
  *	Description : Function to update the advertisemet status.
  **/
-const updateStatus = (req, res) => { 
+
+const updateStatus = (req, res) => {
   Page.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
@@ -179,10 +181,9 @@ const updateStatus = (req, res) => {
              result: result
             });
       }
-    }    
+    }
   })
 }
-
 
 module.exports = {
   create,

@@ -56,7 +56,7 @@ class Advertisements extends Component {
   changeStatusHandler(adv){
 	  console.log("STATUS",adv)
     adv.status = (1 - parseInt(adv.status)).toString();
-    console.log("CHABGE-STATUS",adv)
+    console.log("CHANGE-STATUS",adv)
     axios.post('/advertisement/updateStatus',adv).then(result => {
       if(result.data.code === 200){
         let advs = this.state.advs;

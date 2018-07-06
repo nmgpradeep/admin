@@ -6,12 +6,10 @@ import Moment from 'moment';
 class CmsPage extends Component {
   constructor(props){
     super(props);
-    this.props.cmsPage.status = 1;
   }
   render() {
     return (
       <tr key={this.props.cmsPage._id}>
-        <td>1</td>
         <td>{this.props.cmsPage.pageTitle}</td>
         <td>{this.props.cmsPage.pageHeading}</td>
         <td>{this.props.cmsPage.description}</td>      
@@ -20,11 +18,9 @@ class CmsPage extends Component {
             {(this.props.cmsPage.status === '1')?'Active':'Inctive'}
           </Badge>
         </td>
-        <td>
-         
+        <td>         
          <Link to={'/pages/edit/' + this.props.cmsPage._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>         
           <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteCmsPage.bind(this, this.props.cmsPage._id)} ></i>&nbsp;
-         
         </td>
       </tr>
     );

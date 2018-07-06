@@ -2,39 +2,32 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import Donation from './Donation';
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
-const port=5001;
-axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port;
+import Donation from './Donation'
+
 
 class Donations extends Component {
   constructor(props){
     super(props);
     this.state = {
-      Donations: [],
+      donations: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
       donationsCount: 0
     };
-    //console.log('THIS OBJ', this);
-    if(this.props.match.params.page !== undefined){
+    console.log('THIS OBJ', this);
+    if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
     this.toggle = this.toggle.bind(this);
-   // this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
+    this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/donation/donations').then(result => {
-		  console.log("DATA",result.data);
         if(result.data.code === 200){
-			console.log("DATA200",result.data);
           this.setState({
             donations: result.data.result,
             currentPage: result.data.current,
@@ -43,64 +36,67 @@ class Donations extends Component {
             donationsCount:result.data.total
           });
         }
-        console.log("RES",this.state.donations);
+        console.log(this.state.donations);
       })
       .catch((error) => {
-        if(error.status === 401) {
+		  console.log('error', error)
+        if(error.response.code === 401) {
           this.props.history.push("/login");
         }
       });
 
   }
-  //~ productDeleteHandler (id){
-    //~ this.setState({
-      //~ approve: false,
-      //~ approveId: id
-    //~ });
-    //~ this.toggle();
-  //~ }
-  //~ changeStatusHandler(product){
-    //~ product.productStatus = (1 - parseInt(product.productStatus)).toString();
-    //~ axios.post('/products/changeStatus', product).then(result => {
-      //~ if(result.data.code === 200){
-        //~ let products = this.state.products;
-        //~ let productIndex = products.findIndex(x => x._id === product._id);
-        //~ products[productIndex].productStatus = product.productStatus.toString();
-        //~ this.setState({ products: products});
-      //~ }
-    //~ });
-  //~ }
+  donationDeleteHandler (id){
+    this.setState({
+      approve: false,
+      approveId: id
+    });
+    this.toggle();
+  }
+  changeStatusHandler(donation){
+	  console.log("STATUS",donation)
+    donation.productStatus = (1 - parseInt(donation.productStatus)).toString();
+    console.log("CHANGE-STATUS",donation)
+    axios.post('/donation/updateStatus',donation).then(result => {
+      if(result.data.code === 200){
+        let donations = this.state.donations;
+        let donationIndex = donations.findIndex(x => x._id === donation._id);
+        donations[donationIndex].productStatus = donation.productStatus.toString();
+        this.setState({ donations: donations});
+      }
+    });
+  }
   toggle() {
     this.setState({
       modal: !this.state.modal
     });
   }
-  //~ approveDeleteHandler(){
-    //~ this.setState({
-      //~ approve: true
-    //~ }, function(){
-      //~ if(this.state.approve){
-        //~ axios.delete('/products/deleteProduct/' + this.state.approveId).then(result => {
-          //~ if(result.data.code === '200'){
-            //~ let products = this.state.products;
-            //~ let productIndex = products.findIndex(x => x._id === this.state.approveId);
-            //~ products.splice(productIndex, 1);
-            //~ this.setState({
-              //~ products: products,
-              //~ approveId: null,
-              //~ approve: false
-            //~ });
-            //~ this.toggle();
-          //~ }
-        //~ });
-      //~ }
-    //~ });
-  //~ }
+  approveDeleteHandler(){
+    this.setState({
+      approve: true
+    }, function(){
+      if(this.state.approve){
+        axios.delete('/donation/deleteDonation/' + this.state.approveId).then(result => {
+          if(result.data.code == '200'){
+            let donations = this.state.donations;
+            let donationIndex = donations.findIndex(x => x._id === this.state.approveId);
+            donations.splice(donationIndex, 1);
+            this.setState({
+              donations: donations,
+              approveId: null,
+              approve: false
+            });
+            this.toggle();
+          }
+        });
+      }
+    });
+  }
   render() {
    let donations;
      if(this.state.donations){
        let donationList = this.state.donations;
-       donations = donationList.map(donation => <Donation key={donation._id}   donation={donation}/>);
+       donations = donationList.map(donation => <Donation key={donation._id} onDeleteDonation={this.donationDeleteHandler.bind(this)} changeStatus={(donation) => this.changeStatusHandler(donation)}   donation={donation}/>);
      }
 
      let paginationItems =[];
@@ -112,15 +108,15 @@ class Donations extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Donations Listing
-                <Link to="donations/add" className="btn btn-success btn-sm pull-right">Add Donation</Link>
+                <i className="fa fa-align-justify"></i> Donation Listing
+                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Product Name</th>  
+                    <th>Description</th>                
                     <th>Category</th>
                     <th>User</th>
                     <th>Size</th>
@@ -143,7 +139,7 @@ class Donations extends Component {
                     {paginationItems}
 
                     <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
+                    <PaginationLink tag="button">1</PaginationLink>
                     </PaginationItem>
                     <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
                     <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
@@ -155,7 +151,16 @@ class Donations extends Component {
             </Card>
           </Col>
         </Row>
-        
+        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} external={externalCloseBtn}>
+          <ModalHeader>Modal title</ModalHeader>
+          <ModalBody>
+            Are you sure to delete?
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.approveDeleteHandler}>Yes</Button>{' '}
+            <Button color="secondary" onClick={this.toggle}>No</Button>
+          </ModalFooter>
+        </Modal>
       </div>
 
     );

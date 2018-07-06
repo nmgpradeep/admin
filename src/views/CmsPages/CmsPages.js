@@ -30,7 +30,7 @@ class CmsPages extends Component {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/page/pages/:page').then(result => {
-		   console.log("before STATE",this.state.cmsPages);
+		console.log("before STATE",this.state.cmsPages);
         if(result.data.code === 200){
           this.setState({
             cmsPages: result.data.result,
@@ -58,8 +58,9 @@ class CmsPages extends Component {
     });
     this.toggle();
   }
-  changeStatusHandler(cmspage){
-    cmspage.status = (1 - parseInt(cmspage.status)).toString();
+  
+   changeStatusHandler(cmspage){
+    cmspage.status = (1 - parseInt(cmspage.status)).toString();    
     axios.post('/page/updateStatus', cmspage).then(result => {
       if(result.data.code === 200){
         let cmsPages = this.state.cmsPages;
@@ -106,7 +107,7 @@ class CmsPages extends Component {
 
      let paginationItems =[];
 
-     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
+    const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -120,7 +121,6 @@ class CmsPages extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Id</th>
                     <th>Title</th>
                     <th>Heading</th>
                     <th>Content</th>                  
