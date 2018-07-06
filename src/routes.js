@@ -6,12 +6,10 @@ import DefaultLayout from './containers/DefaultLayout';
 function Loading() {
   return <div>Loading...</div>;
 }
-
 const Breadcrumbs = Loadable({
   loader: () => import('./views/Base/Breadcrumbs'),
   loading: Loading,
 });
-
 const Cards = Loadable({
   loader: () => import('./views/Base/Cards'),
   loading: Loading,
@@ -258,7 +256,6 @@ const CmsPageEdit = Loadable({
   loading: Loading,
 });
 
-
 // loader for advertisement by saurabh
 const Advertisements = Loadable({
   loader: () => import('./views/Advertisement/Advertisements'),
@@ -275,8 +272,16 @@ const AdvertisementEdit = Loadable({
 const AdvertisementView = Loadable({
   loader: () => import('./views/Advertisement/AdvertisementView'),
   loading: Loading,
-})
-
+});
+// Loading transaction component
+const Transactions = Loadable({
+  loader: () => import('./views/Transactions/Transactions'),
+  loading: Loading,
+});
+const TransactionView = Loadable({
+  loader: () => import('./views/Transactions/TransactionView'),
+  loading: Loading,
+});
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -306,7 +311,8 @@ const routes = [
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
-
+  { path: '/transactions/view/:id', name: 'View Transactions', component: TransactionView },
+  { path: '/transactions', exact:true, name: 'Transactions', component: Transactions },
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },

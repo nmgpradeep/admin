@@ -35,7 +35,7 @@ class Transactions extends Component {
             transactionsCount:result.data.total
           });
         }
-        console.log(this.state.users);
+        console.log(this.state.transactions);
       })
       .catch((error) => {
 		  console.log('error', error)
@@ -52,17 +52,23 @@ class Transactions extends Component {
     });
     this.toggle();
   }
-  //~ changeStatusHandler(transaction){
-    //~ transaction.status = (1 - parseInt(transaction.status)).toString();
-    //~ axios.post('/user/changeStatus', transaction).then(result => {
-      //~ if(result.data.code === 200){
-        //~ let transactions = this.state.transactions;
-        //~ let transactionIndex = transactions.findIndex(x => x._id === transaction._id);
-        //~ transactions[transactionIndex].transactionStatus = transaction.transactionStatus.toString();
-        //~ this.setState({ transactions: transactions});
-      //~ }
-    //~ });
-  //~ }
+ 
+  changeStatusHandler(transaction){
+	  
+    transaction.status = (1 - parseInt(transaction.status)).toString();
+    
+    //console.log('aaaaaaaaaaaaaaaaaaa',transaction);
+    axios.post('/transaction/changeStatus', transaction).then(result => {
+      if(result.data.code === 200){
+        let transactions = this.state.transactions;
+        let transactionIndex = transactions.findIndex(x => x._id === transaction._id);
+        transactions[transactionIndex].status = transaction.status.toString();
+        this.setState({ transactions: transactions});
+      }
+    });
+  }
+ 
+ 
   toggle() {
     this.setState({
       modal: !this.state.modal
@@ -74,7 +80,8 @@ class Transactions extends Component {
    let transactions;
      if(this.state.transactions){
        let listTransaction = this.state.transactions;
-       transactions = listTransaction.map(transaction => <Transaction key={transaction._id}  transaction={transaction}/>);
+       transactions = listTransaction.map(transaction => <Transaction key={transaction._id}  changeStatus={(transaction) => this.changeStatusHandler(transaction)} transaction={transaction}/>);
+       
      }
      let paginationItems =[];
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
@@ -85,7 +92,7 @@ class Transactions extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Transaction Listing
-                <Link to="users/add" className="btn btn-success btn-sm pull-right">Add Transaction</Link>
+              
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">

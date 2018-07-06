@@ -111,7 +111,6 @@ class Users extends Component {
        let userList = this.state.users;
        users = userList.map(user => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user}/>);
      }
-
      let paginationItems =[];
 
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;

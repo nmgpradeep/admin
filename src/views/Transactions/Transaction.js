@@ -16,9 +16,10 @@ class Transaction extends Component {
         <td>{this.props.transaction.transactionDate}</td>
         <td>{this.props.transaction.transactionAmount}</td>
         <td>
-          <Badge  color= {(this.props.transaction.transactionStatus === '1')?'success':'danger'}>
-            {(this.props.transaction.transactionStatus === '1')?'Active':'Inctive'}
+           <Badge onClick={this.props.changeStatus.bind(this, this.props.transaction)} color= {(this.props.transaction.status === '1')?'success':'danger'}>
+            {(this.props.transaction.status === '1')?'Active':'Inctive'}
           </Badge>
+         
         </td>
         <td>
           <Link to={'/transactions/view/' + this.props.transaction._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>

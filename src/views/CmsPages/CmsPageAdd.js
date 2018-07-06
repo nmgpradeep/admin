@@ -98,7 +98,7 @@ class CmsPageAdd extends Component {
         this.setState({ validation: newPage});
       }
       if(formSubmitFlag){
-		  console.log("state",this.state)
+		console.log("state",this.state)
         let newPage = this.state.newPage;
         newPage.pageTitle = this.pageTitle.value;
         newPage.pageHeading = this.pageHeading.value;

@@ -83,7 +83,7 @@ class UserEdit extends Component {
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
-      for (let field in this.state.validation) {
+      for(let field in this.state.validation) {
         let lastValidFieldFlag = true;
         let addUser = this.state.validation;
         addUser[field].valid = null;

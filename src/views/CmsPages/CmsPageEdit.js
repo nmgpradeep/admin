@@ -27,48 +27,37 @@ import {
   Row,
 } from 'reactstrap';
 
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
+
 // import PropTypes from 'prop-types';
 class CmsPageEdit extends Component {
   constructor(props){
     super(props);
-    this.firstName = React.createRef();
-    this.middleName = React.createRef();
-    this.lastName = React.createRef();
-    this.username = React.createRef();
-    this.email = React.createRef();
-    let userId = this.props.match.params.id;
+    this.pageTitle = React.createRef();
+    this.pageHeading = React.createRef();
+    this.description = React.createRef();
+    this.bannerImage = React.createRef();    
+    let pageId = this.props.match.params.id;
+    
     this.state = {
-      editUser: {},
-      userId: userId,
+      editPage: {},
+      pageId: pageId,
       validation:{
-        firstName:{
+        pageTitle:{
           rules: {
             notEmpty: {
-              message: 'First name field can\'t be left blank',
+              message: 'Page Title field can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        userName:{
+        pageHeading:{
           rules: {
             notEmpty: {
-              message: 'Username field can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        email: {
-          rules: {
-            notEmpty: {
-              message: 'Email field can\'t be left blank',
-              valid: false
-            },
-            emailCheck: {
-              message: 'must be a valid email',
+              message: 'Page Heading field can\'t be left blank',
               valid: false
             }
           },
@@ -77,93 +66,67 @@ class CmsPageEdit extends Component {
         }
       }
     };
-  }
+    //this.handleContentChange = this.handleContentChange.bind(this)
+  }  
+  
   cancelHandler(){
-    this.props.history.push("/users");
+    this.props.history.push("/pages");
   }
-  submitHandler(e){
+   
+   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
       for (let field in this.state.validation) {
         let lastValidFieldFlag = true;
-        let addUser = this.state.validation;
-        addUser[field].valid = null;
+        let editPage = this.state.validation;
+        editPage[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
               if(lastValidFieldFlag === true && this[field].value.length === 0){
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
-                  addUser[field].valid = false;
-                  addUser[field].message = addUser[field].rules[fieldCheck].message;
-
+                  editPage[field].valid = false;
+                  editPage[field].message = editPage[field].rules[fieldCheck].message;
                }
               break;
-            case 'emailCheck':
-              if(lastValidFieldFlag === true && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this[field].value)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'minLength':
-              if(lastValidFieldFlag === true && this[field].value.length < parseInt(this.state.validation[field].rules[fieldCheck].length)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'matchWith':
-              if(lastValidFieldFlag === true && this[field].value !== this[this.state.validation[field].rules[fieldCheck].matchWithField].value){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-          }
+               }
         }
-        this.setState({ validation: addUser});
+        this.setState({ validation: editPage});
       }
-
+      
       if(formSubmitFlag){
-        let editUser = this.state.editUser;
-        editUser.firstName = this.firstName.value;
-        editUser.middleName = this.middleName.value;
-        editUser.lastName = this.lastName.value;
-        editUser.userName = this.userName.value;
-        editUser.email = this.email.value;
-        axios.post('/user/updateUser', editUser).then(result => {
-          if(result.data.code == '200'){
+        let editPage = this.state.editPage;
+        editPage.pageTitle = this.pageTitle.value;
+        editPage.pageHeading = this.pageHeading.value;
+        
+        axios.post('/page/updatePage', editPage).then(result => {
+			//console.log(result);
+         if(result.data.status == '200'){
             this.props.history.push("/users");
           }
         });
       }
-  }
+    } 
 
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/viewUser/' + this.state.userId).then(result => {
+   componentDidMount() {   
+      axios.get('/page/viewPage/' + this.state.pageId).then(result => {		  
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          this.setState({ editUser: result.data.result});
-          this.firstName.value = result.data.result.firstName;
-          this.middleName.value = result.data.result.middleName;
-          this.lastName.value = result.data.result.lastName;
-          this.userName.value = result.data.result.userName;
-          this.email.value = result.data.result.email;
+          this.pageTitle.value = result.data.result.pageTitle;
+          this.pageHeading.value = result.data.result.pageHeading;
+          this.bannerImage.value = result.data.result.bannerImage;         
+          this.description.value = result.data.result.description;  
+          this.setState({ text: result.data.result.description })
         }
+       
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
-
   }
+  
   render() {
     return (
       <div className="animated fadeIn">
@@ -171,7 +134,7 @@ class CmsPageEdit extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
+                <strong>Page</strong>
                 <small> Edit</small>
               </CardHeader>
               <CardBody>
@@ -179,36 +142,25 @@ class CmsPageEdit extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">First name</Label>
-                      <Input type="text" invalid={this.state.validation.firstName.valid === false} innerRef={input => (this.firstName = input)} placeholder="First name" />
-
-                      <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
-
+                      <Label htmlFor="company">Page Title</Label>
+                      <Input type="text" innerRef={input => (this.pageTitle = input)}  placeholder="Page Title" />
+                     
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="middlename">Middle name</Label>
-                      <Input type="text" innerRef={input => (this.middleName = input)} placeholder="Middle name" />
+                      <Label htmlFor="middlename">Page Heading</Label>
+                      <Input type="text" innerRef={input => (this.pageHeading = input)}  placeholder="Page Heading" />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="lastname">Last name</Label>
-                      <Input type="text" innerRef={input => (this.lastName = input)} placeholder="Last name" />
-                    </FormGroup>
                   </Col>
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="username">Username</Label>
-                  <Input type="text" invalid={this.state.validation.userName.valid === false}  innerRef={input => (this.userName = input)} placeholder="Username" />
-                  <FormFeedback invalid={this.state.validation.userName.valid === false}>{this.state.validation.userName.message}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="username">Email</Label>
-                  <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
-                  <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
-                </FormGroup>
+                  <Label htmlFor="content">Contents</Label>
+                    <ReactQuill  innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleChange}
+                   />
+                </FormGroup> 
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
@@ -217,16 +169,13 @@ class CmsPageEdit extends Component {
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
                 </Row>
-                </Form>
+               </Form>
               </CardBody>
             </Card>
           </Col>
         </Row>
-        </div>
+       </div>
     );
   }
 }
-// ProjectItem.propTypes = {
-//   project: PropTypes.object
-// };
 export default CmsPageEdit;
