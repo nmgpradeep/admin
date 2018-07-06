@@ -124,7 +124,7 @@ const viewDonation = (req, res) => {
  *	Description : Function to update the donation
  **/
 const updateDonation = (req, res) => { 
-  Donation.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+  Donation.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,

@@ -140,7 +140,7 @@ class AdvertisementAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.advertisementName.valid === false} innerRef={input => (this.advertisementName = input)} placeholder="Advertisement Name" />
                       <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback>
-                      <FormText color="muted">Enter name for Advertisement</FormText>
+                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -150,7 +150,7 @@ class AdvertisementAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
                       <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
-                      <FormText color="muted">Enter description for Advertisement</FormText>
+                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -159,7 +159,7 @@ class AdvertisementAdd extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="url"  pattern="(http|https)://.+" invalid={this.state.validation.redirectURL.valid === false} innerRef={input => (this.redirectURL = input)}  placeholder="URL" required/>
-                      <FormText className="help-block">Enter the Redirected URL for the Advertisement</FormText>
+                      
                       <FormFeedback invalid={this.state.validation.redirectURL.valid === false}>{this.state.validation.redirectURL.message}</FormFeedback>
                     </Col>
                   </FormGroup>
