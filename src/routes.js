@@ -275,6 +275,7 @@ const TransactionView = Loadable({
   loading: Loading,
 });
 
+
 //loader for donations by saurabh
 const Donations = Loadable({
   loader: () => import('./views/Donation/Donations'),
@@ -291,7 +292,29 @@ const DonationView = Loadable({
 const DonationEdit = Loadable({
   loader: () => import('./views/Donation/DonationEdit'),
   loading: Loading,
+
+})
+
+//loader for Testimonials by Saurabh
+const Testimonials = Loadable({
+  loader: () => import('./views/Testimonial/Testimonials'),
+  loading: Loading,
 });
+const TestimonialAdd = Loadable({
+  loader: () => import('./views/Testimonial/TestimonialAdd'),
+  loading: Loading,
+});
+const TestimonialView = Loadable({
+  loader: () => import('./views/Testimonial/TestimonialView'),
+  loading: Loading,
+});
+const TestimonialEdit = Loadable({
+  loader: () => import('./views/Testimonial/TestimonialEdit'),
+  loading: Loading,
+})
+
+
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -326,9 +349,17 @@ const routes = [
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
+
   { path: '/subscriptions', exact:true, name: 'Subscriptions', component: Subscriptions },
+
   { path: '/transactions/view/:id', name: 'View Transactions', component: TransactionView },
   { path: '/transactions', exact:true, name: 'Transactions', component: Transactions },
+
+
+  { path: '/testimonial/add', exact: true, name: 'Add Testimonial', component: TestimonialAdd},
+  { path: '/testimonial/edit/:id', name: 'Edit Testimonial', component: TestimonialEdit},
+  { path: '/testimonial/view/:id', name: 'View Testimonial', component: TestimonialView},
+  { path: '/testimonial', name: 'Testimonial', component: Testimonials},
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },

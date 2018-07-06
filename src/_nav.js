@@ -147,6 +147,23 @@ export default {
       ],
     },
     {
+      name: 'Manage Testimonials',
+      url: '/testimonial',
+      icon: 'icon-cursor',
+      children: [
+        {
+          name: 'Testimonial',
+          url: '/testimonial',
+          icon: 'icon-cursor',
+        },
+        {
+          name: 'New Testimonial',
+          url: '/testimonial/add',
+          icon: 'icon-cursor',
+        },       
+      ],
+    },
+    {
       title: true,
       name: 'Extras',
     },

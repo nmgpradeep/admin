@@ -20,6 +20,7 @@ import {
 
 import { Advertisements, Advertisement, AdvertisementEdit} from './Advertisement'
 import { Donations, Donation, DonationEdit} from './Donation'
+import { Testimonials, Testimonial, TestimonialEdit} from './Testimonial'
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
@@ -30,6 +31,9 @@ import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
 
 export {
+  Testimonial,
+  Testimonials,
+  TestimonialEdit,
   DonationEdit,
   Donations,
   Donations,
