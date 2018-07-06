@@ -258,8 +258,13 @@ const AdvertisementEdit = Loadable({
 const AdvertisementView = Loadable({
   loader: () => import('./views/Advertisement/AdvertisementView'),
   loading: Loading,
-
 });
+//loding Subscription component
+const Subscriptions = Loadable({
+	loader : () => import('./views/Subscriptions/Subscriptions'),
+	loading: Loading,
+});
+
 // Loading transaction component
 const Transactions = Loadable({
   loader: () => import('./views/Transactions/Transactions'),
@@ -287,6 +292,7 @@ const DonationView = Loadable({
 const DonationEdit = Loadable({
   loader: () => import('./views/Donation/DonationEdit'),
   loading: Loading,
+
 })
 
 //loader for Testimonials by Saurabh
@@ -306,6 +312,7 @@ const TestimonialEdit = Loadable({
   loader: () => import('./views/Testimonial/TestimonialEdit'),
   loading: Loading,
 })
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -342,14 +349,18 @@ const routes = [
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
- 
+
+  { path: '/subscriptions', exact:true, name: 'Subscriptions', component: Subscriptions },
+
   { path: '/transactions/view/:id', name: 'View Transactions', component: TransactionView },
   { path: '/transactions', exact:true, name: 'Transactions', component: Transactions },
+
 
   { path: '/testimonial/add', exact: true, name: 'Add Testimonial', component: TestimonialAdd},
   { path: '/testimonial/edit/:id', name: 'Edit Testimonial', component: TestimonialEdit},
   { path: '/testimonial/view/:id', name: 'View Testimonial', component: TestimonialView},
   { path: '/testimonial', name: 'Testimonial', component: Testimonials},
+
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
   //~ { path: '/theme/typography', name: 'Typography', component: Typography },
