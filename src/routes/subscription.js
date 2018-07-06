@@ -5,6 +5,7 @@ router.get('/subscriptions/:page',subscriptionController.subscriptions)
 router.get('/list-subscriptions',subscriptionController.subscriptions)
 router.get('/viewSubscription/:id',subscriptionController.viewSubscription)
 router.put('/updateSubscription',subscriptionController.updateSubscription)
+router.post('/changeStatus',subscriptionController.changeStatus)
 router.delete('/deleteSubscription/:id',subscriptionController.deleteSubscription)
 
 /// Routes for addOn pack
