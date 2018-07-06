@@ -64,17 +64,17 @@ class Subscriptions extends Component {
     });
     this.toggle();
   }
-  //~ changeStatusHandler(user){
-    //~ user.userStatus = (1 - parseInt(user.userStatus)).toString();
-    //~ axios.post('/user/changeStatus', user).then(result => {
-      //~ if(result.data.code === 200){
-        //~ let users = this.state.users;
-        //~ let userIndex = users.findIndex(x => x._id === user._id);
-        //~ users[userIndex].userStatus = user.userStatus.toString();
-        //~ this.setState({ users: users});
-      //~ }
-    //~ });
-  //~ }
+  changeStatusHandler(subscription){
+    subscription.status = (1 - parseInt(subscription.status)).toString();
+    axios.post('/subscription/changeStatus', subscription).then(result => {
+      if(result.data.code === 200){
+        let subscriptions = this.state.subscriptions;
+        let subscriptionIndex = subscriptions.findIndex(x => x._id === subscription._id);
+        subscriptions[subscriptionIndex].status = subscription.status.toString();
+        this.setState({ subscriptions: subscriptions});
+      }
+    });
+  }
   toggle() {
     this.setState({
       modal: !this.state.modal
@@ -106,7 +106,7 @@ class Subscriptions extends Component {
    let subscriptions;
      if(this.state.subscriptions){
        let subscriptionList = this.state.subscriptions;
-       subscriptions = subscriptionList.map(subscription => <Subscription key={subscription._id} subscription={subscription}/>);
+       subscriptions = subscriptionList.map(subscription => <Subscription key={subscription._id} changeStatus={(subscription) => this.changeStatusHandler(subscription)} subscription={subscription}/>);
      }
 
      let paginationItems =[];

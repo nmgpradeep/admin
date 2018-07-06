@@ -179,6 +179,36 @@ const deleteSubscription = (req, res) => {
   })
 }
 
+/**
+ * Auther : Rajiv Kumar
+ * Date: July 6, 2018
+ * Function : Change the satatus of subscription plan as active and inactive
+ * 
+ **/
+const changeStatus = (req,res) => {
+	Subscription.update({ _id : req.body._id }, {"$set" :{"status":req.body.status}}, {new : true}, (err, result) => {
+		if(err){
+			 return res.json({
+				code : httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			});
+		}else{
+			if(!result){
+					return res.json({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.ITEM_NOT_FOUND
+					});
+			}else{
+				return res.json({
+					 code:httpResponseCode.EVERYTHING_IS_OK,
+					 message:httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+					 result:result
+					});				
+			}			
+		}				
+	})	
+}
+ 
 
 /** Auther	: Rajiv kumar
  *  Date	: June 22, 2018
@@ -365,6 +395,7 @@ module.exports = {
   viewSubscription,
   updateSubscription,
   deleteSubscription,
+  changeStatus,
   newAddon,
   listAddon,
   updateAddon,

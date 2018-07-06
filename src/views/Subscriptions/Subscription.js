@@ -18,7 +18,7 @@ class Subscription extends Component {
         <td>{this.props.subscription.timePeriod}</td>       
         <td>{Moment(this.props.subscription.createdAt).format('d MMM YYYY')}</td>
         <td>
-          <Badge color= {(this.props.subscription.userStatus === '1')?'success':'danger'}>
+          <Badge onClick={this.props.changeStatus.bind(this,this.props.subscription)} color= {(this.props.subscription.status === '1')?'success':'danger'}>
             {(this.props.subscription.status === '1')?'Active':'Inctive'}
           </Badge>
         </td>
