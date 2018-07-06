@@ -4,6 +4,7 @@ const Addon = require('../models/addon')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
+const constant = require('../../common/constant')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 
@@ -64,19 +65,38 @@ const create = (req, res) => {
  */
 /// function to list all Subscription plan
 const subscriptions = (req, res) => { 
-  Subscription.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+  //~ Subscription.find({},(err,result)=>{
+		//~ if (!result) {
+			//~ res.json({
+			  //~ message: httpResponseMessage.ITEM_NOT_FOUND,
+			  //~ code: httpResponseMessage.BAD_REQUEST
+			//~ });
+		  //~ }else {				
+			//~ return res.json({
+				  //~ code: httpResponseCode.EVERYTHING_IS_OK,				
+				  //~ result: result
+				//~ });
+		  //~ }
+	  //~ })
+	var perPage = constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    Subscription.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, subscription) {
+          Subscription.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: subscription,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 

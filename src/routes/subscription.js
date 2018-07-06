@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const subscriptionController= require('../controllers/subscriptionController')
 router.post('/create',subscriptionController.create)
+router.get('/subscriptions/:page',subscriptionController.subscriptions)
 router.get('/list-subscriptions',subscriptionController.subscriptions)
 router.get('/viewSubscription/:id',subscriptionController.viewSubscription)
 router.put('/updateSubscription',subscriptionController.updateSubscription)

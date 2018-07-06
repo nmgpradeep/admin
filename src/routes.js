@@ -275,7 +275,12 @@ const AdvertisementEdit = Loadable({
 const AdvertisementView = Loadable({
   loader: () => import('./views/Advertisement/AdvertisementView'),
   loading: Loading,
-})
+});
+//loding Subscription component
+const Subscriptions = Loadable({
+	loader : () => import('./views/Subscriptions/Subscriptions'),
+	loading: Loading,
+});
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -306,6 +311,8 @@ const routes = [
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
+  
+  { path: '/subscriptions', exact:true, name: 'Subscriptions', component: Subscriptions },
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
