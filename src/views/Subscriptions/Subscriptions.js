@@ -119,7 +119,7 @@ class Subscriptions extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Subscription Listing
-                <Link to="users/add" className="btn btn-success btn-sm pull-right">Add Subscription</Link>
+                <Link to="subscriptions/add" className="btn btn-success btn-sm pull-right">Add Subscription</Link>
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">

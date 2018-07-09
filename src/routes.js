@@ -265,6 +265,10 @@ const Subscriptions = Loadable({
 	loading: Loading,
 });
 
+const SubscriptionAdd = Loadable({
+	loader : () => import('./views/Subscriptions/SubscriptionAdd'),
+	loading : Loading,
+});
 // Loading transaction component
 const Transactions = Loadable({
   loader: () => import('./views/Transactions/Transactions'),
@@ -349,7 +353,7 @@ const routes = [
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
-
+  { path: '/subscriptions/add', exact: true, name: 'Add Subscription', component : SubscriptionAdd },
   { path: '/subscriptions', exact:true, name: 'Subscriptions', component: Subscriptions },
 
   { path: '/transactions/view/:id', name: 'View Transactions', component: TransactionView },
