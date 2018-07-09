@@ -23,9 +23,9 @@ class Subscription extends Component {
           </Badge>
         </td>
         <td>
-          <Link to={'/subscription/edit/' + this.props.subscription._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
-          <Link to={'/subscription/view/' + this.props.subscription._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
-          <i className="fa fa-trash fa-md" ></i>&nbsp;
+          <Link to={'/subscriptions/edit/' + this.props.subscription._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
+          <Link to={'/subscriptions/view/' + this.props.subscription._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
+          <i className="fa fa-trash fa-md" onClick={this.props.onDeleteSubscription.bind(this, this.props.subscription._id)}></i>&nbsp;
         </td>
       </tr>
     );

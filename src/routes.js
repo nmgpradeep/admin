@@ -259,6 +259,8 @@ const AdvertisementView = Loadable({
   loader: () => import('./views/Advertisement/AdvertisementView'),
   loading: Loading,
 });
+
+
 //loding Subscription component
 const Subscriptions = Loadable({
 	loader : () => import('./views/Subscriptions/Subscriptions'),
@@ -269,6 +271,18 @@ const SubscriptionAdd = Loadable({
 	loader : () => import('./views/Subscriptions/SubscriptionAdd'),
 	loading : Loading,
 });
+
+const SubscriptionEdit = Loadable({
+  loader: () => import('./views/Subscriptions/SubscriptionEdit'),
+  loading: Loading,
+});
+
+const SubscriptionView = Loadable({
+  loader: () => import('./views/Subscriptions/SubscriptionView'),
+  loading: Loading,
+});
+
+
 // Loading transaction component
 const Transactions = Loadable({
   loader: () => import('./views/Transactions/Transactions'),
@@ -367,8 +381,12 @@ const routes = [
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
   { path: '/advertisement/view/:id', name: 'View Advertisement', component: AdvertisementView },
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
+  
   { path: '/subscriptions/add', exact: true, name: 'Add Subscription', component : SubscriptionAdd },
+  { path: '/subscriptions/edit/:id', name:'Edit Subscription', component: SubscriptionEdit},
+  { path: '/subscriptions/view/:id', name: 'View Subscription', component: SubscriptionView},   
   { path: '/subscriptions', exact:true, name: 'Subscriptions', component: Subscriptions },
+  
   { path: '/addon/add', exact: true, name: 'Add Addon', component: AddonAdd},
   { path: '/addon/edit/:id', name: 'Edit Addon', component: AddonEdit},
   { path: '/addon', name: 'Addons', component: Addons},

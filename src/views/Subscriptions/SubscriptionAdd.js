@@ -28,7 +28,7 @@ import {
 } from 'reactstrap';
 
 // import PropTypes from 'prop-types';
-class UserAdd extends Component {
+class SubscriptionAdd extends Component {
   constructor(props){
     super(props);
     this.subscriptionName = React.createRef();
@@ -36,10 +36,10 @@ class UserAdd extends Component {
     this.price = React.createRef();
     this.totalTradePermitted = React.createRef();
     this.totalInventoryAllowed = React.createRef();
-    this.status = React.createRef();
+    this.timePeriod = React.createRef();
     
     this.state = {
-      addUser: {},
+      addSubscription: {},
       validation:{
         subscriptionName:{
           rules: {
@@ -86,43 +86,43 @@ class UserAdd extends Component {
     };
   }
   cancelHandler(){
-    this.props.history.push("/users");
+    this.props.history.push("/subscriptions");
   }
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
       for (let field in this.state.validation) {
         let lastValidFieldFlag = true;
-        let addUser = this.state.validation;
-        addUser[field].valid = null;
+        let addSubscription = this.state.validation;
+        addSubscription[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
               if(lastValidFieldFlag === true && this[field].value.length === 0){
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
-                  addUser[field].valid = false;
-                  addUser[field].message = addUser[field].rules[fieldCheck].message;
+                  addSubscription[field].valid = false;
+                  addSubscription[field].message = addSubscription[field].rules[fieldCheck].message;
 
                }
               break;
            
           }
         }
-        this.setState({ validation: addUser});
+        this.setState({ validation: addSubscription});
       }
       if(formSubmitFlag){
-        let addUser = this.state.addUser;
-        addUser.subscriptionName = this.subscriptionName.value;
-        addUser.description = this.description.value;
-        addUser.price = this.price.value;
-        addUser.totalTradePermitted = this.totalTradePermitted.value;
-        addUser.totalInventoryAllowed = this.totalInventoryAllowed.value;
-        addUser.status = this.status.value;
-        addUser.userType = 2;
-        axios.post('/user/signup', addUser).then(result => {
+        let addSubscription = this.state.addSubscription;
+        addSubscription.subscriptionName = this.subscriptionName.value;
+        addSubscription.description = this.description.value;
+        addSubscription.price = this.price.value;
+        addSubscription.totalTradePermitted = this.totalTradePermitted.value;
+        addSubscription.totalInventoryAllowed = this.totalInventoryAllowed.value;
+        addSubscription.timePeriod = this.timePeriod.value;
+        addSubscription.userType = 2;
+        axios.post('/subscription/newSubscription', addSubscription).then(result => {
           if(result.data.code == '200'){
-            this.props.history.push("/users");
+            this.props.history.push("/subscriptions");
           }
         });
       }
@@ -174,6 +174,11 @@ class UserAdd extends Component {
                   <Input type="number" invalid={this.state.validation.totalInventoryAllowed.valid === false}  innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed" />
                   <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback>
                 </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="tIA">Time Period</Label>
+                  <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Total Inventory Allowed" />
+                  
+                </FormGroup>
                 <FormGroup>                    
                     <Label htmlFor="Status">Status</Label>                    
                     <select innerRef={input => (this.status = input)} id="status" class="form-control" >
@@ -202,4 +207,4 @@ class UserAdd extends Component {
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
 // };
-export default UserAdd;
+export default SubscriptionAdd;

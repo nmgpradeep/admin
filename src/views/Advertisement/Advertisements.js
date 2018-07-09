@@ -27,7 +27,7 @@ class Advertisements extends Component {
   }
 
   loadCommentsFromServer() {
-    axios.get('/advertisement/list-ads').then(result => {
+    axios.get('/advertisement/advertisements/' + this.state.currentPage).then(result => {
       if(result.data.code === 200){
         this.setState({
           advs: result.data.result,

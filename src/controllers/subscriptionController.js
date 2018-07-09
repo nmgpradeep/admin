@@ -79,7 +79,7 @@ const subscriptions = (req, res) => {
 		  //~ }
 	  //~ })
 	var perPage = constant.PER_PAGE_RECORD
-    var page = req.params.page || 1;
+  var page = req.params.page || 1;
     Subscription.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
@@ -136,7 +136,7 @@ const viewSubscription = (req, res) => {
  *	Description : Function to update the Subscription plan details.
  **/
 const updateSubscription = (req, res) => { 
-  Subscription.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+  Subscription.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -265,19 +265,39 @@ const newAddon = (req, res) => {
  */
 /// function to list all listAddon plan
 const listAddon = (req, res) => { 
-  Addon.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+  // Addon.find({},(err,result)=>{
+	// 	if (!result) {
+	// 		res.json({
+	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
+	// 		  code: httpResponseMessage.BAD_REQUEST
+	// 		});
+	// 	  }else {				
+	// 		return res.json({
+	// 			  code: httpResponseCode.EVERYTHING_IS_OK,				
+	// 			  result: result
+	// 			});
+	// 	  }
+  //   })
+  
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+    Addon.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, addon) {
+          Addon.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: addon,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 
