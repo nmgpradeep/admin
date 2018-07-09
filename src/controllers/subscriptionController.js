@@ -4,6 +4,7 @@ const Addon = require('../models/addon')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
+const constant = require('../../common/constant')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 
@@ -64,19 +65,38 @@ const create = (req, res) => {
  */
 /// function to list all Subscription plan
 const subscriptions = (req, res) => { 
-  Subscription.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+  //~ Subscription.find({},(err,result)=>{
+		//~ if (!result) {
+			//~ res.json({
+			  //~ message: httpResponseMessage.ITEM_NOT_FOUND,
+			  //~ code: httpResponseMessage.BAD_REQUEST
+			//~ });
+		  //~ }else {				
+			//~ return res.json({
+				  //~ code: httpResponseCode.EVERYTHING_IS_OK,				
+				  //~ result: result
+				//~ });
+		  //~ }
+	  //~ })
+	var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+    Subscription.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, subscription) {
+          Subscription.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: subscription,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 
@@ -116,7 +136,7 @@ const viewSubscription = (req, res) => {
  *	Description : Function to update the Subscription plan details.
  **/
 const updateSubscription = (req, res) => { 
-  Subscription.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+  Subscription.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -159,6 +179,36 @@ const deleteSubscription = (req, res) => {
   })
 }
 
+/**
+ * Auther : Rajiv Kumar
+ * Date: July 6, 2018
+ * Function : Change the satatus of subscription plan as active and inactive
+ * 
+ **/
+const changeStatus = (req,res) => {
+	Subscription.update({ _id : req.body._id }, {"$set" :{"status":req.body.status}}, {new : true}, (err, result) => {
+		if(err){
+			 return res.json({
+				code : httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			});
+		}else{
+			if(!result){
+					return res.json({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.ITEM_NOT_FOUND
+					});
+			}else{
+				return res.json({
+					 code:httpResponseCode.EVERYTHING_IS_OK,
+					 message:httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+					 result:result
+					});				
+			}			
+		}				
+	})	
+}
+ 
 
 /** Auther	: Rajiv kumar
  *  Date	: June 22, 2018
@@ -215,19 +265,39 @@ const newAddon = (req, res) => {
  */
 /// function to list all listAddon plan
 const listAddon = (req, res) => { 
-  Addon.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+  // Addon.find({},(err,result)=>{
+	// 	if (!result) {
+	// 		res.json({
+	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
+	// 		  code: httpResponseMessage.BAD_REQUEST
+	// 		});
+	// 	  }else {				
+	// 		return res.json({
+	// 			  code: httpResponseCode.EVERYTHING_IS_OK,				
+	// 			  result: result
+	// 			});
+	// 	  }
+  //   })
+  
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+    Addon.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, addon) {
+          Addon.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: addon,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 
@@ -267,7 +337,7 @@ const viewAddon = (req, res) => {
  *	Description : Function to update the updateAddon plan.
  **/
 const updateAddon = (req, res) => { 
-  Addon.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+  Addon.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -310,15 +380,46 @@ const deleteAddon = (req, res) => {
   })
 }
 
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
+ **/
+//Function to update the Addon status.
+const updateStatus = (req, res) => { 
+	console.log("REQ0",req.body)
+  Addon.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+             result: result
+            });
+      }
+    }    
+  })
+}
+
 module.exports = {
   create,
   subscriptions,
   viewSubscription,
   updateSubscription,
   deleteSubscription,
+  changeStatus,
   newAddon,
   listAddon,
   updateAddon,
   viewAddon,
-  deleteAddon
+  deleteAddon,
+  updateStatus
 }

@@ -90,12 +90,12 @@ export default {
         },
         {
           name: 'Addon Packages',
-          url: '/packages',
+          url: '/addon',
           icon: 'icon-pie-chart',
         }, 
         {
           name: 'New Addon Package',
-          url: '/packages/add',
+          url: '/addon/add',
           icon: 'icon-pie-chart',
         },        
       ],
@@ -142,6 +142,23 @@ export default {
         {
           name: 'New Ads',
           url: '/advertisement/add',
+          icon: 'icon-cursor',
+        },       
+      ],
+    },
+    {
+      name: 'Manage Testimonials',
+      url: '/testimonial',
+      icon: 'icon-cursor',
+      children: [
+        {
+          name: 'Testimonial',
+          url: '/testimonial',
+          icon: 'icon-cursor',
+        },
+        {
+          name: 'New Testimonial',
+          url: '/testimonial/add',
           icon: 'icon-cursor',
         },       
       ],

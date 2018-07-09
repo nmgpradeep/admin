@@ -1,5 +1,5 @@
 const bodyParser = require('body-parser')
-const Advertisement = require('../models/advertisement')
+const Testimonial = require('../models/testimonial')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -7,27 +7,27 @@ const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 const constant = require('../../common/constant')
 
-/** Auther	: Rajiv kumar
- *  Date	: June 25, 2018
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
  **/
-///function to save new advertisement in the list
-const create = (req, res) => {
+///function to save new Testimonial in the list
+const createTestimonials = (req, res) => {
   console.log('<<<<<<<<<<<', JSON.stringify(req.body))
-  if (!req.body.advertisementName) {
+  if (!req.body.title) {
     return res.send({
       code: httpResponseCode.BAD_REQUEST,
       message: httpResponseMessage.REQUIRED_DATA
     })
   }
   const data = req.body;
-  const flag = validation.validate_all_request(data, ['advertisementName']);
+  const flag = validation.validate_all_request(data, ['title']);
   if (flag) {
     return res.json(flag);
   }
       let now = new Date();
     
-      Advertisement.create(req.body, (err, result) => {
-		  console.log('RES-advertisement',err, result);
+      Testimonial.create(req.body, (err, result) => {
+		  console.log('RES-title',err, result);
         if (err) {
           return res.send({
 			errr : err,
@@ -47,12 +47,12 @@ const create = (req, res) => {
     
 }
 
-/** Auther	: Rajiv kumar
- *  Date	: June 25, 2018
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
  */
-/// function to list all advertisement
-const advertisements = (req, res) => { 
-  // Advertisement.find({},(err,result)=>{
+/// function to list all Testimonials
+const listTestimonials = (req, res) => { 
+  // Testimonial.find({},(err,result)=>{
 	// 	if (!result) {
 	// 		res.json({
 	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
@@ -66,19 +66,18 @@ const advertisements = (req, res) => {
 	// 	  }
   //   })
     
-
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    Advertisement.find({})
+    Testimonial.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
-      .exec(function(err, advertisement) {
-          Advertisement.count().exec(function(err, count) {
+      .exec(function(err, testimonial) {
+          Testimonial.count().exec(function(err, count) {
             if (err) return next(err)
               return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: advertisement,
+                  result: testimonial ,
                   total : count,
                   current: page,
                   perPage: perPage,
@@ -86,18 +85,17 @@ const advertisements = (req, res) => {
               });
             })
         });
-// }
 }
 
 
-/** Auther	: Rajiv kumar
- *  Date	: June 25, 2018
- *	Description : Function to view the advertisement details
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
 **/
-const viewadvertisement = (req, res) => {
+//Function to view the testimonials details
+const viewTestimonials = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<advertisement>>>>',id);  
-	Advertisement.findById({_id:id}, (err, result) => {
+	console.log('<<<<<<<<<<<testimonials>>>>',id);  
+	Testimonial.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -121,12 +119,12 @@ const viewadvertisement = (req, res) => {
 }
 
 
-/** Auther	: Rajiv kumar
- *  Date	: June 25, 2018
- *	Description : Function to update the advertisement
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
  **/
-const updateadvertisement = (req, res) => { 
-  Advertisement.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+//Function to update the testimonial
+const updateTestimonials = (req, res) => { 
+  Testimonial.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -149,12 +147,12 @@ const updateadvertisement = (req, res) => {
   })
 }
 
-/** Auther	: Rajiv kumar
- *  Date	: June 25, 2018
- *	Description : Function to delete the advertisement
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
  **/
-const deleteadvertisement = (req, res) => {	
-	Advertisement.findByIdAndRemove(req.params.id, (err,result) => {
+//Function to delete the testimonials
+const deleteTestimonials = (req, res) => {	
+	Testimonial.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
           message: httpResponseMessage.ITEM_NOT_FOUND,
@@ -170,13 +168,13 @@ const deleteadvertisement = (req, res) => {
 }
 
 
-/** Auther	: Rajiv Kumar
- *  Date	: June 25, 2018
- *	Description : Function to update the advertisement status.
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
  **/
+//Function to update the testimonials status.
 const updateStatus = (req, res) => { 
 	console.log("REQ0",req.body)
-  Advertisement.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+  Testimonial.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -201,10 +199,10 @@ const updateStatus = (req, res) => {
 
 
 module.exports = {
-  create,
-  advertisements,
-  viewadvertisement,
-  updateadvertisement,
-  deleteadvertisement,
+  createTestimonials,
+  listTestimonials,
+  viewTestimonials,
+  updateTestimonials,
+  deleteTestimonials,
   updateStatus 
 }

@@ -2,24 +2,20 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import User from './User';
 import ReactPaginate from 'react-paginate';
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
+import Testimonial from './Testimonial'
 
-class Users extends Component {
+
+class Testimonials extends Component {
   constructor(props){
     super(props);
     this.state = {
-      users: [],
+      testimonials: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
-      usersCount: 0,
-      offset: 0
+      testimonialsCount: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -28,54 +24,58 @@ class Users extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
-  
-  loadCommentsFromServer() {
-    axios.get('/user/users/' + this.state.currentPage).then(result => {
-      if(result.data.code ===200){
+
+  loadCommentsFromServer(){
+    axios.get('/testimonial/Testimonials/' + this.state.currentPage).then(result => {
+      if(result.data.code === 200){
         this.setState({
-          users: result.data.result,
+          testimonials: result.data.result,
           currentPage: result.data.current,
           PerPage: result.data.perPage,
           totalPages: result.data.pages,
-          total_count:result.data.total
+          testimonialsCount:result.data.total
         });
-        }
-      console.log(this.state.users);
+      }
+      console.log(this.state.testimonials);
     })
     .catch((error) => {
-      console.log('error', error)
-       if(error.code === 401) {
-         this.props.history.push("/login");
+    console.log('error', error)
+      if(error.response.code === 401) {
+        this.props.history.push("/login");
       }
     });
+
   }
+
   handlePageClick = (data) => {
-      let currentPage = data.selected + 1;
-      this.setState({currentPage: currentPage}, () => {
-        this.loadCommentsFromServer();
-      });
-  };
+    let currentPage = data.selected + 1;
+    this.setState({currentPage: currentPage}, () => {
+      this.loadCommentsFromServer();
+    });
+};
+  
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       this.loadCommentsFromServer();
-
   }
-  userDeleteHandler (id){
+  testimonialDeleteHandler (id){
     this.setState({
       approve: false,
       approveId: id
     });
     this.toggle();
   }
-  changeStatusHandler(user){
-    user.userStatus = (1 - parseInt(user.userStatus)).toString();
-    axios.post('/user/changeStatus', user).then(result => {
+  changeStatusHandler(testimonial){
+	  console.log("STATUS",testimonial)
+    testimonial.status = (1 - parseInt(testimonial.status)).toString();
+    console.log("CHANGE-STATUS",testimonial)
+    axios.post('/testimonial/updateStatus',testimonial).then(result => {
       if(result.data.code === 200){
-        let users = this.state.users;
-        let userIndex = users.findIndex(x => x._id === user._id);
-        users[userIndex].userStatus = user.userStatus.toString();
-        this.setState({ users: users});
+        let testimonials = this.state.testimonials;
+        let testimonialIndex = testimonials.findIndex(x => x._id === testimonial._id);
+        testimonials[testimonialIndex].status = testimonial.status.toString();
+        this.setState({ testimonials: testimonials });
       }
     });
   }
@@ -89,13 +89,13 @@ class Users extends Component {
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/user/deleteUser/' + this.state.approveId).then(result => {
+        axios.delete('/testimonial/deleteTestimonial/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
-            let users = this.state.users;
-            let userIndex = users.findIndex(x => x._id === this.state.approveId);
-            users.splice(userIndex, 1);
+            let testimonials = this.state.testimonials;
+            let testimonialIndex = testimonials.findIndex(x => x._id === this.state.approveId);
+            testimonials.splice(testimonialIndex, 1);
             this.setState({
-              users: users,
+              testimonials: testimonials,
               approveId: null,
               approve: false
             });
@@ -105,13 +105,13 @@ class Users extends Component {
       }
     });
   }
-
   render() {
-   let users;
-     if(this.state.users){
-       let userList = this.state.users;
-       users = userList.map(user => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user}/>);
+   let testimonials;
+     if(this.state.testimonials){
+       let testimonialList = this.state.testimonials;
+       testimonials = testimonialList.map(testimonial => <Testimonial key={testimonial._id} onDeleteTestimonial={this.testimonialDeleteHandler.bind(this)} changeStatus={(testimonial) => this.changeStatusHandler(testimonial)}   testimonial={testimonial}/>);
      }
+
      let paginationItems =[];
 
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
@@ -121,23 +121,22 @@ class Users extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Users Listing
-                <Link to="users/add" className="btn btn-success btn-sm pull-right">Add User</Link>
+                <i className="fa fa-align-justify"></i> Testimonial Listing
+                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Date registered</th>
+                    <th>Title</th>  
+                    <th>Description</th>                
+                    <th>Author</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {users}
+                  {testimonials}
                   </tbody>
                 </Table>
                 <nav>
@@ -181,4 +180,4 @@ class Users extends Component {
   }
 }
 
-export default Users;
+export default Testimonials;
