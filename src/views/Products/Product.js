@@ -9,8 +9,8 @@ class Product extends Component {
   }
   render() {
     return (
-      <tr key={this.props.product._id}>
-		
+    
+      <tr key={this.props.product._id}>		
         <td>{this.props.product.productName}</td>
         <td>{this.props.product.description}</td>
         <td>{this.props.product.productCategory}</td>  
@@ -25,8 +25,8 @@ class Product extends Component {
           </Badge>
         </td>
         <td>
-          <Link to={'/product/edit/' + this.props.product._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
-          <Link to={'/product/view/' + this.props.product._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
+          <Link to={'/products/edit/' + this.props.product._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
+          <Link to={'/products/view/' + this.props.product._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
           <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteProduct.bind(this, this.props.product._id)} ></i>&nbsp;
         </td>
       </tr>

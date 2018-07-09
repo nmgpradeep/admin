@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import Category from './Category';
+import User from './User';
+//import Category from './User';
 import {
   Badge,
   Button,
@@ -35,8 +38,12 @@ class ProductAdd extends Component {
     this.parent = React.createRef();
     this.status = React.createRef();
     this.state = {
-      addProduct: {},
-      validation:{
+       addProduct: {},
+       Categories: [],
+       Users: [],
+       categoryValue: '',
+       Users: [],
+       validation:{
         productName:{
           rules: {
             notEmpty: {
@@ -49,7 +56,13 @@ class ProductAdd extends Component {
         }
       }
     };
+    this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
   }
+  
+  categoryhandleContentChange(value) {			
+    this.setState({categoryValue:value })    
+  }
+  
   cancelHandler(){
     this.props.history.push("/products");
   }
@@ -79,14 +92,15 @@ class ProductAdd extends Component {
         let addProduct = this.state.addProduct;
         addProduct.productName = this.productName.value;
         addProduct.description = this.description.value;
-        addProduct.productCategory = this.category.value;
+        //addProduct.productCategory = this.category.value;
         addProduct.size = this.size.value;
         addProduct.color = this.color.value;
-        addProduct.brand = this.brand.value;
-        addProduct.age = this.age.value;
-        addProduct.userId = this.description.value;
-        addProduct.productCategory = this.category.value;
-        addProduct.status = this.status.value;
+        addProduct.brand = this.brand.value;       
+        addProduct.productAge = this.productAge.value;
+        addProduct.userId = '5b236b4ad73fe224efedae86';
+        addProduct.productCategory = '5b3ca9c23d43f138959e3224';       
+        //console.log('<<<MMMMMMMMMMMMMMm>',addProduct);
+        
         axios.post('/product/create', addProduct).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/products");
@@ -94,9 +108,52 @@ class ProductAdd extends Component {
         });
       }
   }
-
+  
+   //~ categoryhandleContentChange(value) {	
+	  //~ alert('asdf');
+	  //~ console.log('<<<<<<<<<<<<<<<<<<<<<<<content value',value);    
+      //~ this.setState({ categoryValue: value });
+  //~ }
+  
+  componentDidMount() {
+    //if(localStorage.getItem('jwtToken') != null)
+      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+      axios.get('/category/categories').then(result => {
+        if(result.data.code == '200'){
+          this.setState({
+            categories: result.data.result,            
+          });
+        }
+        console.log(this.state.categories);
+      })
+      axios.get('/user/users/1' ).then(result => {
+	  console.log('<<<<<<<<<<<<<<<<<<<<usersssss>',result);
+      if(result.data.code ===200){
+        this.setState({
+          users: result.data.result,         
+        });
+        }
+      console.log(this.state.users);
+    })
+      .catch((error) => {
+        if(error.status === 401) {
+          this.props.history.push("/login");
+        }
+      });
+  }
+  
   render() {
-
+	   let categories,users;
+       if(this.state.categories){
+          let categoryList = this.state.categories;
+          categories = categoryList.map(category => <Category key={category._id}  category={category}/>);
+       }
+       if(this.state.users){
+          let userList = this.state.users;
+          users = userList.map(user => <User key={user._id}  user={user}/>);
+       }
+	  
+	  
     return (
       <div className="animated fadeIn">
         <Row>
@@ -104,6 +161,7 @@ class ProductAdd extends Component {
             <Card>
               <CardHeader>
                 <strong>Add Product</strong>
+                 <Button onClick={()=>this.cancelHandler()} color="primary" className="btn btn-success btn-sm pull-right">Back</Button>
               </CardHeader>
               <CardBody>
               <Form noValidate>
@@ -112,9 +170,7 @@ class ProductAdd extends Component {
                     <FormGroup>
                       <Label htmlFor="company">Name</Label>
                       <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.productName = input)} placeholder="Product Name" />
-
                       <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback>
-
                     </FormGroup>
                     </Col>
                 </Row>
@@ -125,20 +181,14 @@ class ProductAdd extends Component {
 
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                   <select innerRef={input => (this.parent = input)} id="select" class="form-control" >
-					  <option value="0">Please select</option>
-					  <option value="1">Samsung</option>
-					  <option value="2">Television</option>
-					  <option value="3">Nokia</option>
-                  </select>
+                   <select innerRef={input => (this.category = input)} id="select"  class="form-control"  onChange={this.categoryhandleContentChange}>	                   
+                    {categories}
+                    </select>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="user">User</Label>
                    <select innerRef={input => (this.user = input)} id="select" class="form-control" >
-					  <option value="0">Please select</option>
-					  <option value="1">JJ</option>
-					  <option value="2">Dekwano</option>
-					  <option value="3">Paul</option>
+					 {users}
                   </select>
                 </FormGroup>
                  <FormGroup>
@@ -153,17 +203,9 @@ class ProductAdd extends Component {
                   <Label htmlFor="brand">Brand</Label>
                   <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
                 </FormGroup>
-                   <FormGroup>
+                <FormGroup>
                   <Label htmlFor="age">Age</Label>
-                  <Input type="text" innerRef={input => (this.age = input)} placeholder="Age" />
-                </FormGroup>
-
-                 <FormGroup>
-                  <Label htmlFor="status" >Status</Label>
-                  <select innerRef={input => (this.status = input)} id="status" class="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>
-                  </select>
+                  <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
                 </FormGroup>
 
                 <Row>

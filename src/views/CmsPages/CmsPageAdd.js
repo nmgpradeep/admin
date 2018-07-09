@@ -91,8 +91,7 @@ class CmsPageAdd extends Component {
                   newPage[field].message = newPage[field].rules[fieldCheck].message;
 
                }
-              break;
-           
+              break;           
           }
         }
         this.setState({ validation: newPage});

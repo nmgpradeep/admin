@@ -80,7 +80,7 @@ const pages = (req, res) => {
 **/
 const viewPage = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<cmsPage>>>>',id);  
+	//console.log('<<<<<<<<<<<cmsPage>>>>',id);  
 	Page.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -109,6 +109,8 @@ const viewPage = (req, res) => {
  *	Description : Function to update the advertisemet
  **/
 const updatePage = (req, res) => { 
+	//const id = req.params.id;
+	console.log('RESILTSSSSSSSSSSSSSSSS',req.body);
 	 //console.log('<asdasdfasfdasdfasdfsad>',req);
      //Page.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
 	 Page.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
@@ -118,6 +120,7 @@ const updatePage = (req, res) => {
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
     }else {
+		//console.log('RESILTSSSSSSSSSSSSSSSS',result);
       if (!result) {
         res.json({
           message: httpResponseMessage.DATA_NOT_FOUND,
@@ -162,6 +165,7 @@ const deletePage = (req, res) => {
  **/
 
 const updateStatus = (req, res) => {
+	
   Page.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({

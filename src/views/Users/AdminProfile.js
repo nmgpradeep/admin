@@ -35,10 +35,10 @@ class UserEdit extends Component {
     this.lastName = React.createRef();
     this.username = React.createRef();
     this.email = React.createRef();
-    let userId = this.props.match.params.id;
+    let adminId = '1'; //userType
     this.state = {
       editUser: {},
-      userId: userId,
+      adminId: adminId,
       validation:{
         firstName:{
           rules: {
@@ -135,7 +135,7 @@ class UserEdit extends Component {
         editUser.userName = this.userName.value;
         editUser.email = this.email.value;
         console.log('<user id>',editUser);
-        axios.post('/user/updateUser', editUser).then(result => {
+        axios.post('/user/updateAdmin', editUser).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
           }
@@ -146,7 +146,8 @@ class UserEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/viewUser/' + this.state.userId).then(result => {
+      axios.get('/user/viewAdmin/' + this.state.adminId).then(result => {
+		  
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ editUser: result.data.result});
@@ -158,7 +159,7 @@ class UserEdit extends Component {
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });

@@ -179,6 +179,10 @@ const UserEdit = Loadable({
   loader: () => import('./views/Users/UserEdit'),
   loading: Loading,
 });
+const AdminProfile = Loadable({
+  loader: () => import('./views/Users/AdminProfile'),
+  loading: Loading,
+});
 const UserAdd = Loadable({
   loader: () => import('./views/Users/UserAdd'),
   loading: Loading,
@@ -258,7 +262,7 @@ const AdvertisementEdit = Loadable({
 const AdvertisementView = Loadable({
   loader: () => import('./views/Advertisement/AdvertisementView'),
   loading: Loading,
-<<<<<<< HEAD
+
 });
 // Loading transaction component
 const Transactions = Loadable({
@@ -269,9 +273,6 @@ const TransactionView = Loadable({
   loader: () => import('./views/Transactions/TransactionView'),
   loading: Loading,
 });
-=======
-})
-
 //loader for donations by saurabh
 const Donations = Loadable({
   loader: () => import('./views/Donation/Donations'),
@@ -289,9 +290,6 @@ const DonationEdit = Loadable({
   loader: () => import('./views/Donation/DonationEdit'),
   loading: Loading,
 })
-
-
->>>>>>> f14ff4bc8ceb1e7d6dea05ae330826977af14ca8
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -299,14 +297,13 @@ const routes = [
   
   { path: '/users/add', exact: true,name: 'Add User', component: UserAdd },
   { path: '/users/edit/:id',name: 'Edit User', component: UserEdit },
-  { path: '/users/view/:id', name: 'View User', component: UserView },
-  { path: '/users', name: 'Users', component: Users },
-  
+  //{ path: '/profile',name: 'Update Profile', component: AdminProfile },
+  { path: '/users/view/:id', name: 'View User', component: UserView },  
+  { path: '/users', name: 'Users', component: Users },  
   { path: '/categories/add', exact: true,name: 'Add Category', component: CategoryAdd },
   { path: '/categories/edit/:id', name: 'Edit Category', component: CategoryEdit },
   { path: '/categories/view/:id', name: 'View Category', component: CategoryView },
-  { path: '/categories', name: 'Categories', component: Categories },
-  
+  { path: '/categories', name: 'Categories', component: Categories },  
   { path: '/products/add', exact: true,name: 'Add Product', component: ProductAdd },
   { path: '/products/edit/:id',name: 'Edit Product', component: ProductEdit },
   { path: '/products/view/:id', name: 'View Product', component: ProductView },

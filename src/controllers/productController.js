@@ -7,6 +7,7 @@ const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
+const constant  = require('../../common/constant')
 
 
 /** Auther	: Rajiv kumar
@@ -27,7 +28,6 @@ const create = (req, res) => {
     return res.json(flag);
   }
   Product.findOne({ productName: req.body.productName,productCategory:req.body.productCategory }, (err, result) => {
-	
     if (result) {
 
       return res.send({
@@ -37,10 +37,10 @@ const create = (req, res) => {
     } else {
       let now = new Date();
 		
-	 const user = User.findById(req.body.userId);
+	 const product = Product.findById(req.body.productId);
 	  //~ req.body.userId = user;
 	  //~ console.log(req.body); return;
-    //~ const category = User.findById(req.body.productCategory);
+      //~ const category = User.findById(req.body.productCategory);
 	  //~ req.body.productCategory = category;
 	  
       Product.create(req.body, (err, result) => {
@@ -58,7 +58,6 @@ const create = (req, res) => {
             message: httpResponseMessage.SUCCESSFULLY_DONE,
             result: result
           })
-
         }
       })
     }
@@ -69,28 +68,56 @@ const create = (req, res) => {
  *  Date	: June 18, 2018
  */
 /// function to list all products
-const products = (req, res) => { 
-	const count = 0;
-	const page = 0;
-	const perPage = 0;
-  Product.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				 code: httpResponseCode.EVERYTHING_IS_OK,
-				 message: httpResponseMessage.LISTED_SUCCESSFULLY,
-				 result: result,
-				 total : count,
-                 current: page,
-                 perPage: perPage,
-                 pages: 0
-				});
-		  }
-	  })
+const allProducts = (req, res) => {
+	console.log('asdf');
+    var perPage = 1;//constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    Product.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, products) {
+		 // console.log('<product liiiiiiiiiiiii>',products);
+          Product.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: products,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
+    }
+
+/** Auther	: KS
+ *  Date	: JULY 9, 2018
+ *	Description : Function to update the user status.
+ **/
+const changeStatus = (req, res) => {
+  Product.update({ _id:req.body._id },  { "$set": { "productStatus": req.body.productStatus } }, { new:true }, (err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+             result: result
+          });
+      }
+    }
+  })
 }
 
 
@@ -129,17 +156,17 @@ const viewProduct = (req, res) => {
  *  Date	: June 21, 2018
  *	Description : Function to update the Product details.
  **/
-const updateProduct = (req, res) => { 
-  Product.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+const updateProduct = (req, res) => { 	
+  Product.findOneAndUpdate({ _id:req.body._id}, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
+          message: httpResponseMessage.PRODUCT_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
       }else {
@@ -147,7 +174,7 @@ const updateProduct = (req, res) => {
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
-            });
+        });
       }
     }    
   })
@@ -158,6 +185,7 @@ const updateProduct = (req, res) => {
  *	Description : Function to delete the Product
  **/
 const deleteProduct = (req, res) => {	
+	//console.log('<result>',req.params.id);
 	Product.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
@@ -176,8 +204,9 @@ const deleteProduct = (req, res) => {
 
 module.exports = {
   create,
-  products,
+  allProducts,
   viewProduct,
   updateProduct,
-  deleteProduct  
+  deleteProduct,
+  changeStatus  
 }

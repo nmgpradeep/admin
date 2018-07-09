@@ -31,6 +31,7 @@ class UserView extends Component {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ viewUser: result.data.result});
+          
         }
       })
       .catch((error) => {

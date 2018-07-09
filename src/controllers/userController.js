@@ -78,10 +78,8 @@ const signup = (req, res) => {
 							pass: constant.SMTP_PASSWORD // generated ethereal password
 						}
 					});
-
 					host=req.get('host');
 					link="http://"+req.get('host')+"/user/verifyEmail/"+result._id;
-
 					// setup email data with unicode symbols
 					let mailOptions = {
 						from: constant.SMTP_FROM_EMAIL, // sender address
@@ -103,8 +101,6 @@ const signup = (req, res) => {
 						// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 					});
-
-
 
           return res.send({
             code: httpResponseCode.EVERYTHING_IS_OK,
@@ -131,7 +127,6 @@ const login = (req, res) => {
     })
   }
   const data = req.body;
-
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if (flag) {
     return res.json(flag);
@@ -290,6 +285,36 @@ const viewUser = (req, res) => {
     }
   })
 }
+/** Auther	: karnika sharma
+ *  Date	: July 6, 2018
+ *	Description : Function to view the available user details
+ **/
+const viewAdmin = (req, res) => {
+	const id = req.params;
+	console.log('<<<<<<<<<<<',req.params);
+	User.findOne({userType:id}, (err, result) => {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.SUCCESSFULLY_DONE,
+             result: result
+            });
+
+      }
+    }
+  })
+}
 
 
 /** Auther	: Rajiv umar
@@ -297,6 +322,34 @@ const viewUser = (req, res) => {
  *	Description : Function to update the user details.
  **/
 const updateUser = (req, res) => {
+  User.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.SUCCESSFULLY_DONE,
+             result: result
+            });
+
+      }
+    }
+  })
+}
+/** Auther	: Karnika sharma
+ *  Date	: July 6, 2018
+ *	Description : Function to update the admin profile.
+ **/
+const updateAdmin = (req, res) => {
   User.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({

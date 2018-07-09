@@ -1666,7 +1666,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 a.btn.disabled,
 fieldset:disabled a.btn {
   pointer-events: none; }
-
+.right{ float:right;}
 .btn-primary {
   color: #fff;
   background-color: #20a8d8;

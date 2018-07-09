@@ -3,7 +3,7 @@ const pageController = require('../controllers/pageController')
 router.post('/newPage',pageController.create)
 router.get('/pages/:page',pageController.pages)
 router.get('/viewPage/:id',pageController.viewPage)
-router.post('/updatePage',pageController.updatePage)
+router.put('/updatePage',pageController.updatePage)
 router.delete('/deletePage/:id',pageController.deletePage)
 router.post('/updateStatus',pageController.updateStatus)
 

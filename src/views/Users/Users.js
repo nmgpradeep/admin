@@ -28,6 +28,7 @@ class Users extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
+  
   loadCommentsFromServer() {
     axios.get('/user/users/' + this.state.currentPage).then(result => {
       if(result.data.code ===200){
@@ -42,9 +43,9 @@ class Users extends Component {
       console.log(this.state.users);
     })
     .catch((error) => {
-    console.log('error', error)
-      if(error.response.code === 401) {
-        this.props.history.push("/login");
+      console.log('error', error)
+       if(error.code === 401) {
+         this.props.history.push("/login");
       }
     });
   }

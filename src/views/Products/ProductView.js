@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import {
   Button,
   Card,
@@ -13,29 +14,30 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 // import PropTypes from 'prop-types';
-class UserView extends Component {
+class ProductView extends Component {
   constructor(props){
     super(props);
     this.state = {
-      viewUser: [],
-      userId: this.props.match.params.id
+      viewProducts: [],
+      productId: this.props.match.params.id
     };
   }
   cancelHandler(){
-    this.props.history.push("/users");
+    this.props.history.push("/products");
   }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/viewUser/' + this.state.userId).then(result => {
-        if(result.data.code == '200'){
+      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');     
+     axios.get('/product/viewProduct/' + this.state.productId).then(result => {
+		 console.log('view products',result);
+         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          this.setState({ viewUser: result.data.result});
+          this.setState({ viewProducts: result.data.result});
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
-          this.props.history.push("/login");
+        if(error.status === 401) {
+          //this.props.history.push("/login");
         }
       });
   }
@@ -45,53 +47,61 @@ class UserView extends Component {
         <Row>
           <Col xs="12" sm="12">
             <Card>
+            <CardBody>
               <CardHeader>
-                <strong>User</strong>
-                <small> Edit</small>
+                <strong>Product</strong>
+                <small> View</small>
+                 <Link to={'/products/edit/' + this.state.viewProducts._id} className="btn btn-success btn-sm pull-right">Edit Product</Link>
               </CardHeader>
-              <CardBody>
                 <FormGroup>
                   <Label htmlFor="id">ID</Label>
-                  <Input type="text" value={this.state.viewUser._id} />
+                  <Input type="text" value={this.state.viewProducts._id} />
                 </FormGroup>
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">First name</Label>
-                      <Input type="text" value={this.state.viewUser.firstName} />
+                      <Label htmlFor="company">Name</Label>
+                      <Input type="text" value={this.state.viewProducts.productName} />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="middlename">Middle name</Label>
-                      <Input type="text" value={this.state.viewUser.middleName} />
+                      <Label htmlFor="middlename">Description</Label>
+                      <Input type="text" value={this.state.viewProducts.description} />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="lastname">Last name</Label>
-                      <Input type="text" value={this.state.viewUser.lastName} />
+                      <Label htmlFor="lastname">Category</Label>
+                      <Input type="text" value={this.state.viewProducts.category} />
                     </FormGroup>
                   </Col>
-                </Row>
+                </Row>               
                 <FormGroup>
-                  <Label htmlFor="username">Username</Label>
-                  <Input type="text" value={this.state.viewUser.userName} />
+                  <Label htmlFor="email">Size</Label>
+                  <Input type="text" value={this.state.viewProducts.size} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email">Email</Label>
-                  <Input type="text" value={this.state.viewUser.email} />
+                  <Label htmlFor="email">Color</Label>
+                  <Input type="text" value={this.state.viewProducts.color} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Brand</Label>
+                  <Input type="text" value={this.state.viewProducts.brand} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Age</Label>
+                  <Input type="text" value={this.state.viewProducts.productAge} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="status">Status</Label>
-                  <Input type="text" value={(this.state.viewUser.userStatus === '1')?'Active':'Inactive'} />
+                  <Input type="text" value={(this.state.viewProducts.productStatus === '1')?'Active':'Inactive'} />
                 </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
                   <Col xs="6">
-
                   </Col>
                 </Row>
               </CardBody>
@@ -105,4 +115,4 @@ class UserView extends Component {
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
 // };
-export default UserView;
+export default ProductView;
