@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
+import ReactPaginate from 'react-paginate';
 import Advertisement from './Advertisement'
 
 
@@ -14,7 +15,8 @@ class Advertisements extends Component {
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
-      advsCount: 0
+      advsCount: 0,
+      offset: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -23,27 +25,39 @@ class Advertisements extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
+
+  loadCommentsFromServer() {
+    axios.get('/advertisement/list-ads').then(result => {
+      if(result.data.code === 200){
+        this.setState({
+          advs: result.data.result,
+          currentPage: result.data.current,
+          PerPage: result.data.perPage,
+          totalPages: result.data.pages,
+          advsCount:result.data.total
+        });
+      }
+      console.log(this.state.advs);
+    })
+    .catch((error) => {
+    console.log('error', error)
+      if(error.response.code === 401) {
+        this.props.history.push("/login");
+      }
+    });
+  }
+
+  handlePageClick = (data) => {
+    let currentPage = data.selected + 1;
+    this.setState({currentPage: currentPage}, () => {
+      this.loadCommentsFromServer();
+    });
+};
+
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/advertisement/list-ads').then(result => {
-        if(result.data.code === 200){
-          this.setState({
-            advs: result.data.result,
-            currentPage: result.data.current,
-            PerPage: result.data.perPage,
-            totalPages: result.data.pages,
-            advsCount:result.data.total
-          });
-        }
-        console.log(this.state.advs);
-      })
-      .catch((error) => {
-		  console.log('error', error)
-        if(error.response.code === 401) {
-          this.props.history.push("/login");
-        }
-      });
+     this.loadCommentsFromServer();
 
   }
   advDeleteHandler (id){
@@ -128,21 +142,26 @@ class Advertisements extends Component {
                   </tbody>
                 </Table>
                 <nav>
-                  <Pagination>
-                    <PaginationItem>
-                      <PaginationLink previous tag="button">Prev</PaginationLink>
-                    </PaginationItem>
-                    {paginationItems}
-
-                    <PaginationItem active>
-                    <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+                    <ReactPaginate
+                       initialPage={this.state.currentPage-1}
+                       previousLabel={"<<"}
+                       previousClassName={"page-item"}
+                       previousLinkClassName={"page-link"}
+                       nextLabel={">>"}
+                       nextClassName={"page-item"}
+                       nextLinkClassName={"page-link"}
+                       breakLabel={<a href="">...</a>}
+                       breakClassName={"break-me"}
+                       pageClassName={"page-item"}
+                       pageLinkClassName={"page-link"}
+                       pageCount={this.state.totalPages}
+                       marginPagesDisplayed={2}
+                       pageRangeDisplayed={5}
+                       onPageChange={this.handlePageClick}
+                       containerClassName={"pagination"}
+                       subContainerClassName={"pages pagination"}
+                       activeClassName={"active"} />
+                  </nav>
               </CardBody>
             </Card>
           </Col>

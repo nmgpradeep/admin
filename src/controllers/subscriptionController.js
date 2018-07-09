@@ -317,7 +317,7 @@ const viewAddon = (req, res) => {
  *	Description : Function to update the updateAddon plan.
  **/
 const updateAddon = (req, res) => { 
-  Addon.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+  Addon.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -360,6 +360,35 @@ const deleteAddon = (req, res) => {
   })
 }
 
+/** Auther	: Saurabh Agarwal
+ *  Date	: July 6, 2018
+ **/
+//Function to update the Addon status.
+const updateStatus = (req, res) => { 
+	console.log("REQ0",req.body)
+  Addon.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+             result: result
+            });
+      }
+    }    
+  })
+}
+
 module.exports = {
   create,
   subscriptions,
@@ -371,5 +400,6 @@ module.exports = {
   listAddon,
   updateAddon,
   viewAddon,
-  deleteAddon
+  deleteAddon,
+  updateStatus
 }

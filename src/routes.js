@@ -317,6 +317,20 @@ const TestimonialEdit = Loadable({
   loading: Loading,
 })
 
+//loader for Addon by Saurabh
+const Addons = Loadable({
+  loader: () => import('./views/Subscriptions/Addons'),
+  loading: Loading,
+});
+const AddonAdd = Loadable({
+  loader: () => import('./views/Subscriptions/AddonAdd'),
+  loading: Loading,
+});
+const AddonEdit = Loadable({
+  loader: () => import('./views/Subscriptions/AddonEdit'),
+  loading: Loading,
+})
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -355,10 +369,12 @@ const routes = [
   { path: '/advertisement', name: 'Advertisement', component: Advertisements },
   { path: '/subscriptions/add', exact: true, name: 'Add Subscription', component : SubscriptionAdd },
   { path: '/subscriptions', exact:true, name: 'Subscriptions', component: Subscriptions },
-
+  { path: '/addon/add', exact: true, name: 'Add Addon', component: AddonAdd},
+  { path: '/addon/edit/:id', name: 'Edit Addon', component: AddonEdit},
+  { path: '/addon', name: 'Addons', component: Addons},
+ 
   { path: '/transactions/view/:id', name: 'View Transactions', component: TransactionView },
   { path: '/transactions', exact:true, name: 'Transactions', component: Transactions },
-
 
   { path: '/testimonial/add', exact: true, name: 'Add Testimonial', component: TestimonialAdd},
   { path: '/testimonial/edit/:id', name: 'Edit Testimonial', component: TestimonialEdit},

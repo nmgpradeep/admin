@@ -1,5 +1,5 @@
 module.exports = {
-    'PER_PAGE_RECORD': 10,
+    'PER_PAGE_RECORD': 2,
     
     ///Email setting
     'SMTP_HOST':'smtp.sendgrid.net',
