@@ -168,6 +168,7 @@ class AddonEdit extends Component {
               <CardHeader>
                 <strong>Addon</strong>
                 <small> Edit</small>
+                <Link to="/addon" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
               

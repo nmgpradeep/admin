@@ -109,7 +109,7 @@ class Addons extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Addon Listing
-                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
+                <Link to="/addon/add" className="btn btn-success btn-sm pull-right">Add New Addon</Link>
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">

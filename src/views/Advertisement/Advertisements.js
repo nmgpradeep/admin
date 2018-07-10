@@ -123,7 +123,7 @@ class Advertisements extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Advertisements Listing
-                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
+                <Link to="/advertisement/add" className="btn btn-success btn-sm pull-right">Add New Advertisement</Link>
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">

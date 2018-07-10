@@ -108,8 +108,8 @@ class Testimonials extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Testimonial Listing
-                {/* <Link to="/add" className="btn btn-success btn-sm pull-right">Add User</Link> */}
+                <i className="fa fa-align-justify"></i> Testimonial Listing               
+                <Link to="/testimonial/add" className="btn btn-success btn-sm pull-right">Add New Testimonial</Link>
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">

@@ -1,4 +1,5 @@
 import React,{ Component }from 'react'
+import {Link} from 'react-router-dom';
 import axios from 'axios'
 import {
   Badge,
@@ -114,6 +115,7 @@ class TestimonialAdd extends Component {
         <Card>
               <CardHeader>
                 <strong>New Testimonial Form</strong>
+                <Link to="/testimonial" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

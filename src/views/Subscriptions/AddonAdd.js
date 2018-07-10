@@ -1,5 +1,6 @@
 import React,{ Component }from 'react'
 import axios from 'axios'
+import {Link} from 'react-router-dom'
 import {
   Badge,
   Button,
@@ -137,6 +138,7 @@ class AddonAdd extends Component {
         <Card>
               <CardHeader>
                 <strong>New Addon Form</strong>
+                <Link to="/addon" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

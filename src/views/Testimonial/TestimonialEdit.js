@@ -141,6 +141,7 @@ class TestimonialEdit extends Component {
               <CardHeader>
                 <strong>Testimonial</strong>
                 <small> Edit</small>
+                <Link to="/testimonial" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
               
