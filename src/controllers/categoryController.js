@@ -23,6 +23,7 @@ const create = (req, res) => {
   if (flag) {
     return res.json(flag);
   }
+  
   Category.findOne({ categoryName: req.body.categoryName }, (err, result) => {	
     if (result) {
 
@@ -112,14 +113,12 @@ const viewCategory = (req, res) => {
     }
   })
 }
-
-
 /** Auther	: Rajiv Kumar
  *  Date	: June 20, 2018
  *	Description : Function to update the user details.
  **/
-const updateCategory = (req, res) => { 
-  Category.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+const changeStatus = (req, res) => {
+  Category.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -128,10 +127,38 @@ const updateCategory = (req, res) => {
     }else {
       if (!result) {
         res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
+          message: httpResponseMessage.CATEGORY_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
       }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+             result: result
+          });
+      }
+    }
+  })
+}
+
+/** Auther	: Rajiv Kumar
+ *  Date	: June 20, 2018
+ *	Description : Function to update the user details.
+ **/
+const updateCategory = (req, res) => { 
+  Category.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -141,12 +168,38 @@ const updateCategory = (req, res) => {
     }    
   })
 }
+/** Auther	: Rajiv kumar
+ *  Date	: June 18, 2018
+ */
+/// function to list all products
+const allCategories = (req, res) => {
+    var perPage = 1;//constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    Category.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, categories) {		
+          Category.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: categories,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
+    }
 
 /** Auther	: Rajiv Kumar
  *  Date	: June 20, 2018
  *	Description : Function to delete the user
  **/
 const deleteCategory = (req, res) => {	
+	//console.log('<result>',req.params.id);
 	Category.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
@@ -154,11 +207,11 @@ const deleteCategory = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
     }
-		return res.json({
+	return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
-            });
+      });
   })
 }
 
@@ -167,6 +220,7 @@ module.exports = {
   categories,
   viewCategory,
   updateCategory,
-  deleteCategory
-  
+  deleteCategory,
+  changeStatus,
+  allCategories
 }

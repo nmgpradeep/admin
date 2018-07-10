@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
 import Category from './Category';
+import ReactPaginate from 'react-paginate';
 // var passport = require('passport');
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
@@ -15,9 +16,9 @@ class Categories extends Component {
       Categories: [],
       modal: false,
       currentPage: 1,
-      PerPage: 5,
+      PerPage: 1,
       totalPages: 1,
-      categoriesCount: 0
+      productsCount: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -26,12 +27,10 @@ class Categories extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/category/categories').then(result => {
-		  console.log("DATA",result.data)
-        if(result.data.code == '200'){
+  
+   loadCommentsFromServer() {
+      axios.get('/category/categories/'+this.state.currentPage).then(result => {
+        if(result.data.code === 200){
           this.setState({
             categories: result.data.result,
             currentPage: result.data.current,
@@ -43,13 +42,22 @@ class Categories extends Component {
         console.log(this.state.categories);
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.code === 401) {
           this.props.history.push("/login");
         }
       });
+  }
+  handlePageClick = (data) => {
+      let currentPage = data.selected + 1;
+      this.setState({currentPage: currentPage}, () => {
+        this.loadCommentsFromServer();
+      });
+  };
+  componentDidMount() {    
+       this.loadCommentsFromServer();
 
   }
-  categoryDeleteHandler (id){
+  categoryDeleteHandler (id){	
     this.setState({
       approve: false,
       approveId: id
@@ -57,13 +65,16 @@ class Categories extends Component {
     this.toggle();
   }
   changeStatusHandler(category){
-    category.categoryStatus = (1 - parseInt(category.categoryStatus)).toString();
+	console.log('category',category);
+    category.status = (1 - parseInt(category.status)).toString();
+    console.log('CHANGE-STATUS',category);
     axios.post('/category/changeStatus', category).then(result => {
       if(result.data.code === 200){
         let categories = this.state.categories;
         let categoryIndex = categories.findIndex(x => x._id === category._id);
-        categories[categoryIndex].categoryStatus = category.categoryStatus.toString();
+        categories[categoryIndex].status = category.status.toString();
         this.setState({ categories: categories});
+        this.loadCommentsFromServer();
       }
     });
   }
@@ -72,6 +83,7 @@ class Categories extends Component {
       modal: !this.state.modal
     });
   }
+  
   approveDeleteHandler(){
     this.setState({
       approve: true
@@ -93,15 +105,15 @@ class Categories extends Component {
       }
     });
   }
+  
   render() {
    let categories;
      if(this.state.categories){
        let categoryList = this.state.categories;
-       categories = categoryList.map(category => <Category key={category._id} onDeleteCategory={this.categoryDeleteHandler.bind(this)} changeStatus={(category) => this.changeStatusHandler(category)}   category={category}/>);
+       categories = categoryList.map(category => <Category key={category._id} 
+        onDeleteCategory={this.categoryDeleteHandler.bind(this)} changeStatus={(category) => this.changeStatusHandler(category)}   category={category}/>);
      }
-
      let paginationItems =[];
-
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
@@ -116,7 +128,7 @@ class Categories extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Name</th>
+                    <th>Category Name</th>
                     <th>Description</th>
                     <th>Parent</th>
                     <th>Status</th>
@@ -128,20 +140,25 @@ class Categories extends Component {
                   </tbody>
                 </Table>
                 <nav>
-                  <Pagination>
-                    <PaginationItem>
-                      <PaginationLink previous tag="button">Prev</PaginationLink>
-                    </PaginationItem>
-                    {paginationItems}
-
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
+                 <ReactPaginate
+                       initialPage={this.state.currentPage-1}
+                       previousLabel={"<<"}
+                       previousClassName={"page-item"}
+                       previousLinkClassName={"page-link"}
+                       nextLabel={">>"}
+                       nextClassName={"page-item"}
+                       nextLinkClassName={"page-link"}
+                       breakLabel={<a href="">...</a>}
+                       breakClassName={"break-me"}
+                       pageClassName={"page-item"}
+                       pageLinkClassName={"page-link"}
+                       pageCount={this.state.totalPages}
+                       marginPagesDisplayed={2}
+                       pageRangeDisplayed={5}
+                       onPageChange={this.handlePageClick}
+                       containerClassName={"pagination"}
+                       subContainerClassName={"pages pagination"}
+                       activeClassName={"active"} />
                 </nav>
               </CardBody>
             </Card>
