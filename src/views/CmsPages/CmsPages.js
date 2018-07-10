@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
 import CmsPage from './CmsPage';
+import ReactPaginate from 'react-paginate';
 // var passport = require('passport');
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
@@ -26,11 +27,9 @@ class CmsPages extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/page/pages/:page').then(result => {
-		console.log("before STATE",this.state.cmsPages);
+  loadCommentsFromServer() {
+     axios.get('/page/pages/' + this.state.currentPage).then(result => {
+		console.log("before STATE",this.state.currentPage);
         if(result.data.code === 200){
           this.setState({
             cmsPages: result.data.result,
@@ -48,7 +47,36 @@ class CmsPages extends Component {
           this.props.history.push("/login");
         }
       });
-
+  }
+  handlePageClick = (data) => {
+      let currentPage = data.selected + 1;
+      this.setState({currentPage: currentPage}, () => {
+        this.loadCommentsFromServer();
+      });
+  };
+  componentDidMount() {
+    //if(localStorage.getItem('jwtToken') != null)
+      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+      //~ axios.get('/page/pages/:page').then(result => {
+		//~ console.log("before STATE",this.state.cmsPages);
+        //~ if(result.data.code === 200){
+          //~ this.setState({
+            //~ cmsPages: result.data.result,
+            //~ currentPage: result.data.current,
+            //~ PerPage: result.data.perPage,
+            //~ totalPages: result.data.pages,
+            //~ cmsPagesCount:result.data.total
+          //~ });
+        //~ }
+       
+      //~ })
+      //~ .catch((error) => {
+		  //~ console.log('error', error)
+        //~ if(error.status === 401) {
+          //~ this.props.history.push("/login");
+        //~ }
+      //~ });
+	this.loadCommentsFromServer();
   }
  
   cmsPageDeleteHandler (id){
@@ -132,19 +160,27 @@ class CmsPages extends Component {
                   {cmsPages}
                   </tbody>
                 </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem>
-                      <PaginationLink previous tag="button">Prev</PaginationLink>
-                    </PaginationItem>
-                    {/*paginationItems*/}
-
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>                    
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+               <nav>
+                    <ReactPaginate
+                       initialPage={this.state.currentPage-1}
+                       previousLabel={"<<"}
+                       previousClassName={"page-item"}
+                       previousLinkClassName={"page-link"}
+                       nextLabel={">>"}
+                       nextClassName={"page-item"}
+                       nextLinkClassName={"page-link"}
+                       breakLabel={<a href="">...</a>}
+                       breakClassName={"break-me"}
+                       pageClassName={"page-item"}
+                       pageLinkClassName={"page-link"}
+                       pageCount={this.state.totalPages}
+                       marginPagesDisplayed={2}
+                       pageRangeDisplayed={5}
+                       onPageChange={this.handlePageClick}
+                       containerClassName={"pagination"}
+                       subContainerClassName={"pages pagination"}
+                       activeClassName={"active"} />
+                  </nav>
               </CardBody>
             </Card>
           </Col>
