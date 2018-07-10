@@ -99,11 +99,9 @@ class CmsPageEdit extends Component {
         let editPage = this.state.editPage;
         editPage.pageTitle = this.pageTitle.value;
         editPage.pageHeading = this.pageHeading.value;
-        
-        axios.post('/page/updatePage', editPage).then(result => {
-			//console.log(result);
-         if(result.data.status == '200'){
-            this.props.history.push("/users");
+        axios.put('/page/updatePage', editPage).then(result => {
+         if(result.data.code == '200'){
+            this.props.history.push("/pages");
           }
         });
       }
@@ -112,11 +110,12 @@ class CmsPageEdit extends Component {
    componentDidMount() {   
       axios.get('/page/viewPage/' + this.state.pageId).then(result => {		  
         if(result.data.code == '200'){
+		  this.setState({ editPage: result.data.result});
           this.pageTitle.value = result.data.result.pageTitle;
           this.pageHeading.value = result.data.result.pageHeading;
           this.bannerImage.value = result.data.result.bannerImage;         
           this.description.value = result.data.result.description;  
-          this.setState({ text: result.data.result.description })
+          //this.setState({ text: result.data.result.description })
         }
        
       })
@@ -153,7 +152,12 @@ class CmsPageEdit extends Component {
                       <Input type="text" innerRef={input => (this.pageHeading = input)}  placeholder="Page Heading" />
                     </FormGroup>
                     </Col>
-                    <Col xs="4" sm="12">
+                    <Col xs="4" sm="12">					
+                      <FormGroup>
+                      <Label htmlFor="lastname">Banner Image</Label>
+                      <Input type="file" innerRef={input => (this.bannerImage = input)} placeholder="Banner Image" />
+                    </FormGroup>
+                    
                   </Col>
                 </Row>
                 <FormGroup>

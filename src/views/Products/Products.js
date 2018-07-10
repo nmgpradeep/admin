@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
 import Product from './Product';
+import ReactPaginate from 'react-paginate';
 // var passport = require('passport');
 //  console.log('passport', passport);
 //  require('../../config/passport')(passport);
@@ -26,12 +27,12 @@ class Products extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
+   loadCommentsFromServer() {
+   //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/product/products').then(result => {
-		  console.log("DATA",result.data);
-        if(result.data.code == '200'){
+      axios.get('/product/products/'+this.state.currentPage).then(result => {
+		console.log("DATA",result.data);
+        if(result.data.code === 200){
           this.setState({
             products: result.data.result,
             currentPage: result.data.current,
@@ -43,13 +44,42 @@ class Products extends Component {
         console.log(this.state.products);
       })
       .catch((error) => {
-        if(error.response.code === 401) {
+        if(error.code === 401) {
           this.props.history.push("/login");
         }
       });
+  }
+  handlePageClick = (data) => {
+      let currentPage = data.selected + 1;
+      this.setState({currentPage: currentPage}, () => {
+        this.loadCommentsFromServer();
+      });
+  };
+  componentDidMount() {
+    //if(localStorage.getItem('jwtToken') != null)
+      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+      //~ axios.get('/product/products/'+this.state.currentPage).then(result => {
+		//~ console.log("DATA",result.data);
+        //~ if(result.data.code == '200'){
+          //~ this.setState({
+            //~ products: result.data.result,
+            //~ currentPage: result.data.current,
+            //~ PerPage: result.data.perPage,
+            //~ totalPages: result.data.pages,
+            //~ productsCount:result.data.total
+          //~ });
+        //~ }
+        //~ console.log(this.state.products);
+      //~ })
+      //~ .catch((error) => {
+        //~ if(error.code === 401) {
+          //~ this.props.history.push("/login");
+        //~ }
+      //~ });
+       this.loadCommentsFromServer();
 
   }
-  productDeleteHandler (id){
+  productDeleteHandler (id){	
     this.setState({
       approve: false,
       approveId: id
@@ -58,8 +88,8 @@ class Products extends Component {
   }
   changeStatusHandler(product){
     product.productStatus = (1 - parseInt(product.productStatus)).toString();
-    axios.post('/products/changeStatus', product).then(result => {
-      if(result.data.code === 200){
+    axios.post('/product/changeStatus', product).then(result => {
+      if(result.code === 200){
         let products = this.state.products;
         let productIndex = products.findIndex(x => x._id === product._id);
         products[productIndex].productStatus = product.productStatus.toString();
@@ -72,12 +102,13 @@ class Products extends Component {
       modal: !this.state.modal
     });
   }
+  
   approveDeleteHandler(){
     this.setState({
       approve: true
     }, function(){
       if(this.state.approve){
-        axios.delete('/products/deleteProduct/' + this.state.approveId).then(result => {
+        axios.delete('/product/deleteProduct/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
             let products = this.state.products;
             let productIndex = products.findIndex(x => x._id === this.state.approveId);
@@ -93,15 +124,15 @@ class Products extends Component {
       }
     });
   }
+  
   render() {
    let products;
      if(this.state.products){
        let productList = this.state.products;
-       products = productList.map(product => <Product key={product._id} onDeleteProduct={()=>this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product}/>);
+       products = productList.map(product => <Product key={product._id} 
+        onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product}/>);
      }
-
      let paginationItems =[];
-
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
@@ -133,20 +164,25 @@ class Products extends Component {
                   </tbody>
                 </Table>
                 <nav>
-                  <Pagination>
-                    <PaginationItem>
-                      <PaginationLink previous tag="button">Prev</PaginationLink>
-                    </PaginationItem>
-                    {paginationItems}
-
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
+                 <ReactPaginate
+                       initialPage={this.state.currentPage-1}
+                       previousLabel={"<<"}
+                       previousClassName={"page-item"}
+                       previousLinkClassName={"page-link"}
+                       nextLabel={">>"}
+                       nextClassName={"page-item"}
+                       nextLinkClassName={"page-link"}
+                       breakLabel={<a href="">...</a>}
+                       breakClassName={"break-me"}
+                       pageClassName={"page-item"}
+                       pageLinkClassName={"page-link"}
+                       pageCount={this.state.totalPages}
+                       marginPagesDisplayed={2}
+                       pageRangeDisplayed={5}
+                       onPageChange={this.handlePageClick}
+                       containerClassName={"pagination"}
+                       subContainerClassName={"pages pagination"}
+                       activeClassName={"active"} />
                 </nav>
               </CardBody>
             </Card>

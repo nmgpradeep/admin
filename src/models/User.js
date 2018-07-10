@@ -72,6 +72,8 @@ accessToken:{
  type:String,
  trim:true
 },
+
+//User type has 2 option 1=>admin,0=>users
 userType:{
 type:String,
 trim:true

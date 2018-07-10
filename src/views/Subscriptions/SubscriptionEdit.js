@@ -27,116 +27,111 @@ import {
   Row,
 } from 'reactstrap';
 // import PropTypes from 'prop-types';
-class UserEdit extends Component {
+class SubscriptionEdit extends Component {
   constructor(props){
     super(props);
-    this.firstName = React.createRef();
-    this.middleName = React.createRef();
-    this.lastName = React.createRef();
-    this.username = React.createRef();
-    this.email = React.createRef();
-    let userId = this.props.match.params.id;
+    this.subscriptionName = React.createRef();
+    this.description = React.createRef();
+    this.price = React.createRef();
+    this.totalTradePermitted = React.createRef();
+    this.totalInventoryAllowed = React.createRef();
+    this.timePeriod = React.createRef();
+    let subscriptionId = this.props.match.params.id;
     this.state = {
-      editUser: {},
-      userId: userId,
+      editSubscription: {},
+      subscriptionId: subscriptionId,
       validation:{
-        firstName:{
+        subscriptionName:{
           rules: {
             notEmpty: {
-              message: 'First name field can\'t be left blank',
+              message: 'Subscription name field can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        userName:{
+        description:{
           rules: {
             notEmpty: {
-              message: 'Username field can\'t be left blank',
+              message: 'Description field can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        email: {
+        price: {
           rules: {
             notEmpty: {
-              message: 'Email field can\'t be left blank',
+              message: 'Price field can\'t be left blank',
               valid: false
             },
-            emailCheck: {
-              message: 'must be a valid email',
-              valid: false
-            }
           },
           valid: null,
           message: ''
-        }
+        },
+        totalTradePermitted: {
+          rules: {
+            notEmpty: {
+              message: 'Trade field can\'t be left blank',
+              valid: false
+            },
+          },
+          valid: null,
+          message: ''
+        },
+        totalInventoryAllowed: {
+          rules: {
+            notEmpty: {
+              message: 'Inventory field can\'t be left blank',
+              valid: false
+            },
+          },
+          valid: null,
+          message: ''
+        },
       }
     };
   }
   cancelHandler(){
-    this.props.history.push("/users");
+    this.props.history.push("/subscriptions");
   }
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
       for (let field in this.state.validation) {
         let lastValidFieldFlag = true;
-        let addUser = this.state.validation;
-        addUser[field].valid = null;
+        let subscriptionAdd = this.state.validation;
+        subscriptionAdd[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
               if(lastValidFieldFlag === true && this[field].value.length === 0){
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
-                  addUser[field].valid = false;
-                  addUser[field].message = addUser[field].rules[fieldCheck].message;
+                  subscriptionAdd[field].valid = false;
+                  subscriptionAdd[field].message = subscriptionAdd[field].rules[fieldCheck].message;
 
                }
               break;
-            case 'emailCheck':
-              if(lastValidFieldFlag === true && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this[field].value)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'minLength':
-              if(lastValidFieldFlag === true && this[field].value.length < parseInt(this.state.validation[field].rules[fieldCheck].length)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'matchWith':
-              if(lastValidFieldFlag === true && this[field].value !== this[this.state.validation[field].rules[fieldCheck].matchWithField].value){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
-              }
-              break;
           }
         }
-        this.setState({ validation: addUser});
+        this.setState({ validation: subscriptionAdd});
       }
 
       if(formSubmitFlag){
-        let editUser = this.state.editUser;
-        editUser.firstName = this.firstName.value;
-        editUser.middleName = this.middleName.value;
-        editUser.lastName = this.lastName.value;
-        editUser.userName = this.userName.value;
-        editUser.email = this.email.value;
-        axios.post('/user/updateUser', editUser).then(result => {
-          if(result.data.code == '200'){
-            this.props.history.push("/users");
+        let editSubscription = this.state.editSubscription;
+        editSubscription.subscriptionName = this.subscriptionName.value;
+        editSubscription.description = this.description.value;
+        editSubscription.price = this.price.value;
+        editSubscription.totalTradePermitted = this.totalTradePermitted.value;
+        editSubscription.totalInventoryAllowed = this.totalInventoryAllowed.value;
+        editSubscription.timePeriod = this.timePeriod.value;
+        console.log("editSubscription",editSubscription)
+        axios.put('/subscription/updateSubscription', editSubscription).then(result => {
+          if(result.data.code ===200){
+              this.props.history.push("/subscriptions");
           }
         });
       }
@@ -145,19 +140,23 @@ class UserEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/viewUser/' + this.state.userId).then(result => {
-        if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          this.setState({ editUser: result.data.result});
-          this.firstName.value = result.data.result.firstName;
-          this.middleName.value = result.data.result.middleName;
-          this.lastName.value = result.data.result.lastName;
-          this.userName.value = result.data.result.userName;
-          this.email.value = result.data.result.email;
+      axios.get('/subscription/viewSubscription/' + this.state.subscriptionId).then(result => {
+       // console.log(result); 
+         if(result.data.code === 200){
+        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
+           this.setState({ editSubscription: result.data.result});
+          
+           this.subscriptionName.value = result.data.result.subscriptionName;
+           this.description.value = result.data.result.description;
+           this.price.value = result.data.result.price;
+           this.totalTradePermitted.value = result.data.result.totalTradePermitted;
+           this.totalInventoryAllowed.value = result.data.result.totalInventoryAllowed;
+           this.timePeriod.value = result.data.result.timePeriod;
+
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -170,44 +169,52 @@ class UserEdit extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
+                <strong>Subscription</strong>
                 <small> Edit</small>
               </CardHeader>
               <CardBody>
-              <Form noValidate>
+              
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">First name</Label>
-                      <Input type="text" invalid={this.state.validation.firstName.valid === false} innerRef={input => (this.firstName = input)} placeholder="First name" />
+                      <Label >Subscription Name</Label>
+                      <Input type="text" innerRef={input => (this.subscriptionName = input)}    />
 
-                      <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
+                      {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
 
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="middlename">Middle name</Label>
-                      <Input type="text" innerRef={input => (this.middleName = input)} placeholder="Middle name" />
+                      <Label htmlFor="middlename">Description</Label>
+                      <Input type="text" innerRef={input => (this.description = input)}  />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="lastname">Last name</Label>
-                      <Input type="text" innerRef={input => (this.lastName = input)} placeholder="Last name" />
+                      <Label htmlFor="lastname">Price</Label>
+                      <Input type="number"   innerRef={input => (this.price = input)} required/>
+                    </FormGroup>
+                  </Col>
+                  <Col xs="4" sm="12">
+                    <FormGroup>
+                    <Label htmlFor="username">Total Trade Permitted</Label>
+                  <Input type="number" innerRef={input => (this.totalTradePermitted = input)} />
+                    </FormGroup>
+                  </Col>
+                  <Col xs="4" sm="12">
+                    <FormGroup>
+                    <Label htmlFor="username">Total Inventory Allowed</Label>
+                  <Input type="number" innerRef={input => (this.totalInventoryAllowed = input)} />
+                    </FormGroup>
+                  </Col>
+                  <Col xs="4" sm="12">
+                    <FormGroup>
+                    <Label htmlFor="username">Time Period</Label>
+                  <Input type="number" innerRef={input => (this.timePeriod = input)}  />
                     </FormGroup>
                   </Col>
                 </Row>
-                <FormGroup>
-                  <Label htmlFor="username">Username</Label>
-                  <Input type="text" invalid={this.state.validation.userName.valid === false}  innerRef={input => (this.userName = input)} placeholder="Username" />
-                  <FormFeedback invalid={this.state.validation.userName.valid === false}>{this.state.validation.userName.message}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="username">Email</Label>
-                  <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
-                  <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
-                </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
@@ -216,8 +223,7 @@ class UserEdit extends Component {
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
                 </Row>
-                </Form>
-              </CardBody>
+               </CardBody>
             </Card>
           </Col>
         </Row>
@@ -228,4 +234,4 @@ class UserEdit extends Component {
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
 // };
-export default UserEdit;
+export default SubscriptionEdit;

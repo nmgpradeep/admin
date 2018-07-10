@@ -5,6 +5,7 @@ const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
+const constant = require('../../common/constant')
 
 /** Auther	: Saurabh Agarwal
  *  Date	: July 6, 2018
@@ -51,19 +52,39 @@ const createTestimonials = (req, res) => {
  */
 /// function to list all Testimonials
 const listTestimonials = (req, res) => { 
-  Testimonial.find({},(err,result)=>{
-		if (!result) {
-			res.json({
-			  message: httpResponseMessage.ITEM_NOT_FOUND,
-			  code: httpResponseMessage.BAD_REQUEST
-			});
-		  }else {				
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,				
-				  result: result
-				});
-		  }
-	  })
+  // Testimonial.find({},(err,result)=>{
+	// 	if (!result) {
+	// 		res.json({
+	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
+	// 		  code: httpResponseMessage.BAD_REQUEST
+	// 		});
+	// 	  }else {				
+	// 		return res.json({
+	// 			  code: httpResponseCode.EVERYTHING_IS_OK,				
+	// 			  result: result
+	// 			});
+	// 	  }
+  //   })
+    
+    var perPage = constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    Testimonial.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function(err, testimonial) {
+          Testimonial.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: testimonial ,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
 }
 
 

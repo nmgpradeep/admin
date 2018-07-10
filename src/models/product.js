@@ -61,7 +61,7 @@ ProductSchema.methods.getCategory = function(callback) {
   var productCategoryID = this.productCategory.map(function(productCategory) {
     return productCategory.product_id;
   });
-  Post.find({'user._id': {$in: productCategoryID}}, function(err, posts) {
+  Post.find({'product._id': {$in: productCategoryID}}, function(err, posts) {
     callback(posts);
   });
 };

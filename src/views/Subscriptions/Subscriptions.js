@@ -22,7 +22,7 @@ class Subscriptions extends Component {
       this.setState({currentPage: this.props.match.params.page});
     }
     this.toggle = this.toggle.bind(this);
-  //  this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
+    this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
   loadCommentsFromServer() {
     axios.get('/subscription/subscriptions/' + this.state.currentPage).then(result => {
@@ -45,19 +45,19 @@ class Subscriptions extends Component {
       }
     });
   }
-  //~ handlePageClick = (data) => {
-      //~ let currentPage = data.selected + 1;
-      //~ this.setState({currentPage: currentPage}, () => {
-        //~ this.loadCommentsFromServer();
-      //~ });
-  //~ };
+   handlePageClick = (data) => {
+      let currentPage = data.selected + 1;
+      this.setState({currentPage: currentPage}, () => {
+      this.loadCommentsFromServer();
+      });
+  };
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       this.loadCommentsFromServer();
 
   }
-  userDeleteHandler (id){
+  subscriptionDeleteHandler (id){
     this.setState({
       approve: false,
       approveId: id
@@ -80,33 +80,33 @@ class Subscriptions extends Component {
       modal: !this.state.modal
     });
   }
-  //~ approveDeleteHandler(){
-    //~ this.setState({
-      //~ approve: true
-    //~ }, function(){
-      //~ if(this.state.approve){
-        //~ axios.delete('/user/deleteUser/' + this.state.approveId).then(result => {
-          //~ if(result.data.code == '200'){
-            //~ let users = this.state.users;
-            //~ let userIndex = users.findIndex(x => x._id === this.state.approveId);
-            //~ users.splice(userIndex, 1);
-            //~ this.setState({
-              //~ users: users,
-              //~ approveId: null,
-              //~ approve: false
-            //~ });
-            //~ this.toggle();
-          //~ }
-        //~ });
-      //~ }
-    //~ });
-  //~ }
+  approveDeleteHandler(){
+    this.setState({
+      approve: true
+    }, function(){
+      if(this.state.approve){
+        axios.delete('/subscription/deleteSubscription/' + this.state.approveId).then(result => {
+         if(result.data.code == '200'){
+            let subscriptions = this.state.subscriptions;
+            let subscriptionIndex = subscriptions.findIndex(x => x._id === this.state.approveId);
+            subscriptions.splice(subscriptionIndex, 1);
+            this.setState({
+              subscriptions: subscriptions,
+              approveId: null,
+              approve: false
+            });
+           this.toggle();
+         }
+       });
+     }
+   });
+  }
 
   render() {
    let subscriptions;
      if(this.state.subscriptions){
        let subscriptionList = this.state.subscriptions;
-       subscriptions = subscriptionList.map(subscription => <Subscription key={subscription._id} changeStatus={(subscription) => this.changeStatusHandler(subscription)} subscription={subscription}/>);
+       subscriptions = subscriptionList.map(subscription => <Subscription key={subscription._id} changeStatus={(subscription) => this.changeStatusHandler(subscription)} onDeleteSubscription={this.subscriptionDeleteHandler.bind(this)} subscription={subscription}/>);
      }
 
      let paginationItems =[];
@@ -142,7 +142,7 @@ class Subscriptions extends Component {
                 </Table>
                 <nav>
                     <ReactPaginate
-                       initialPage={this.state.currentPage}
+                       initialPage={this.state.currentPage-1}
                        previousLabel={"<<"}
                        previousClassName={"page-item"}
                        previousLinkClassName={"page-link"}
