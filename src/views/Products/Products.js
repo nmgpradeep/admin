@@ -5,8 +5,8 @@ import axios from 'axios';
 import Product from './Product';
 import ReactPaginate from 'react-paginate';
 // var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
+// console.log('passport', passport);
+// require('../../config/passport')(passport);
 // console.log('newpassport', passport);
 
 class Products extends Component {
@@ -20,7 +20,7 @@ class Products extends Component {
       totalPages: 1,
       productsCount: 0
     };
-    console.log('THIS OBJ', this);
+    console.log('THIS OBJ',this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
@@ -28,10 +28,7 @@ class Products extends Component {
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
    loadCommentsFromServer() {
-   //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/product/products/'+this.state.currentPage).then(result => {
-		console.log("DATA",result.data);
         if(result.data.code === 200){
           this.setState({
             products: result.data.result,
@@ -55,27 +52,7 @@ class Products extends Component {
         this.loadCommentsFromServer();
       });
   };
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      //~ axios.get('/product/products/'+this.state.currentPage).then(result => {
-		//~ console.log("DATA",result.data);
-        //~ if(result.data.code == '200'){
-          //~ this.setState({
-            //~ products: result.data.result,
-            //~ currentPage: result.data.current,
-            //~ PerPage: result.data.perPage,
-            //~ totalPages: result.data.pages,
-            //~ productsCount:result.data.total
-          //~ });
-        //~ }
-        //~ console.log(this.state.products);
-      //~ })
-      //~ .catch((error) => {
-        //~ if(error.code === 401) {
-          //~ this.props.history.push("/login");
-        //~ }
-      //~ });
+  componentDidMount() {    
        this.loadCommentsFromServer();
 
   }
@@ -87,13 +64,16 @@ class Products extends Component {
     this.toggle();
   }
   changeStatusHandler(product){
+	console.log('product',product);
     product.productStatus = (1 - parseInt(product.productStatus)).toString();
+    console.log('CHANGE-STATUS',product);
     axios.post('/product/changeStatus', product).then(result => {
-      if(result.code === 200){
+      if(result.data.code === 200){
         let products = this.state.products;
         let productIndex = products.findIndex(x => x._id === product._id);
         products[productIndex].productStatus = product.productStatus.toString();
         this.setState({ products: products});
+        this.loadCommentsFromServer();
       }
     });
   }
@@ -123,8 +103,7 @@ class Products extends Component {
         });
       }
     });
-  }
-  
+  }  
   render() {
    let products;
      if(this.state.products){
@@ -163,7 +142,7 @@ class Products extends Component {
                   {products}
                   </tbody>
                 </Table>
-                <nav>
+                 <nav>
                  <ReactPaginate
                        initialPage={this.state.currentPage-1}
                        previousLabel={"<<"}
@@ -183,7 +162,7 @@ class Products extends Component {
                        containerClassName={"pagination"}
                        subContainerClassName={"pages pagination"}
                        activeClassName={"active"} />
-                </nav>
+                  </nav>
               </CardBody>
             </Card>
           </Col>
@@ -203,5 +182,4 @@ class Products extends Component {
     );
   }
 }
-
 export default Products;
