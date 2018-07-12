@@ -144,6 +144,7 @@ class AdvertisementEdit extends Component {
               <CardHeader>
                 <strong>Advertisement</strong>
                 <small> Edit</small>
+                <Link to="/advertisement" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
               

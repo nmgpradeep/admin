@@ -27,47 +27,32 @@ import {
   Row,
 } from 'reactstrap';
 // import PropTypes from 'prop-types';
-class UserEdit extends Component {
+class CategoryEdit extends Component {
   constructor(props){
     super(props);
-    this.firstName = React.createRef();
-    this.middleName = React.createRef();
-    this.lastName = React.createRef();
-    this.username = React.createRef();
-    this.email = React.createRef();
-    let userId = this.props.match.params.id;
+    this.categoryName = React.createRef();
+    this.description = React.createRef();
+    this.parent = React.createRef();
+    this.status = React.createRef();
+    let categoryId = this.props.match.params.id;
     this.state = {
-      editUser: {},
-      userId: userId,
+      editCategory: {},
+      categoryId: categoryId,
       validation:{
-        firstName:{
+        categoryName:{
           rules: {
             notEmpty: {
-              message: 'First name field can\'t be left blank',
+              message: 'Category name field can\'t be left blank',
               valid: false
             }
           },
           valid: null,
           message: ''
         },
-        userName:{
+        description:{
           rules: {
             notEmpty: {
-              message: 'Username field can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        email: {
-          rules: {
-            notEmpty: {
-              message: 'Email field can\'t be left blank',
-              valid: false
-            },
-            emailCheck: {
-              message: 'must be a valid email',
+              message: 'Category description field can\'t be left blank',
               valid: false
             }
           },
@@ -78,23 +63,23 @@ class UserEdit extends Component {
     };
   }
   cancelHandler(){
-    this.props.history.push("/users");
+    this.props.history.push("/categories");
   }
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
       for (let field in this.state.validation) {
         let lastValidFieldFlag = true;
-        let addUser = this.state.validation;
-        addUser[field].valid = null;
+        let addCategory = this.state.validation;
+        addCategory[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
               if(lastValidFieldFlag === true && this[field].value.length === 0){
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
-                  addUser[field].valid = false;
-                  addUser[field].message = addUser[field].rules[fieldCheck].message;
+                  addCategory[field].valid = false;
+                  addCategory[field].message = addCategory[field].rules[fieldCheck].message;
 
                }
               break;
@@ -102,41 +87,42 @@ class UserEdit extends Component {
               if(lastValidFieldFlag === true && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this[field].value)){
                 lastValidFieldFlag = false;
                 formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
+                addCategory[field].valid = false;
+                addCategory[field].message = addCategory[field].rules[fieldCheck].message;
               }
               break;
             case 'minLength':
               if(lastValidFieldFlag === true && this[field].value.length < parseInt(this.state.validation[field].rules[fieldCheck].length)){
                 lastValidFieldFlag = false;
                 formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
+                addCategory[field].valid = false;
+                addCategory[field].message = addCategory[field].rules[fieldCheck].message;
               }
               break;
             case 'matchWith':
               if(lastValidFieldFlag === true && this[field].value !== this[this.state.validation[field].rules[fieldCheck].matchWithField].value){
                 lastValidFieldFlag = false;
                 formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
+                addCategory[field].valid = false;
+                addCategory[field].message = addCategory[field].rules[fieldCheck].message;
               }
               break;
           }
         }
-        this.setState({ validation: addUser});
+        this.setState({ validation: addCategory});
       }
 
       if(formSubmitFlag){
-        let editUser = this.state.editUser;
-        editUser.firstName = this.firstName.value;
-        editUser.middleName = this.middleName.value;
-        editUser.lastName = this.lastName.value;
-        editUser.userName = this.userName.value;
-        editUser.email = this.email.value;
-        axios.post('/user/updateUser', editUser).then(result => {
+        let editCategory = this.state.editCategory;
+        editCategory.categoryName = this.categoryName.value;
+        editCategory.description = this.description.value;
+        editCategory.parent = this.parent.value;
+        editCategory.status = this.status.value;
+        console.log('dddddddd',editCategory);
+        axios.put('/category/updateCategory',editCategory).then(result => {
+			console.log('dddddddd',result);
           if(result.data.code == '200'){
-            this.props.history.push("/users");
+            this.props.history.push("/categories");
           }
         });
       }
@@ -145,19 +131,19 @@ class UserEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/viewUser/' + this.state.userId).then(result => {
+      axios.get('/category/viewCategory/' + this.state.categoryId).then(result => {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          this.setState({ editUser: result.data.result});
-          this.firstName.value = result.data.result.firstName;
-          this.middleName.value = result.data.result.middleName;
-          this.lastName.value = result.data.result.lastName;
-          this.userName.value = result.data.result.userName;
-          this.email.value = result.data.result.email;
+          this.setState({ editCategory: result.data.result});
+          this.categoryName.value = result.data.result.categoryName;
+          this.description.value = result.data.result.description;
+          this.parent.value = result.data.result.parent;
+          this.status.value = result.data.result.status;
+          
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -170,7 +156,7 @@ class UserEdit extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
+                <strong>Category</strong>
                 <small> Edit</small>
               </CardHeader>
               <CardBody>
@@ -178,36 +164,31 @@ class UserEdit extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">First name</Label>
-                      <Input type="text" invalid={this.state.validation.firstName.valid === false} innerRef={input => (this.firstName = input)} placeholder="First name" />
+                      <Label htmlFor="company">Category Name</Label>
+                      <Input type="text" invalid={this.state.validation.categoryName.valid === false} innerRef={input => (this.categoryName = input)} placeholder="Category Name" />
 
-                      <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
+                      <FormFeedback invalid={this.state.validation.categoryName.valid === false}>{this.state.validation.categoryName.message}</FormFeedback>
 
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="middlename">Middle name</Label>
-                      <Input type="text" innerRef={input => (this.middleName = input)} placeholder="Middle name" />
+                      <Label htmlFor="middlename">Description</Label>
+                      <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="lastname">Last name</Label>
-                      <Input type="text" innerRef={input => (this.lastName = input)} placeholder="Last name" />
+                     <FormGroup>
+					  <Label htmlFor="parent">Parent</Label>
+					   <select innerRef={input => (this.parent = input)} id="select" class="form-control" >
+						  <option value="0">Please select</option>
+						  <option value="1">Samsung</option>
+						  <option value="2">Television</option>
+						  <option value="3">Nokia</option>
+					  </select>
                     </FormGroup>
                   </Col>
                 </Row>
-                <FormGroup>
-                  <Label htmlFor="username">Username</Label>
-                  <Input type="text" invalid={this.state.validation.userName.valid === false}  innerRef={input => (this.userName = input)} placeholder="Username" />
-                  <FormFeedback invalid={this.state.validation.userName.valid === false}>{this.state.validation.userName.message}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="username">Email</Label>
-                  <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
-                  <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
-                </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
@@ -228,4 +209,4 @@ class UserEdit extends Component {
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
 // };
-export default UserEdit;
+export default CategoryEdit;

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const productController= require('../controllers/productController')
+const productController = require('../controllers/productController')
 router.post('/create',productController.create)
 //router.get('/product',productController.product)
 router.get('/viewProduct/:id',productController.viewProduct)

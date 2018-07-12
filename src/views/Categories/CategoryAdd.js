@@ -90,7 +90,6 @@ class CategoryAdd extends Component {
   }
 
   render() {
-
     return (
       <div className="animated fadeIn">
         <Row>
@@ -138,7 +137,6 @@ class CategoryAdd extends Component {
 
 
                 </FormGroup>
-
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

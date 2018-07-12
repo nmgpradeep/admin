@@ -188,6 +188,7 @@ class DonationEdit extends Component {
               <CardHeader>
                 <strong>Donation</strong>
                 <small> Edit</small>
+                <Link to="/donations" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
               

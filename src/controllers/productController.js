@@ -68,15 +68,13 @@ const create = (req, res) => {
  *  Date	: June 18, 2018
  */
 /// function to list all products
-const allProducts = (req, res) => {
-	console.log('asdf');
+const allProducts = (req, res) => {	
     var perPage = 1;//constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     Product.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
-      .exec(function(err, products) {
-		 // console.log('<product liiiiiiiiiiiii>',products);
+      .exec(function(err, products) {		 
           Product.count().exec(function(err, count) {
             if (err) return next(err)
               return res.json({
