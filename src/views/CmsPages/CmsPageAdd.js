@@ -120,10 +120,7 @@ class CmsPageAdd extends Component {
 		.then(response => {
 			console.log(response);
 		});
-		
-		
-		//console.log('HHH', this.bannerImage.files[0].name);
-		//form.append('bannerImage', fs.createReadStream(this.bannerImage.files[0].name));
+	
         let newPage = this.state.newPage;
         newPage.pageTitle = this.pageTitle.value;
         newPage.pageHeading = this.pageHeading.value;

@@ -28,6 +28,12 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
+var FD = require('form-data');
+var fs = require('fs');
+
 // import PropTypes from 'prop-types';
 class ProductEdit extends Component {
   constructor(props){
@@ -69,7 +75,13 @@ class ProductEdit extends Component {
         }
       }
     };
+    this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
   }
+  
+   categoryhandleContentChange(value) {			
+      this.setState({categories:value })    
+  } 
+  
   cancelHandler(){
     this.props.history.push("/products");
   }
@@ -119,8 +131,7 @@ class ProductEdit extends Component {
         editProduct.size = this.size.value;
         editProduct.color = this.color.value;
         editProduct.brand = this.brand.value;       
-        editProduct.productAge = this.productAge.value;
-        //console.log('<edit data>',editProduct);
+        editProduct.productAge = this.productAge.value;        
         axios.put('/product/updateProduct', editProduct).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/products");
@@ -131,26 +142,17 @@ class ProductEdit extends Component {
 
   componentDidMount() {  	 
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
-        if(result.data.code == '200'){
-          this.setState({ editProduct: result.data.result});
-          this.productName.value = result.data.result.productName;
-          this.description.value = result.data.result.description;
-          this.size.value = result.data.result.size;
-          this.color.value = result.data.result.color;
-          this.brand.value = result.data.result.brand;
-          this.productAge.value = result.data.result.productAge;
-        }
+		  console.log('Results Data',result);       
       })     
        axios.get('/category/categories').then(result => {
         if(result.data.code == '200'){
           this.setState({
             categories: result.data.result,            
           });
-        }
-        //console.log(this.state.categories);
+        }        
       })
-      axios.get('/user/users/1' ).then(result => {
-	  console.log('<<<<<<<<<<<<<<<<<<<<usersssss>',result);
+      
+      axios.get('/user/users/1' ).then(result => {	 
       if(result.data.code ===200){
         this.setState({
           users: result.data.result,         
@@ -200,7 +202,8 @@ class ProductEdit extends Component {
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
-                  <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
+                    <Input type="textarea" placeholder="Description" required/>
+                     
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
