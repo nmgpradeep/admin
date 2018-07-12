@@ -13,6 +13,8 @@ const subscription = require('./routes/subscription')
 const donation = require('./routes/donation')
 const advertisement = require('./routes/advertisement')
 const testimonial = require('./routes/testimonial')
+const brand = require('./routes/brand')
+const size = require('./routes/size')
 const page = require("./routes/page")
 const trade = require("./routes/trade")
 const transaction = require("./routes/transaction")
@@ -44,6 +46,8 @@ app.use('/subscription',subscription);
 app.use('/donation',donation);
 app.use('/advertisement',advertisement);
 app.use('/testimonial',testimonial)
+app.use('/brand',brand)
+app.use('/size',size)
 app.use('/page',page);
 app.use('/trade',trade);
 app.use('/transaction',transaction);

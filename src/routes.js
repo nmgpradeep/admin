@@ -358,7 +358,36 @@ const AddonAdd = Loadable({
 const AddonEdit = Loadable({
   loader: () => import('./views/Subscriptions/AddonEdit'),
   loading: Loading,
+});
+
+//loader for Brands by Saurabh
+const Brands = Loadable({
+  loader: () => import('./views/Attributes/Brands'),
+  loading: Loading,
+});
+const BrandAdd = Loadable({
+  loader: () => import('./views/Attributes/BrandAdd'),
+  loading: Loading,
+});
+const BrandEdit = Loadable({
+  loader: () => import('./views/Attributes/BrandEdit'),
+  loading: Loading,
+});
+
+//loader for Size by Saurabh
+const Sizes = Loadable({
+  loader: () => import('./views/Attributes/Sizes'),
+  loading: Loading,
+});
+const SizeAdd = Loadable({
+  loader: () => import('./views/Attributes/SizeAdd'),
+  loading: Loading,
 })
+const SizeEdit = Loadable({
+  loader: () => import('./views/Attributes/SizeEdit'),
+  loading: Loading,
+})
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -417,6 +446,14 @@ const routes = [
   { path: '/testimonial/edit/:id', name: 'Edit Testimonial', component: TestimonialEdit},
   { path: '/testimonial/view/:id', name: 'View Testimonial', component: TestimonialView},
   { path: '/testimonial', name: 'Testimonial', component: Testimonials},
+
+  { path: '/brand/add', name: 'Add Brand', component: BrandAdd},
+  { path: '/brand/edit/:id', name: 'Edit Brand', component: BrandEdit},
+  { path: '/brand', name: 'Brand', component: Brands},
+
+  { path: '/size/add', name: 'Add Sizes', component: SizeAdd},
+  { path: '/size/edit/:id', name: 'Edit Sizes', component: SizeEdit},
+  { path: '/size', name: 'Sizes', component: Sizes},
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },
