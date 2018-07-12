@@ -27,15 +27,21 @@ import {
   Row,
 } from 'reactstrap';
 // import PropTypes from 'prop-types';
-class UserEdit extends Component {
+class AdminProfile extends Component {
   constructor(props){
     super(props);
     this.firstName = React.createRef();
     this.middleName = React.createRef();
     this.lastName = React.createRef();
-    this.username = React.createRef();
     this.email = React.createRef();
-    let adminId = '1'; //userType
+    this.phoneNumber = React.createRef();
+    this.address = React.createRef();
+    this.city = React.createRef();
+    this.state = React.createRef();
+    this.country = React.createRef();
+    this.zipCode = React.createRef();
+    this.subscriptionPlan = React.createRef();
+    let adminId = this.props.match.params.id
     this.state = {
       editUser: {},
       adminId: adminId,
@@ -78,23 +84,23 @@ class UserEdit extends Component {
     };
   }
   cancelHandler(){
-    this.props.history.push("/users");
+    this.props.history.push("/dashboard");
   }
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
       for(let field in this.state.validation) {
         let lastValidFieldFlag = true;
-        let addUser = this.state.validation;
-        addUser[field].valid = null;
+        let addadmin = this.state.validation;
+        addadmin[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
               if(lastValidFieldFlag === true && this[field].value.length === 0){
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
-                  addUser[field].valid = false;
-                  addUser[field].message = addUser[field].rules[fieldCheck].message;
+                  addadmin[field].valid = false;
+                  addadmin[field].message = addadmin[field].rules[fieldCheck].message;
 
                }
               break;
@@ -102,40 +108,46 @@ class UserEdit extends Component {
               if(lastValidFieldFlag === true && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this[field].value)){
                 lastValidFieldFlag = false;
                 formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
+                addadmin[field].valid = false;
+                addadmin[field].message = addadmin[field].rules[fieldCheck].message;
               }
               break;
             case 'minLength':
               if(lastValidFieldFlag === true && this[field].value.length < parseInt(this.state.validation[field].rules[fieldCheck].length)){
                 lastValidFieldFlag = false;
                 formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
+                addadmin[field].valid = false;
+                addadmin[field].message = addadmin[field].rules[fieldCheck].message;
               }
               break;
             case 'matchWith':
               if(lastValidFieldFlag === true && this[field].value !== this[this.state.validation[field].rules[fieldCheck].matchWithField].value){
                 lastValidFieldFlag = false;
                 formSubmitFlag = false;
-                addUser[field].valid = false;
-                addUser[field].message = addUser[field].rules[fieldCheck].message;
+                addadmin[field].valid = false;
+                addadmin[field].message = addadmin[field].rules[fieldCheck].message;
               }
               break;
           }
         }
-        this.setState({ validation: addUser});
+        this.setState({ validation: addadmin});
       }
 
       if(formSubmitFlag){
-        let editUser = this.state.editUser;
-        editUser.firstName = this.firstName.value;
-        editUser.middleName = this.middleName.value;
-        editUser.lastName = this.lastName.value;
-        editUser.userName = this.userName.value;
-        editUser.email = this.email.value;
-        console.log('<user id>',editUser);
-        axios.post('/user/updateAdmin', editUser).then(result => {
+        let editAdmin = this.state.editAdmin;
+        editAdmin.firstName = this.firstName.value;
+        editAdmin.middleName = this.middleName.value;
+        editAdmin.lastName = this.lastName.value;
+        editAdmin.email = this.email.value;
+        editAdmin.phoneNumber = this.email.value;
+        editAdmin.address = this.email.value;
+        editAdmin.city = this.email.value;
+        editAdmin.state = this.email.value;
+        editAdmin.country = this.email.value;
+        editAdmin.zipCode = this.email.value;
+        editAdmin.subscriptionPlan = this.email.value;
+        console.log('<user id>',editAdmin);
+        axios.post('/user/updateAdmin', editAdmin).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
           }
@@ -146,16 +158,22 @@ class UserEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/user/viewAdmin/' + this.state.adminId).then(result => {
+      axios.get('/user/viewAdmin/').then(result => {
 		  
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          this.setState({ editUser: result.data.result});
+          this.setState({ editAdmin: result.data.result});
           this.firstName.value = result.data.result.firstName;
           this.middleName.value = result.data.result.middleName;
           this.lastName.value = result.data.result.lastName;
-          this.userName.value = result.data.result.userName;
           this.email.value = result.data.result.email;
+          this.phoneNumber.value = result.data.result.phoneNumber;
+          this.address.value = result.data.result.address;
+          this.city.value = result.data.result.city;
+          this.state.value = result.data.result.state;
+          this.country.value = result.data.result.country;
+          this.zipCode.value = result.data.result.zipCode;
+          this.subscriptionPlan.value = result.data.result.subscriptionPlan;
         }
       })
       .catch((error) => {
@@ -172,8 +190,7 @@ class UserEdit extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
-                <small> Edit</small>
+                <strong>Admin</strong>
               </CardHeader>
               <CardBody>
               <Form noValidate>
@@ -201,14 +218,39 @@ class UserEdit extends Component {
                   </Col>
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="username">Username</Label>
-                  <Input type="text" invalid={this.state.validation.userName.valid === false}  innerRef={input => (this.userName = input)} placeholder="Username" />
-                  <FormFeedback invalid={this.state.validation.userName.valid === false}>{this.state.validation.userName.message}</FormFeedback>
+                  <Label htmlFor="username">email</Label>
+                  <Input type="email" invalid={this.state.validation.email.valid === false}  innerRef={input => (this.email = input)} placeholder="Username" />
+                  <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="username">Email</Label>
-                  <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
-                  <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
+                  <Label htmlFor="username">Address</Label>
+                  <Input type="text" innerRef={input => (this.address = input)} placeholder="Email" />
+                  {/* <FormFeedback invalid={this.state.validation.address.valid === false}>{this.state.validation.address.message}</FormFeedback> */}
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="username">City</Label>
+                  <Input type="text" innerRef={input => (this.city = input)} placeholder="Email" />
+                  {/* <FormFeedback invalid={this.state.validation.city.valid === false}>{this.state.validation.city.message}</FormFeedback> */}
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="username">State</Label>
+                  <Input type="text"  innerRef={input => (this.state = input)} placeholder="Email" />
+                  {/* <FormFeedback invalid={this.state.validation.state.valid === false}>{this.state.validation.state.message}</FormFeedback> */}
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="username">Country</Label>
+                  <Input type="text"  innerRef={input => (this.country = input)} placeholder="Email" />
+                  {/* <FormFeedback invalid={this.state.validation.country.valid === false}>{this.state.validation.country.message}</FormFeedback> */}
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="username">Zip Code</Label>
+                  <Input type="number" innerRef={input => (this.zipCode = input)} placeholder="Email" />
+                  {/* <FormFeedback invalid={this.state.validation.zipCode.valid === false}>{this.state.validation.zipCode.message}</FormFeedback> */}
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="username">Subsciption Plan</Label>
+                  <Input type="text" innerRef={input => (this.phoneNumber = input)} placeholder="Email" />
+                  {/* <FormFeedback invalid={this.state.validation.phoneNumber.valid === false}>{this.state.validation.phoneNumber.message}</FormFeedback> */}
                 </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
@@ -230,4 +272,4 @@ class UserEdit extends Component {
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
 // };
-export default UserEdit;
+export default AdminProfile;

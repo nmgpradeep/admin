@@ -66,8 +66,40 @@ const newTrade = (req, res) => {
         }
       })
 }
+
+/*
+  *Author : Saurabh Agarwal
+  *Date : July 10, 2018
+*/
+//Function to update Status of trades
+const updateStatus = (req, res) => { 
+	console.log("REQ0",req.body)
+  Trades.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+             result: result
+            });
+      }
+    }    
+  })
+}
+
   
 module.exports = {
 	trades,
-	newTrade	
+  newTrade,
+  updateStatus
 }

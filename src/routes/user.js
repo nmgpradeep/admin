@@ -11,6 +11,8 @@ router.get('/viewUser/:id',userController.viewUser);
 //router.get('/viewPage/:id',pageController.viewPage);
 router.post('/updateUser',userController.updateUser);
 router.post('/changeStatus',userController.changeStatus);
-//router.put('/updateAdmin',userController.updateAdmin);
 router.delete('/deleteUser/:id',userController.deleteUser);
+// router.put('/viewAdmin/:id',userController.viewAdmin);
+// router.put('/updateAdmin',userController.updateAdmin);
+
 module.exports = router;
