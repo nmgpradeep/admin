@@ -106,6 +106,7 @@ fileChangedHandler = (event) => {
       }
       if(formSubmitFlag){
 		console.log("state",this.state)
+
 		//console.log('IMAGE', this.bannerImage.files[0]);
 		const data = new FD();		
 		console.log('FORM DATA START', this.pageTitle.value);
@@ -130,6 +131,78 @@ fileChangedHandler = (event) => {
 		  //~ }
 		//~ };
         axios.post('/page/newPage', data).then(result => {
+
+		console.log('IMAGE', this.bannerImage.files[0]);
+		const data = new FD();
+		//console.log('FORM DATA START', this.pageTitle.value);
+		data.append('pageTitle', fs.createReadStream(this.pageTitle.value));
+		data.append('pageHeading', fs.createReadStream(this.pageHeading.value));
+		data.append('description', fs.createReadStream(this.state.text));
+		data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
+				console.log("data",data);
+		let options = {
+		method: 'POST',
+			url: 'http://localhost:5001/cmsPage/upload',
+		headers: {
+			'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+		},
+		data
+		};
+
+		return axios(options)
+		.then(response => {
+			console.log(response);
+		});
+		
+		
+		//console.log('HHH', this.bannerImage.files[0].name);
+		//form.append('bannerImage', fs.createReadStream(this.bannerImage.files[0].name));
+        let newPage = this.state.newPage;
+        newPage.pageTitle = this.pageTitle.value;
+        newPage.pageHeading = this.pageHeading.value;
+        newPage.description = this.state.text;
+        newPage.bannerImage = this.bannerImage.files[0];   
+        let axiosConfig = {
+		  headers: {
+			  'Content-Type': 'multipart/form-data'
+		  }
+		};
+        axios.post('/page/newPage', newPage, axiosConfig).then(result => {
+
+		console.log('IMAGE', this.bannerImage.files[0]);
+		const data = new FD();
+		//console.log('FORM DATA START', this.pageTitle.value);
+		data.append('pageTitle', fs.createReadStream(this.pageTitle.value));
+		data.append('pageHeading', fs.createReadStream(this.pageHeading.value));
+		data.append('description', fs.createReadStream(this.state.text));
+		data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
+				console.log("data",data);
+		let options = {
+		method: 'POST',
+			url: 'http://localhost:5001/cmsPage/upload',
+		headers: {
+			'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+		},
+		data
+		};
+
+		return axios(options)
+		.then(response => {
+			console.log(response);
+		});
+	
+        let newPage = this.state.newPage;
+        newPage.pageTitle = this.pageTitle.value;
+        newPage.pageHeading = this.pageHeading.value;
+        newPage.description = this.state.text;
+        newPage.bannerImage = this.bannerImage.files[0];   
+        let axiosConfig = {
+		  headers: {
+			  'Content-Type': 'multipart/form-data'
+		  }
+		};
+        axios.post('/page/newPage', newPage, axiosConfig).then(result => {
+
           if(result.data.code === 200){
             this.props.history.push("/pages");
           }

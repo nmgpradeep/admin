@@ -70,7 +70,12 @@ export default {
           name: 'Trades',
           url: '/trades',
           icon: 'icon-calculator',
-        },              
+        },
+        {
+          name: 'New Trade',
+          url: '/trades/add',
+          
+        }              
       ],
     },
     {
@@ -129,6 +134,24 @@ export default {
         },     
       ],
     },
+    {
+      name: 'Attributes',
+      url: '/attributes',
+      icon: 'icon-layers',
+      children: [
+        {
+          name: 'Brands',
+          url: '/brand',
+          icon: 'icon-layers',
+        },
+        {
+          name: 'Sizes',
+          url: '/size',
+          icon: 'icon-layers'
+        },     
+      ],
+    },
+
       {
       name: 'Manage Ads',
       url: '/advertisement',

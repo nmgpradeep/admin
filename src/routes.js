@@ -180,7 +180,11 @@ const UserEdit = Loadable({
   loading: Loading,
 });
 const AdminProfile = Loadable({
-  loader: () => import('./views/Users/AdminProfile'),
+  loader: () => import('./views/AdminProfile/Profile'),
+  loading: Loading,
+});
+const EditProfile = Loadable({
+  loader: () => import('./views/AdminProfile/EditProfile'),
   loading: Loading,
 });
 const UserAdd = Loadable({
@@ -228,6 +232,14 @@ const ProductView = Loadable({
 //~ //loader for product
 const Trades = Loadable({
   loader: () => import('./views/Trades/Trades'),
+  loading: Loading,
+});
+const NewTrade = Loadable({
+  loader: () => import('./views/Trades/TradesAdd'),
+  loading: Loading,
+});
+const TradesView = Loadable({
+  loader: () => import ('./views/Trades/TradesView.js'),
   loading: Loading,
 });
 
@@ -346,7 +358,36 @@ const AddonAdd = Loadable({
 const AddonEdit = Loadable({
   loader: () => import('./views/Subscriptions/AddonEdit'),
   loading: Loading,
+});
+
+//loader for Brands by Saurabh
+const Brands = Loadable({
+  loader: () => import('./views/Attributes/Brands'),
+  loading: Loading,
+});
+const BrandAdd = Loadable({
+  loader: () => import('./views/Attributes/BrandAdd'),
+  loading: Loading,
+});
+const BrandEdit = Loadable({
+  loader: () => import('./views/Attributes/BrandEdit'),
+  loading: Loading,
+});
+
+//loader for Size by Saurabh
+const Sizes = Loadable({
+  loader: () => import('./views/Attributes/Sizes'),
+  loading: Loading,
+});
+const SizeAdd = Loadable({
+  loader: () => import('./views/Attributes/SizeAdd'),
+  loading: Loading,
 })
+const SizeEdit = Loadable({
+  loader: () => import('./views/Attributes/SizeEdit'),
+  loading: Loading,
+})
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -356,17 +397,23 @@ const routes = [
   
   { path: '/users/add', exact: true,name: 'Add User', component: UserAdd },
   { path: '/users/edit/:id',name: 'Edit User', component: UserEdit },
-  //{ path: '/profile',name: 'Update Profile', component: AdminProfile },
   { path: '/users/view/:id', name: 'View User', component: UserView },  
   { path: '/users', name: 'Users', component: Users },  
+  { path: '/profile',name: 'Profile', component: AdminProfile },
+  { path: '/editprofile', name: 'Edit Profile', component: EditProfile},
+  
   { path: '/categories/add', exact: true,name: 'Add Category', component: CategoryAdd },
   { path: '/categories/edit/:id', name: 'Edit Category', component: CategoryEdit },
   { path: '/categories/view/:id', name: 'View Category', component: CategoryView },
   { path: '/categories', name: 'Categories', component: Categories },  
+  
   { path: '/products/add', exact: true,name: 'Add Product', component: ProductAdd },
   { path: '/products/edit/:id',name: 'Edit Product', component: ProductEdit },
   { path: '/products/view/:id', name: 'View Product', component: ProductView },
   { path: '/products', name: 'Products', component: Products },
+  
+  { path: '/trades/add', name: 'Trades Add', component: NewTrade},
+  { path: '/trades/view/:id', name: 'Trades View', component: TradesView},
   { path: '/trades', name: 'Trades', component: Trades },
 
   { path: '/donations/add', exact: true,name: 'Add Donation', component: DonationAdd },
@@ -399,6 +446,14 @@ const routes = [
   { path: '/testimonial/edit/:id', name: 'Edit Testimonial', component: TestimonialEdit},
   { path: '/testimonial/view/:id', name: 'View Testimonial', component: TestimonialView},
   { path: '/testimonial', name: 'Testimonial', component: Testimonials},
+
+  { path: '/brand/add', name: 'Add Brand', component: BrandAdd},
+  { path: '/brand/edit/:id', name: 'Edit Brand', component: BrandEdit},
+  { path: '/brand', name: 'Brand', component: Brands},
+
+  { path: '/size/add', name: 'Add Sizes', component: SizeAdd},
+  { path: '/size/edit/:id', name: 'Edit Sizes', component: SizeEdit},
+  { path: '/size', name: 'Sizes', component: Sizes},
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },

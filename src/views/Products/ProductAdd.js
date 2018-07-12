@@ -29,6 +29,11 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
+var FD = require('form-data');
+var fs = require('fs');
+
 // import PropTypes from 'prop-types';
 class ProductAdd extends Component {
   constructor(props){
@@ -92,14 +97,12 @@ class ProductAdd extends Component {
         let addProduct = this.state.addProduct;
         addProduct.productName = this.productName.value;
         addProduct.description = this.description.value;
-        //addProduct.productCategory = this.category.value;
         addProduct.size = this.size.value;
         addProduct.color = this.color.value;
         addProduct.brand = this.brand.value;       
         addProduct.productAge = this.productAge.value;
         addProduct.userId = '5b236b4ad73fe224efedae86';
-        addProduct.productCategory = '5b3ca9c23d43f138959e3224';       
-        //console.log('<<<MMMMMMMMMMMMMMm>',addProduct);
+        addProduct.productCategory = '5b3ca9c23d43f138959e3224';  
         
         axios.post('/product/create', addProduct).then(result => {
           if(result.data.code == '200'){
@@ -175,10 +178,10 @@ class ProductAdd extends Component {
                     </Col>
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="description">Description</Label>
-                  <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
+                  <Label htmlFor="description">Description</Label>                  
+                    <Input type="textarea" placeholder="Description" required/>
+                    
                 </FormGroup>
-
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
                    <select innerRef={input => (this.category = input)} id="select"  class="form-control"  onChange={this.categoryhandleContentChange}>	                   

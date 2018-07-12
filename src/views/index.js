@@ -22,6 +22,9 @@ import { Advertisements, Advertisement, AdvertisementEdit} from './Advertisement
 import { Donations, Donation, DonationEdit} from './Donation'
 import { Testimonials, Testimonial, TestimonialEdit} from './Testimonial'
 import { Addon, Addons, AddonEdit, Subscription, Subscriptions, SubscriptionEdit} from './Subscriptions'
+import { Profile, EditProfile} from './AdminProfile'
+import { Trades, TradesAdd, TradesView} from './Trades'
+import { Brand, Brands, BrandEdit, Sizes, Size, SizeEdit} from './Attributes'
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
@@ -33,6 +36,17 @@ import Widgets from './Widgets';
 
 
 export {
+  Size,
+  Sizes,
+  SizeEdit,
+  Brand,
+  Brands, 
+  BrandEdit,
+  Trades,
+  Trade,
+  TradesAdd,
+  Profile,
+  EditProfile,
   Subscription,
   Subscriptions,
   SubscriptionEdit,
