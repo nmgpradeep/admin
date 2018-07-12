@@ -6,24 +6,26 @@ import Moment from 'moment';
 class Trade extends Component {
   constructor(props){
     super(props);
-    this.props.user.tradeStatus = 1;
+    
   }
   render() {
     return (
-      <tr key={this.props.user._id}>
+      <tr key={this.props.trade._id}>
         <td>1</td>
-        <td>{this.props.user.senderId}</td>
-        <td>{this.props.user.receiverId}</td>
-        <td>{this.props.user.senderProductId}</td><td>{this.props.user.receiverProductId}</td>
-        <td>{Moment(this.props.user.createdAt).format('d MMM YYYY')}</td>
+        <td>{this.props.trade.senderId}</td>
+        
+        <td>{this.props.trade.senderProductId}</td>
+        <td>{this.props.trade.receiverId}</td>
+        <td>{this.props.trade.receiverProductId}</td>
+        <td>{Moment(this.props.trade.createdAt).format('d MMM YYYY')}</td>
         <td>
-          <Badge  color={(this.props.user.tradeStatus === '1')?'success':'danger'}>
-            {(this.props.user.tradeStatus === '1')?'Active':'Inctive'}
+          <Badge onClick={this.props.changeStatus.bind(this, this.props.trade)} color={(this.props.trade.status == '1')?'success':'danger'}>
+            {(this.props.trade.status == '1')?'Active':'Inctive'}
           </Badge>
         </td>
         <td>
          
-          <Link to={'#'}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
+          <Link to={'/trades/view/' + this.props.trade._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
          
         </td>
       </tr>

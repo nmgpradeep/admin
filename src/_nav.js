@@ -70,7 +70,12 @@ export default {
           name: 'Trades',
           url: '/trades',
           icon: 'icon-calculator',
-        },              
+        },
+        {
+          name: 'New Trade',
+          url: '/trades/add',
+          
+        }              
       ],
     },
     {

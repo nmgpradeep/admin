@@ -109,7 +109,7 @@ class DonationEdit extends Component {
     };
   }
   cancelHandler(){
-    this.props.history.push("/donation");
+    this.props.history.push("/donations");
   }
   submitHandler(e){
       e.preventDefault();
