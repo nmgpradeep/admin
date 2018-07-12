@@ -43,6 +43,7 @@ class CmsPageAdd extends Component {
     this.state = {
       newPage: {},
       text: '',
+      selectedFile: null,
       validation:{
         pageTitle:{
           rules: {
@@ -67,11 +68,17 @@ class CmsPageAdd extends Component {
       }
     };
     this.handleContentChange = this.handleContentChange.bind(this)
+     this.fileChangedHandler = this.fileChangedHandler.bind(this)
   }
   handleContentChange(value) {	  
     this.setState({ text: value })
     
   }
+  
+
+fileChangedHandler = (event) => {
+	this.setState({selectedFile: event.target.files[0]})
+}
   cancelHandler(){
     this.props.history.push("/pages");
   }
@@ -99,42 +106,30 @@ class CmsPageAdd extends Component {
       }
       if(formSubmitFlag){
 		console.log("state",this.state)
-		console.log('IMAGE', this.bannerImage.files[0]);
-		const data = new FD();
-		//console.log('FORM DATA START', this.pageTitle.value);
-		data.append('pageTitle', fs.createReadStream(this.pageTitle.value));
-		data.append('pageHeading', fs.createReadStream(this.pageHeading.value));
-		data.append('description', fs.createReadStream(this.state.text));
-		data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
-				console.log("data",data);
-		let options = {
-		method: 'POST',
-			url: 'http://localhost:5001/cmsPage/upload',
-		headers: {
-			'Content-Type': `multipart/form-data; boundary=${data._boundary}`
-		},
-		data
-		};
-
-		return axios(options)
-		.then(response => {
-			console.log(response);
-		});
-		
-		
+		//console.log('IMAGE', this.bannerImage.files[0]);
+		const data = new FD();		
+		console.log('FORM DATA START', this.pageTitle.value);
+		data.append('pageTitle', this.pageTitle.value);
+		data.append('pageHeading', this.pageHeading.value);
+		data.append('description', this.state.text);
+		//data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
+		data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
+			
+		console.log("data",data);
+				
 		//console.log('HHH', this.bannerImage.files[0].name);
 		//form.append('bannerImage', fs.createReadStream(this.bannerImage.files[0].name));
-        let newPage = this.state.newPage;
-        newPage.pageTitle = this.pageTitle.value;
-        newPage.pageHeading = this.pageHeading.value;
-        newPage.description = this.state.text;
-        newPage.bannerImage = this.bannerImage.files[0];   
-        let axiosConfig = {
-		  headers: {
-			  'Content-Type': 'multipart/form-data'
-		  }
-		};
-        axios.post('/page/newPage', newPage, axiosConfig).then(result => {
+        //~ let newPage = this.state.newPage;
+        //~ newPage.pageTitle = this.pageTitle.value;
+        //~ newPage.pageHeading = this.pageHeading.value;
+        //~ newPage.description = this.state.text;
+        //~ newPage.bannerImage = this.bannerImage.files[0];   
+        //~ let axiosConfig = {
+		  //~ headers: {
+			  //~ 'Content-Type': 'multipart/form-data'
+		  //~ }
+		//~ };
+        axios.post('/page/newPage', data).then(result => {
           if(result.data.code === 200){
             this.props.history.push("/pages");
           }
@@ -181,7 +176,7 @@ class CmsPageAdd extends Component {
                    <Col xs="4" sm="12">					
                     <FormGroup>
                       <Label htmlFor="lastname">Banner Image</Label>
-                      <Input type="file" innerRef={input => (this.bannerImage = input)} placeholder="Banner Image" />
+                      <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
                     </FormGroup>
                   </Col>
                 </Row>              

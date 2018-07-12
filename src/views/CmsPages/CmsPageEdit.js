@@ -37,12 +37,15 @@ class CmsPageEdit extends Component {
     this.pageTitle = React.createRef();
     this.pageHeading = React.createRef();
     this.description = React.createRef();
+  
     this.bannerImage = React.createRef();    
     let pageId = this.props.match.params.id;
     
     this.state = {
       editPage: {},
       pageId: pageId,
+      text: '',
+      bannerImage :'',
       validation:{
         pageTitle:{
           rules: {
@@ -67,8 +70,13 @@ class CmsPageEdit extends Component {
       }
     };
     //this.handleContentChange = this.handleContentChange.bind(this)
+      this.handleContentChange = this.handleContentChange.bind(this)
   }  
-  
+ 
+  handleContentChange(value) {	  
+    this.setState({ text: value })
+    
+  }  
   cancelHandler(){
     this.props.history.push("/pages");
   }
@@ -100,22 +108,25 @@ class CmsPageEdit extends Component {
         editPage.pageTitle = this.pageTitle.value;
         editPage.pageHeading = this.pageHeading.value;
         axios.put('/page/updatePage', editPage).then(result => {
-         if(result.data.code == '200'){
+         if(result.data.code === 200){
             this.props.history.push("/pages");
           }
         });
       }
-    } 
+    }
+
 
    componentDidMount() {   
-      axios.get('/page/viewPage/' + this.state.pageId).then(result => {		  
-        if(result.data.code == '200'){
-		  this.setState({ editPage: result.data.result});
-          this.pageTitle.value = result.data.result.pageTitle;
-          this.pageHeading.value = result.data.result.pageHeading;
-          this.bannerImage.value = result.data.result.bannerImage;         
-          this.description.value = result.data.result.description;  
-          //this.setState({ text: result.data.result.description })
+      axios.get('/page/viewPage/' + this.state.pageId).then(result => {			  
+        if(result.data.code === 200){			
+		    this.setState({ editPage: result.data.result});
+			this.pageTitle.value = result.data.result.pageTitle;
+			this.pageHeading.value = result.data.result.pageHeading;          
+			this.setState({ bannerImage: result.data.result.bannerImage});
+			this.setState({ text: result.data.result.description});
+          //~ this.setState((oldState) => ({ text: 'TYETTTETETETET' }), function(){
+			//~ alert(this.state.text);  
+		  //~ })  		
         }
        
       })
@@ -162,7 +173,7 @@ class CmsPageEdit extends Component {
                 </Row>
                 <FormGroup>
                   <Label htmlFor="content">Contents</Label>
-                    <ReactQuill  innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleChange}
+                    <ReactQuill defaultValue={this.state.editorHtml} innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleChange}
                    />
                 </FormGroup> 
                 <Row>

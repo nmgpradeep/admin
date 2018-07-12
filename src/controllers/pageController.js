@@ -17,102 +17,82 @@ var gm = require('gm'); //GraphicsMagick for node.js
  **/
 ///function to save new Page in the list
 const create = (req, res) => {
-  console.log('<<<<<<<<<<<', req)
-  if (!req.body.pageTitle) {
-    return res.send({
-      code: httpResponseCode.BAD_REQUEST,
-      message: httpResponseMessage.REQUIRED_DATA
-    })
-  }
-  const data = req.body;
-  const flag = validation.validate_all_request(data, ['pageTitle']);
-  if (flag) {
-    return res.json(flag);
-  }
-      let now = new Date();
-    
-      //~ Page.create(req.body, (err, result) => {
-		  //~ console.log('RES-Page',err, result);
-        //~ if (err) {
-          //~ return res.send({
-			//~ errr : err,
-            //~ code: httpResponseCode.BAD_REQUEST,
-            //~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
-          //~ })
-        //~ } else {
-         
-          //~ return res.send({
-            //~ code: httpResponseCode.EVERYTHING_IS_OK,
-            //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
-            //~ result: result
-          //~ })
-
-        //~ }
-      //~ })
-      
-      //********************************/
-       //~ var form = new multiparty.Form();
-  //~ form.parse(req, function(err, data, files) {
-      
-       //~ if ((files.bannerImage) && files.bannerImage.length > 0 && files.bannerImage != '') {
-        //~ var fileName = files.bannerImage[0].originalFilename;
-        //~ var ext = path.extname(fileName);
-        //~ var newfilename = files.bannerImage[0].fieldName + '-' + Date.now() + ext;
-
-        //~ fs.readFile(files.bannerImage[0].path, function(err, fileData) {
-
-          //~ if (err) {
-            //~ res.send(err);
-            //~ return;
-          //~ }
-          //~ fileName = files.bannerImage[0].originalFilename;
-          //~ ext = path.extname(fileName);
-          //~ newfilename = newfilename;
-          //~ pathNew = constant.cmsimage_path + newfilename;
-          //~ //return res.json(process.cwd());
-          //~ fs.writeFile(pathNew, fileData, function(err) {
-            //~ if (err) {
-              //~ res.send(err);
-              //~ return;
-            //~ }
-            //~ console.log('Image Uploaded');
-
-          //~ });
-        //~ });
-      //~ }
-      //~ return res.send('DONE');
-  //~ }
   var form = new multiparty.Form();
-    var size = '';
-var fileName = '';
-form.on('part', function(part){
-    if(!part.filename) return;
-    size = part.byteCount;
-    fileName = part.filename;
-});
-form.on('file', function(name,file){
-    console.log(file.path);
-    console.log(__dirname);
-    console.log('filename: ' + fileName);
-    console.log('fileSize: '+ (size / 1024));
-    var tmp_path = file.path
-    var target_path = constant.cmsimage_path + fileName;
-   // var thumbPath = constant.cmsimage_path';
-    fs.renameSync(tmp_path, target_path, function(err) {
-        if(err) console.error(err.stack);
-    });
-    res.redirect('/uploads/fullsize/' + fileName);
-        console.log(target_path);
-    /*gm(tmp_path)
-        .resize(150, 150)
-        .noProfile()
-        .write(thumbPath + 'small.png', function(err) {
-            if(err) console.error(err.stack);       
-        });*/
-});
-form.parse(req);
-    
-    
+  form.parse(req, function(err, data, files) {
+	  //console.log('Multiple', err, fields, files);
+	//console.log('FIELD', fields.pageTitle[0]);
+  
+	  if (!data.pageTitle) {
+		return res.send({
+		  code: httpResponseCode.BAD_REQUEST,
+		  message: httpResponseMessage.REQUIRED_DATA
+		})
+	  }	  
+	  const flag = validation.validate_all_request(data, ['pageTitle']);
+	  if (flag) {
+		return res.json(flag);
+	  }
+		  let now = new Date();		
+		  Page.create(data, (err, result) => {
+			  console.log('RES-Page',err, result);
+			if (err) {
+			  return res.send({
+				errr : err,
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  })
+			} else {
+			  console.log('Created-Page',err, result);
+			 // check file and upload if exist 
+			 if ((files.bannerImage) && files.bannerImage.length > 0 && files.bannerImage != '') {
+				var fileName = files.bannerImage[0].originalFilename;
+				var ext = path.extname(fileName);
+				var newfilename = files.bannerImage[0].fieldName + '-' + Date.now() + ext;
+
+				fs.readFile(files.bannerImage[0].path, function(err, fileData) {
+
+				  if (err) {
+					res.send(err);
+					return;
+				  }
+				  fileName = files.bannerImage[0].originalFilename;
+				  ext = path.extname(fileName);
+				  newfilename = newfilename;
+				  pathNew = constant.cmsimage_path + newfilename;
+				  //return res.json(process.cwd());
+				  fs.writeFile(pathNew, fileData, function(err) {
+					if (err) {
+					  res.send(err);
+					  return;
+					}          
+
+				  });
+				});
+				
+			  }
+			  console.log('result-&&&&&&&&',result)
+			  Page.update({ _id:result._id },  { "$set": { "bannerImage": newfilename } }, { new:true }, (err,fileupdate) => {
+				if(err){
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					  });
+				} else {
+				  
+					result.bannerImage = newfilename;
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					})
+				  
+				}
+			  })	  
+			  ///end file update///	  
+			}
+		  })
+		  
+ });   
     
 }
 

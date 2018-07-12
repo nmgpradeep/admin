@@ -28,5 +28,6 @@ module.exports = {
     PRODUCTS_LIST:'List of products.',
     CATEGORIES_LIST:'List of Categories.',
     LISTED_SUCCESSFULLY:'Item Listed Successfully',
-    ITEM_NOT_FOUND:'Item not found'    
+    ITEM_NOT_FOUND:'Item not found' ,
+    FILE_UPLOAD_ERROR :'Error in file uploading'  
 }

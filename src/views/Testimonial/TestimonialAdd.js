@@ -1,6 +1,7 @@
 import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import {
   Badge,
   Button,
@@ -80,18 +81,18 @@ class TestimonialAdd extends Component {
       let addTestimonial = this.state.validation;
       addTestimonial[field].valid = null;
       for(let fieldCheck in this.state.validation[field].rules){
-        switch(fieldCheck){
-          case 'notEmpty':
-            if(lastValidFieldFlag === true && this[field].value.length === 0){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addTestimonial[field].valid = false;
-                addTestimonial[field].message = addTestimonial[field].rules[fieldCheck].message;
+        //~ switch(fieldCheck){
+          //~ case 'notEmpty':
+            //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
+                //~ lastValidFieldFlag = false;
+                //~ formSubmitFlag = false;
+                //~ addTestimonial[field].valid = false;
+                //~ addTestimonial[field].message = addTestimonial[field].rules[fieldCheck].message;
 
-             }
-            break;
+             //~ }
+            //~ break;
           
-        }
+        //~ }
       }
       this.setState({ validation: addTestimonial});
     }
@@ -99,7 +100,8 @@ class TestimonialAdd extends Component {
       let addTestimonial = this.state.addTestimonial;
       addTestimonial.title = this.title.value;
       addTestimonial.description = this.description.value;
-      addTestimonial.author = this.author.value;
+      addTestimonial.author = this.state.user;
+      console.log("addTestimonial",addTestimonial)
       axios.post('/testimonial/newTestimonial', addTestimonial  ).then(result => {
         if(result.data.code == '200'){
           this.props.history.push('./Testimonial');
@@ -125,7 +127,7 @@ class TestimonialAdd extends Component {
                       <Label htmlFor="title">Title</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.title.valid === false} innerRef={input => (this.title = input)} placeholder="Title" required/>
+                      <Input type="text" invalid={this.state.validation.title.valid === false}  innerRef={input => (this.title = input)} placeholder="Title" required/>
                       <FormFeedback invalid={this.state.validation.title.valid === false}>{this.state.validation.title.message}</FormFeedback>
                       
                     </Col>
@@ -140,7 +142,7 @@ class TestimonialAdd extends Component {
                       
                     </Col>
                   </FormGroup>
-                  <FormGroup row>
+                  {/*<FormGroup row>
                     <Col md="3">
                       <Label htmlFor="author">Author</Label>
                     </Col>
@@ -149,13 +151,21 @@ class TestimonialAdd extends Component {
                       
                       <FormFeedback invalid={this.state.validation.author.valid === false}>{this.state.validation.author.message}</FormFeedback>
                     </Col>
+                  </FormGroup> */}
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Author</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <UserSelectBox />
+                    </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>

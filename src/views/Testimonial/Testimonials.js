@@ -56,7 +56,7 @@ class Testimonials extends Component {
   
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       this.loadCommentsFromServer();
   }
   testimonialDeleteHandler (id){
