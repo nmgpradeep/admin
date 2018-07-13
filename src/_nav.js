@@ -62,6 +62,23 @@ export default {
       ],
     },
     {
+      name: 'Manage Attributes',
+      url: '/attributes',
+      icon: 'icon-layers',
+      children: [
+        {
+          name: 'Brands',
+          url: '/brand',
+          icon: 'icon-layers',
+        },
+        {
+          name: 'Sizes',
+          url: '/size',
+          icon: 'icon-layers'
+        },     
+      ],
+    },
+    {
       name: 'Manage Trades',
       url: '/trades',
       icon: 'icon-calculator',
@@ -134,24 +151,7 @@ export default {
         },     
       ],
     },
-    {
-      name: 'Attributes',
-      url: '/attributes',
-      icon: 'icon-layers',
-      children: [
-        {
-          name: 'Brands',
-          url: '/brand',
-          icon: 'icon-layers',
-        },
-        {
-          name: 'Sizes',
-          url: '/size',
-          icon: 'icon-layers'
-        },     
-      ],
-    },
-
+    
       {
       name: 'Manage Ads',
       url: '/advertisement',

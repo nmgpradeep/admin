@@ -176,7 +176,7 @@ class SubscriptionAdd extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="tIA">Time Period</Label>
-                  <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Total Inventory Allowed" />
+                  <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />
                   
                 </FormGroup>
                 <FormGroup>                    
