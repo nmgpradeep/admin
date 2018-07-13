@@ -39,7 +39,7 @@ class Donations extends Component {
     })
     .catch((error) => {
     console.log('error', error)
-      if(error.response.code === 401) {
+      if(error.code === 401) {
         this.props.history.push("/login");
       }
     });

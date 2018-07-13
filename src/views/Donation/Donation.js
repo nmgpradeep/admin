@@ -11,9 +11,9 @@ class Donation extends Component {
     return (
       <tr key={this.props.donation._id}>
         <td>{this.props.donation.productName}</td>
-        <td>{this.props.donation.description}</td>
-        <td>{this.props.donation.userId}</td>
-        <td>{this.props.donation.productCategory}</td>
+        <td>{this.props.donation.description}</td>      
+        <td>{(this.props.donation.productCategory)? this.props.donation.productCategory.categoryName : ''}</td>
+        <td>{(this.props.donation.userId)? this.props.donation.userId.firstName+' '+this.props.donation.userId.lastName :''}</td>       
         <td>{this.props.donation.size}</td>
         <td>{this.props.donation.color}</td>
         <td>{this.props.donation.brand}</td>

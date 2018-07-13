@@ -1,5 +1,7 @@
 const bodyParser = require('body-parser')
 const Donation = require('../models/donation')
+const User = require('../models/User')
+const Category = require('../models/category')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -71,7 +73,12 @@ const donations = (req, res) => {
     Donation.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .populate('userId',['firstName','lastName'])
+      .populate('productCategory',['categoryName'])
       .exec(function(err, donation) {
+		 //console.log("Donated User",donation[0].userId)
+		 //console.log("Donated productCategory",donation[0].category)
+		 
           Donation.count().exec(function(err, count) {
             if (err) return next(err)
               return res.json({

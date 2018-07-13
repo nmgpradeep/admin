@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser')
 const Testimonial = require('../models/testimonial')
+const User = require('../models/User')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -65,15 +66,25 @@ const listTestimonials = (req, res) => {
 	// 			});
 	// 	  }
   //   })
+  
+  
+  
+    //~ Testimonial.find({})
+    //~ .populate('author').exec((err, posts) => {
+      //~ console.log("Populated author " + posts[0].author);
+    //~ })
     
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     Testimonial.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
-      .exec(function(err, testimonial) {
+      .populate('author')
+      //.populate({path: "author", model :"User"})
+      .exec(function (err, testimonial){
           Testimonial.count().exec(function(err, count) {
             if (err) return next(err)
+          //  console.log('The author is %s', testimonial[0].author);
               return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
