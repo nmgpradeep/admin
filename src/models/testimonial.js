@@ -17,9 +17,9 @@ description:{
     type:String,
     trim:true
 },
-author:{
-    type:String,
-    trim:true
+author: { 
+	type: Schema.Types.ObjectId, 
+	ref: 'User' 
 },
 status:{
  type:String,

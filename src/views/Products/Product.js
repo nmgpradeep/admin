@@ -18,7 +18,8 @@ class Product extends Component {
         <td>{this.props.product.size}</td>
         <td>{this.props.product.color}</td>  
         <td>{this.props.product.brand}</td>
-        <td>{this.props.product.productAge}</td>        
+        <td>{this.props.product.productAge}</td>     
+        <td>{this.props.product.productImage}</td>   
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.product)} color={(this.props.product.productStatus === '1')?'success':'danger'}>
             {(this.props.product.productStatus === '1')?'Active':'Inctive'}

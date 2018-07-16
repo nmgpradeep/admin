@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import {
   Badge,
   Button,
@@ -36,6 +37,7 @@ class TestimonialEdit extends Component {
     let testimonialId = this.props.match.params.id;
     this.state = {
       editTestimonial: {},
+      user : '',
       testimonialId: testimonialId,
       validation:{
         title:{
@@ -71,11 +73,19 @@ class TestimonialEdit extends Component {
       }
     };
   }
+  
+  handleUser = (user) => {
+	  this.author.current = user;
+	  console.log(user);	  
+        //this.setState({user: user});
+  }
+    
   cancelHandler(){
     this.props.history.push("/testimonial");
   }
   submitHandler(e){
       e.preventDefault();
+      console.log('in submit', this);
       let formSubmitFlag = true;
       for (let field in this.state.validation) {
         let lastValidFieldFlag = true;
@@ -123,6 +133,7 @@ class TestimonialEdit extends Component {
            this.title.value = result.data.result.title;
            this.description.value = result.data.result.description;
            this.author.value = result.data.result.author;
+           console.log('HERE in component Did mount', this);
         }
       })
       .catch((error) => {
@@ -162,10 +173,10 @@ class TestimonialEdit extends Component {
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="lastname">Author</Label>
-                      <Input type="text" innerRef={input => (this.author = input)} placeholder="Author" required/>
-                    </FormGroup>
+					   <FormGroup>						
+						  <Label htmlFor="author">Author</Label>						
+						  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editTestimonial.author}/>						
+					  </FormGroup>
                   </Col>
                 </Row>
                 <Row>

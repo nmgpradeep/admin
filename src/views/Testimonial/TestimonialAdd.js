@@ -37,6 +37,7 @@ class TestimonialAdd extends Component {
     
     this.state = {
       addTestimonial: {},
+      user : '',
       validation:{
         title: {
           rules: {
@@ -73,6 +74,10 @@ class TestimonialAdd extends Component {
     } 
   }
 
+  handleUser = (user) => {
+        this.setState({user: user});
+  }
+    
   submitHandler(e){
     e.preventDefault()
     let formSubmitFlag = true;
@@ -97,6 +102,7 @@ class TestimonialAdd extends Component {
       this.setState({ validation: addTestimonial});
     }
     if(formSubmitFlag){
+	console.log("USER-AUTHER",this.state.user)
       let addTestimonial = this.state.addTestimonial;
       addTestimonial.title = this.title.value;
       addTestimonial.description = this.description.value;
@@ -157,7 +163,7 @@ class TestimonialAdd extends Component {
                       <Label htmlFor="author">Author</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <UserSelectBox />
+                      <UserSelectBox onSelectUser={this.handleUser}/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
