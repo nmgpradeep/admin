@@ -7,12 +7,16 @@ class Testimonial extends Component {
   constructor(props){
     super(props);
   }
+
+Capitalize(str){
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
   render() {
     return (
       <tr key={this.props.testimonial._id}>
         <td>{this.props.testimonial.title}</td>
         <td>{this.props.testimonial.description}</td>
-        <td>{this.props.testimonial.author}</td>   
+        <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>   
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.testimonial)} color={(this.props.testimonial.status == '1')?'success':'danger'}>
             {(this.props.testimonial.status == '1')?'Active':'Inctive'}
