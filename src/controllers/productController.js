@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
 const Category = require('../models/category')
 const Product = require('../models/product')
+const ProductImage = require('../models/productImage')
 const User = require('../models/User')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
@@ -9,59 +10,153 @@ const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 const constant  = require('../../common/constant')
 
+const multiparty = require('multiparty');
+const http = require('http');
+const path = require('path');
+const fs = require('fs'); //FileSystem for node.js
+var gm = require('gm'); //GraphicsMagick for node.js
 
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
  */
 ///function to save new product in the list
 const create = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
-  if (!req.body.productName && !req.body.userId && !req.body.productCategory) {
-    return res.send({
-      code: httpResponseCode.BAD_REQUEST,
-      message: httpResponseMessage.REQUIRED_DATA
-    })
-  }
-  const data = req.body;
-  const flag = validation.validate_all_request(data, ['productName', 'productCategory']);
-  if (flag) {
-    return res.json(flag);
-  }
-  Product.findOne({ productName: req.body.productName,productCategory:req.body.productCategory }, (err, result) => {
-    if (result) {
-
+  var form = new multiparty.Form();
+  form.parse(req, function(err,data,files){
+    //console.log('message data', data.productName)
+    if(!data.productName){
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
-        message: httpResponseMessage.ALL_READY_EXIST_EMAIL
+        message: httpResponseMessage.REQUIRED_DATA
       })
-    } else {
-      let now = new Date();
-		
-	 const product = Product.findById(req.body.productId);
-	  //~ req.body.userId = user;
-	  //~ console.log(req.body); return;
-      //~ const category = User.findById(req.body.productCategory);
-	  //~ req.body.productCategory = category;
-	  
-      Product.create(req.body, (err, result) => {
-		  console.log('RES-PRODUCTS',err, result);
-        if (err) {
+    }
+    const flag = validation.validate_all_request(data,['productName'])
+
+    if(flag){
+      return res.json(flag);
+    }
+      let now =new Date();
+      Product.create(data, (err,result)=> {
+        console.log('Res-Product',err, result);
+        if(err) {
           return res.send({
-			errr : err,
+            errr: err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
         } else {
-         
-          return res.send({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: result
-          })
+          console.log('Created-Product', err, result);
+          if((files.bannerImage) && files.bannerImage.length > 0 && files.bannerImage != '') {
+            var fileName = files.bannerImage[0].originalFilename;
+            var ext = path.extname(fileName);
+            var newfilename = files.bannerImage[0].fieldName + '-' + Date.now() + ext;
+
+            fs.readFile(files.bannerImage[0].path, function(err, fileData){
+              if(err) {
+                res.send(err);
+                return;
+              }
+              fileName = files.bannerImage[0].originalFilename;
+              ext = path.extname(fileName);
+              newfilename = newfilename;
+              pathNew = constant.product_path + newfilename;
+
+              fs.writeFile(pathNew, fileData, function(err) {
+                if (err) {
+                  res.send(err);
+                }
+              });
+              console.log('resultssssssssssss', result)
+              var productImage = new ProductImage({
+                productId : result._id,
+                imageName:newfilename ,
+                imageURL: 'assets/uploads/Products/'+newfilename
+                
+              })
+                      
+              productImage.save(function(error,images){
+                console.log('your image has been stored');
+                if(error){
+                  console.log(error);
+                }
+              })
+            });
+          }
+          
+        // Product.create({_id:result._id}, {'$set': {'bannerImage': newfilename } }, {new: true}, (err,filecreate) => {
+        //    if(err){
+        //       return res.send({
+        //         code: httpResponseCode.BAD_REQUEST,
+        //         message:httpResponseMessage.FILE_UPLOAD_ERROR,
+        //         result: result
+        //       })
+        //     }
+        //     else {
+        //       result.bannerImage = newfilename;
+        //       return res.send({
+        //         code: httpResponseCode.EVERYTHING_IS_OK,
+        //         message: httpResponseMessage.SUCCESSFULLY_DONE,
+        //         result: result
+        //       })
+
+        //     }
+        //   })
+        result.bannerImage = newfilename;
+              return res.send({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: result
+              });
         }
       })
-    }
   })
+  // console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+  // if (!req.body.productName && !req.body.userId && !req.body.productCategory) {
+  //   return res.send({
+  //     code: httpResponseCode.BAD_REQUEST,
+  //     message: httpResponseMessage.REQUIRED_DATA
+  //   })
+  // }
+  // const data = req.body;
+  // const flag = validation.validate_all_request(data, ['productName', 'productCategory']);
+  // if (flag) {
+  //   return res.json(flag);
+  // }
+  // Product.findOne({ productName: req.body.productName,productCategory:req.body.productCategory }, (err, result) => {
+  //   if (result) {
+
+  //     return res.send({
+  //       code: httpResponseCode.BAD_REQUEST,
+  //       message: httpResponseMessage.ALL_READY_EXIST_EMAIL
+  //     })
+  //   } else {
+  //     let now = new Date();
+		
+	//  const product = Product.findById(req.body.productId);
+	//   //~ req.body.userId = user;
+	//   //~ console.log(req.body); return;
+  //     //~ const category = User.findById(req.body.productCategory);
+	//   //~ req.body.productCategory = category;
+	  
+  //     Product.create(req.body, (err, result) => {
+	// 	  console.log('RES-PRODUCTS',err, result);
+  //       if (err) {
+  //         return res.send({
+	// 		errr : err,
+  //           code: httpResponseCode.BAD_REQUEST,
+  //           message: httpResponseMessage.INTERNAL_SERVER_ERROR
+  //         })
+  //       } else {
+         
+  //         return res.send({
+  //           code: httpResponseCode.EVERYTHING_IS_OK,
+  //           message: httpResponseMessage.SUCCESSFULLY_DONE,
+  //           result: result
+  //         })
+  //       }
+  //     })
+  //   }
+  // })
 }
 
 /** Auther	: Rajiv kumar
@@ -69,15 +164,33 @@ const create = (req, res) => {
  */
 /// function to list all products
 const allProducts = (req, res) => {	
-    var perPage = 1;//constant.PER_PAGE_RECORD
+    var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    Product.find({})
+    Product
+    .aggregate({$lookup:{ 
+      from: 'productimages', 
+      foreignField: '_id',
+      localField: 'productId', 
+      as: 'images'
+    }})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+     // .populate('productImages')
       .exec(function(err, products) {		 
           Product.count().exec(function(err, count) {
-            if (err) return next(err)
-              return res.json({
+            if (err) return next(err)      
+               // products.forEach(function(product) {
+                  //     ProductImage.find({productId:product._id},(err,resImage) =>{
+                  //       if(err){
+                  //           console.log('ERROR IMAGE')
+                  //       }else{
+                  //         console.log("ProductImage",resImage)                                                  
+                  //       }
+
+                  //     })
+                  // });
+
+                  return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
                   result: products,
@@ -125,7 +238,7 @@ const changeStatus = (req, res) => {
 **/
 const viewProduct = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<Product>>>>',id);  
+	//console.log('<<<<<<<<<<<Product>>>>',id);  
 	Product.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
