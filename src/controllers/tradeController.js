@@ -73,7 +73,6 @@ const newTrade = (req, res) => {
 */
 //Function to update Status of trades
 const updateStatus = (req, res) => { 
-	console.log("REQ0",req.body)
   Trades.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -99,7 +98,7 @@ const updateStatus = (req, res) => {
 
   
 module.exports = {
-	trades,
+  trades,
   newTrade,
   updateStatus
 }

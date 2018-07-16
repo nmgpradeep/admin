@@ -10,34 +10,40 @@ productName:{
  trim:true
 },
 description:{
-    type:String,
-    trim:true
+ type:String,
+ trim:true
 },
 userId:{
-     type: Schema.Types.ObjectId,
-     ref: 'User'
+ type: Schema.Types.ObjectId,
+ ref: 'User'
 },
 productCategory:{
-	type: Schema.Types.ObjectId,
-    ref: 'Category'
+ type: Schema.Types.ObjectId,
+ ref: 'Category'
 },
 size:{
-type:String,
-trim: true
+ type:String,
+ trim: true
 },
 color:{
-type:String,
-trim:true,
+ type:String,
+ trim:true,
 },
 brand:{
-type:String,
-trim:true
+ type:String,
+ trim:true
 },
 productAge:{
-type:String,
-trim:true
+ type:String,
+ trim:true
 },
 productStatus:{
+ type:String,
+ trim:true,
+ sparse:true,
+ default:0   
+},
+productImage:{
  type:String,
  trim:true,
  sparse:true,

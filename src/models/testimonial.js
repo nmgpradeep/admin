@@ -36,5 +36,4 @@ TestimonialSchema.methods.toJSON = function() {
     var obj = this.toObject();   
     return obj;
    }
-
 module.exports = mongoose.model('Testimonial', TestimonialSchema);

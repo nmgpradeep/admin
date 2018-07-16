@@ -78,7 +78,7 @@ const subscriptions = (req, res) => {
 				//~ });
 		  //~ }
 	  //~ })
-	var perPage = constant.PER_PAGE_RECORD
+  var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
     Subscription.find({})
       .skip((perPage * page) - perPage)
@@ -182,7 +182,7 @@ const deleteSubscription = (req, res) => {
 /**
  * Auther : Rajiv Kumar
  * Date: July 6, 2018
- * Function : Change the satatus of subscription plan as active and inactive
+ * Function : Change the status of subscription plan as active and inactive
  * 
  **/
 const changeStatus = (req,res) => {
@@ -198,7 +198,7 @@ const changeStatus = (req,res) => {
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.ITEM_NOT_FOUND
 					});
-			}else{
+			} else {
 				return res.json({
 					 code:httpResponseCode.EVERYTHING_IS_OK,
 					 message:httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
@@ -227,10 +227,8 @@ const newAddon = (req, res) => {
   if (flag) {
     return res.json(flag);
   }
-  Addon.findOne({ packageName: req.body.packageName}, (err, result) => {
-	
+  Addon.findOne({ packageName: req.body.packageName}, (err, result) => {	
     if (result) {
-
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
         message: httpResponseMessage.ALL_READY_EXIST_EMAIL
