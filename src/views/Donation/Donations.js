@@ -39,7 +39,7 @@ class Donations extends Component {
     })
     .catch((error) => {
     console.log('error', error)
-      if(error.response.code === 401) {
+      if(error.code === 401) {
         this.props.history.push("/login");
       }
     });
@@ -117,7 +117,7 @@ class Donations extends Component {
 
      let paginationItems =[];
 
-     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
+    const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -139,6 +139,7 @@ class Donations extends Component {
                     <th>Color</th>
                     <th>Brand</th>
                     <th>Age</th>
+                    <th>Image</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>

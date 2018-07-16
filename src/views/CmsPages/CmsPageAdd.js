@@ -97,7 +97,6 @@ fileChangedHandler = (event) => {
                   formSubmitFlag = false;
                   newPage[field].valid = false;
                   newPage[field].message = newPage[field].rules[fieldCheck].message;
-
                }
               break;           
           }
@@ -106,7 +105,6 @@ fileChangedHandler = (event) => {
       }
       if(formSubmitFlag){
 		console.log("state",this.state)
-
 		//console.log('IMAGE', this.bannerImage.files[0]);
 		const data = new FD();		
 		console.log('FORM DATA START', this.pageTitle.value);
@@ -115,9 +113,7 @@ fileChangedHandler = (event) => {
 		data.append('description', this.state.text);
 		//data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
 		data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
-			
 		console.log("data",data);
-				
 		//console.log('HHH', this.bannerImage.files[0].name);
 		//form.append('bannerImage', fs.createReadStream(this.bannerImage.files[0].name));
         //~ let newPage = this.state.newPage;
@@ -131,6 +127,7 @@ fileChangedHandler = (event) => {
 		  //~ }
 		//~ };
         axios.post('/page/newPage', data).then(result => {
+			console.log('resultImages ',result);
           if(result.data.code === 200){
             this.props.history.push("/pages");
           }

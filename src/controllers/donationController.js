@@ -4,73 +4,101 @@ const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
-const constant = require("../../common/constant");
 const nodemailer = require('nodemailer');
+const constant =  require('../../common/constant')
+const multiparty = require('multiparty');
+const http = require('http');
+const path = require('path');
+const fs = require('fs'); //FileSystem for node.js
+var gm = require('gm'); //GraphicsMagick for node.js
 
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
  */
 ///function to save new product in the list
 const create = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
-  if (!req.body.productName && !req.body.userId && !req.body.productCategory) {
-    return res.send({
-      code: httpResponseCode.BAD_REQUEST,
-      message: httpResponseMessage.REQUIRED_DATA
-    })
-  }
-  const data = req.body;
-  const flag = validation.validate_all_request(data, ['productName', 'productCategory']);
-  if (flag) {
-    return res.json(flag);
-  }
-      let now = new Date();
-    
-      Donation.create(req.body, (err, result) => {
-		  console.log('RES-PRODUCTS',err, result);
-        if (err) {
-          return res.send({
-			errr : err,
-            code: httpResponseCode.BAD_REQUEST,
-            message: httpResponseMessage.INTERNAL_SERVER_ERROR
-          })
-        } else {
-         
-          return res.send({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: result
-          })
+  var form = new multiparty.Form();
+  form.parse(req, function(err, data, files) {
+	  //console.log('Multiple', err, fields, files);
+	   //console.log('FIELD', fields.pageTitle[0]);
+	  if (!data.productName) {
+		return res.send({
+		  code: httpResponseCode.BAD_REQUEST,
+		  message: httpResponseMessage.REQUIRED_DATA
+		})
+	  }	  
+	  const flag = validation.validate_all_request(data, ['productName']);
+	  if (flag) {
+		return res.json(flag);
+	  }
+		  let now = new Date();		
+		  Donation.create(data, (err, result) => {
+			  console.log('RES-Page',err, result);
+			if (err) {
+			  return res.send({
+				errr : err,
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  })
+			} else {
+			  console.log('Created-Page',err, result);
+			 // check file and upload if exist 
+			 if ((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
+				var fileName = files.productImage[0].originalFilename;
+				var ext = path.extname(fileName);
+				var newfilename = files.productImage[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.productImage[0].path, function(err, fileData) {
+				  if (err) {
+					res.send(err);
+					return;
+				  }
+				  fileName = files.productImage[0].originalFilename;
+				  ext = path.extname(fileName);
+				  newfilename = newfilename;
+				  pathNew = constant.donationimage_path + newfilename;
+				  //return res.json(process.cwd());
+				  fs.writeFile(pathNew, fileData, function(err) {
+					if (err) {
+					  res.send(err);
+					  return;
+					}          
 
-        }
-      })
-    
+				  });
+				});
+			  }		
+			  console.log('resultImgas',result);	 
+			  Donation.update({ _id:result._id },  { "$set": { "productImage": newfilename } }, { new:true }, (err,fileupdate) => {
+				if(err){				
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {				    
+					result.productImage = newfilename;
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					})
+				  }
+			   })	  
+			  ///end file update///	  
+			}
+		  })
+       });  
 }
-
 /** Auther	: Rajiv kumar
  *  Date	: June 22, 2018
  */
 /// function to list all dinated products
-const donations = (req, res) => { 
-  //~ Donation.find({},(err,result)=>{
-		//~ if (!result) {
-			//~ res.json({
-			  //~ message: httpResponseMessage.ITEM_NOT_FOUND,
-			  //~ code: httpResponseMessage.BAD_REQUEST
-			//~ });
-		  //~ }else {				
-			//~ return res.json({
-				  //~ code: httpResponseCode.EVERYTHING_IS_OK,				
-				  //~ result: result
-				//~ });
-		  //~ }
-	  //~ })
-	  
+const donations = (req, res) => {  
 	var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     Donation.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .populate('userId')
+      .populate('productCategory')
       .exec(function(err, donation) {
           Donation.count().exec(function(err, count) {
             if (err) return next(err)
@@ -124,7 +152,22 @@ const viewDonation = (req, res) => {
  *	Description : Function to update the donation
  **/
 const updateDonation = (req, res) => { 
-  Donation.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+  var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {
+	  //console.log('Multiple', err, fields, files);
+	   //console.log('FIELD', fields.pageTitle[0]);
+	  if (!data.productName) {
+		return res.send({
+		  code: httpResponseCode.BAD_REQUEST,
+		  message: httpResponseMessage.REQUIRED_DATA
+		})
+	  }	  
+	  const flag = validation.validate_all_request(data, ['productName']);
+	  if (flag) {
+		return res.json(flag);
+	  }
+	let now = new Date();	
+    Donation.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -136,15 +179,59 @@ const updateDonation = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
-        return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
-            });
-      }
-    }    
-  })
+      } else {
+		   console.log('Created-Page',err, result);
+			 // check file and upload if exist 
+			 if ((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
+				var fileName = files.productImage[0].originalFilename;
+				var ext = path.extname(fileName);
+				var newfilename = files.productImage[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.productImage[0].path, function(err, fileData) {
+				  if (err) {
+					res.send(err);
+					return;
+				  }
+				  fileName = files.productImage[0].originalFilename;
+				  ext = path.extname(fileName);
+				  newfilename = newfilename;
+				  pathNew = constant.donationimage_path + newfilename;
+				  //return res.json(process.cwd());
+				  fs.writeFile(pathNew, fileData, function(err) {
+					if (err) {
+					  res.send(err);
+					  return;
+					}
+				  });
+				}); 
+			  
+			  Donation.update({ _id:data._id },  { "$set": { "productImage": newfilename } }, { new:true }, (err,fileupdate) => {
+				if(err){				
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {				    
+					result.bannerImage = newfilename;
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					});
+				  }				  
+				 
+			   })				    
+            }
+            else {
+			   return res.json({
+				  code: httpResponseCode.EVERYTHING_IS_OK,
+				  message: httpResponseMessage.SUCCESSFULLY_DONE,
+				 result: result
+               });	 	
+			}
+         }    
+        }
+      }) 
+    });
 }
 
 /** Auther	: Rajiv kumar
@@ -159,12 +246,12 @@ const deleteDonation = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
     }
-		return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
-            });
-  })
+	 return res.json({
+          code: httpResponseCode.EVERYTHING_IS_OK,
+          message: httpResponseMessage.SUCCESSFULLY_DONE,
+          result: result
+          });
+     })
 }
 
 

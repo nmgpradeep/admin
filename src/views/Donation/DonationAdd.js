@@ -25,6 +25,10 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+var FD = require('form-data');
+var fs = require('fs');
+
 class DonationAdd extends Component {
 
   constructor(props){
@@ -37,6 +41,7 @@ class DonationAdd extends Component {
     this.color = React.createRef(),
     this.brand = React.createRef(),
     this.productAge = React.createRef(),
+    this.productImage = React.createRef(),
 
     
     this.state = {
@@ -106,6 +111,9 @@ class DonationAdd extends Component {
       }
     } 
   }
+  fileChangedHandler = (event) => {
+	this.setState({selectedFile: event.target.files[0]})
+}
 
   submitHandler(e){
     e.preventDefault()
@@ -131,21 +139,23 @@ class DonationAdd extends Component {
       this.setState({ validation: donationadd});
     }
     if(formSubmitFlag){
-      let donationadd = this.state.donationadd;
-      donationadd.productName = this.productName.value;
-      donationadd.description = this.description.value;
-      donationadd.productCategory = this.productCategory.value;
-      donationadd.userId = this.userId.value;
-      donationadd.size = this.size.value;
-      donationadd.color = this.color.value;
-      donationadd.brand = this.brand.value;
-      donationadd.productAge = this.productAge.value;
-
-      axios.post('/donation/donate', donationadd).then(result => {
-        if(result.data.code == '200'){
-          this.props.history.push('./donations');
-        }
-      })
+		const data = new FD();				
+		data.append('productName', this.productName.value);
+		data.append('description', this.description.value);
+		data.append('productCategory','5b3ca9c23d43f138959e3224');
+		data.append('userId', '5b236b4ad73fe224efedae86');
+		data.append('size', this.size.value);
+		data.append('color', this.color.value);
+		data.append('brand', this.brand.value);
+		data.append('productAge', this.productAge.value);
+		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)
+		//console.log("data",data);
+        axios.post('/donation/donate', data).then(result => {
+			console.log('resultImages ',result);
+          if(result.data.code === 200){
+            this.props.history.push("/donations");
+          }
+        });     
     }
   }
 
@@ -158,7 +168,7 @@ class DonationAdd extends Component {
                 <strong>New Donation Form</strong>
               </CardHeader>
               <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                <Form action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
                   
                   <FormGroup row>
                     <Col md="3">
@@ -246,6 +256,14 @@ class DonationAdd extends Component {
                       <FormFeedback invalid={this.state.validation.productAge.valid === false}>{this.state.validation.productAge.message}</FormFeedback>
                       
                     </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">				
+                      <Label htmlFor="lastname">Image</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="file" innerRef={input => (this.productImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
+                   </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">

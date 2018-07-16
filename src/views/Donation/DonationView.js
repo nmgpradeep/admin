@@ -12,6 +12,7 @@ import {
   Row,
 } from 'reactstrap';
 import axios from 'axios';
+
 // import PropTypes from 'prop-types';
 class DonationView extends Component {
   constructor(props){
@@ -39,6 +40,7 @@ class DonationView extends Component {
           this.color.value = result.data.result.color;
           this.brand.value = result.data.result.brand;
           this.productAge.value = result.data.result.productAge;
+          this.productImage.value = result.data.result.productImage;
           //this.status.value = result.data.result.status;
         }
       })
@@ -104,6 +106,16 @@ class DonationView extends Component {
                   <Input type="text" value={this.state.viewDonation.productAge} required/>
                 </FormGroup>
                 <FormGroup>
+                <Col xs="12" className="text-left">
+                  <Label htmlFor="status">Image</Label>
+                   </Col>
+                  <Col xs="12" sm="12">
+                  <img className="linkedin" src= {'assets/uploads/donationImage/'+this.state.viewDonation.productImage} width="60"/>
+                  </Col>
+                  
+                </FormGroup>
+                <FormGroup>
+                
                   <Label htmlFor="status">Status</Label>
                   <Input type="text" value={(this.state.viewDonation.status === '1')?'Active':'Inactive'} />
                 </FormGroup>
@@ -112,7 +124,6 @@ class DonationView extends Component {
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
                   <Col xs="6">
-
                   </Col>
                 </Row>
               </CardBody>
