@@ -386,6 +386,20 @@ const SizeAdd = Loadable({
 const SizeEdit = Loadable({
   loader: () => import('./views/Attributes/SizeEdit'),
   loading: Loading,
+});
+
+//loader for Country by Saurabh
+const Countrys = Loadable({
+  loader: () => import('./views/Location/Countrys'),
+  loading: Loading,
+});
+const CountryAdd = Loadable({
+  loader: () => import('./views/Location/CountryAdd'),
+  loading: Loading,
+});
+const CountryEdit = Loadable({
+  loader: () => import('./views/Location/CountryEdit'),
+  loading: Loading,
 })
 
 
@@ -454,6 +468,10 @@ const routes = [
   { path: '/size/add', name: 'Add Sizes', component: SizeAdd},
   { path: '/size/edit/:id', name: 'Edit Sizes', component: SizeEdit},
   { path: '/size', name: 'Sizes', component: Sizes},
+
+  { path: '/country/add', name: 'Add Country',component: CountryAdd},
+  { path: '/country/edit/:id', name: 'Edit Country', component: CountryEdit},
+  { path: '/country', name: 'Country', component: Countrys},
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },

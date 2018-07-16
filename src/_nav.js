@@ -208,6 +208,25 @@ export default {
         },       
       ],
     },
+    {
+      name: 'Manage Location',
+      url: '/locations',
+      icon: 'icon-map',
+      children: [
+        {
+          name: 'Country',
+          url: '/country'
+        },
+        {
+          name: 'State',
+          url: '/states'
+        },
+        {
+          name: 'City',
+          url: '/citys'
+        }
+      ]
+    },
    
     {
       name: 'Notifications',
