@@ -113,7 +113,7 @@ class CategoryAdd extends Component {
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
-                  <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
+                  <Input type="textarea" innerRef={input => (this.description = input)} placeholder="Description" />
 
                 </FormGroup>
 
