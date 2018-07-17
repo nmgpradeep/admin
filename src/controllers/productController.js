@@ -167,6 +167,7 @@ const allProducts = (req, res) => {
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
 
+
     Product.aggregate([{
 	  $lookup :{
 		from: 'productimages', 
