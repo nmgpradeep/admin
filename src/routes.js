@@ -402,6 +402,33 @@ const CountryEdit = Loadable({
   loading: Loading,
 })
 
+//loader for States by Saurabh
+const States = Loadable({
+  loader: () => import('./views/Location/States'),
+  loading: Loading,
+});
+const StateAdd = Loadable({
+  loader: () => import('./views/Location/StateAdd'),
+  loading: Loading,
+});
+const StateEdit = Loadable({
+  loader: () => import('./views/Location/StateEdit'),
+  loading: Loading,
+});
+//loader for Citys by Saurabh
+const Citys = Loadable({
+  loader: () => import('./views/Location/Citys'),
+  loading: Loading,
+});
+const CityAdd = Loadable({
+  loader: () => import('./views/Location/CityAdd'),
+  loading: Loading,
+});
+const CityEdit = Loadable({
+  loader: () => import('./views/Location/CityEdit'),
+  loading: Loading,
+});
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -472,6 +499,14 @@ const routes = [
   { path: '/country/add', name: 'Add Country',component: CountryAdd},
   { path: '/country/edit/:id', name: 'Edit Country', component: CountryEdit},
   { path: '/country', name: 'Country', component: Countrys},
+
+  { path: '/state/add', name: 'Add State', component: StateAdd},
+  { path: '/state/edit/:id', name: 'Edit State', component: StateEdit},
+  { path: '/state', name: 'State', component: States},
+
+  { path: '/city/add', name: 'Add City', component: CityAdd},
+  { path: '/city/edit/:id', name: 'Edit City', component: CityEdit},
+  { path: '/city', name: 'City', component: Citys},
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },

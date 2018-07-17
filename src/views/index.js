@@ -25,7 +25,7 @@ import { Addon, Addons, AddonEdit, Subscription, Subscriptions, SubscriptionEdit
 import { Profile, EditProfile} from './AdminProfile'
 import { Trades, TradesAdd, TradesView} from './Trades'
 import { Brand, Brands, BrandEdit, Sizes, Size, SizeEdit} from './Attributes'
-import { Country,Countrys,CountryEdit} from './Location'
+import { Country,Countrys,CountryEdit,State,States,StateEdit,City,Citys,CityEdit} from './Location'
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
@@ -37,6 +37,12 @@ import Widgets from './Widgets';
 
 
 export {
+  City,
+  Citys,
+  CityEdit,
+  State,
+  States,
+  StateEdit,
   Country,
   Countrys,
   CountryEdit,

@@ -219,11 +219,11 @@ export default {
         },
         {
           name: 'State',
-          url: '/states'
+          url: '/state'
         },
         {
           name: 'City',
-          url: '/citys'
+          url: '/city'
         }
       ]
     },
