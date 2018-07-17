@@ -11,12 +11,10 @@ class Trade extends Component {
   render() {
     return (
       <tr key={this.props.trade._id}>
-        <td>1</td>
-        <td>{this.props.trade.senderId}</td>
-        
-        <td>{this.props.trade.senderProductId}</td>
-        <td>{this.props.trade.receiverId}</td>
-        <td>{this.props.trade.receiverProductId}</td>
+        <td>{(this.props.trade.sellerId)?this.props.trade.sellerId.firstName:''}</td>
+        <td>{(this.props.trade.sellerProductId)?this.props.trade.sellerProductId.productName:''}</td>
+        <td>{(this.props.trade.receiverId)?this.props.trade.receiverId.firstName:''}</td>
+        <td>{(this.props.trade.receiverProductId)?this.props.trade.receiverProductId.productName:''}</td>
         <td>{Moment(this.props.trade.createdAt).format('d MMM YYYY')}</td>
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.trade)} color={(this.props.trade.status == '1')?'success':'danger'}>

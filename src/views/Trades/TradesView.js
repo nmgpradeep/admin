@@ -27,14 +27,14 @@ class TradesView extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/trade/trades/' + this.state.tradeId).then(result => {
+      axios.get('/trade/viewTrade/' + this.state.tradeId).then(result => {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ viewTrade: result.data.result});
-          this.sellerId.value = result.data.result.sellerId;
-          this.receiverId.value = result.data.result.receiverId;
-          this.sellerProductId.value = result.data.result.sellerProductId;
-          this.receiverProductId.value = result.data.result.receiverProductId;
+          this.sellerId.value = result.data.result.sellerId.firstName;
+          this.receiverId.value = result.data.result.receiverId.firstName;
+          this.sellerProductId.value = result.data.result.sellerProductId.productName;
+          this.receiverProductId.value = result.data.result.receiverProductId.productName;
         }
       })
       .catch((error) => {
@@ -56,28 +56,28 @@ class TradesView extends Component {
               <CardBody>
                 <FormGroup>
                   <Label htmlFor="id">ID</Label>
-                  <Input type="text" value={this.state.tradeId._id} />
+                  <Input type="text" value={this.state.viewTrade._id} />
                 </FormGroup>
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">Advertisement name</Label>
-                      <Input type="text" value={this.state.tradeId.sellerId} />
+                      <Label htmlFor="company">Seller name</Label>
+                      <Input type="text" value={this.state.viewTrade.sellerId} />
                     </FormGroup>
                     </Col>
                     
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="username">Description</Label>
-                  <Input type="text" value={this.state.tradeId.receiverId} />
+                  <Label htmlFor="username">Receiver Name</Label>
+                  <Input type="text" value={this.state.viewTrade.receiverId} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email">URL</Label>
-                  <Input type="text"  value={this.state.tradeId.sellerProductId} required/>
+                  <Label htmlFor="email">Selled Product</Label>
+                  <Input type="text"  value={this.state.viewTrade.sellerProductId} required/>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="username">Description</Label>
-                  <Input type="text" value={this.state.tradeId.receiverProductId} />
+                  <Label htmlFor="username">Received Product</Label>
+                  <Input type="text" value={this.state.viewTrade.receiverProductId} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="status">Status</Label>

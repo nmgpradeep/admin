@@ -1,9 +1,8 @@
 const router = require('express').Router();
-var passport = require('passport');
-require('../config/passport')(passport);
 const tradeController= require('../controllers/tradeController');
-//passport.authenticate('jwt', { session: false}),
-router.get('/trades/:page', tradeController.trades);
-router.post('/newTrade/', tradeController.newTrade);
+router.post('/newTrade',tradeController.newTrades)
+router.get('/listTrade',tradeController.listTrades)
+router.get('/viewTrade/:id',tradeController.viewTrades)
 router.post('/updateStatus',tradeController.updateStatus)
+router.get('/Trades/:page', tradeController.listTrades)
 module.exports = router;
