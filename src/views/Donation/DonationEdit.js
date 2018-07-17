@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React,{ Component }from 'react'
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from 'axios'
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import {
   Badge,
   Button,
@@ -36,7 +38,7 @@ class DonationEdit extends Component {
     this.productName = React.createRef();
     this.description = React.createRef();
     this.productCategory = React.createRef();
-    this.userId  = React.createRef();
+    this.author = React.createRef();
     this.size = React.createRef();
     this.color = React.createRef();
     this.brand = React.createRef();
@@ -46,6 +48,7 @@ class DonationEdit extends Component {
     let donationId = this.props.match.params.id;
     this.state = {
       editDonation: {},
+      user : '',
       donationId: donationId,
       validation:{
         productName: {
@@ -112,8 +115,15 @@ class DonationEdit extends Component {
       }
     };
   }
+    handleCategory = (category) => {
+        this.setState({category: category});
+  }
+    handleUser = (user) => {
+	  this.author.current = user;
+    }
+  
    fileChangedHandler = (event) => {
-	this.setState({selectedFile: event.target.files[0]})
+	  this.setState({selectedFile: event.target.files[0]})
    }
    
   cancelHandler(){
@@ -134,7 +144,6 @@ class DonationEdit extends Component {
                   formSubmitFlag = false;
                   addDonation[field].valid = false;
                   addDonation[field].message = addDonation[field].rules[fieldCheck].message;
-
                }
               break;
           }
@@ -144,12 +153,11 @@ class DonationEdit extends Component {
 
       if(formSubmitFlag){
 		const data = new FD();
-		console.log('editDonationsssss',this.state.editDonation);				
 		data.append('_id',this.state.donationId);				
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory','5b3ca9c23d43f138959e3224');
-		data.append('userId', '5b236b4ad73fe224efedae86');
+		data.append('productCategory',this.productCategory.value);
+		data.append('userId', this.userId.value);
 		data.append('size', this.size.value);
 		data.append('color', this.color.value);
 		data.append('brand', this.brand.value);
@@ -157,9 +165,8 @@ class DonationEdit extends Component {
 		if(this.state.selectedFile){
 		   data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)
 	    } else {
-			data.append('productImage', this.state.editDonation.productImage);
-		}
-		console.log("datassss",data);
+		   data.append('productImage', this.state.editDonation.productImage);
+		}		
         axios.put('/donation/updateDonation', data).then(result => {
 			console.log('resultImages ',result);
           if(result.data.code === 200){
@@ -169,24 +176,20 @@ class DonationEdit extends Component {
       }
   }
 
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
-       //console.log('resullllsss',result); 
-         if(result.data.code === 200){
-            // //localStorage.setItem('jwtToken', result.data.result.accessToken);
-           this.setState({ editDonation: result.data.result});
+  componentDidMount() {   
+      axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
+         if(result.data.code === 200){           
+           this.setState({ editDonation: result.data.result});           
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
-           this.productCategory.value = result.data.result.productCategory;
-           this.userId.value = result.data.result.userId;
            this.size.value = result.data.result.size;
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
            this.productAge.value = result.data.result.productAge;
            this.productImage.value = result.data.result.productImage;
-           console.log('productimagesss',this.state.productImage);
+           this.productCategory.value = result.data.result.productCategory;
+           this.author.value = result.data.result.userId;          
+           console.log('listing',this);
         }
       })
       .catch((error) => {
@@ -208,16 +211,10 @@ class DonationEdit extends Component {
                 <Link to="/donations" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
-              
-                <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Product Name</Label>
-                      <Input type="text" innerRef={input => (this.productName = input)}   placeholder="Product name" />
-
-                      {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
-
-                    </FormGroup>
+                      <Input type="text" innerRef={input => (this.productName = input)}  placeholder="Product name" />  </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
@@ -225,48 +222,50 @@ class DonationEdit extends Component {
                       <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
                     </FormGroup>
                     </Col>
-                    <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="lastname">Category</Label>
-                      <Input type="text" innerRef={input => (this.productCategory = input)} placeholder="Category" required/>
-                    </FormGroup>
+                     <Col xs="4" sm="12">
+					   <FormGroup>						
+						  <Label htmlFor="author">User</Label>									  
+						 <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editDonation.author}/>						
+					  </FormGroup>
                   </Col>
-                </Row>
-                 <FormGroup>
-                  <Label htmlFor="username">userId</Label>
-                  <Input type="text" innerRef={input => (this.userId = File)} placeholder="User Id" />
-                  {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
-                </FormGroup>
-                <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="size">Size</Label>
-                      <Input type="text" innerRef={input => (this.size = input)} placeholder="Size" />
-                    </FormGroup>
+                     <Col xs="4" sm="12">
+					   <FormGroup>						
+						  <Label htmlFor="author">Category</Label>									  
+						   <CategorySelectBox onSelectCategory={this.handleCategory}  value={this.state.editDonation.category}/>	
+					  </FormGroup>
+                  </Col>
+               
+                 
+                   <Col xs="4" sm="12">
+						<FormGroup>
+						  <Label htmlFor="size">Size</Label>
+						  <Input type="text" innerRef={input => (this.size = input)} placeholder="Size" />
+						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="color">Color</Label>
-                      <Input type="text" innerRef={input => (this.color = input)} placeholder="color" />
-                    </FormGroup>
+						<FormGroup>
+						  <Label htmlFor="color">Color</Label>
+						  <Input type="text" innerRef={input => (this.color = input)} placeholder="color" />
+						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="brand">Brand</Label>
-                      <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
-                    </FormGroup>
+						<FormGroup>
+						  <Label htmlFor="brand">Brand</Label>
+						  <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
+						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                     <Label htmlFor="brand">Image</Label>                  
-                      <Input type="file" innerRef={input => (this.productImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
-                      <img src={'assets/uploads/donationImage/'+this.state.editDonation.productImage} width="60"/>
-                   </FormGroup>
+						<FormGroup>
+						 <Label htmlFor="brand">Image</Label>                  
+						  <Input type="file" innerRef={input => (this.productImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
+						  <img src={'assets/uploads/donationImage/'+this.state.editDonation.productImage} width="60"/>
+					   </FormGroup>
                    </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="productAge">Age</Label>
-                      <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
-                    </FormGroup>
+						<FormGroup>
+						  <Label htmlFor="productAge">Age</Label>
+						  <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
+						</FormGroup>
                     </Col>
                 <Row>
                   <Col xs="6" className="text-right">

@@ -104,8 +104,7 @@ const donations = (req, res) => {
       .populate('productCategory',['categoryName'])
       .exec(function(err, donation) {
 		 //console.log("Donated User",donation[0].userId)
-		 //console.log("Donated productCategory",donation[0].category)
-		 
+		 //console.log("Donated productCategory",donation[0].category)		 
           Donation.count().exec(function(err, count) {
             if (err) return next(err)
               return res.json({

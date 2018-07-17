@@ -13,7 +13,7 @@ const constant = require('../../common/constant')
  **/
 ///function to save new Testimonial in the list
 const createTestimonials = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+  //console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   if (!req.body.title) {
     return res.send({
       code: httpResponseCode.BAD_REQUEST,
