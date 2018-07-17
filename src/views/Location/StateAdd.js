@@ -1,7 +1,7 @@
 import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
-import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox'
 import {
   Badge,
   Button,
@@ -27,22 +27,21 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-class TestimonialAdd extends Component {
+class StateAdd extends Component {
 
   constructor(props){
     super(props)
-    this.title = React.createRef(),
-    this.description = React.createRef(),
-    this.author = React.createRef(),
+    this.country = React.createRef(),
+    this.stateName = React.createRef(),
     
     this.state = {
-      addTestimonial: {},
-      user : '',
+      addState: {},
+      countrys : '',
       validation:{
-        title: {
+        country: {
           rules: {
             notEmpty: {
-              message: 'Testimonial title can\'t be left blank',
+              message: 'Country name can\'t be left blank',
               valid: false
 
             }
@@ -50,20 +49,10 @@ class TestimonialAdd extends Component {
           valid: null,
           message: ''
         },
-        description:{
+        stateName:{
           rules: {
             notEmpty: {
-              message: 'Testimonial description can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        author: {
-          rules: {
-            notEmpty: {
-              message: 'redirectURL can\'t be left blank',
+              message: 'State name can\'t be left blank',
               valid: false
             }
           },
@@ -74,8 +63,8 @@ class TestimonialAdd extends Component {
     } 
   }
 
-  handleUser = (user) => {
-        this.setState({user: user});
+  handleCountry = (countrys) => {
+        this.setState({countrys: countrys});
   }
     
   submitHandler(e){
@@ -83,8 +72,8 @@ class TestimonialAdd extends Component {
     let formSubmitFlag = true;
     for (let field in this.state.validation) {
       let lastValidFieldFlag = true;
-      let addTestimonial = this.state.validation;
-      addTestimonial[field].valid = null;
+      let addState = this.state.validation;
+      addState[field].valid = null;
       for(let fieldCheck in this.state.validation[field].rules){
         //~ switch(fieldCheck){
           //~ case 'notEmpty':
@@ -99,18 +88,17 @@ class TestimonialAdd extends Component {
           
         //~ }
       }
-      this.setState({ validation: addTestimonial});
+      this.setState({ validation: addState});
     }
     if(formSubmitFlag){
-	console.log("USER-AUTHER",this.state.user)
-      let addTestimonial = this.state.addTestimonial;
-      addTestimonial.title = this.title.value;
-      addTestimonial.description = this.description.value;
-      addTestimonial.author = this.state.user;
-      console.log("addTestimonial",addTestimonial)
-      axios.post('/testimonial/newTestimonial', addTestimonial  ).then(result => {
+	console.log("COUNTRYS",this.state.countrys)
+      let addState = this.state.addState;
+      addState.country = this.state.countrys;
+      addState.stateName = this.stateName.value;
+      console.log("addState",addState)
+      axios.post('/location/newState', addState  ).then(result => {
         if(result.data.code == '200'){
-          this.props.history.push('./Testimonial');
+          this.props.history.push('./State');
         }
       })
     }
@@ -122,28 +110,27 @@ class TestimonialAdd extends Component {
       <div>
         <Card>
               <CardHeader>
-                <strong>New Testimonial Form</strong>
-                <Link to="/testimonial" className="btn btn-success btn-sm pull-right">Back</Link>
+                <strong>New State Form</strong>
+                <Link to="/state" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Country Name</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <StateSelectBox onSelectCountry={this.handleCountry}/>
+                    </Col>
+                  </FormGroup>
                   
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="title">Title</Label>
+                      <Label htmlFor="description">State Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.title.valid === false}  innerRef={input => (this.title = input)} placeholder="Title" required/>
-                      <FormFeedback invalid={this.state.validation.title.valid === false}>{this.state.validation.title.message}</FormFeedback>                      
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="description">Description</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" required/>
-                      <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
+                      <Input type="text" invalid={this.state.validation.stateName.valid === false} innerRef={input => (this.stateName = input)} placeholder="Description" required/>
+                      <FormFeedback invalid={this.state.validation.stateName.valid === false}>{this.state.validation.stateName.message}</FormFeedback>
                       
                     </Col>
                   </FormGroup>
@@ -157,23 +144,16 @@ class TestimonialAdd extends Component {
                       <FormFeedback invalid={this.state.validation.author.valid === false}>{this.state.validation.author.message}</FormFeedback>
                     </Col>
                   </FormGroup> */}
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Author</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <UserSelectBox onSelectUser={this.handleUser}/>
-                    </Col>
-                  </FormGroup>
+                  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                     <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control">
-						 <option value="1">Active</option>
-						<option value="0">Inactive</option>
-					 </Input>                   
+                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
+					  <option value="1">Active</option>
+					  <option value="0">Inactive</option>					
+                  </select>
                     </Col>
                   </FormGroup>                    
                 </Form>
@@ -190,4 +170,4 @@ class TestimonialAdd extends Component {
 
 }
 
-export default TestimonialAdd;
+export default StateAdd;

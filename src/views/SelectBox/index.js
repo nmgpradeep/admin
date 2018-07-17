@@ -1,7 +1,10 @@
 import UserSelectBox from './UserSelectBox/UserSelectBox';
-import UserSelectBox from './CategorySelectBox/CategorySelectBox';
+import CategorySelectBox from './CategorySelectBox/CategorySelectBox';
+import StateSelectBox from './StateSelectBox/StateSelectBox'
+
 
 export {
   UserSelectBox,
-  CategorySelectBox
+  CategorySelectBox,
+  StateSelectBox
 };

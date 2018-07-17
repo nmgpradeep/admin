@@ -166,17 +166,18 @@ const create = (req, res) => {
 const allProducts = (req, res) => {	
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    Product
-    .aggregate({$lookup:{ 
-      from: 'productimages', 
-      foreignField: '_id',
-      localField: 'productId', 
-      as: 'images'
-    }})
+
+
+    Product.aggregate([{
+	  $lookup :{
+		from: 'productimages', 
+		localField: '_id',
+		foreignField: 'productId',
+		as: 'images'
+	  }}])
       .skip((perPage * page) - perPage)
       .limit(perPage)
-     // .populate('productImages')
-      .exec(function(err, products) {		 
+     .exec(function(err, products) {		 
           Product.count().exec(function(err, count) {
             if (err) return next(err)      
                // products.forEach(function(product) {

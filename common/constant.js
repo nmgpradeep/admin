@@ -10,5 +10,6 @@ module.exports = {
     'donationimage_path':'/var/www/html/pitchswitch/public/assets/uploads/donationImage/',
     'product_path': '/var/www/html/PnSAdmin/public/assets/uploads/Products/'
     
+    
 };
 

@@ -61,7 +61,8 @@ ProductSchema.methods.getCategory = function(callback) {
   var product = this;
   var productCategoryID = this.productCategory.map(function(productCategory) {
     return productCategory.product_id;
-  });  
+
+  }); 
 };
 // var productImage = mongoose.model('ProductImage', ProductImageSchema)
 // productImage

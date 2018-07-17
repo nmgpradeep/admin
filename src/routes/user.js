@@ -12,6 +12,7 @@ router.get('/viewUser/:id',userController.viewUser);
 router.post('/updateUser',userController.updateUser);
 router.post('/changeStatus',userController.changeStatus);
 router.delete('/deleteUser/:id',userController.deleteUser);
+router.get('/dashboardStates',userController.dashboardStates);
 // router.put('/viewAdmin/:id',userController.viewAdmin);
 // router.put('/updateAdmin',userController.updateAdmin);
 
