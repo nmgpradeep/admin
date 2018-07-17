@@ -1,5 +1,8 @@
 //const bodyParser = require('body-parser')
 const User = require('../models/User')
+const Product = require('../models/product')
+const Donation = require('../models/donation')
+const Trade = require('../models/Trade')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -194,7 +197,6 @@ const login = (req, res) => {
 
   })
 }
-
 
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
@@ -503,6 +505,36 @@ exports.logout = function(req, res, next) {
 
   });
 }
+/** Auther	: Rajiv Kumar
+ *  Date	: July 6, 2018
+ *	Description : Function to states on admin dashboard
+ **/
+const dashboardStates = (req, res) => {
+	console.log('dashboardStates from user controller')
+	var totalUser = 0
+	var totalProduct = 0
+	var totalTrade = 0
+	var totalDonation =0
+	Promise.all([
+	/// Get Total users
+	User.count(),	
+	/// Get Total products
+	Product.count(),	
+	/// Get Total donations
+	Donation.count(),
+	/// Get Total trades
+	Trade.count()]).then((values) => {	
+	  return res.json({
+		  code: httpResponseCode.EVERYTHING_IS_OK,
+		  message: httpResponseMessage.SUCCESSFULLY_DONE,
+		  users: values[0],                  
+		  products: values[1],
+		  donations: values[2],
+		  trades: values[3]              
+	  });
+	});
+}
+
 
 //contactus form
 const contustUs = (req, res) => {
@@ -571,5 +603,6 @@ module.exports = {
 	deleteUser,
 	users,
 	contustUs,
-	send
+	send,
+	dashboardStates
 }

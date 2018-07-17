@@ -26,6 +26,9 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+var FD = require('form-data');
+var fs = require('fs');
 // import PropTypes from 'prop-types';
 class DonationEdit extends Component {
   constructor(props){
@@ -38,6 +41,7 @@ class DonationEdit extends Component {
     this.color = React.createRef();
     this.brand = React.createRef();
     this.productAge = React.createRef();
+    this.productImage = React.createRef();
 
     let donationId = this.props.match.params.id;
     this.state = {
@@ -108,6 +112,10 @@ class DonationEdit extends Component {
       }
     };
   }
+   fileChangedHandler = (event) => {
+	this.setState({selectedFile: event.target.files[0]})
+   }
+   
   cancelHandler(){
     this.props.history.push("/donations");
   }
@@ -135,21 +143,29 @@ class DonationEdit extends Component {
       }
 
       if(formSubmitFlag){
-        let editDonation = this.state.editDonation;
-        editDonation.productName = this.productName.value;
-        editDonation.description = this.description.value;
-        editDonation.productCategory = this.productCategory.value;
-        editDonation.userId = this.userId.value;
-        editDonation.size = this.size.value;
-        editDonation.color = this.color.value;
-        editDonation.brand = this.brand.value;
-        editDonation.productAge = this.productAge.value;
-        console.log("editDonation",editDonation)
-        axios.put('/donation/updateDonation', editDonation).then(result => {
-          if(result.data.code ===200){
+		const data = new FD();
+		console.log('editDonationsssss',this.state.editDonation);				
+		data.append('_id',this.state.donationId);				
+		data.append('productName', this.productName.value);
+		data.append('description', this.description.value);
+		data.append('productCategory','5b3ca9c23d43f138959e3224');
+		data.append('userId', '5b236b4ad73fe224efedae86');
+		data.append('size', this.size.value);
+		data.append('color', this.color.value);
+		data.append('brand', this.brand.value);
+		data.append('productAge', this.productAge.value);
+		if(this.state.selectedFile){
+		   data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)
+	    } else {
+			data.append('productImage', this.state.editDonation.productImage);
+		}
+		console.log("datassss",data);
+        axios.put('/donation/updateDonation', data).then(result => {
+			console.log('resultImages ',result);
+          if(result.data.code === 200){
             this.props.history.push("/donations");
           }
-        });
+        }); 
       }
   }
 
@@ -157,11 +173,10 @@ class DonationEdit extends Component {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
-       // console.log(result); 
+       //console.log('resullllsss',result); 
          if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
+            // //localStorage.setItem('jwtToken', result.data.result.accessToken);
            this.setState({ editDonation: result.data.result});
-          
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
            this.productCategory.value = result.data.result.productCategory;
@@ -170,6 +185,8 @@ class DonationEdit extends Component {
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
            this.productAge.value = result.data.result.productAge;
+           this.productImage.value = result.data.result.productImage;
+           console.log('productimagesss',this.state.productImage);
         }
       })
       .catch((error) => {
@@ -238,6 +255,13 @@ class DonationEdit extends Component {
                       <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
                     </FormGroup>
                     </Col>
+                    <Col xs="4" sm="12">
+                    <FormGroup>
+                     <Label htmlFor="brand">Image</Label>                  
+                      <Input type="file" innerRef={input => (this.productImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
+                      <img src={'assets/uploads/donationImage/'+this.state.editDonation.productImage} width="60"/>
+                   </FormGroup>
+                   </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="productAge">Age</Label>

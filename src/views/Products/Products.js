@@ -4,6 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import Product from './Product';
 import ReactPaginate from 'react-paginate';
+var FD = require('form-data');
 // var passport = require('passport');
 // console.log('passport', passport);
 // require('../../config/passport')(passport);
@@ -46,6 +47,9 @@ class Products extends Component {
         }
       });
   }
+
+  
+
   handlePageClick = (data) => {
       let currentPage = data.selected + 1;
       this.setState({currentPage: currentPage}, () => {
@@ -108,9 +112,8 @@ class Products extends Component {
    let products;
      if(this.state.products){
        let productList = this.state.products;
-       products = productList.map(product => <Product key={product._id} 
-        onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product}/>);
-     }
+       products = productList.map(product => <Product key={product._id} onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product}/>);
+      }
      let paginationItems =[];
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
@@ -134,6 +137,7 @@ class Products extends Component {
                     <th>Color</th>
                     <th>Brand</th>
                     <th>Age</th>
+                    <th>Images</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>

@@ -12,7 +12,7 @@ class CmsPage extends Component {
       <tr key={this.props.cmsPage._id}>
         <td>{this.props.cmsPage.pageTitle}</td>
         <td>{this.props.cmsPage.pageHeading}</td>
-        <td>{this.props.cmsPage.description}</td>      
+        <td>{this.props.cmsPage.description.replace(/<(?:.|\n)*?>/gm, '')}</td>      
         <td>
           <Badge  onClick={this.props.changeStatus.bind(this, this.props.cmsPage)} color={(this.props.cmsPage.status === '1')?'success':'danger'}>
             {(this.props.cmsPage.status === '1')?'Active':'Inctive'}

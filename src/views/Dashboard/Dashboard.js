@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
+import axios from 'axios';
+import {Link} from 'react-router-dom';
+
 import {
   Badge,
   Button,
@@ -454,6 +457,13 @@ const mainChartOpts = {
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+    
+    this.state = {
+			users : 0,
+			products : 0,
+			donations : 0,
+			trades : 0
+	}
 
     this.toggle = this.toggle.bind(this);
     this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
@@ -475,6 +485,27 @@ class Dashboard extends Component {
       radioSelected: radioSelected,
     });
   }
+ 
+componentDidMount(){
+	
+   axios.get('/user/dashboardStates').then(result => {	
+		if(result.data.code === 200){
+			this.setState({
+			  users: result.data.users,
+			  products: result.data.products,
+			  donations: result.data.donations,
+			  trades: result.data.trades				  
+			});
+		}
+		console.log(this.state.users);
+	})
+	.catch((error) => {
+	console.log('error', error)
+		if(error.code === 401) {
+		 this.props.history.push("/login");
+		}
+	});
+}
 
   render() {
     return (
@@ -496,7 +527,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
-                <div className="text-value">100</div>
+                <div className="text-value">{this.state.users}</div>
                 <div>Users</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -520,7 +551,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
-                <div className="text-value">10,000</div>
+                <div className="text-value">{this.state.products}</div>
                 <div>Products</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -544,7 +575,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
-                <div className="text-value">500</div>
+                <div className="text-value">{this.state.trades}</div>
                 <div>Trades</div>
               </CardBody>
               <div className="chart-wrapper" style={{ height: '70px' }}>
@@ -568,7 +599,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
-                <div className="text-value">10</div>
+                <div className="text-value">{this.state.donations}</div>
                 <div>Donations</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -623,11 +654,11 @@ class Dashboard extends Component {
                     <strong>22.123 Users (80%)</strong>
                     <Progress className="progress-xs mt-2" color="danger" value="80" />
                   </Col>
-                  <Col sm={12} md className="mb-sm-2 mb-0 d-md-down-none">
+                 {/* <Col sm={12} md className="mb-sm-2 mb-0 d-md-down-none">
                     <div className="text-muted">Bounce Rate</div>
                     <strong>Average Rate (40.15%)</strong>
                     <Progress className="progress-xs mt-2" color="primary" value="40" />
-                  </Col>
+                  </Col> */}
                 </Row>
               </CardFooter>
             </Card>

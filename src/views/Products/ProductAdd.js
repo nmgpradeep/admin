@@ -40,6 +40,7 @@ class ProductAdd extends Component {
     super(props);
     this.productName = React.createRef();
     this.description = React.createRef();
+    this.size = React.createRef();
     this.parent = React.createRef();
     this.status = React.createRef();
     this.state = {
@@ -62,10 +63,14 @@ class ProductAdd extends Component {
       }
     };
     this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
+    this.fileChangedHandler = this.fileChangedHandler.bind(this)
   }
   
   categoryhandleContentChange(value) {			
     this.setState({categoryValue:value })    
+  }
+  fileChangedHandler = (event) => {
+    this.setState({selectedFile: event.target.files[0]})
   }
   
   cancelHandler(){
@@ -85,7 +90,7 @@ class ProductAdd extends Component {
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
                   addProduct[field].valid = false;
-                  addProduct[field].message = addProduct[field].addProduct[fieldCheck].message;
+                    addProduct[field].message = addProduct[field].addProduct[fieldCheck].message;
 
                }
               break;
@@ -94,17 +99,33 @@ class ProductAdd extends Component {
         this.setState({ validation: addProduct});
       }
       if(formSubmitFlag){
-        let addProduct = this.state.addProduct;
-        addProduct.productName = this.productName.value;
-        addProduct.description = this.description.value;
-        addProduct.size = this.size.value;
-        addProduct.color = this.color.value;
-        addProduct.brand = this.brand.value;       
-        addProduct.productAge = this.productAge.value;
-        addProduct.userId = '5b236b4ad73fe224efedae86';
-        addProduct.productCategory = '5b3ca9c23d43f138959e3224';  
+        console.log("state",this.state)
+
+        const data = new FD();
+        console.log('FORM DATA START', this.productName.value);
+        data.append('productName', this.productName.value)
+        data.append('description', this.description.value)
+        data.append('size', this.size.value)
+        data.append('color', this.color.value)
+        data.append('brand', this.brand.value)
+        data.append('productAge', this.productAge.value)
+        data.append('userId', '5b236b4ad73fe224efedae86')
+        data.append('productCategory', '5b3ca9c23d43f138959e3224')
+        data.append('bannerImage', this.state.selectedFile)
+        //data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
+        console.log("data",data);
+
+        // let addProduct = this.state.addProduct;
+        // addProduct.productName = this.productName.value;
+        // addProduct.description = this.description.value;
+        // addProduct.size = this.size.value;
+        // addProduct.color = this.color.value;
+        // addProduct.brand = this.brand.value;       
+        // addProduct.productAge = this.productAge.value;
+        // addProduct.userId = '5b236b4ad73fe224efedae86';
+        // addProduct.productCategory = '5b3ca9c23d43f138959e3224';  
         
-        axios.post('/product/create', addProduct).then(result => {
+        axios.post('/product/create', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/products");
           }
@@ -179,12 +200,12 @@ class ProductAdd extends Component {
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>                  
-                    <Input type="textarea" placeholder="Description" required/>
+                    <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
                     
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                   <select innerRef={input => (this.category = input)} id="select"  class="form-control"  onChange={this.categoryhandleContentChange}>	                   
+                   <select innerRef={input => (this.category = input)} id="select"  className="form-control"  onChange={this.categoryhandleContentChange}>	                   
                     {categories}
                     </select>
                 </FormGroup>
@@ -210,6 +231,10 @@ class ProductAdd extends Component {
                   <Label htmlFor="age">Age</Label>
                   <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
                 </FormGroup>
+                <FormGroup>
+                      <Label htmlFor="lastname">Banner Image</Label>
+                      <Input type="file" multiple="multiple" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
+                    </FormGroup>
 
                 <Row>
                   <Col xs="6" className="text-right">

@@ -46,7 +46,9 @@ class ProductEdit extends Component {
     this.color = React.createRef();
     this.brand = React.createRef();       
     this.productAge = React.createRef();
+    this.productImage = React.createRef();
     let productId = this.props.match.params.id;
+
     this.state = {
       editProduct: {},
       productId: productId,
@@ -63,16 +65,7 @@ class ProductEdit extends Component {
           valid: null,
           message: ''
         },
-        description:{
-          rules: {
-            notEmpty: {
-              message: 'Description field can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        }
+        
       }
     };
     this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
@@ -142,10 +135,20 @@ class ProductEdit extends Component {
 
   componentDidMount() {  	 
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
-		  console.log('Results Data',result);       
+      console.log('Results Data',result);
+      if(result.data.code === 200) {
+        this.setState({editProduct: result.data.result});
+        this.productName.value = result.data.result.productName;
+        this.description.value = result.data.result.description;
+        this.size.value = result.data.result.size;
+        this.color.value = result.data.result.color;
+        this.brand.value = result.data.result.brand;
+        this.productAge.value = result.data.result.productAge;
+        this.setState({productImage: result.data.result.productImage});
+      }      
       })     
        axios.get('/category/categories').then(result => {
-        if(result.data.code == '200'){
+        if(result.data.code === 200){
           this.setState({
             categories: result.data.result,            
           });
@@ -195,14 +198,14 @@ class ProductEdit extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="company">Name</Label>
-                      <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.productName = input)} placeholder="Product Name" />
-                      <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback>
+                      <Input type="text"  innerRef={input => (this.productName = input)} placeholder="Product Name" />
+                      {/* <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback> */}
                     </FormGroup>
                     </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
-                    <Input type="textarea" placeholder="Description" required/>
+                    <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
                      
                 </FormGroup>
                 <FormGroup>
@@ -233,6 +236,10 @@ class ProductEdit extends Component {
                   <Label htmlFor="age">Age</Label>
                   <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
                 </FormGroup>
+                <FormGroup>
+                      <Label htmlFor="lastname">Banner Image</Label>
+                      <Input type="file" innerRef={input => (this.bannerImage = input)} placeholder="Banner Image" />
+                    </FormGroup>
 
                 <Row>
                   <Col xs="6" className="text-right">

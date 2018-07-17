@@ -20,7 +20,7 @@ const create = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
 	  //console.log('Multiple', err, fields, files);
-	//console.log('FIELD', fields.pageTitle[0]);
+	   //console.log('FIELD', fields.pageTitle[0]);
   
 	  if (!data.pageTitle) {
 		return res.send({
@@ -48,9 +48,7 @@ const create = (req, res) => {
 				var fileName = files.bannerImage[0].originalFilename;
 				var ext = path.extname(fileName);
 				var newfilename = files.bannerImage[0].fieldName + '-' + Date.now() + ext;
-
 				fs.readFile(files.bannerImage[0].path, function(err, fileData) {
-
 				  if (err) {
 					res.send(err);
 					return;
@@ -68,26 +66,22 @@ const create = (req, res) => {
 
 				  });
 				});
-				
-			  }
-			  console.log('result-&&&&&&&&',result)
+			  }			 
 			  Page.update({ _id:result._id },  { "$set": { "bannerImage": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){
+				if(err){				
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
-					  });
-				} else {
-				  
+					});
+				} else {				    
 					result.bannerImage = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,
 						result: result
 					})
-				  
-				}
-			  })	  
+				  }
+			   })	  
 			  ///end file update///	  
 			}
 		  })
@@ -159,8 +153,6 @@ const viewPage = (req, res) => {
  **/
 const updatePage = (req, res) => { 
 	//const id = req.params.id;
-	console.log('RESILTSSSSSSSSSSSSSSSS',req.body);
-	 //console.log('<asdasdfasfdasdfasdfsad>',req);
      //Page.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
 	 Page.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
@@ -168,7 +160,7 @@ const updatePage = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
 		//console.log('RESILTSSSSSSSSSSSSSSSS',result);
       if (!result) {
         res.json({
@@ -227,12 +219,12 @@ const updateStatus = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
              result: result
-            });
+         });
       }
     }
   })

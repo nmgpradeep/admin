@@ -110,7 +110,7 @@ class Users extends Component {
    let users;
      if(this.state.users){
        let userList = this.state.users;
-       users = userList.map(user => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user}/>);
+       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user} sNO={index}/>);
      }
      let paginationItems =[];
 
@@ -128,6 +128,7 @@ class Users extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+					<th>S.No.</th>
                     <th>Name</th>
                     <th>Username</th>
                     <th>Email</th>
