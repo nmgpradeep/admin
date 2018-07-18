@@ -112,7 +112,7 @@ class Products extends Component {
    let products;
      if(this.state.products){
        let productList = this.state.products;
-       products = productList.map(product => <Product key={product._id} onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product}/>);
+       products = productList.map((product,index) => <Product key={product._id} onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product} sequenceNumber={index+1}/>);
       }
      let paginationItems =[];
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
@@ -129,6 +129,7 @@ class Products extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No.</th>
                     <th>Name</th>
                     <th>Description</th>
                     <th>Category</th>

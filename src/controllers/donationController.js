@@ -35,7 +35,7 @@ const create = (req, res) => {
 	  }
 		  let now = new Date();		
 		  Donation.create(data, (err, result) => {
-			  console.log('RES-Page',err, result);
+			 // console.log('RES-Page',err, result);
 			if (err) {
 			  return res.send({
 				errr : err,
@@ -128,27 +128,33 @@ const donations = (req, res) => {
 const viewDonation = (req, res) => {
 	const id = req.params.id;
 	console.log('<<<<<<<<<<<Product>>>>',id);  
-	Donation.findById({_id:id}, (err, result) => {
-    if (err) {
-      return res.send({
-        code: httpResponseCode.BAD_REQUEST,
-        message: httpResponseMessage.INTERNAL_SERVER_ERROR
-      })
-    } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      }else {
-        return res.json({
-             code: httpResponseCode.EVERYTHING_IS_OK,             
-             result: result
-            });
+	Donation.findById({_id:id})
+		.populate('userId')
+		.populate('userId',['firstName','lastName'])
+		.populate('productCategory',['categoryName'])
+	
+	     .exec(function(err, result){		
+			if (err) {
+			return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			})
+			} else {
+			if (!result) {
+			res.json({
+			message: httpResponseMessage.USER_NOT_FOUND,
+			code: httpResponseMessage.BAD_REQUEST
+			});
+			}else {
+			return res.json({
 
-      }
-    }
-  })
+			code: httpResponseCode.EVERYTHING_IS_OK,             
+			result: result
+			});
+
+			}
+			}
+		});
 }
 
 
@@ -265,7 +271,8 @@ const deleteDonation = (req, res) => {
  *	Description : Function to update the donation status.
  **/
 const updateStatus = (req, res) => { 
-  Donation.update({ _id:req.body.id },  { "$set": { "donationStatus": req.body.donationStatus } }, { new:true }, (err,result) => {
+	console.log('asdasdfasdf',req.body);
+  Donation.update({ _id:req.body._id },  { "$set": { "productStatus": req.body.productStatus } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,

@@ -110,8 +110,8 @@ class Categories extends Component {
    let categories;
      if(this.state.categories){
        let categoryList = this.state.categories;
-       categories = categoryList.map(category => <Category key={category._id} 
-        onDeleteCategory={this.categoryDeleteHandler.bind(this)} changeStatus={(category) => this.changeStatusHandler(category)}   category={category}/>);
+       categories = categoryList.map((category,index) => <Category key={category._id} 
+        onDeleteCategory={this.categoryDeleteHandler.bind(this)} changeStatus={(category) => this.changeStatusHandler(category)}   category={category} sequenceNumber={index}/>);
      }
      let paginationItems =[];
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
@@ -128,6 +128,7 @@ class Categories extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                   <th>S.No.</th>
                     <th>Category Name</th>
                     <th>Description</th>
                     <th>Parent</th>

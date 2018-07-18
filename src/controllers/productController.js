@@ -110,10 +110,27 @@ const allProducts = (req, res) => {
 		localField: '_id',
 		foreignField: 'productId',
 		as: 'images'
-	  }}])
-      .skip((perPage * page) - perPage)
-      .limit(perPage)
-     .exec(function(err, products) {		 
+	  }},
+	  {
+		$lookup: {
+			from: "users",
+			localField: "userId",
+			foreignField: "_id",
+			as: "user"
+		}
+	},{
+		$lookup: {
+			from: "categories",
+			localField: "productCategory",
+			foreignField: "_id",
+			as: "category"
+		}
+	}])
+     .skip((perPage * page) - perPage)
+     .limit(perPage)      
+     .exec(function(err, products) {	
+		//products.populate('userId',['firstName','lastName']);
+		//products.populate('productCategory',['categoryName']);	 
           Product.count().exec(function(err, count) {
             if (err) return next(err)      
                // products.forEach(function(product) {
