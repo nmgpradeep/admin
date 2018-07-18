@@ -14,6 +14,7 @@ Capitalize(str){
   render() {
     return (
       <tr key={this.props.testimonial._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.testimonial.title}</td>
         <td>{this.props.testimonial.description}</td>
         <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>   

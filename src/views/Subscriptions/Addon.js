@@ -10,6 +10,7 @@ class Addon extends Component {
   render() {
     return (
       <tr key={this.props.addon._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.addon.packageName}</td>
         <td>{this.props.addon.description}</td>
         <td>{this.props.addon.price}</td>

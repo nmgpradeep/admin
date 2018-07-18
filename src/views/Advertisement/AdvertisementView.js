@@ -38,7 +38,7 @@ class AdvertisementView extends Component {
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -85,6 +85,15 @@ class AdvertisementView extends Component {
                 <FormGroup>
                   <Label htmlFor="email">URL</Label>
                   <Input type="url"  pattern="(http|https)://.+" value={this.state.viewAdv.redirectURL} required/>
+                </FormGroup>
+                <FormGroup>
+                <Col xs="12" className="text-left">
+                  <Label htmlFor="status">Image</Label>
+                   </Col>
+                  <Col xs="12" sm="12">
+                  <img className="linkedin" src= {'assets/uploads/AdvertisementImage/'+this.state.viewAdv.image} width="60"/>
+                  </Col>
+                  
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="status">Status</Label>

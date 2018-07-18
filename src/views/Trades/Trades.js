@@ -63,7 +63,7 @@ class Trades extends Component {
 	  console.log("STATUS",trade)
     trade.status = (1 - parseInt(trade.status)).toString();
     console.log("CHANGE-STATUS",trade)
-    axios.post('/location/changeStatus',trade).then(result => {
+    axios.post('/trade/updateStatus',trade).then(result => {
       if(result.data.code === 200){
         let trades = this.state.trades;
         let tradeIndex = trades.findIndex(x => x._id === trade._id);
@@ -82,7 +82,7 @@ class Trades extends Component {
    let trades;
      if(this.state.trades){
        let tradeList = this.state.trades;
-       trades = tradeList.map(trade => <Trade key={trade._id}  changeStatus={(trade) => this.changeStatusHandler(trade)}   trade={trade}/>);
+       trades = tradeList.map((trade,index) => <Trade sequenceNo={index} key={trade._id}  updateStatus={(trade) => this.changeStatusHandler(trade)}   trade={trade}/>);
      }
 
      let paginationItems =[];
@@ -94,13 +94,14 @@ class Trades extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> City Listing               
+                <i className="fa fa-align-justify"></i> Trade Listing               
                 {/* <Link to="/trades/add" className="btn btn-success btn-sm pull-right">Add New Trade</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Seller Name</th>  
                     <th>Seller Product</th>   
                     <th>Receiver Name</th> 

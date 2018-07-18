@@ -109,7 +109,7 @@ class Countrys extends Component {
    let countrys;
      if(this.state.countrys){
        let countryList = this.state.countrys;
-       countrys = countryList.map(country => <Country key={country._id} onDeleteCountry={this.countryDeleteHandler.bind(this)} changeStatus={(country) => this.changeStatusHandler(country)}   country={country}/>);
+       countrys = countryList.map((country,index) => <Country sequenceNo={index} key={country._id} onDeleteCountry={this.countryDeleteHandler.bind(this)} changeStatus={(country) => this.changeStatusHandler(country)}   country={country}/>);
      }
 
      let paginationItems =[];
@@ -128,6 +128,7 @@ class Countrys extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Country Name</th>  
                     <th>Country Code</th>                
                     <th>Status</th>

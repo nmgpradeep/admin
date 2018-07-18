@@ -80,7 +80,7 @@ class Transactions extends Component {
    let transactions;
      if(this.state.transactions){
        let listTransaction = this.state.transactions;
-       transactions = listTransaction.map(transaction => <Transaction key={transaction._id}  changeStatus={(transaction) => this.changeStatusHandler(transaction)} transaction={transaction}/>);
+       transactions = listTransaction.map((transaction,index) => <Transaction sequenceNo={index} key={transaction._id}  changeStatus={(transaction) => this.changeStatusHandler(transaction)} transaction={transaction}/>);
        
      }
      let paginationItems =[];
@@ -98,6 +98,7 @@ class Transactions extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
 					  <tr>
+              <th>S.No</th>
 						<th>TransactionType</th>
 						<th>UserId</th>
 						<th>PaymentId</th>

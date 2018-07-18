@@ -13,6 +13,7 @@ class City extends Component {
     console.log(this.props)
     return (
       <tr key={this.props.city._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.city.countrySelect.countryName}</td>
         <td>{this.props.city.stateSelect.stateName}</td>
         <td>{this.props.city.cityName}</td>

@@ -26,6 +26,10 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+var FD = require('form-data');
+var fs = require('fs');
+
 class AdvertisementAdd extends Component {
 
   constructor(props){
@@ -70,20 +74,12 @@ class AdvertisementAdd extends Component {
           valid: null,
           message: ''
         },
-        image: {
-          rules: {
-            notEmpty: {
-              message: 'Please provide a image for the advertisement',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        }
-
-
       }
     } 
+  }
+
+  fileChangedHandler = (event) => {
+    this.setState({selectedFile: event.target.files[0]})
   }
 
   submitHandler(e){
@@ -110,14 +106,20 @@ class AdvertisementAdd extends Component {
       this.setState({ validation: addAdv});
     }
     if(formSubmitFlag){
-      let addAdv = this.state.addAdv;
-      addAdv.advertisementName = this.advertisementName.value;
-      addAdv.description = this.description.value;
-      addAdv.redirectURL = this.redirectURL.value;
-      addAdv.image = this.image.value;
-      axios.post('/advertisement/newAds', addAdv).then(result => {
+      const data =new FD()
+      data.append('advertisementName', this.advertisementName.value),
+      data.append('description', this.description.value),
+      data.append('redirectURL', this.redirectURL.value),
+      data.append('image', this.state.selectedFile, this.state.selectedFile.name)
+
+      // let addAdv = this.state.addAdv;
+      // addAdv.advertisementName = this.advertisementName.value;
+      // addAdv.description = this.description.value;
+      // addAdv.redirectURL = this.redirectURL.value;
+      // addAdv.image = this.image.value;
+      axios.post('/advertisement/newAds', data).then(result => {
         if(result.data.code == '200'){
-          this.props.history.push('./Advertisements.js');
+          this.props.history.push('/advertisement');
         }
       })
     }
@@ -160,9 +162,20 @@ class AdvertisementAdd extends Component {
                       <Label htmlFor="redirectURL">URL</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="url"  pattern="(http|https)://.+" invalid={this.state.validation.redirectURL.valid === false} innerRef={input => (this.redirectURL = input)}  placeholder="URL" required/>
+                      <Input type="url"  pattern="(http|https)://.+" invalid={this.state.validation.redirectURL.valid === false} innerRef={input => (this.redirectURL = input)}  placeholder="URL" />
                       
                       <FormFeedback invalid={this.state.validation.redirectURL.valid === false}>{this.state.validation.redirectURL.message}</FormFeedback>
+                    </Col>
+                  </FormGroup>
+                  
+                  
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="image">Advertisement Image</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="file" innerRef={input => (this.image = input)} onChange={this.fileChangedHandler} name="image" />
+                      {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -174,16 +187,6 @@ class AdvertisementAdd extends Component {
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>
-                    </Col>
-                  </FormGroup>
-                  
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="image">File input</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="file" invalid={this.state.validation.image.valid === false} innerRef={input => (this.image = input)} name="image" />
-                      <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback>
                     </Col>
                   </FormGroup>
                     

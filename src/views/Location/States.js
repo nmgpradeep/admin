@@ -109,7 +109,7 @@ class States extends Component {
    let states;
      if(this.state.states){
        let stateList = this.state.states;
-       states = stateList.map(state => <State key={state._id} onDeleteState={this.stateDeleteHandler.bind(this)} changeStatus={(state) => this.changeStatusHandler(state)}   state={state}/>);
+       states = stateList.map((state,index) => <State sequenceNo={index} key={state._id} onDeleteState={this.stateDeleteHandler.bind(this)} changeStatus={(state) => this.changeStatusHandler(state)}   state={state}/>);
      }
 
      let paginationItems =[];
@@ -128,6 +128,7 @@ class States extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Country Name</th>  
                     <th>State Name</th>                
                     <th>Status</th>

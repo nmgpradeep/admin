@@ -109,7 +109,7 @@ class Citys extends Component {
    let citys;
      if(this.state.citys){
        let cityList = this.state.citys;
-       citys = cityList.map(city => <City key={city._id} onDeleteCity={this.cityDeleteHandler.bind(this)} changeStatus={(city) => this.changeStatusHandler(city)}   city={city}/>);
+       citys = cityList.map((city,index) => <City sequenceNo={index} key={city._id} onDeleteCity={this.cityDeleteHandler.bind(this)} changeStatus={(city) => this.changeStatusHandler(city)}   city={city}/>);
      }
 
      let paginationItems =[];
@@ -128,6 +128,7 @@ class Citys extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Country Name</th>  
                     <th>State Name</th>   
                     <th>City Name</th>             

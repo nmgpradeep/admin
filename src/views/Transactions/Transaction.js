@@ -10,6 +10,7 @@ class Transaction extends Component {
   render() {
     return (
       <tr key={this.props.transaction._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.transaction.transactionType}</td>
         <td>{this.props.transaction.userId}</td>
         <td>{this.props.transaction.paymentId}</td>

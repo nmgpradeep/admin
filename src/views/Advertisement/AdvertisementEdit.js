@@ -26,6 +26,10 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+var FD = require('form-data');
+var fs = require('fs');
+
 // import PropTypes from 'prop-types';
 class AdvertisementEdit extends Component {
   constructor(props){
@@ -72,6 +76,9 @@ class AdvertisementEdit extends Component {
       }
     };
   }
+  fileChangedHandler = (event) => {
+	  this.setState({selectedFile: event.target.files[0]})
+   }
   cancelHandler(){
     this.props.history.push("/advertisement");
   }
@@ -99,13 +106,23 @@ class AdvertisementEdit extends Component {
       }
 
       if(formSubmitFlag){
-        let editAdv = this.state.editAdv;
-        editAdv.advertisementName = this.advertisementName.value;
-        editAdv.description = this.description.value;
-        editAdv.redirectURL = this.redirectURL.value;
-        editAdv.image = this.image.value;
-        console.log("editAdv",editAdv)
-        axios.put('/advertisement/updateAds', editAdv).then(result => {
+        const data = new FD()
+        data.append('_id', this.state.advId)
+        data.append('advertisementName', this.advertisementName.value)
+        data.append('description', this.description.value)
+        data.append('redirectURL', this.redirectURL.value)
+        if(this.state.selectedFile){
+          data.append('image', this.state.selectedFile, this.state.selectedFile.name)
+         } else {
+          data.append('image', this.state.editAdv.image);
+       }	
+        // let editAdv = this.state.editAdv;
+        // editAdv.advertisementName = this.advertisementName.value;
+        // editAdv.description = this.description.value;
+        // editAdv.redirectURL = this.redirectURL.value;
+        // editAdv.image = this.image.value;
+        console.log("editAdv",data)
+        axios.put('/advertisement/updateAds', data).then(result => {
           if(result.data.code ===200){
             this.props.history.push("/advertisement");
           }
@@ -167,15 +184,17 @@ class AdvertisementEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">URL</Label>
-                      <Input type="url"  pattern="(http|https)://.+" innerRef={input => (this.redirectURL = input)} placeholder="Last name" required/>
+                      <Input type="url"  pattern="(http|https)://.+" innerRef={input => (this.redirectURL = input)} placeholder="Last name" />
                     </FormGroup>
                   </Col>
                 </Row>
-                 <FormGroup>
-                  <Label htmlFor="username">Image</Label>
-                  <Input type="file" innerRef={input => (this.image = File)} placeholder="Image" />
-                  {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
-                </FormGroup>
+                <Col xs="4" sm="12">
+						<FormGroup>
+						 <Label htmlFor="brand">Image</Label>                  
+						  <Input type="file" innerRef={input => (this.image = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
+						  <img src={'assets/uploads/AdvertisementImage/'+this.state.editAdv.image} width="60"/>
+					   </FormGroup>
+                   </Col>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

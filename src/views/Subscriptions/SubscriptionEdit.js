@@ -187,7 +187,7 @@ class SubscriptionEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="middlename">Description</Label>
-                      <Input type="text" innerRef={input => (this.description = input)}  />
+                      <Input type="textarea" innerRef={input => (this.description = input)}  />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

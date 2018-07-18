@@ -10,6 +10,7 @@ class CmsPage extends Component {
   render() {
     return (
       <tr key={this.props.cmsPage._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.cmsPage.pageTitle}</td>
         <td>{this.props.cmsPage.pageHeading}</td>
         <td>{this.props.cmsPage.description.replace(/<(?:.|\n)*?>/gm, '')}</td>      
