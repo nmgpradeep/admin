@@ -237,7 +237,7 @@ const listUser = (req, res) => {
   const users = (req, res) => {
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    User.find({})
+    User.find({ userType: { $ne: 1 }})
       .skip((perPage * page) - perPage)
       .limit(perPage)
       .exec(function(err, users) {

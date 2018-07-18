@@ -21,7 +21,7 @@ class Users extends Component {
       usersCount: 0,
       offset: 0
     };
-    console.log('THIS OBJ', this);
+   // console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
@@ -40,10 +40,10 @@ class Users extends Component {
           total_count:result.data.total
         });
         }
-      console.log(this.state.users);
+      //console.log(this.state.users);
     })
     .catch((error) => {
-      console.log('error', error)
+      //console.log('error', error)
        if(error.code === 401) {
          this.props.history.push("/login");
       }
@@ -90,7 +90,7 @@ class Users extends Component {
     }, function(){
       if(this.state.approve){
         axios.delete('/user/deleteUser/' + this.state.approveId).then(result => {
-          if(result.data.code == '200'){
+          if(result.data.code === 200){
             let users = this.state.users;
             let userIndex = users.findIndex(x => x._id === this.state.approveId);
             users.splice(userIndex, 1);
@@ -110,7 +110,7 @@ class Users extends Component {
    let users;
      if(this.state.users){
        let userList = this.state.users;
-       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)}   user={user} sNO={index}/>);
+       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />);
      }
      let paginationItems =[];
 

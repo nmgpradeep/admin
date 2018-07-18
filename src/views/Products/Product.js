@@ -7,14 +7,17 @@ class Product extends Component {
   constructor(props){
     super(props);
   }
+Capitalize(str){
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
   render() {
-    return (
-    
+    return (    
       <tr key={this.props.product._id}>		
+        <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
         <td>{this.props.product.description}</td>
-        <td>{this.props.product.productCategory}</td>  
-        <td>{this.props.product.userId}</td>
+        <td>{(this.props.product.category)? this.Capitalize(this.props.product.category[0].categoryName):''}</td>  
+        <td>{(this.props.product.user)?this.Capitalize(this.props.product.user[0].firstName)+' '+this.Capitalize(this.props.product.user[0].lastName):''}</td>
         <td>{this.props.product.size}</td>
         <td>{this.props.product.color}</td>  
         <td>{this.props.product.brand}</td>

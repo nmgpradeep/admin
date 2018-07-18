@@ -119,7 +119,7 @@ class CategoryAdd extends Component {
 
                 <FormGroup>
                   <Label htmlFor="parent">Parent</Label>
-                   <select innerRef={input => (this.parent = input)} id="select" class="form-control" >
+                   <select innerRef={input => (this.parent = input)} id="select" className="form-control" >
 					  <option value="0">Please select</option>
 					  <option value="1">Samsung</option>
 					  <option value="2">Television</option>
@@ -130,7 +130,7 @@ class CategoryAdd extends Component {
 
                  <FormGroup>
                   <Label htmlFor="status" >Status</Label>
-                  <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+                  <select innerRef={input => (this.status = input)} id="status" className="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>
                   </select>

@@ -15,8 +15,8 @@ description:{
     trim:true
 },
 parent:{
-    type:String,
-    trim:true
+    type:Schema.Types.ObjectId,
+    ref:'category'
 },
 status:{
  type:String,
@@ -29,14 +29,14 @@ children:[{ type:Schema.ObjectId, ref:"ParentCategory" }, { type:Schema.ObjectId
 {
 timestamps:true
 });
+
+//~ var autoPopulateChildren = function(next) {
+    //~ this.populate('children');
+    //~ next();
+//~ };
+//~ CategorySchema
+//~ .pre('findOne', autoPopulateChildren)
+//~ .pre('find', autoPopulateChildren);
+
 // module.exports = mongoose.model('ParentCategory', CategorySchema);
 module.exports = mongoose.model('Category', CategorySchema);
-// var ChildSchema = {...CategorySchema, parent: { type:Schema.ObjectId, ref:"ParentCategory", childPath:"children" }};
-//
-// ChildSchema.plugin(relationship, { relationshipPathName:'parent' });
-//
-// CategorySchema.methods.toJSON = function() {
-//   var obj = this.toObject();
-//   return obj;
-// }
-// module.exports = mongoose.model("ChildCategory", ChildSchema);

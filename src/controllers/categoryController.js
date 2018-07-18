@@ -177,7 +177,7 @@ const allCategories = (req, res) => {
     var page = req.params.page || 1;
     Category.find({})
       .skip((perPage * page) - perPage)
-      .limit(perPage)
+      .limit(perPage)    
       .exec(function(err, categories) {		
           Category.count().exec(function(err, count) {
             if (err) return next(err)

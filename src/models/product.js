@@ -16,7 +16,7 @@ description:{
 },
 userId:{
      type: Schema.Types.ObjectId,
-     ref: 'user'
+     ref: 'User'
 },
 productCategory:{
 	type: Schema.Types.ObjectId,
