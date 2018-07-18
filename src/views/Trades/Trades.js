@@ -2,13 +2,9 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import Trade from './Trade';
 import ReactPaginate from 'react-paginate';
+import Trade from './Trade'
 
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
 
 class Trades extends Component {
   constructor(props){
@@ -26,11 +22,11 @@ class Trades extends Component {
       this.setState({currentPage: this.props.match.params.page});
     }
     this.toggle = this.toggle.bind(this);
-    //this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
-  loadCommentsFromServer() {
-    axios.get('/trade/trades/:page').then(result => {
-      if(result.data.code == '200'){
+
+  loadCommentsFromServer(){
+    axios.get('/trade/Trades/' + this.state.currentPage).then(result => {
+      if(result.data.code === 200){
         this.setState({
           trades: result.data.result,
           currentPage: result.data.current,
@@ -43,12 +39,12 @@ class Trades extends Component {
     })
     .catch((error) => {
     console.log('error', error)
-      if(error.status === 401) {
+      if(error.code === 401) {
         this.props.history.push("/login");
       }
     });
-  }
 
+  }
 
   handlePageClick = (data) => {
     let currentPage = data.selected + 1;
@@ -56,34 +52,32 @@ class Trades extends Component {
       this.loadCommentsFromServer();
     });
 };
-
-
+  
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      this.loadCommentsFromServer()
-
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+      this.loadCommentsFromServer();
   }
+  
   changeStatusHandler(trade){
 	  console.log("STATUS",trade)
     trade.status = (1 - parseInt(trade.status)).toString();
     console.log("CHANGE-STATUS",trade)
-    axios.post('/trade/updateStatus',trade).then(result => {
+    axios.post('/location/changeStatus',trade).then(result => {
       if(result.data.code === 200){
         let trades = this.state.trades;
         let tradeIndex = trades.findIndex(x => x._id === trade._id);
         trades[tradeIndex].status = trade.status.toString();
-        this.setState({ trades: trades});
+        this.setState({ trades: trades });
       }
     });
   }
-
   toggle() {
     this.setState({
       modal: !this.state.modal
     });
   }
-
+  
   render() {
    let trades;
      if(this.state.trades){
@@ -100,24 +94,23 @@ class Trades extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Trades Listing
-                <Link to="trades/add" className="btn btn-success btn-sm pull-right">Add Trade</Link>
+                <i className="fa fa-align-justify"></i> City Listing               
+                {/* <Link to="/trades/add" className="btn btn-success btn-sm pull-right">Add New Trade</Link> */}
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Id</th>
-                    <th>SellerName</th>
-                    <th>SellerProduct</th>
-                    <th>ReceiverName</th>
-                    <th>ReceiverProduct</th>
-                    <th>Date</th>
+                    <th>Seller Name</th>  
+                    <th>Seller Product</th>   
+                    <th>Receiver Name</th> 
+                    <th>Receiver Product</th> 
+                    <th>Date</th>           
                     <th>Status</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                   </tr>
                   </thead>
-                  <tbody>                  
+                  <tbody>
                   {trades}
                   </tbody>
                 </Table>
@@ -146,7 +139,16 @@ class Trades extends Component {
             </Card>
           </Col>
         </Row>
-
+        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} external={externalCloseBtn}>
+          <ModalHeader>Modal title</ModalHeader>
+          <ModalBody>
+            Are you sure to delete?
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.approveDeleteHandler}>Yes</Button>{' '}
+            <Button color="secondary" onClick={this.toggle}>No</Button>
+          </ModalFooter>
+        </Modal>
       </div>
 
     );

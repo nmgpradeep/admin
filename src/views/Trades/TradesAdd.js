@@ -1,5 +1,8 @@
 import React,{ Component }from 'react'
+import {Link} from 'react-router-dom';
 import axios from 'axios'
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import ProductSelectBox from '../SelectBox/ProductSelectBox/ProductSelectBox'
 import {
   Badge,
   Button,
@@ -33,15 +36,16 @@ class TradeAdd extends Component {
     this.receiverId = React.createRef(),
     this.sellerProductId = React.createRef(),
     this.receiverProductId = React.createRef(),
-
     
     this.state = {
-    addTrade: {},
+      addTrade: {},
+      users : '',
+      products : '',
       validation:{
         sellerId: {
           rules: {
             notEmpty: {
-              message: 'Advertisement name can\'t be left blank',
+              message: 'Seller name can\'t be left blank',
               valid: false
 
             }
@@ -52,7 +56,7 @@ class TradeAdd extends Component {
         receiverId:{
           rules: {
             notEmpty: {
-              message: 'Advertisement description can\'t be left blank',
+              message: 'Reciver name can\'t be left blank',
               valid: false
             }
           },
@@ -60,31 +64,36 @@ class TradeAdd extends Component {
           message: ''
         },
         sellerProductId: {
-          rules: {
-            notEmpty: {
-              message: 'redirectURL can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
+            rules: {
+                notEmpty: {
+                    message: 'Selled product can\'t be left blank',
+                    valid: false
+                }
+            },
+            valid: null,
+            message: ''
         },
         receiverProductId: {
           rules: {
-            notEmpty: {
-              message: 'Please provide a image for the advertisement',
-              valid: false
-            }
+              notEmpty: {
+                  message: 'Received product can\'t be left blank',
+                  valid: false
+              }
           },
           valid: null,
           message: ''
-        }
-
-
+      }
       }
     } 
   }
 
+  handleUser = (users) => {
+        this.setState({users: users});
+  }
+  handleProduct = (products) => {
+      this.setState({products:products});
+  }
+    
   submitHandler(e){
     e.preventDefault()
     let formSubmitFlag = true;
@@ -93,30 +102,33 @@ class TradeAdd extends Component {
       let addTrade = this.state.validation;
       addTrade[field].valid = null;
       for(let fieldCheck in this.state.validation[field].rules){
-        switch(fieldCheck){
-          case 'notEmpty':
-            if(lastValidFieldFlag === true && this[field].value.length === 0){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addTrade[field].valid = false;
-                addTrade[field].message = addTrade[field].rules[fieldCheck].message;
+        //~ switch(fieldCheck){
+          //~ case 'notEmpty':
+            //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
+                //~ lastValidFieldFlag = false;
+                //~ formSubmitFlag = false;
+                //~ addTestimonial[field].valid = false;
+                //~ addTestimonial[field].message = addTestimonial[field].rules[fieldCheck].message;
 
-             }
-            break;
+             //~ }
+            //~ break;
           
-        }
+        //~ }
       }
       this.setState({ validation: addTrade});
     }
     if(formSubmitFlag){
+    console.log("USERS",this.state.users)
+    console.log("PRODUCTS",this.state.products)
       let addTrade = this.state.addTrade;
-      addTrade.sellerId = this.sellerId.value;
-      addTrade.receiverId = this.receiverId.value;
-      addTrade.sellerProductId = this.sellerProductId.value;
-      addTrade.receiverProductId = this.receiverProductId.value;
-      axios.post('/trade/newTrade', addTrade).then(result => {
+      addTrade.sellerId = this.state.users;
+      addTrade.sellerProductId = this.state.products;
+      addTrade.receiverId = this.state.users;
+      addTrade.receiverProductId = this.state.products;
+      console.log("addTrade",addTrade)
+      axios.post('/trade/newTrade', addTrade  ).then(result => {
         if(result.data.code == '200'){
-          this.props.history.push('./trades');
+          this.props.history.push('./Trade');
         }
       })
     }
@@ -129,63 +141,55 @@ class TradeAdd extends Component {
         <Card>
               <CardHeader>
                 <strong>New Trade Form</strong>
+                <Link to="/trade" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Seller Name</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <UserSelectBox onSelectUser={this.handleUser}/>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Selled Product Name</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <ProductSelectBox onSelectProduct={this.handleProduct}/>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Reciver Name</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <UserSelectBox onSelectUser={this.handleUser}/>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="author">Received Product Name</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <ProductSelectBox onSelectProduct={this.handleProduct}/>
+                    </Col>
+                  </FormGroup>
                   
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="advertisementName">sellerId</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.sellerId.valid === false} innerRef={input => (this.sellerId = input)} placeholder="Advertisement Name" />
-                      <FormFeedback invalid={this.state.validation.sellerId.valid === false}>{this.state.validation.sellerId.message}</FormFeedback>
-                      
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="description">receiverId</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.receiverId.valid === false} innerRef={input => (this.receiverId = input)} placeholder="Description" />
-                      <FormFeedback invalid={this.state.validation.receiverId.valid === false}>{this.state.validation.receiverId.message}</FormFeedback>
-                      
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="redirectURL">sellerProductId</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text"   invalid={this.state.validation.sellerProductId.valid === false} innerRef={input => (this.sellerProductId = input)}  placeholder="URL" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.sellerProductId.valid === false}>{this.state.validation.sellerProductId.message}</FormFeedback>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="redirectURL">receiverProductId</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text"   invalid={this.state.validation.receiverProductId.valid === false} innerRef={input => (this.receiverProductId = input)}  placeholder="URL" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.receiverProductId.valid === false}>{this.state.validation.receiverProductId.message}</FormFeedback>
-                    </Col>
-                  </FormGroup>
+                  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>
                     </Col>
-                  </FormGroup>
-
-                    
+                  </FormGroup>                    
                 </Form>
               </CardBody>
               <CardFooter>

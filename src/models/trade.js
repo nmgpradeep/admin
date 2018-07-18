@@ -1,4 +1,9 @@
-//'use strict';
+/*
+	*Trade Model
+	*Author	: Saurabh Agarwal
+	*Date	: July 17, 2018
+*/
+'use strict';
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
@@ -22,7 +27,7 @@ receiverProductId:{
 	type: Schema.Types.ObjectId,
 	ref: 'Product'
 },
-tradeStatus:{
+Status:{
  type:String,
  trim:true,
  sparse:true,
