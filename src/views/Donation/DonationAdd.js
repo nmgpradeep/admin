@@ -188,7 +188,6 @@ class DonationAdd extends Component {
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
-                  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="advertisementName">Product Name</Label>
@@ -196,8 +195,7 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.productName = input)} placeholder="Product Name" />
                       <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback>
-                      
-                    </Col>
+                  </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
@@ -206,7 +204,6 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">                    
                       <Input type="text" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
                       <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
-                      
                     </Col>
                   </FormGroup>                 
                  <FormGroup row>
@@ -251,7 +248,6 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.brand.valid === false} innerRef={input => (this.brand= input)} placeholder="Brand" />
                       <FormFeedback invalid={this.state.validation.brand.valid === false}>{this.state.validation.brand.message}</FormFeedback>
-                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -261,7 +257,6 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.productAge.valid === false} innerRef={input => (this.productAge = input)} placeholder="Age" />
                       <FormFeedback invalid={this.state.validation.productAge.valid === false}>{this.state.validation.productAge.message}</FormFeedback>
-                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -277,7 +272,7 @@ class DonationAdd extends Component {
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>

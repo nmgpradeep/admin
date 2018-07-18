@@ -37,7 +37,7 @@ class DonationEdit extends Component {
     super(props);
     this.productName = React.createRef();
     this.description = React.createRef();
-    this.productCategory = React.createRef();
+    this.category = React.createRef();
     this.author = React.createRef();
     this.size = React.createRef();
     this.color = React.createRef();
@@ -48,7 +48,7 @@ class DonationEdit extends Component {
     let donationId = this.props.match.params.id;
     this.state = {
       editDonation: {},
-      user : '',
+     // author : '',
       donationId: donationId,
       validation:{
         productName: {
@@ -116,7 +116,7 @@ class DonationEdit extends Component {
     };
   }
     handleCategory = (category) => {
-        this.setState({category: category});
+       this.category.current = category;
   }
     handleUser = (user) => {
 	  this.author.current = user;
@@ -156,8 +156,8 @@ class DonationEdit extends Component {
 		data.append('_id',this.state.donationId);				
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory',this.productCategory.value);
-		data.append('userId', this.userId.value);
+		data.append('productCategory',this.category.value);
+		data.append('userId', this.author.value);
 		data.append('size', this.size.value);
 		data.append('color', this.color.value);
 		data.append('brand', this.brand.value);
@@ -183,13 +183,13 @@ class DonationEdit extends Component {
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
            this.size.value = result.data.result.size;
+           this.author.value = result.data.result.userId._id;; 
+           this.category.value = result.data.result.productCategory._id;
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
            this.productAge.value = result.data.result.productAge;
            this.productImage.value = result.data.result.productImage;
-           this.productCategory.value = result.data.result.productCategory;
-           this.author.value = result.data.result.userId;          
-           console.log('listing',this);
+           ///console.log('listing',this.category.value);
         }
       })
       .catch((error) => {
@@ -231,7 +231,7 @@ class DonationEdit extends Component {
                      <Col xs="4" sm="12">
 					   <FormGroup>						
 						  <Label htmlFor="author">Category</Label>									  
-						   <CategorySelectBox onSelectCategory={this.handleCategory}  value={this.state.editDonation.category}/>	
+						   <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editDonation.category}/>	
 					  </FormGroup>
                   </Col>
                
