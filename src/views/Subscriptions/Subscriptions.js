@@ -106,7 +106,7 @@ class Subscriptions extends Component {
    let subscriptions;
      if(this.state.subscriptions){
        let subscriptionList = this.state.subscriptions;
-       subscriptions = subscriptionList.map(subscription => <Subscription key={subscription._id} changeStatus={(subscription) => this.changeStatusHandler(subscription)} onDeleteSubscription={this.subscriptionDeleteHandler.bind(this)} subscription={subscription}/>);
+       subscriptions = subscriptionList.map((subscription,index) => <Subscription sequenceNo={index} key={subscription._id} changeStatus={(subscription) => this.changeStatusHandler(subscription)} onDeleteSubscription={this.subscriptionDeleteHandler.bind(this)} subscription={subscription}/>);
      }
 
      let paginationItems =[];
@@ -125,12 +125,13 @@ class Subscriptions extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Subscription Name</th>
                     <th>Description</th>
                     <th>Price</th>                  
-                    <th>totalTradePermitted</th>
-                    <th>totalInventoryAllowed</th>
-                    <th>timePeriod</th>
+                    <th>Total Trade Permitted</th>
+                    <th>Total Inventory Allowed</th>
+                    <th>Time Period</th>
                     <th>Added On</th>
                     <th>Status</th>
                     <th>Action</th>

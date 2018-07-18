@@ -216,7 +216,7 @@ const updateDonation = (req, res) => {
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
 				} else {				    
-					result.bannerImage = newfilename;
+					result.productImage = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,

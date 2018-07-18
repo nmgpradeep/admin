@@ -128,7 +128,7 @@ class Users extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-					<th>S.No.</th>
+					          <th>S.No.</th>
                     <th>Name</th>
                     <th>Username</th>
                     <th>Email</th>

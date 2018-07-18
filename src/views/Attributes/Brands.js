@@ -96,7 +96,7 @@ class Brands extends Component {
    let brands;
      if(this.state.brands){
        let brandList = this.state.brands;
-       brands = brandList.map(brand => <Brand key={brand._id} onDeleteBrand={this.brandDeleteHandler.bind(this)} brand={brand}/>);
+       brands = brandList.map((brand,index) => <Brand sequenceNo={index} key={brand._id} onDeleteBrand={this.brandDeleteHandler.bind(this)} brand={brand}/>);
      }
 
      let paginationItems =[];
@@ -115,6 +115,7 @@ class Brands extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Brand Name</th>  
                     <th>Category</th>                
                     

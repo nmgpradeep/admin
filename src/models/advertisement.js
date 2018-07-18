@@ -15,7 +15,9 @@ description:{
 },
 image:{
     type:String,
-    trim:true
+    trim:true,
+    sparse:true,
+    default:0 
 },
 redirectURL:{
 type:String,
