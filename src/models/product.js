@@ -1,6 +1,9 @@
 'use strict';
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+
+var Schema = mongoose.Schema,
+  relationship = require("mongoose-relationship");
+  
 global.Promise = mongoose.Promise;
 var  bcrypt = require('bcrypt-nodejs');
 var Image = require('./productImage');
