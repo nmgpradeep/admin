@@ -47,8 +47,8 @@ class UserView extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
-                <small> Edit</small>
+                <strong>View User</strong>
+                <small> </small>
               </CardHeader>
               <CardBody>
                 <FormGroup>

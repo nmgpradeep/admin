@@ -110,7 +110,7 @@ class Addons extends Component {
    let addons;
      if(this.state.addons){
        let addonList = this.state.addons;
-       addons = addonList.map(addon => <Addon key={addon._id} onDeleteAddon={this.addonDeleteHandler.bind(this)} changeStatus={(addon) => this.changeStatusHandler(addon)}   addon={addon}/>);
+       addons = addonList.map((addon,index) => <Addon sequenceNo={index} key={addon._id} onDeleteAddon={this.addonDeleteHandler.bind(this)} changeStatus={(addon) => this.changeStatusHandler(addon)}   addon={addon}/>);
      }
 
      let paginationItems =[];
@@ -129,6 +129,7 @@ class Addons extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Package Name</th>  
                     <th>Description</th>                
                     <th>Price</th>

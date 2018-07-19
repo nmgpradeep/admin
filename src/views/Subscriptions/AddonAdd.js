@@ -134,85 +134,71 @@ class AddonAdd extends Component {
 
   render(){
     return (
-      <div>
-        <Card>
+      <div className="animated fadeIn">
+        <Row>
+          <Col xs="12" sm="12">
+            <Card>
               <CardHeader>
                 <strong>New Addon Form</strong>
-                <Link to="/addon" className="btn btn-success btn-sm pull-right">Back</Link>
+                <small></small>
               </CardHeader>
               <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                  
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="title">Package Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.packageName.valid === false} innerRef={input => (this.packageName = input)} placeholder="Package Name" required/>
+              <Form noValidate>
+                <Row>
+                  <Col xs="4" sm="12">
+                    <FormGroup>
+                      <Label htmlFor="packageName">Package Name</Label>
+                      <Input type="text" invalid={this.state.validation.packageName.valid === false} innerRef={input => (this.packageName = input)} placeholder="Package Name" />
+
                       <FormFeedback invalid={this.state.validation.packageName.valid === false}>{this.state.validation.packageName.message}</FormFeedback>
-                      
+
+                    </FormGroup>
                     </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="description">Description</Label>
+                    <Col xs="4" sm="12">
+                    <FormGroup>
+                      <Label htmlFor="Packagedescription">Package Description</Label>
+                      <Input type="textarea" innerRef={input => (this.description = input)} placeholder="Package Description" />
+                    </FormGroup>
                     </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" required/>
-                      <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
-                      
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Price</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="number"  invalid={this.state.validation.price.valid === false} innerRef={input => (this.price = input)}  placeholder="Price" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.price.valid === false}>{this.state.validation.price.message}</FormFeedback>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Total Trade Permitted</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="number"  invalid={this.state.validation.totalTradePermitted.valid === false} innerRef={input => (this.totalTradePermitted = input)}  placeholder="Tptal Trade permitted" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.totalTradePermitted.valid === false}>{this.state.validation.totalTradePermitted.message}</FormFeedback>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Total Inventory Allowed</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="number"  invalid={this.state.validation.totalInventoryAllowed.valid === false} innerRef={input => (this.totalInventoryAllowed = input)}  placeholder="Total Inventory Allowed" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="Status">Status</Label>
-                    </Col>
-                    <Col xs="12" md="9">
+                    <Col xs="4" sm="12">
+                    <FormGroup>
+                      <Label htmlFor="price">Price</Label>
+                      <Input type="number" innerRef={input => (this.price = input)} placeholder="Price" />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <FormGroup>
+                  <Label htmlFor="tTP">Total Trade Permitted</Label>
+                  <Input type="number" invalid={this.state.validation.totalTradePermitted.valid === false}  innerRef={input => (this.totalTradePermitted = input)} placeholder="Total Trade Permitted" />
+                  <FormFeedback invalid={this.state.validation.totalTradePermitted.valid === false}>{this.state.validation.totalTradePermitted.message}</FormFeedback>
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="tIA">Total Inventory Allowed</Label>
+                  <Input type="number" invalid={this.state.validation.totalInventoryAllowed.valid === false}  innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed" />
+                  <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback>
+                </FormGroup>
+                <FormGroup>                    
+                    <Label htmlFor="Status">Status</Label>                    
                     <select innerRef={input => (this.status = input)} id="status" class="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>
-                    </Col>
-                  </FormGroup>                    
+                    
+                </FormGroup> 
+                <Row>
+                  <Col xs="6" className="text-right">
+                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+                  </Col>
+                  <Col xs="6">
+                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+                  </Col>
+                </Row>
                 </Form>
               </CardBody>
-              <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
-              </CardFooter>
             </Card>
-        
-      </div>
+          </Col>
+        </Row>
+        </div>
     )
   }
 

@@ -10,6 +10,7 @@ class Size extends Component {
   render() {
     return (
       <tr key={this.props.size._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.size.size}</td>
         <td>{this.props.size.category}</td>
        

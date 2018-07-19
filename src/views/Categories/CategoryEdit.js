@@ -174,7 +174,7 @@ class CategoryEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="middlename">Description</Label>
-                      <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
+                      <Input type="textarea" innerRef={input => (this.description = input)} placeholder="Description" />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

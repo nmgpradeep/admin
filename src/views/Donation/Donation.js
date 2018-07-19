@@ -10,6 +10,7 @@ class Donation extends Component {
   render() {
     return (
       <tr key={this.props.donation._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.donation.productName}</td>
         <td>{this.props.donation.description}</td>        
         <td>{(this.props.donation.productCategory)?this.props.donation.productCategory.categoryName:''}</td>

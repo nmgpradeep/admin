@@ -83,24 +83,6 @@ const create = (req, res) => {
             });
           }
           
-        // Product.create({_id:result._id}, {'$set': {'bannerImage': newfilename } }, {new: true}, (err,filecreate) => {
-        //    if(err){
-        //       return res.send({
-        //         code: httpResponseCode.BAD_REQUEST,
-        //         message:httpResponseMessage.FILE_UPLOAD_ERROR,
-        //         result: result
-        //       })
-        //     }
-        //     else {
-        //       result.bannerImage = newfilename;
-        //       return res.send({
-        //         code: httpResponseCode.EVERYTHING_IS_OK,
-        //         message: httpResponseMessage.SUCCESSFULLY_DONE,
-        //         result: result
-        //       })
-
-        //     }
-        //   })
         result.bannerImage = newfilename;
               return res.send({
                 code: httpResponseCode.EVERYTHING_IS_OK,
@@ -110,53 +92,7 @@ const create = (req, res) => {
         }
       })
   })
-  // console.log('<<<<<<<<<<<', JSON.stringify(req.body))
-  // if (!req.body.productName && !req.body.userId && !req.body.productCategory) {
-  //   return res.send({
-  //     code: httpResponseCode.BAD_REQUEST,
-  //     message: httpResponseMessage.REQUIRED_DATA
-  //   })
-  // }
-  // const data = req.body;
-  // const flag = validation.validate_all_request(data, ['productName', 'productCategory']);
-  // if (flag) {
-  //   return res.json(flag);
-  // }
-  // Product.findOne({ productName: req.body.productName,productCategory:req.body.productCategory }, (err, result) => {
-  //   if (result) {
-
-  //     return res.send({
-  //       code: httpResponseCode.BAD_REQUEST,
-  //       message: httpResponseMessage.ALL_READY_EXIST_EMAIL
-  //     })
-  //   } else {
-  //     let now = new Date();
-		
-	//  const product = Product.findById(req.body.productId);
-	//   //~ req.body.userId = user;
-	//   //~ console.log(req.body); return;
-  //     //~ const category = User.findById(req.body.productCategory);
-	//   //~ req.body.productCategory = category;
-	  
-  //     Product.create(req.body, (err, result) => {
-	// 	  console.log('RES-PRODUCTS',err, result);
-  //       if (err) {
-  //         return res.send({
-	// 		errr : err,
-  //           code: httpResponseCode.BAD_REQUEST,
-  //           message: httpResponseMessage.INTERNAL_SERVER_ERROR
-  //         })
-  //       } else {
-         
-  //         return res.send({
-  //           code: httpResponseCode.EVERYTHING_IS_OK,
-  //           message: httpResponseMessage.SUCCESSFULLY_DONE,
-  //           result: result
-  //         })
-  //       }
-  //     })
-  //   }
-  // })
+  
 }
 
 /** Auther	: Rajiv kumar
@@ -166,17 +102,35 @@ const create = (req, res) => {
 const allProducts = (req, res) => {	
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    Product
-    .aggregate({$lookup:{ 
-      from: 'productimages', 
-      foreignField: '_id',
-      localField: 'productId', 
-      as: 'images'
-    }})
-      .skip((perPage * page) - perPage)
-      .limit(perPage)
-     // .populate('productImages')
-      .exec(function(err, products) {		 
+
+
+    Product.aggregate([{
+	  $lookup :{
+		from: 'productimages', 
+		localField: '_id',
+		foreignField: 'productId',
+		as: 'images'
+	  }},
+	  {
+		$lookup: {
+			from: "users",
+			localField: "userId",
+			foreignField: "_id",
+			as: "user"
+		}
+	},{
+		$lookup: {
+			from: "categories",
+			localField: "productCategory",
+			foreignField: "_id",
+			as: "category"
+		}
+	}])
+     .skip((perPage * page) - perPage)
+     .limit(perPage)      
+     .exec(function(err, products) {	
+		//products.populate('userId',['firstName','lastName']);
+		//products.populate('productCategory',['categoryName']);	 
           Product.count().exec(function(err, count) {
             if (err) return next(err)      
                // products.forEach(function(product) {

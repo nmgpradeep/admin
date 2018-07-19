@@ -171,8 +171,8 @@ class UserEdit extends Component {
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
-                <small> Edit</small>
+                <strong>User Edit</strong>
+                <small> </small>
               </CardHeader>
               <CardBody>
               <Form noValidate>

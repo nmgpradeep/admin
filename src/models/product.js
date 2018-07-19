@@ -15,7 +15,7 @@ description:{
 },
 userId:{
      type: Schema.Types.ObjectId,
-     ref: 'user'
+     ref: 'User'
 },
 productCategory:{
 	type: Schema.Types.ObjectId,
@@ -59,7 +59,8 @@ ProductSchema.methods.getCategory = function(callback) {
   var product = this;
   var productCategoryID = this.productCategory.map(function(productCategory) {
     return productCategory.product_id;
-  });  
+
+  }); 
 };
 
 module.exports = mongoose.model('Product', ProductSchema);

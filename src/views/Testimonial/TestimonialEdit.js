@@ -122,14 +122,10 @@ class TestimonialEdit extends Component {
   }
 
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/testimonial/viewTestimonial/' + this.state.testimonialId).then(result => {
-       // console.log(result); 
+		  
          if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
-           this.setState({ editTestimonial: result.data.result});
-          
+           this.setState({ editTestimonial: result.data.result});          
            this.title.value = result.data.result.title;
            this.description.value = result.data.result.description;
            this.author.value = result.data.result.author;
@@ -173,8 +169,9 @@ class TestimonialEdit extends Component {
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
+                      
 					   <FormGroup>						
-						  <Label htmlFor="author">Author</Label>						
+						  <Label htmlFor="author">User</Label>									  
 						  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editTestimonial.author}/>						
 					  </FormGroup>
                   </Col>

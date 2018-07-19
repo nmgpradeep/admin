@@ -5,11 +5,12 @@ import Moment from 'moment';
 // import PropTypes from 'prop-types';
 class User extends Component {
   constructor(props){
-    super(props);
+    super(props);          
   }
   render() {
     return (
       <tr key={this.props.user._id}>
+        <td>{this.props.sequenceNumber+1}</td>
         <td>{this.props.user.firstName} {this.props.user.middleName} {this.props.user.lastName}</td>
         <td>{this.props.user.userName}</td>
         <td>{this.props.user.email}</td>

@@ -154,7 +154,7 @@ class SubscriptionAdd extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="subsDescription">Subscription Description</Label>
-                      <Input type="text" innerRef={input => (this.description = input)} placeholder="Subscription Description" />
+                      <Input type="textarea" innerRef={input => (this.description = input)} placeholder="Subscription Description" />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

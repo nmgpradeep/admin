@@ -87,12 +87,12 @@ export default {
           name: 'Trades',
           url: '/trades',
           icon: 'icon-calculator',
-        },
-        {
-          name: 'New Trade',
-          url: '/trades/add',
+        }
+        // {
+        //   name: 'New Trade',
+        //   url: '/trades/add',
           
-        }              
+        // }              
       ],
     },
     {
@@ -207,6 +207,25 @@ export default {
           icon: 'icon-star',
         },       
       ],
+    },
+    {
+      name: 'Manage Location',
+      url: '/locations',
+      icon: 'icon-map',
+      children: [
+        {
+          name: 'Country',
+          url: '/country'
+        },
+        {
+          name: 'State',
+          url: '/state'
+        },
+        {
+          name: 'City',
+          url: '/city'
+        }
+      ]
     },
    
     {

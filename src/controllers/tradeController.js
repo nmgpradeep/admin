@@ -1,5 +1,5 @@
 //const bodyParser = require('body-parser')
-const Trade = require('../models/Trade')
+const Trade = require('../models/trade')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -8,19 +8,19 @@ const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
 
-/** Auther	: Rajiv Kumar
- *  Date	: June 18, 2018
- *	Description : Function to create a new user 
- **/
  
 //Auther	: Rajiv Kumar Date	: July 2, 2018
 //Description : Function to list the available users with pagination
-  const trades = (req, res) => {
+  const listTrades = (req, res) => {
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     Trade.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .populate('sellerId')
+      .populate('receiverId')
+      .populate('sellerProductId')
+      .populate('receiverProductId')
       .exec(function(err, trades) {
           Trade.count().exec(function(err, count) {
             if (err) return next(err)
@@ -42,7 +42,7 @@ const nodemailer = require('nodemailer');
  *  Date	: July 2, 2018
  */
 ///function to save new Trade in the list
-const newTrade = (req, res) => {
+const newTrades = (req, res) => {
   console.log('<<<<<<<<<<<', JSON.stringify(req.body))
  
   const data = req.body;
@@ -68,12 +68,43 @@ const newTrade = (req, res) => {
 }
 
 /*
-  *Author : Saurabh Agarwal
-  *Date : July 10, 2018
+    *Author: Saurabh Agarwal
+    *Date  : July 17, 2017
 */
-//Function to update Status of trades
+//Function to view all Trades
+const viewTrades = (req, res) => {
+	const id = req.params.id;
+	console.log('<<<<<<<<<<<Trades>>>>',id);  
+	Trade.findById({_id:id}, (err, result) => {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,             
+             result: result
+            });
+
+      }
+    }
+  })
+}
+
+/** Author	: Saurabh Agarwal
+ *  Date	: July 17, 2018
+ **/
+//Function to update the Trades status.
 const updateStatus = (req, res) => { 
-  Trades.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
+	console.log("REQ0",req.body)
+  Trade.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -95,10 +126,10 @@ const updateStatus = (req, res) => {
     }    
   })
 }
-
   
 module.exports = {
-  trades,
-  newTrade,
+  listTrades,
+  newTrades,
+  viewTrades,
   updateStatus
 }

@@ -96,7 +96,7 @@ class Sizes extends Component {
    let sizes;
      if(this.state.sizes){
        let sizeList = this.state.sizes;
-       sizes = sizeList.map(size => <Size key={size._id} onDeleteSize={this.sizeDeleteHandler.bind(this)} size={size}/>);
+       sizes = sizeList.map((size,index) => <Size sequenceNo={index} key={size._id} onDeleteSize={this.sizeDeleteHandler.bind(this)} size={size}/>);
      }
 
      let paginationItems =[];
@@ -115,6 +115,7 @@ class Sizes extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Sizes</th>  
                     <th>Category</th>                
                     
