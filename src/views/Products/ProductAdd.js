@@ -211,7 +211,7 @@ class ProductAdd extends Component {
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="user">User</Label>
-                   <select innerRef={input => (this.user = input)} id="select" class="form-control" >
+                   <select innerRef={input => (this.user = input)} id="select" className="form-control" >
 					 {users}
                   </select>
                 </FormGroup>

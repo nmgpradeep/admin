@@ -134,8 +134,7 @@ class TestimonialAdd extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.title.valid === false}  innerRef={input => (this.title = input)} placeholder="Title" required/>
-                      <FormFeedback invalid={this.state.validation.title.valid === false}>{this.state.validation.title.message}</FormFeedback>
-                      
+                      <FormFeedback invalid={this.state.validation.title.valid === false}>{this.state.validation.title.message}</FormFeedback>                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -171,10 +170,10 @@ class TestimonialAdd extends Component {
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
-                  </select>
+                     <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control">
+						 <option value="1">Active</option>
+						<option value="0">Inactive</option>
+					 </Input>                   
                     </Col>
                   </FormGroup>                    
                 </Form>

@@ -10,6 +10,7 @@ class Brand extends Component {
   render() {
     return (
       <tr key={this.props.brand._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.brand.brandName}</td>
         <td>{this.props.brand.category}</td>
        

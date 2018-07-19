@@ -109,7 +109,7 @@ class Testimonials extends Component {
    let testimonials;
      if(this.state.testimonials){
        let testimonialList = this.state.testimonials;
-       testimonials = testimonialList.map(testimonial => <Testimonial key={testimonial._id} onDeleteTestimonial={this.testimonialDeleteHandler.bind(this)} changeStatus={(testimonial) => this.changeStatusHandler(testimonial)}   testimonial={testimonial}/>);
+       testimonials = testimonialList.map((testimonial,index) => <Testimonial sequenceNo={index} key={testimonial._id} onDeleteTestimonial={this.testimonialDeleteHandler.bind(this)} changeStatus={(testimonial) => this.changeStatusHandler(testimonial)}   testimonial={testimonial}/>);
      }
 
      let paginationItems =[];
@@ -128,6 +128,7 @@ class Testimonials extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Title</th>  
                     <th>Description</th>                
                     <th>Author</th>

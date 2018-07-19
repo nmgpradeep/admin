@@ -1,5 +1,7 @@
 import React,{ Component }from 'react'
 import axios from 'axios'
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import {
   Badge,
   Button,
@@ -108,12 +110,29 @@ class DonationAdd extends Component {
             valid: null,
             message: ''
           },
+          productImage: {
+           rules: {
+              notEmpty: {
+               message: 'Image can\'t be left blank',
+                valid: false
+              }
+            },
+            valid: null,
+            message: ''
+          },
       }
     } 
   }
   fileChangedHandler = (event) => {
 	this.setState({selectedFile: event.target.files[0]})
 }
+
+   handleUser = (user) => {
+        this.setState({user: user});
+  }
+   handleCategory = (category) => {
+        this.setState({category: category});
+  }
 
   submitHandler(e){
     e.preventDefault()
@@ -142,8 +161,8 @@ class DonationAdd extends Component {
 		const data = new FD();				
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory','5b3ca9c23d43f138959e3224');
-		data.append('userId', '5b236b4ad73fe224efedae86');
+		data.append('productCategory',this.state.category);
+		data.append('userId', this.state.user);
 		data.append('size', this.size.value);
 		data.append('color', this.color.value);
 		data.append('brand', this.brand.value);
@@ -169,7 +188,6 @@ class DonationAdd extends Component {
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
-                  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="advertisementName">Product Name</Label>
@@ -177,44 +195,31 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.productName.valid === false} innerRef={input => (this.productName = input)} placeholder="Product Name" />
                       <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback>
-                      
-                    </Col>
+                  </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="description">Description</Label>
                     </Col>
-                    <Col xs="12" md="9">
-                    
+                    <Col xs="12" md="9">                    
                       <Input type="text" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
                       <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
-                      
                     </Col>
-                  </FormGroup>
-                  <FormGroup row>
+                  </FormGroup>                 
+                 <FormGroup row>
                   <Col md="3">
-                  <Label htmlFor="category">Category</Label>
-                  </Col>
-                  <Col xs="12" md="9">
-                    <select innerRef={select => (this.productCategory = select)} class="form-control" >
-					                <option value="0">Please select</option>
-					                <option value="1">Samsung</option>
-					                <option value="2">Television</option>
-					                <option value="3">Nokia</option>
-                    </select> 
+                      <Label htmlFor="author">Author</Label>
+                    </Col>
+                 <Col md="3">
+                  <UserSelectBox onSelectUser={this.handleUser}/>
                   </Col>
                 </FormGroup>
                  <FormGroup row>
+                  <Col md="3">
+                      <Label htmlFor="author">Category</Label>
+                    </Col>
                  <Col md="3">
-                  <Label htmlFor="user">User</Label>
-                  </Col>
-                  <Col xs="12" md="9">
-                   <select innerRef={input => (this.userId = input)} id="select" class="form-control" >
-					  <option value="0">Please select</option>
-					  <option value="1">JJ</option>
-					  <option value="2">Dekwano</option>
-					  <option value="3">Paul</option>
-                  </select> 
+                  <CategorySelectBox onSelectCategory={this.handleCategory}/>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -224,8 +229,7 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.size.valid === false} innerRef={input => (this.size = input)} placeholder="Size" />
                       <FormFeedback invalid={this.state.validation.size.valid === false}>{this.state.validation.size.message}</FormFeedback>
-                      
-                    </Col>
+                  </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
@@ -244,7 +248,6 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.brand.valid === false} innerRef={input => (this.brand= input)} placeholder="Brand" />
                       <FormFeedback invalid={this.state.validation.brand.valid === false}>{this.state.validation.brand.message}</FormFeedback>
-                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -254,7 +257,6 @@ class DonationAdd extends Component {
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.productAge.valid === false} innerRef={input => (this.productAge = input)} placeholder="Age" />
                       <FormFeedback invalid={this.state.validation.productAge.valid === false}>{this.state.validation.productAge.message}</FormFeedback>
-                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -270,13 +272,12 @@ class DonationAdd extends Component {
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
                   </select>
                     </Col>
-                  </FormGroup>
-                
+                  </FormGroup>                
                     
                 </Form>
               </CardBody>

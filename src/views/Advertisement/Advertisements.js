@@ -41,7 +41,7 @@ class Advertisements extends Component {
     })
     .catch((error) => {
     console.log('error', error)
-      if(error.response.code === 401) {
+      if(error.code === 401) {
         this.props.history.push("/login");
       }
     });
@@ -110,7 +110,7 @@ class Advertisements extends Component {
    let advs;
      if(this.state.advs){
        let advList = this.state.advs;
-       advs = advList.map(adv => <Advertisement key={adv._id} onDeleteAdv={this.advDeleteHandler.bind(this)} changeStatus={(adv) => this.changeStatusHandler(adv)}   adv={adv}/>);
+       advs = advList.map((adv,index) => <Advertisement sequenceNo={index}  key={adv._id} onDeleteAdv={this.advDeleteHandler.bind(this)} changeStatus={(adv) => this.changeStatusHandler(adv)}   adv={adv}/>);
      }
 
      let paginationItems =[];
@@ -129,10 +129,12 @@ class Advertisements extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Name</th>  
-                    <th>Description</th>                
+                    <th>Description</th> 
+                    <th>URL</th>               
                     <th>Logo</th>
-                    <th>URL</th>
+                    
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>

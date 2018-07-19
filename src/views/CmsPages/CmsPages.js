@@ -129,7 +129,7 @@ class CmsPages extends Component {
    let cmsPages;
      if(this.state.cmsPages){
        let pageList = this.state.cmsPages;
-       cmsPages = pageList.map(cmsPage => <CmsPage key={cmsPage._id} onDeleteCmsPage={this.cmsPageDeleteHandler.bind(this)} changeStatus={(cmsPage) => this.changeStatusHandler(cmsPage)}   cmsPage={cmsPage}/>);
+       cmsPages = pageList.map((cmsPage,index) => <CmsPage sequenceNo={index} key={cmsPage._id} onDeleteCmsPage={this.cmsPageDeleteHandler.bind(this)} changeStatus={(cmsPage) => this.changeStatusHandler(cmsPage)}   cmsPage={cmsPage}/>);
      }
      
 
@@ -149,6 +149,7 @@ class CmsPages extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Title</th>
                     <th>Heading</th>
                     <th>Content</th>                  

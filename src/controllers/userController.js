@@ -1,5 +1,8 @@
 //const bodyParser = require('body-parser')
 const User = require('../models/User')
+const Product = require('../models/product')
+const Donation = require('../models/donation')
+const Trade = require('../models/trade')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -7,6 +10,9 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
+var NodeSession = require('node-session');
+session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
+
 //const nodemailer = require('nodemailer');
 // var passport = require('passport');
 // require('../config/passport')(passport);
@@ -167,8 +173,11 @@ const login = (req, res) => {
                     message: httpResponseMessage.INTERNAL_SERVER_ERROR
                   })
                 })
-
-
+			
+			session.startSession(req, res, sessionValue)
+			req.session.put('user',result);
+			var value = req.session.get('user');
+			console.log("SESSION VARIABLE",value);			
             return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.LOGIN_SUCCESSFULLY,
@@ -194,6 +203,10 @@ const login = (req, res) => {
 
   })
 }
+const sessionValue = () =>{ 
+	return true;		
+}
+
 
 
 /** Auther	: Rajiv Kumar
@@ -235,7 +248,7 @@ const listUser = (req, res) => {
   const users = (req, res) => {
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    User.find({})
+    User.find({ userType: { $ne: 1 }})
       .skip((perPage * page) - perPage)
       .limit(perPage)
       .exec(function(err, users) {
@@ -503,6 +516,36 @@ exports.logout = function(req, res, next) {
 
   });
 }
+/** Auther	: Rajiv Kumar
+ *  Date	: July 6, 2018
+ *	Description : Function to states on admin dashboard
+ **/
+const dashboardStates = (req, res) => {
+	console.log('dashboardStates from user controller')
+	var totalUser = 0
+	var totalProduct = 0
+	var totalTrade = 0
+	var totalDonation =0
+	Promise.all([
+	/// Get Total users
+	User.count(),	
+	/// Get Total products
+	Product.count(),	
+	/// Get Total donations
+	Donation.count(),
+	/// Get Total trades
+	Trade.count()]).then((values) => {	
+	  return res.json({
+		  code: httpResponseCode.EVERYTHING_IS_OK,
+		  message: httpResponseMessage.SUCCESSFULLY_DONE,
+		  users: values[0],                  
+		  products: values[1],
+		  donations: values[2],
+		  trades: values[3]              
+	  });
+	});
+}
+
 
 //contactus form
 const contustUs = (req, res) => {
@@ -571,5 +614,6 @@ module.exports = {
 	deleteUser,
 	users,
 	contustUs,
-	send
+	send,
+	dashboardStates
 }

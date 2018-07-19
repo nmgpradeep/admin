@@ -10,6 +10,7 @@ class Subscription extends Component {
   render() {
     return (
       <tr key={this.props.subscription._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.subscription.subscriptionName}</td>
         <td>{this.props.subscription.description}</td>
         <td>{this.props.subscription.price}</td>

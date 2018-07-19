@@ -210,13 +210,13 @@ class ProductEdit extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                   <select innerRef={input => (this.category = input)} id="select"  class="form-control"  onChange={this.categoryhandleContentChange}>	                   
+                   <select innerRef={input => (this.category = input)} id="select"  className="form-control"  onChange={this.categoryhandleContentChange}>	                   
                     {categories}
                     </select>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="user">User</Label>
-                   <select innerRef={input => (this.user = input)} id="select" class="form-control" >
+                   <select innerRef={input => (this.user = input)} id="select" className="form-control" >
 					 {users}
                   </select>
                 </FormGroup>

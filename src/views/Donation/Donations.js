@@ -112,7 +112,7 @@ class Donations extends Component {
    let donations;
      if(this.state.donations){
        let donationList = this.state.donations;
-       donations = donationList.map(donation => <Donation key={donation._id} onDeleteDonation={this.donationDeleteHandler.bind(this)} changeStatus={(donation) => this.changeStatusHandler(donation)}   donation={donation}/>);
+       donations = donationList.map((donation,index) => <Donation sequenceNo={index} key={donation._id} onDeleteDonation={this.donationDeleteHandler.bind(this)} changeStatus={(donation) => this.changeStatusHandler(donation)}   donation={donation}/>);
      }
 
      let paginationItems =[];
@@ -131,6 +131,7 @@ class Donations extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Product Name</th>  
                     <th>Description</th>                
                     <th>Category</th>

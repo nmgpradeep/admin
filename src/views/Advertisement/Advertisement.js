@@ -10,10 +10,11 @@ class Advertisement extends Component {
   render() {
     return (
       <tr key={this.props.adv._id}>
+      <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.adv.advertisementName}</td>
         <td>{this.props.adv.description}</td>
-        <td>{this.props.adv.image}</td>
         <td>{this.props.adv.redirectURL}</td>   
+        <td><img src={'assets/uploads/AdvertisementImage/'+this.props.adv.image} className="avatar"/></td>
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.adv)} color={(this.props.adv.status == '1')?'success':'danger'}>
             {(this.props.adv.status == '1')?'Active':'Inctive'}
