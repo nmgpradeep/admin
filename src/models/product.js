@@ -1,7 +1,9 @@
 'use strict';
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema,
-relationship = require("mongoose-relationship");
+  relationship = require("mongoose-relationship");
+  
 global.Promise = mongoose.Promise;
 var  bcrypt = require('bcrypt-nodejs');
 var Image = require('./productImage');
@@ -44,8 +46,7 @@ productStatus:{
  trim:true,
  sparse:true,
  default:0
-},
-parent: { type:Schema.ObjectId, ref:"Category", childPath:"child" }
+}
 },
 {
 timestamps:true
@@ -64,21 +65,5 @@ ProductSchema.methods.getCategory = function(callback) {
 
   }); 
 };
-// var productImage = mongoose.model('ProductImage', ProductImageSchema)
-// productImage
-
-// ProductSchema.post('find', function(result) {
-//   result.forEach(element => {
-//     Image.find({productId:element._id},(err,images) => {
-//       console.log('ProductImages', images);
-//       result.productImages = images;
-//   });
-//   console.log('RESULT', result);
-//   return result;
-//   });
-  
-// });
-
-ProductSchema.plugin(relationship, { relationshipPathName:'parent' });
 
 module.exports = mongoose.model('Product', ProductSchema);

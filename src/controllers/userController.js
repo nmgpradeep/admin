@@ -10,6 +10,9 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
+var NodeSession = require('node-session');
+session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
+
 //const nodemailer = require('nodemailer');
 // var passport = require('passport');
 // require('../config/passport')(passport);
@@ -170,8 +173,11 @@ const login = (req, res) => {
                     message: httpResponseMessage.INTERNAL_SERVER_ERROR
                   })
                 })
-
-
+			
+			session.startSession(req, res, sessionValue)
+			req.session.put('user',result);
+			var value = req.session.get('user');
+			console.log("SESSION VARIABLE",value);			
             return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.LOGIN_SUCCESSFULLY,
@@ -197,6 +203,11 @@ const login = (req, res) => {
 
   })
 }
+const sessionValue = () =>{ 
+	return true;		
+}
+
+
 
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
