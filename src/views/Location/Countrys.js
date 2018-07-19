@@ -59,6 +59,12 @@ class Countrys extends Component {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       this.loadCommentsFromServer();
   }
+  // countrySafeRemove(state_id){
+  //   this.setState({
+  //     solution: false,
+  //     solutionId: state_id
+  //   });
+  // }`
   countryDeleteHandler (id){
     this.setState({
       approve: false,
@@ -88,7 +94,11 @@ class Countrys extends Component {
     this.setState({
       approve: true
     }, function(){
-      if(this.state.approve){
+      // if(this.state.solution){
+      //   window.alert('Please delete the state associated with the country first')
+      // }
+      // else
+       if(this.state.approve){
         axios.delete('/location/deleteCountry/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
             let countrys = this.state.countrys;

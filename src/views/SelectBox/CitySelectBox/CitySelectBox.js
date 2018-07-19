@@ -10,17 +10,24 @@ class CitySelectBox extends Component {
     super(props);    
     this.state = { value: 'Select a State'}; 
         
+
     this.state = {
-        states : ''
-	}   
+        states : '',
+        options: this.props.value
+    }
+  
   }
+  
   onChange(e) {
 		var states = e.target.value;	  
-		this.props.onSelectState(states);  
-		//this.setState({selectedUser : user});
-    console.log("State DATA SET",states)
+    this.props.onSelectState(states);     
+    //this.setState({selectedUser : user});
+    
+    console.log("CoUBTRY props",this.props)
+    console.log("State DATA SET",states)    
   }
-  componentDidMount(){
+  componentDidMount(){   
+  
 	//this.props.reference.value = this.props.value;
     axios.get('/location/listState').then(result => {
 		//console.log("listUser",result.data.result[0].userName);

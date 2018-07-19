@@ -60,6 +60,7 @@ const listBrands = (req, res) => {
     Brand.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      //.populate('brandCategory',['categoryName'])
       .exec(function(err, brand) {
           Brand.count().exec(function(err, count) {
             if (err) return next(err)

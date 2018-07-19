@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+
 import {
   Badge,
   Button,
@@ -26,12 +28,16 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+var FD = require('form-data');
+var fs = require('fs');
+
 // import PropTypes from 'prop-types';
 class BrandEdit extends Component {
   constructor(props){
     super(props);
     this.brandName = React.createRef();
-    this.category = React.createRef();
+    this.brandCategory = React.createRef();
     let brandId = this.props.match.params.id;
     this.state = {
       editBrand: {},
@@ -50,6 +56,11 @@ class BrandEdit extends Component {
       }
     };
   }
+
+  // handleCategory = (category) => {
+  //   this.category.current = category;
+  // }
+
   cancelHandler(){
     this.props.history.push("/brand");
   }
@@ -77,6 +88,9 @@ class BrandEdit extends Component {
       }
 
       if(formSubmitFlag){
+        // const data = new FD()
+        // data.append('brandName', this.brandName.value)
+        // data.append('brandCategory', this.state.category)
         let editBrand = this.state.editBrand;
         editBrand.brandName = this.brandName.value;
         editBrand.category = this.category.value;
@@ -135,12 +149,8 @@ class BrandEdit extends Component {
                     <Col xs="4" sm="12">
                      <FormGroup>
 					  <Label htmlFor="category">Category</Label>
-					   <select innerRef={input => (this.category = input)} id="select" class="form-control" >
-						  <option value="0">Please select</option>
-						  <option value="1">Mobiles</option>
-						  <option value="2">Television</option>
-						  <option value="3">Washing Machines</option>
-					  </select>
+            <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editBrand.category}/>	
+
                     </FormGroup>
                   </Col>
                 </Row>

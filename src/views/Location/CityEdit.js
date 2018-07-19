@@ -78,14 +78,13 @@ class CityEdit extends Component {
   
   handleCountrys = (countries) => {
 	  this.countrySelect.current = countries;
-	  console.log(countries);	  
-        //this.setState({user: user});
+	  console.log(countries);
   }
 
   handleStates = (states) => {
     this.stateSelect.current = states;
-    console.log(states);	  
-      //this.setState({user: user});
+    console.log(states);
+    
 }
 
   cancelHandler(){
