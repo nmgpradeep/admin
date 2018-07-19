@@ -39,7 +39,7 @@ const inputElement = props => {
     });
   };
   let inputClasses = ["form-control"];
-  if (!props.valid) {
+  if (props.touched && !props.valid) {
     inputClasses.push("is-invalid");
   }
   switch (props.elementType) {
