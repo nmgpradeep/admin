@@ -174,7 +174,7 @@ class AdvertisementAdd extends Component {
                       <Label htmlFor="image">Advertisement Image</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="file" innerRef={input => (this.image = input)} onChange={this.fileChangedHandler} name="image" />
+                      <Input type="file" innerRef={input => (this.image = input)} onChange={this.fileChangedHandler} name="Image" />
                       {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
                     </Col>
                   </FormGroup>

@@ -15,7 +15,7 @@ var BrandSchema = new Schema ({
     },
     brandCategory:{
         type: Schema.Types.ObjectId,
-        ref: 'category'
+        ref: 'Category'
     },
 },
 {

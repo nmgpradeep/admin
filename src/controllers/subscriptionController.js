@@ -23,6 +23,14 @@ const create = (req, res) => {
     })
   }
   const data = req.body;
+  // const limitFlag =req.body
+  // if(limitFlag){
+  //   return res.json(limitFlag)
+  // }
+  // else{
+  //   limitFlag = true
+  // }
+  
   const flag = validation.validate_all_request(data, ['subscriptionName']);
   if (flag) {
     return res.json(flag);
@@ -30,6 +38,10 @@ const create = (req, res) => {
   Subscription.findOne({ subscriptionName: req.body.subscriptionName}, (err, result) => {
 	
     if (result) {
+      const limitFlag = result.unlimited
+      if(limitFlag=true){
+        result.totalInventoryAllowed = 'UNLIMITED'
+      }
 
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -65,19 +77,6 @@ const create = (req, res) => {
  */
 /// function to list all Subscription plan
 const subscriptions = (req, res) => { 
-  //~ Subscription.find({},(err,result)=>{
-		//~ if (!result) {
-			//~ res.json({
-			  //~ message: httpResponseMessage.ITEM_NOT_FOUND,
-			  //~ code: httpResponseMessage.BAD_REQUEST
-			//~ });
-		  //~ }else {				
-			//~ return res.json({
-				  //~ code: httpResponseCode.EVERYTHING_IS_OK,				
-				  //~ result: result
-				//~ });
-		  //~ }
-	  //~ })
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
     Subscription.find({})
@@ -263,20 +262,6 @@ const newAddon = (req, res) => {
  */
 /// function to list all listAddon plan
 const listAddon = (req, res) => { 
-  // Addon.find({},(err,result)=>{
-	// 	if (!result) {
-	// 		res.json({
-	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
-	// 		  code: httpResponseMessage.BAD_REQUEST
-	// 		});
-	// 	  }else {				
-	// 		return res.json({
-	// 			  code: httpResponseCode.EVERYTHING_IS_OK,				
-	// 			  result: result
-	// 			});
-	// 	  }
-  //   })
-  
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
     Addon.find({})

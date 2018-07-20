@@ -88,58 +88,84 @@ const create = (req, res) => {
  */
 /// function to list all category available in  collection
 const categories = (req, res) => {
-  console.log("TEST>>>>>>>>>>>>>>>>>Category");
-  Category.find({}, (err, result) => {
-    if (!result) {
-      res.json({
-        message: httpResponseMessage.ITEM_NOT_FOUND,
-        code: httpResponseMessage.BAD_REQUEST
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+  Category.find({})
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    // .populate('sellerId')
+    // .populate('receiverId')
+    // .populate('sellerProductId')
+    .populate('parent',['title'])
+    .exec(function(err, categories) {
+        Category.count().exec(function(err, count) {
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: categories,
+                total : count,
+                current: page,
+                perPage: perPage,
+                pages: Math.ceil(count / perPage)
+            });
+          })
       });
-    } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.ITEM_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      } else {
-        return res.json({
-          code: httpResponseCode.EVERYTHING_IS_OK,
-          message: httpResponseMessage.LISTED_SUCCESSFULLY,
-          result: result
-        });
-      }
-    }
-  });
-};
-
+  }
 /** Auther	: Rajiv Kumar
  *  Date	: June 20, 2018
  *	Description : Function to view the available user details
  **/
-const viewCategory = (req, res) => {
+const viewCategory = (req,res) => {
   const id = req.params.id;
-  console.log("<<<<<<<<<<<", id);
-  Category.findOne({ _id: id }, (err, result) => {
-    if (err) {
-      return res.send({
-        code: httpResponseCode.BAD_REQUEST,
-        message: httpResponseMessage.INTERNAL_SERVER_ERROR
-      });
-    } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      } else {
-        return res.json({
-          code: httpResponseCode.EVERYTHING_IS_OK,
-          result: result
-        });
-      }
-    }
-  });
-};
+  console.log("<<<<<<<<<Category<<<<<", id);
+  Category.findOne({_id:id})
+          .populate({ path: "parent", model: "Category"})
+          .exec(function(err, result){
+            if(err){
+              return res.send({
+                code: httpResponseCode.BAD_REQUEST,
+                message: httpResponseMessage.INTERNAL_SERVER_ERROR 
+              });
+            } else{
+              if(!result){
+                res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+              } else{
+                return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  result: result
+                });
+              }
+            }
+          });
+}
+// const viewCategory = (req, res) => {
+//   const id = req.params.id;
+//   console.log("<<<<<<<<<<<", id);
+//   Category.findOne({ _id: id }, (err, result) => {
+//     if (err) {
+//       return res.send({
+//         code: httpResponseCode.BAD_REQUEST,
+//         message: httpResponseMessage.INTERNAL_SERVER_ERROR
+//       });
+//     } else {
+//       if (!result) {
+//         res.json({
+//           message: httpResponseMessage.USER_NOT_FOUND,
+//           code: httpResponseMessage.BAD_REQUEST
+//         });
+//       } else {
+//         return res.json({
+//           code: httpResponseCode.EVERYTHING_IS_OK,
+//           result: result
+//         });
+//       }
+//     }
+//   });
+// };
 /** Auther	: Rajiv Kumar
  *  Date	: June 20, 2018
  *	Description : Function to update the user details.
@@ -214,6 +240,7 @@ const allCategories = (req, res) => {
   var page = req.params.page || 1;
   Category.find({})
     .populate({ path: "children", model: "Category" })
+    .populate({ path: "parent", model: "Category"})
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec(function(err, categories) {

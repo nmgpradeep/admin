@@ -31,7 +31,7 @@ trim:true
 },
 unlimited:{
 type:Boolean,
-default: 0
+default: false
 },
 status:{
  type:String,

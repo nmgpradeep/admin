@@ -14,7 +14,7 @@ class Category extends Component {
           {this.props.srNo} - {this.props.category.title}
         </td>
         <td>{this.props.category.description}</td>
-        <td>{this.props.category.parent}</td>
+        <td>{(this.props.category.parent)?this.props.category.parent.title:""}</td>
         <td>
           <Badge
             onClick={this.props.changeStatus.bind(this, this.props.category)}

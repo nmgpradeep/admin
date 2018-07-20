@@ -56,7 +56,7 @@ class Categories extends Component {
             categoriesCount: result.data.total
           });
         }
-        console.log(this.state.categories);
+        console.log('categories result',this.state.categories);
       })
       .catch(error => {
         if (error.code === 401) {

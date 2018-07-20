@@ -169,7 +169,7 @@ class AdvertisementEdit extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Advertisement Name</Label>
-                      <Input type="text" innerRef={input => (this.advertisementName = input)}   placeholder="First name" />
+                      <Input type="text" innerRef={input => (this.advertisementName = input)}   placeholder="Advertisement name" />
 
                       {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
 
@@ -184,14 +184,14 @@ class AdvertisementEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">URL</Label>
-                      <Input type="url"  pattern="(http|https)://.+" innerRef={input => (this.redirectURL = input)} placeholder="Last name" />
+                      <Input type="url"  pattern="(http|https)://.+" innerRef={input => (this.redirectURL = input)} placeholder="URL" />
                     </FormGroup>
                   </Col>
                 </Row>
                 <Col xs="4" sm="12">
 						<FormGroup>
 						 <Label htmlFor="brand">Image</Label>                  
-						  <Input type="file" innerRef={input => (this.image = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
+						  <Input type="file" innerRef={input => (this.image = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" /> 	
 						  <img src={'assets/uploads/AdvertisementImage/'+this.state.editAdv.image} width="60"/>
 					   </FormGroup>
                    </Col>
