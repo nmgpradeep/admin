@@ -210,8 +210,7 @@ const updateCategory = (req, res) => {
  */
 /// function to list all products
 const allCategories = (req, res) => {
-<<<<<<< HEAD
-  var perPage = 10; //constant.PER_PAGE_RECORD
+  var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
   Category.find({})
     .populate({ path: "children", model: "Category" })
@@ -228,26 +227,6 @@ const allCategories = (req, res) => {
           current: page,
           perPage: perPage,
           pages: Math.ceil(count / perPage)
-=======
-    var perPage = 1;//constant.PER_PAGE_RECORD
-    var page = req.params.page || 1;
-    Category.find({})
-      .skip((perPage * page) - perPage)
-      .limit(perPage)    
-      .exec(function(err, categories) {		
-          Category.count().exec(function(err, count) {
-            if (err) return next(err)
-              return res.json({
-                  code: httpResponseCode.EVERYTHING_IS_OK,
-                  message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: categories,
-                  total : count,
-                  current: page,
-                  perPage: perPage,
-                  pages: Math.ceil(count / perPage)
-              });
-            })
->>>>>>> 0dd47df5688e5bddc47317a07114f4d058d7a993
         });
       });
     });
