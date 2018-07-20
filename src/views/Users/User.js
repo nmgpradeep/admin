@@ -7,11 +7,14 @@ class User extends Component {
   constructor(props){
     super(props);          
   }
+  Capitalize(str){
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
   render() {
     return (
       <tr key={this.props.user._id}>
         <td>{this.props.sequenceNumber+1}</td>
-        <td>{this.props.user.firstName} {this.props.user.middleName} {this.props.user.lastName}</td>
+        <td>{this.Capitalize(this.props.user.firstName)} {this.Capitalize(this.props.user.middleName)} {this.Capitalize(this.props.user.lastName)}</td>
         <td>{this.props.user.userName}</td>
         <td>{this.props.user.email}</td>
         <td>{Moment(this.props.user.createdAt).format('d MMM YYYY')}</td>

@@ -128,8 +128,14 @@ class SubscriptionAdd extends Component {
       }
   }
 
-  render() {
+  toggle(event) {
+    this.setState({
+      checkboxState: !this.state.checkboxState
+    });
+  }
 
+  render() {
+    
     return (
       <div className="animated fadeIn">
         <Row>
@@ -174,10 +180,13 @@ class SubscriptionAdd extends Component {
                   <Input type="number" invalid={this.state.validation.totalInventoryAllowed.valid === false}  innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed" />
                   <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback>
                 </FormGroup>
+                <span><input type="checkbox" onClick={this.toggle.bind(this)}/>
+                  <label>UNLIMITED</label>
+                </span>
                 <FormGroup>
                   <Label htmlFor="tIA">Time Period</Label>
                   <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />
-                  
+
                 </FormGroup>
                 <FormGroup>                    
                     <Label htmlFor="Status">Status</Label>                    

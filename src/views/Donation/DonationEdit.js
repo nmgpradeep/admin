@@ -37,7 +37,7 @@ class DonationEdit extends Component {
     super(props);
     this.productName = React.createRef();
     this.description = React.createRef();
-    this.category = React.createRef();
+    this.productCategory = React.createRef();
     this.author = React.createRef();
     this.size = React.createRef();
     this.color = React.createRef();
@@ -156,7 +156,7 @@ class DonationEdit extends Component {
 		data.append('_id',this.state.donationId);				
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory',this.category.value);
+		data.append('productCategory',this.state.category);
 		data.append('userId', this.author.value);
 		data.append('size', this.size.value);
 		data.append('color', this.color.value);

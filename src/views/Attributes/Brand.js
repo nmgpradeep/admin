@@ -12,8 +12,7 @@ class Brand extends Component {
       <tr key={this.props.brand._id}>
       <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.brand.brandName}</td>
-        <td>{this.props.brand.category}</td>
-       
+        <td>{this.props.brand.brandCategory}</td>       
         <td>
           <Link to={'/brand/edit/' + this.props.brand._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           {/* <Link to={'/testimonial/view/' + this.props.testimonial._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link> */}

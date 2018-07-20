@@ -44,7 +44,7 @@ class CategorySelectBox extends Component {
        <Input type="select" onChange={this.onChange.bind(this)} innerRef={this.props.reference} className="form-control">
 		<option value="0" >Select Category</option>
         {options.map(option => {
-          return <option value={option._id} key={option.categoryName}>{option.categoryName.toUpperCase()}</option>
+          return <option value={option._id} key={option.categoryName}>{option.categoryName}</option>
         })}
 	  </Input>
       </div>
