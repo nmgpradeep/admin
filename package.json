@@ -30,6 +30,7 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "file-system": "^2.2.2",
     "flag-icon-css": "^3.0.0",
     "font-awesome": "^4.7.0",

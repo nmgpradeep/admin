@@ -23,6 +23,7 @@ const notification = require("./routes/notification")
 const morgan=require('morgan')
 const http = require('http');
 const fs = require('fs');
+var session = require('express-session')
 
 //mongoose.connect(config.db)
 mongoose.connect('mongodb://pitchnswitch:nmg251@ds147450.mlab.com:47450/pitch-switch');
@@ -41,7 +42,20 @@ app.use(function(req, res, next) {
   }));
   app.use(bodyParser.json());
 
+ 
 app.use(morgan('dev'));
+
+//Exoress session object
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true },
+  cookie: { maxAge: 60000 }
+}))
+
+
 app.use('/user', user);
 app.use('/category', category);
 app.use('/product', product);
