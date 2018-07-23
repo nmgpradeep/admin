@@ -180,13 +180,13 @@ const UserEdit = Loadable({
   loading: Loading,
 });
 const AdminProfile = Loadable({
-  loader: () => import('./views/AdminProfile/Profile'),
+  loader: () => import('./views/Users/profile'),
   loading: Loading,
 });
-const EditProfile = Loadable({
-  loader: () => import('./views/AdminProfile/EditProfile'),
-  loading: Loading,
-});
+// const EditProfile = Loadable({
+//   loader: () => import('./views/AdminProfile/EditProfile'),
+//   loading: Loading,
+// });
 const UserAdd = Loadable({
   loader: () => import('./views/Users/UserAdd'),
   loading: Loading,
@@ -440,8 +440,9 @@ const routes = [
   { path: '/users/edit/:id',name: 'Edit User', component: UserEdit },
   { path: '/users/view/:id', name: 'View User', component: UserView },  
   { path: '/users', name: 'Users', component: Users },  
+  //{ path: '/editprofile/:id', name: 'Edit Profile', component: EditProfile},
   { path: '/profile',name: 'Profile', component: AdminProfile },
-  { path: '/editprofile', name: 'Edit Profile', component: EditProfile},
+  
   
   { path: '/categories/add', exact: true,name: 'Add Category', component: CategoryAdd },
   { path: '/categories/edit/:id', name: 'Edit Category', component: CategoryEdit },
