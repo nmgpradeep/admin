@@ -27,9 +27,9 @@ class UserSelectBox extends Component {
       if(result.data.code === 200){		  
 		  options = result.data.result;
 		  //console.log("OPTION",result.data.result);
-        this.setState({
-          options: result.data.result,          
-        });
+        //~ this.setState({
+          //~ options: result.data.result,          
+        //~ });
       }
       
     })

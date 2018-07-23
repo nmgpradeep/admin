@@ -171,6 +171,7 @@ class Categories extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                     <tr>
+					  <th>S.No.</th>
                       <th>Category Name</th>
                       <th>Description</th>
                       <th>Parent</th>

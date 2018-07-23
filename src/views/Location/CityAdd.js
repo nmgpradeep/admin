@@ -1,8 +1,8 @@
 import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
+import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
 import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox'
-import CitySelectBox from '../SelectBox/CitySelectBox/CitySelectBox'
 import {
   Badge,
   Button,
@@ -38,8 +38,8 @@ class CityAdd extends Component {
     
     this.state = {
       addCity: {},
-      countrys : '',
-      states : '',
+      country : '',
+      states : [],
       validation:{
         countrySelect: {
           rules: {
@@ -76,22 +76,19 @@ class CityAdd extends Component {
     } 
   }
 
-  handleCountry = (countrys) => {
-        this.setState({countrys: countrys});
-        
-        axios.get('/location/getState/' +countrys ).then(result => {
+  handleCountry = (country) => { 
+        axios.get('/location/getState/' +country ).then(result => {
           console.log('countryId',result)
-          if(result.data.code == '200'){           
-            this.state.countrySate = result.data.result;
-            console.log("countrySate",this.state.countrySate)
-           // this.props.history.push('./City');
+          if(result.data.code == '200'){  
+            this.setState({states: result.data.result, country: country});
           }
         })
   }
-  handleState = (states) => {
-      this.setState({states:states});
+  
+  handleState(state){
+	  this.setState({state: state});
   }
-    
+  
   submitHandler(e){
     e.preventDefault()
     let formSubmitFlag = true;
@@ -119,8 +116,8 @@ class CityAdd extends Component {
     console.log("COUNTRYS",this.state.countrys)
     console.log("STATES",this.state.states)
       let addCity = this.state.addCity;
-      addCity.countrySelect = this.state.countrys;
-      addCity.stateSelect = this.state.states;
+      addCity.countrySelect = this.state.country;
+      addCity.stateSelect = this.state.state;
       addCity.cityName = this.cityName.value;
       console.log("addCity",addCity)
       axios.post('/location/newCity', addCity  ).then(result => {
@@ -144,18 +141,18 @@ class CityAdd extends Component {
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                 <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="author">Country Name</Label>
+                      <Label htmlFor="countryName">Country Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <StateSelectBox onSelectCountry={this.handleCountry}/>
+                      <CountrySelectBox onSelectCountry={this.handleCountry} />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="author">State Name</Label>
+                      <Label htmlFor="stateName">State Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <CitySelectBox onSelectState={this.handleState} value={this.state.countrySate}/>
+                      <StateSelectBox onSelectState={this.handleState} options={this.state.states}/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -168,16 +165,7 @@ class CityAdd extends Component {
                       
                     </Col>
                   </FormGroup>
-                  {/*<FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Author</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text"  invalid={this.state.validation.author.valid === false} innerRef={input => (this.author = input)}  placeholder="Author" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.author.valid === false}>{this.state.validation.author.message}</FormFeedback>
-                    </Col>
-                  </FormGroup> */}
+               
                   
                   <FormGroup row>
                     <Col md="3">

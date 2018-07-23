@@ -143,9 +143,6 @@ class CategoryAdd extends Component {
           this.setState(
             {
               categoryForm: oldState
-            },
-            () => {
-              console.log("New State", this.state.categoryForm);
             }
           );
         }
