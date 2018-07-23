@@ -2,6 +2,7 @@ import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
 import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import ReactStars from 'react-stars'
 import {
   Badge,
   Button,
@@ -34,6 +35,7 @@ class TestimonialAdd extends Component {
     this.title = React.createRef(),
     this.description = React.createRef(),
     this.author = React.createRef(),
+    this.review = React.createRef(),
     
     this.state = {
       addTestimonial: {},
@@ -74,6 +76,12 @@ class TestimonialAdd extends Component {
     } 
   }
 
+  ratingChanged = (rating) => {
+     console.log(rating)
+       this.setState({rating: rating});
+  }
+  
+  
   handleUser = (user) => {
         this.setState({user: user});
   }
@@ -107,6 +115,7 @@ class TestimonialAdd extends Component {
       addTestimonial.title = this.title.value;
       addTestimonial.description = this.description.value;
       addTestimonial.author = this.state.user;
+      addTestimonial.review = this.state.rating;
       console.log("addTestimonial",addTestimonial)
       axios.post('/testimonial/newTestimonial', addTestimonial  ).then(result => {
         if(result.data.code == '200'){
@@ -165,6 +174,14 @@ class TestimonialAdd extends Component {
                       <UserSelectBox onSelectUser={this.handleUser}/>
                     </Col>
                   </FormGroup>
+                   <FormGroup row>
+                   <Col md="3">
+                      <Label htmlFor="author">Reviews</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+					  <ReactStars  count={5} onChange={this.ratingChanged} size={24} color2={'#ffd700'}  innerRef={input => (this.review = input)}/>
+					</Col>
+                  </FormGroup>  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>

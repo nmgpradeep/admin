@@ -233,7 +233,7 @@ class ProductEdit extends Component {
                   <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="age">Age</Label>
+                  <Label htmlFor="age">Age Of Item</Label>
                   <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
                 </FormGroup>
                 <FormGroup>

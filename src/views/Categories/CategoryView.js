@@ -31,10 +31,12 @@ class CategoryView extends Component {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ viewCategory: result.data.result});
+         // ('result', result.data.result.parent.title)
+          //this.parent.value = result.data.result.parent.title
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -47,7 +49,7 @@ class CategoryView extends Component {
             <Card>
               <CardHeader>
                 <strong>Category</strong>
-                <small>Edit</small>
+                <small>View</small>
               </CardHeader>
               <CardBody>
                 <FormGroup>
@@ -58,7 +60,7 @@ class CategoryView extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="company">Category Name</Label>
-                      <Input type="text" value={this.state.viewCategory.categoryName} />
+                      <Input type="text" value={this.state.viewCategory.title} />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -70,7 +72,7 @@ class CategoryView extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">Parent</Label>
-                      <Input type="text" value={this.state.viewCategory.parent} />
+                      <Input type="text" value={(this.state.viewCategory.parent)?this.state.viewCategory.parent.title:""} />
                     </FormGroup>
                   </Col>
                 </Row>

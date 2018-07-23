@@ -12,6 +12,8 @@ import {
   Row,
 } from 'reactstrap';
 import axios from 'axios';
+import ReactStars from 'react-stars'
+
 // import PropTypes from 'prop-types';
 class TestimonialView extends Component {
   constructor(props){
@@ -29,10 +31,11 @@ class TestimonialView extends Component {
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/testimonial/viewTestimonial/' + this.state.testimonialId).then(result => {
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
+          //console.log('resussssssssss',result.data.result);
           this.setState({ viewTestimonial: result.data.result});
           this.title.value = result.data.result.title;
           this.description.value = result.data.result.description;
+          this.review.value = result.data.result.review;
           this.author.value = result.data.result.author;
           
         }
@@ -85,6 +88,10 @@ class TestimonialView extends Component {
                 <FormGroup>
                   <Label htmlFor="email">Author</Label>
                   <Input type="text"  value={this.state.viewTestimonial.author} required/>
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Review</Label>
+                   <ReactStars  count={5} size={24} color2={'#ffd700'} edit={false} value={this.state.viewTestimonial.review}  />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="status">Status</Label>

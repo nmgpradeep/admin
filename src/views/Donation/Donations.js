@@ -53,8 +53,6 @@ class Donations extends Component {
     });
 };
 
-
-
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');

@@ -47,8 +47,7 @@ class ProductAdd extends Component {
        addProduct: {},
        Categories: [],
        Users: [],
-       categoryValue: '',
-       Users: [],
+       categoryValue: '',     
        validation:{
         productName:{
           rules: {
@@ -109,8 +108,8 @@ class ProductAdd extends Component {
         data.append('color', this.color.value)
         data.append('brand', this.brand.value)
         data.append('productAge', this.productAge.value)
-        data.append('userId', '5b236b4ad73fe224efedae86')
-        data.append('productCategory', '5b3ca9c23d43f138959e3224')
+        data.append('userId', this.state.user)
+        data.append('productCategory', this.state.category)
         data.append('bannerImage', this.state.selectedFile)
         //data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
         console.log("data",data);
@@ -228,7 +227,7 @@ class ProductAdd extends Component {
                   <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="age">Age</Label>
+                  <Label htmlFor="age">Age Of Item</Label>
                   <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
                 </FormGroup>
                 <FormGroup>

@@ -90,7 +90,7 @@ class ProductView extends Component {
                   <Input type="text" value={this.state.viewProducts.brand} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email">Age</Label>
+                  <Label htmlFor="email">Age Of Item</Label>
                   <Input type="text" value={this.state.viewProducts.productAge} />
                 </FormGroup>
                 <FormGroup>

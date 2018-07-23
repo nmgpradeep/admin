@@ -119,6 +119,18 @@ const donations = (req, res) => {
             })
         });
 }
+/** Auther	: Rajiv kumar
+ *  Date	: June 22, 2018
+ */
+/// function to list all dinated products
+const getConstant = (req, res) => {  
+	resultAdd = constant.donation_conditions;
+	return res.json({
+		code: httpResponseCode.EVERYTHING_IS_OK,
+		message: httpResponseMessage.SUCCESSFULLY_DONE,
+		result: resultAdd
+	});
+}
 
 
 /** Auther	: Rajiv kumar
@@ -302,5 +314,6 @@ module.exports = {
   viewDonation,
   updateDonation,
   deleteDonation,
-  updateStatus 
+  updateStatus,
+  getConstant 
 }
