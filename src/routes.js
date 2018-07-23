@@ -429,6 +429,11 @@ const CityEdit = Loadable({
   loading: Loading,
 });
 
+// Email Notification setting
+const EmailNotification = Loadable({
+	loader:() => import('./views/Notifications/EmailNotification/EmailNotification'),
+	loading : Loading,
+});
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -507,6 +512,8 @@ const routes = [
   { path: '/city/add', name: 'Add City', component: CityAdd},
   { path: '/city/edit/:id', name: 'Edit City', component: CityEdit},
   { path: '/city', name: 'City', component: Cities},
+  
+  { path: '/setting/email', name: 'Email Notification', component: EmailNotification},  
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },

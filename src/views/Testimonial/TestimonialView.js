@@ -24,7 +24,7 @@ class TestimonialView extends Component {
     };
   }
   cancelHandler(){
-    this.props.history.push("/testimonial");
+    this.props.history.push("/Testimonial");
   }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)

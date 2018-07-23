@@ -229,15 +229,20 @@ export default {
     },
    
     {
-      name: 'Notifications',
+      name: 'Notifications Setting',
       url: '/notifications',
       icon: 'icon-bell',
       children: [
-        {
-          name: 'Alert',
-          url: '/notifications/alerts',
+      {
+          name: 'Email',
+          url: '/setting/email',
           icon: 'icon-bell',
         },
+        //~ {
+          //~ name: 'Alert',
+          //~ url: '/notifications/alerts',
+          //~ icon: 'icon-bell',
+        //~ },
         //~ {
           //~ name: 'Badges',
           //~ url: '/notifications/badges',

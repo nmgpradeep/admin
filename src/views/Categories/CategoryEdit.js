@@ -41,8 +41,7 @@ class CategoryEdit extends Component {
     let categoryId = this.props.match.params.id;
     
 	
-	
-    this.state = {
+	 this.state = {
       categoryId: categoryId,
       categoryForm: {
         title: {
@@ -143,71 +142,21 @@ class CategoryEdit extends Component {
   cancelHandler(){
     this.props.history.push("/categories");
   }
-
-   submitHandler(e){
-      e.preventDefault();
-      let formSubmitFlag = true;
-      for (let field in this.state.validation) {
-        let lastValidFieldFlag = true;
-        let addCategory = this.state.validation;
-        addCategory[field].valid = null;
-        for(let fieldCheck in this.state.validation[field].rules){
-          switch(fieldCheck){
-            case 'notEmpty':
-              if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  lastValidFieldFlag = false;
-                  formSubmitFlag = false;
-                  addCategory[field].valid = false;
-                  addCategory[field].message = addCategory[field].rules[fieldCheck].message;
-
-               }
-              break;
-            case 'emailCheck':
-              if(lastValidFieldFlag === true && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this[field].value)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addCategory[field].valid = false;
-                addCategory[field].message = addCategory[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'minLength':
-              if(lastValidFieldFlag === true && this[field].value.length < parseInt(this.state.validation[field].rules[fieldCheck].length)){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addCategory[field].valid = false;
-                addCategory[field].message = addCategory[field].rules[fieldCheck].message;
-              }
-              break;
-            case 'matchWith':
-              if(lastValidFieldFlag === true && this[field].value !== this[this.state.validation[field].rules[fieldCheck].matchWithField].value){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                addCategory[field].valid = false;
-                addCategory[field].message = addCategory[field].rules[fieldCheck].message;
-              }
-              break;
-          }
-        }
-        this.setState({ validation: addCategory});
-      }
-
-      if(formSubmitFlag){
-        let editCategory = this.state.editCategory;
-        editCategory.title = this.title.value;
-        editCategory.description = this.description.value;
-        editCategory.parent = this.parent.value;
-        editCategory.status = this.status.value;
-        console.log('dddddddd',editCategory);
-        axios.put('/category/updateCategory',editCategory).then(result => {
-			console.log('dddddddd',result);
-          if(result.data.code == '200'){
-            this.props.history.push("/categories");
-          }
-        });
+  
+  submitHandler(e) {
+    e.preventDefault();
+    let categoryObj = {};
+    for (let key in this.state.categoryForm) {
+      categoryObj[key] = this.state.categoryForm[key].value;
+    }
+    axios.post("/category/create", categoryObj).then(result => {
+      if (result.data.code == "200") {
+        this.props.history.push("/categories");
       }
     });
   }
 
+ 
   componentDidMount() {	  
 	  //this.props.reference.value = this.props.value;
     axios
@@ -240,14 +189,6 @@ class CategoryEdit extends Component {
 			  categoryForm[key].value = result.data.result[key];
 		  }
 		  this.setState({categoryForm: categoryForm});
-|
-          this.setState({ editCategory: result.data.result});
-          this.title.value = result.data.result.title;
-          this.description.value = result.data.result.description;
-          this.parent.value = result.data.result.parent;
-          this.status.value = result.data.result.status;
-          
-
         }
       })
       .catch((error) => {
@@ -256,7 +197,7 @@ class CategoryEdit extends Component {
         }
       });
 
-  }
+  } 
   render() {
     const formElementsArray = [];
     for (let key in this.state.categoryForm) {
