@@ -4,6 +4,8 @@ const locationController = require('../controllers/locationController')
 router.post('/newCountry',locationController.createCountry)
 router.get('/listCountry',locationController.listCountry)
 router.get('/viewCountry/:id',locationController.viewCountry)
+router.get('/getState/:id',locationController.getState)
+
 router.put('/updateCountry',locationController.updateCountry)
 router.delete('/deleteCountry/:id',locationController.deleteCountry)
 router.post('/updateStatus',locationController.updateStatus)

@@ -30,7 +30,7 @@ import {
 class CategoryEdit extends Component {
   constructor(props){
     super(props);
-    this.categoryName = React.createRef();
+    this.title = React.createRef();
     this.description = React.createRef();
     this.parent = React.createRef();
     this.status = React.createRef();
@@ -39,7 +39,7 @@ class CategoryEdit extends Component {
       editCategory: {},
       categoryId: categoryId,
       validation:{
-        categoryName:{
+        title:{
           rules: {
             notEmpty: {
               message: 'Category name field can\'t be left blank',
@@ -114,7 +114,7 @@ class CategoryEdit extends Component {
 
       if(formSubmitFlag){
         let editCategory = this.state.editCategory;
-        editCategory.categoryName = this.categoryName.value;
+        editCategory.title = this.title.value;
         editCategory.description = this.description.value;
         editCategory.parent = this.parent.value;
         editCategory.status = this.status.value;
@@ -135,7 +135,7 @@ class CategoryEdit extends Component {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ editCategory: result.data.result});
-          this.categoryName.value = result.data.result.categoryName;
+          this.title.value = result.data.result.title;
           this.description.value = result.data.result.description;
           this.parent.value = result.data.result.parent;
           this.status.value = result.data.result.status;
@@ -165,9 +165,9 @@ class CategoryEdit extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="company">Category Name</Label>
-                      <Input type="text" invalid={this.state.validation.categoryName.valid === false} innerRef={input => (this.categoryName = input)} placeholder="Category Name" />
+                      <Input type="text" invalid={this.state.validation.title.valid === false} innerRef={input => (this.title = input)} placeholder="Category Name" />
 
-                      <FormFeedback invalid={this.state.validation.categoryName.valid === false}>{this.state.validation.categoryName.message}</FormFeedback>
+                      <FormFeedback invalid={this.state.validation.title.valid === false}>{this.state.validation.title.message}</FormFeedback>
 
                     </FormGroup>
                     </Col>

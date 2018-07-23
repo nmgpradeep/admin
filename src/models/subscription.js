@@ -29,6 +29,10 @@ timePeriod:{
 type:String,
 trim:true
 },
+unlimited:{
+type:Boolean,
+default: false
+},
 status:{
  type:String,
  trim:true,

@@ -78,6 +78,15 @@ class CityAdd extends Component {
 
   handleCountry = (countrys) => {
         this.setState({countrys: countrys});
+        
+        axios.get('/location/getState/' +countrys ).then(result => {
+          console.log('countryId',result)
+          if(result.data.code == '200'){           
+            this.state.countrySate = result.data.result;
+            console.log("countrySate",this.state.countrySate)
+           // this.props.history.push('./City');
+          }
+        })
   }
   handleState = (states) => {
       this.setState({states:states});
@@ -146,7 +155,7 @@ class CityAdd extends Component {
                       <Label htmlFor="author">State Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <CitySelectBox onSelectState={this.handleState}/>
+                      <CitySelectBox onSelectState={this.handleState} value={this.state.countrySate}/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>

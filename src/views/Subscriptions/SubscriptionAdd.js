@@ -37,6 +37,7 @@ class SubscriptionAdd extends Component {
     this.totalTradePermitted = React.createRef();
     this.totalInventoryAllowed = React.createRef();
     this.timePeriod = React.createRef();
+    this.unlimited = React.createRef();
     
     this.state = {
       addSubscription: {},
@@ -71,16 +72,6 @@ class SubscriptionAdd extends Component {
           valid: null,
           message: ''
         }, 
-        totalInventoryAllowed:{
-          rules: {
-            notEmpty: {
-              message: 'Total Inventory Allowed field can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        }
         
       }
     };
@@ -120,6 +111,8 @@ class SubscriptionAdd extends Component {
         addSubscription.totalInventoryAllowed = this.totalInventoryAllowed.value;
         addSubscription.timePeriod = this.timePeriod.value;
         addSubscription.userType = 2;
+        addSubscription.unlimited = this.unlimited.value
+        
         axios.post('/subscription/newSubscription', addSubscription).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/subscriptions");
@@ -127,9 +120,25 @@ class SubscriptionAdd extends Component {
         });
       }
   }
+  // handleCheckbox(){
+  //   const checkbox = document.getElementById('unlimited')
+  //   const text = document.getElementById('text')
+  //   if(checkbox.checked==true){
+  //     text.style.display = "block"
+  //   }
+  //   else{
+  //     text.style.display = "none"
+  //   }
+  // }
+
+  toggle(event) {
+    this.setState({
+      checkboxState: !this.state.checkboxState
+    });
+  }
 
   render() {
-
+    
     return (
       <div className="animated fadeIn">
         <Row>
@@ -171,13 +180,17 @@ class SubscriptionAdd extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="tIA">Total Inventory Allowed</Label>
-                  <Input type="number" invalid={this.state.validation.totalInventoryAllowed.valid === false}  innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed" />
-                  <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback>
+                  <Input type="text" innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed"/>
+                  {/* <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback> */}
                 </FormGroup>
+                <span><input type="checkbox" onClick={this.toggle.bind(this)} defaultValue={false}  id ='unlimited'/>
+                {/* <p id="text" style="display:none">Checkbox is CHECKED!</p> */}
+                  <label>UNLIMITED</label>
+                </span>
                 <FormGroup>
                   <Label htmlFor="tIA">Time Period</Label>
                   <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />
-                  
+
                 </FormGroup>
                 <FormGroup>                    
                     <Label htmlFor="Status">Status</Label>                    
