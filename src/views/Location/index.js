@@ -1,9 +1,9 @@
 import Country from './Country'
-import Countrys from './Countrys'
+import Countrys from './Countries'
 import State from './State'
 import States from './States'
 import City from './City'
-import Citys from './Citys'
+import Cities from './Cities'
 export {
-    Country,Countrys,CountryEdit,State,States,StateEdit,City,Citys,CityEdit
+    Country,Countries,CountryEdit,State,States,StateEdit,City,Cities,CityEdit
 }

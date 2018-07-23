@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox';
-import CitySelectBox from '../SelectBox/CitySelectBox/CitySelectBox';
+import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
+import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox'
 import {
   Badge,
   Button,
@@ -76,16 +76,31 @@ class CityEdit extends Component {
     };
   }
   
-  handleCountrys = (countries) => {
-	  this.countrySelect.current = countries;
-	  console.log(countries);
+  
+  handleCountry = (country) => { 
+        axios.get('/location/getState/' +country ).then(result => {
+          console.log('countryId',result)
+          if(result.data.code == '200'){  
+            this.setState({states: result.data.result, country: country});
+          }
+        })
   }
+  
+  handleState(state){
+	  this.setState({state: state});
+  }
+  
+  
+//~ handleCountrys = (countries) => {
+  //~ this.countrySelect.current = countries;
+  //~ console.log(countries);
+//~ }
 
-  handleStates = (states) => {
-    this.stateSelect.current = states;
-    console.log(states);
-    
-}
+//~ handleStates = (states) => {
+//~ this.stateSelect.current = states;
+//~ console.log(states);
+
+//~ }
 
   cancelHandler(){
     this.props.history.push("/city");
@@ -106,7 +121,6 @@ class CityEdit extends Component {
                   formSubmitFlag = false;
                   addCity[field].valid = false;
                   addCity[field].message = addCity[field].rules[fieldCheck].message;
-
                }
               break;
           }
@@ -132,17 +146,14 @@ class CityEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+      console.log("cityId",this.state.cityId)        
       axios.get('/location/viewCity/' + this.state.cityId).then(result => {
        // console.log(result); 
-         if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
+         if(result.data.code === 200){     
            this.setState({ editCity: result.data.result});
-          
            this.countrySelect.value = result.data.result.countrySelect;
            this.stateSelect.value = result.data.result.stateSelect;
            this.cityName.value = result.data.result.cityName;
-
-           console.log('HERE in component Did mount', this);
         }
       })
       .catch((error) => {
@@ -150,7 +161,17 @@ class CityEdit extends Component {
           this.props.history.push("/login");
         }
       });
-
+      console.log("statescitycon", this.state.editCity)
+     // get all state  
+   axios.get('/location/getState/' + this.state.editCity.countrySelect).then(result => {
+	  console.log('countryId',result)
+	  if(result.data.code == '200'){  
+		this.setState({states: result.data.result});
+	  }
+	})
+		
+		
+		console.log("states", this.state.states)
   }
   render() {
     return (
@@ -168,14 +189,14 @@ class CityEdit extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label >Country Name</Label>
-                      <StateSelectBox onSelectCountry={this.handleCountrys} reference={(countrySelect)=> this.countrySelect = countrySelect} value={this.state.editCity.countrySelect}/>
+                        <Label >Country Name</Label>
+                        <CountrySelectBox onSelectCountry={this.handleCountry} countryID={this.state.country} />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >State Name</Label>
-                      <CitySelectBox onSelectState={this.handleStates} reference={(stateSelect)=> this.stateSelect = stateSelect} value={this.state.editCity.stateSelect}/>
+                        <StateSelectBox onSelectState={this.handleState} options={this.state.states}/>
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

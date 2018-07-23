@@ -6,16 +6,16 @@ import ReactPaginate from 'react-paginate';
 import Country from './Country'
 
 
-class Countrys extends Component {
+class Countries extends Component {
   constructor(props){
     super(props);
     this.state = {
-      countrys: [],
+      countries: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
       totalPages: 1,
-      countrysCount: 0
+      countriesCount: 0
     };
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
@@ -26,17 +26,17 @@ class Countrys extends Component {
   }
 
   loadCommentsFromServer(){
-    axios.get('/location/Countrys/' + this.state.currentPage).then(result => {
+    axios.get('/location/countries/' + this.state.currentPage).then(result => {
       if(result.data.code === 200){
         this.setState({
-          countrys: result.data.result,
+          countries: result.data.result,
           currentPage: result.data.current,
           PerPage: result.data.perPage,
           totalPages: result.data.pages,
-          countrysCount:result.data.total
+          countriesCount:result.data.total
         });
       }
-      console.log(this.state.countrys);
+      console.log(this.state.countries);
     })
     .catch((error) => {
     console.log('error', error)
@@ -78,10 +78,10 @@ class Countrys extends Component {
     console.log("CHANGE-STATUS",country)
     axios.post('/location/updateStatus',country).then(result => {
       if(result.data.code === 200){
-        let countrys = this.state.countrys;
-        let countryIndex = countrys.findIndex(x => x._id === country._id);
-        countrys[countryIndex].status = country.status.toString();
-        this.setState({ countrys: countrys });
+        let countries = this.state.countries;
+        let countryIndex = countries.findIndex(x => x._id === country._id);
+        countries[countryIndex].status = country.status.toString();
+        this.setState({ countries: countries });
       }
     });
   }
@@ -101,11 +101,11 @@ class Countrys extends Component {
        if(this.state.approve){
         axios.delete('/location/deleteCountry/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
-            let countrys = this.state.countrys;
-            let countryIndex = countrys.findIndex(x => x._id === this.state.approveId);
-            countrys.splice(countryIndex, 1);
+            let countries = this.state.countries;
+            let countryIndex = countries.findIndex(x => x._id === this.state.approveId);
+            countries.splice(countryIndex, 1);
             this.setState({
-                countrys: countrys,
+                countries: countries,
               approveId: null,
               approve: false
             });
@@ -116,10 +116,10 @@ class Countrys extends Component {
     });
   }
   render() {
-   let countrys;
-     if(this.state.countrys){
-       let countryList = this.state.countrys;
-       countrys = countryList.map((country,index) => <Country sequenceNo={index} key={country._id} onDeleteCountry={this.countryDeleteHandler.bind(this)} changeStatus={(country) => this.changeStatusHandler(country)}   country={country}/>);
+   let countries;
+     if(this.state.countries){
+       let countryList = this.state.countries;
+       countries = countryList.map((country,index) => <Country sequenceNo={index} key={country._id} onDeleteCountry={this.countryDeleteHandler.bind(this)} changeStatus={(country) => this.changeStatusHandler(country)}   country={country}/>);
      }
 
      let paginationItems =[];
@@ -146,7 +146,7 @@ class Countrys extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {countrys}
+                  {countries}
                   </tbody>
                 </Table>
                 <nav>
@@ -190,4 +190,4 @@ class Countrys extends Component {
   }
 }
 
-export default Countrys;
+export default Countries;

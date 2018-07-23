@@ -240,7 +240,7 @@ const allCategories = (req, res) => {
   var page = req.params.page || 1;
   Category.find({})
     .populate({ path: "children", model: "Category" })
-    .populate({ path: "parent", model: "Category"})
+    .populate({ path: "parent", model: "Category" })
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec(function(err, categories) {

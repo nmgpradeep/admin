@@ -389,8 +389,8 @@ const SizeEdit = Loadable({
 });
 
 //loader for Country by Saurabh
-const Countrys = Loadable({
-  loader: () => import('./views/Location/Countrys'),
+const Countries = Loadable({
+  loader: () => import('./views/Location/Countries'),
   loading: Loading,
 });
 const CountryAdd = Loadable({
@@ -416,8 +416,8 @@ const StateEdit = Loadable({
   loading: Loading,
 });
 //loader for Citys by Saurabh
-const Citys = Loadable({
-  loader: () => import('./views/Location/Citys'),
+const Cities = Loadable({
+  loader: () => import('./views/Location/Cities'),
   loading: Loading,
 });
 const CityAdd = Loadable({
@@ -499,7 +499,7 @@ const routes = [
 
   { path: '/country/add', name: 'Add Country',component: CountryAdd},
   { path: '/country/edit/:id', name: 'Edit Country', component: CountryEdit},
-  { path: '/country', name: 'Country', component: Countrys},
+  { path: '/country', name: 'Country', component: Countries},
 
   { path: '/state/add', name: 'Add State', component: StateAdd},
   { path: '/state/edit/:id', name: 'Edit State', component: StateEdit},
@@ -507,7 +507,7 @@ const routes = [
 
   { path: '/city/add', name: 'Add City', component: CityAdd},
   { path: '/city/edit/:id', name: 'Edit City', component: CityEdit},
-  { path: '/city', name: 'City', component: Citys},
+  { path: '/city', name: 'City', component: Cities},
 
   //~ { path: '/theme', exact: true, name: 'Theme', component: Colors },
   //~ { path: '/theme/colors', name: 'Colors', component: Colors },

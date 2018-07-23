@@ -6,11 +6,11 @@ import ReactPaginate from 'react-paginate';
 import City from './City'
 
 
-class Citys extends Component {
+class Cities extends Component {
   constructor(props){
     super(props);
     this.state = {
-      citys: [],
+      Cities: [],
       modal: false,
       currentPage: 1,
       PerPage: 5,
@@ -26,14 +26,14 @@ class Citys extends Component {
   }
 
   loadCommentsFromServer(){
-    axios.get('/location/Citys/' + this.state.currentPage).then(result => {
+    axios.get('/location/cities/' + this.state.currentPage).then(result => {
       if(result.data.code === 200){
         this.setState({
-          citys: result.data.result,
+          Cities: result.data.result,
           currentPage: result.data.current,
           PerPage: result.data.perPage,
           totalPages: result.data.pages,
-          citysCount:result.data.total
+          citiesCount:result.data.total
         });
       }
       console.log(this.state.citys);
@@ -91,11 +91,11 @@ class Citys extends Component {
       if(this.state.approve){
         axios.delete('/location/deleteCity/' + this.state.approveId).then(result => {
           if(result.data.code == '200'){
-            let citys = this.state.citys;
-            let cityIndex = citys.findIndex(x => x._id === this.state.approveId);
-            citys.splice(cityIndex, 1);
+            let Cities = this.state.Cities;
+            let cityIndex = Cities.findIndex(x => x._id === this.state.approveId);
+            Cities.splice(cityIndex, 1);
             this.setState({
-              citys: citys,
+              Cities: Cities,
               approveId: null,
               approve: false
             });
@@ -106,10 +106,10 @@ class Citys extends Component {
     });
   }
   render() {
-   let citys;
-     if(this.state.citys){
-       let cityList = this.state.citys;
-       citys = cityList.map((city,index) => <City sequenceNo={index} key={city._id} onDeleteCity={this.cityDeleteHandler.bind(this)} changeStatus={(city) => this.changeStatusHandler(city)}   city={city}/>);
+   let Cities;
+     if(this.state.Cities){
+       let cityList = this.state.Cities;
+       Cities = cityList.map((city,index) => <City sequenceNo={index} key={city._id} onDeleteCity={this.cityDeleteHandler.bind(this)} changeStatus={(city) => this.changeStatusHandler(city)}   city={city}/>);
      }
 
      let paginationItems =[];
@@ -137,7 +137,7 @@ class Citys extends Component {
                   </tr>
                   </thead>
                   <tbody>
-                  {citys}
+                  {Cities}
                   </tbody>
                 </Table>
                 <nav>
@@ -181,4 +181,4 @@ class Citys extends Component {
   }
 }
 
-export default Citys;
+export default Cities;
