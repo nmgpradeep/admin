@@ -38,10 +38,10 @@ const create = (req, res) => {
   Subscription.findOne({ subscriptionName: req.body.subscriptionName}, (err, result) => {
 	
     if (result) {
-      const limitFlag = result.unlimited
-      if(limitFlag=true){
-        result.totalInventoryAllowed = 'UNLIMITED'
-      }
+      // const limitFlag = result.unlimited
+      // if(limitFlag=true){
+      //   result.totalInventoryAllowed = 'UNLIMITED'
+      // }
 
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
