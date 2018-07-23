@@ -132,6 +132,7 @@ class Testimonials extends Component {
                     <th>Title</th>  
                     <th>Description</th>                
                     <th>Author</th>
+                    <th>Review</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>

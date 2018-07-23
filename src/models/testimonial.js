@@ -21,6 +21,10 @@ author: {
 	type: Schema.Types.ObjectId, 
 	ref: 'User' 
 },
+review: { 
+	type: Number, 
+	trim:true
+},
 status:{
  type:String,
  trim:true,

@@ -39,6 +39,7 @@ class DonationAdd extends Component {
     this.description = React.createRef(),
     this.productCategory = React.createRef(),
     this.userId = React.createRef(),
+    this.condition = React.createRef(),
     this.size = React.createRef(),
     this.color = React.createRef(),
     this.brand = React.createRef(),
@@ -48,6 +49,9 @@ class DonationAdd extends Component {
     
     this.state = {
       donationadd: {},
+      Categories: [],
+      condition :[],
+      conditionsValue: '',    
       validation:{
         productName: {
           rules: {
@@ -125,14 +129,26 @@ class DonationAdd extends Component {
   }
   fileChangedHandler = (event) => {
 	this.setState({selectedFile: event.target.files[0]})
-}
-
+  }
+  
    handleUser = (user) => {
         this.setState({user: user});
   }
    handleCategory = (category) => {
         this.setState({category: category});
   }
+  
+   componentDidMount() {    
+       axios.get('/donation/getConstant').then(result => {
+           this.setState({conditions: result.data.result});
+           
+       });
+   }
+   
+   conditionsChange = (value) => {
+	   //console.log("value",value.target.value)
+         this.setState({conditionValue: value.target.value});
+   } 
 
   submitHandler(e){
     e.preventDefault()
@@ -149,10 +165,8 @@ class DonationAdd extends Component {
                 formSubmitFlag = false;
                 donationadd[field].valid = false;
                 donationadd[field].message = donationadd[field].rules[fieldCheck].message;
-
              }
             break;
-          
         }
       }
       this.setState({ validation: donationadd});
@@ -164,13 +178,13 @@ class DonationAdd extends Component {
 		data.append('productCategory',this.state.category);
 		data.append('userId', this.state.user);
 		data.append('size', this.size.value);
+		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
 		data.append('brand', this.brand.value);
 		data.append('productAge', this.productAge.value);
-		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)
-		//console.log("data",data);
+		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)			
         axios.post('/donation/donate', data).then(result => {
-			console.log('resultImages ',result);
+	     console.log('resultImages ',result);
           if(result.data.code === 200){
             this.props.history.push("/donations");
           }
@@ -178,12 +192,16 @@ class DonationAdd extends Component {
     }
   }
 
-
-  render(){
+    render(){
+	  let optionTemplate;
+	    if(this.state.conditions){
+			let conditionsList = this.state.conditions;
+		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
+       }	  
     return (
       <div>
         <Card>
-              <CardHeader>
+            <CardHeader>
                 <strong>New Donation Form</strong>
               </CardHeader>
               <CardBody>
@@ -219,7 +237,7 @@ class DonationAdd extends Component {
                       <Label htmlFor="author">Category</Label>
                     </Col>
                  <Col md="3">
-                  <CategorySelectBox onSelectCategory={this.handleCategory}/>
+                    <CategorySelectBox onSelectCategory={this.handleCategory}/>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -237,8 +255,7 @@ class DonationAdd extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.color.valid === false} innerRef={input => (this.color = input)} placeholder="Color" />
-                      <FormFeedback invalid={this.state.validation.color.valid === false}>{this.state.validation.color.message}</FormFeedback>
-                      
+                      <FormFeedback invalid={this.state.validation.color.valid === false}>{this.state.validation.color.message}</FormFeedback>                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -268,6 +285,16 @@ class DonationAdd extends Component {
                    </Col>
                   </FormGroup>
                   <FormGroup row>
+                    <Col md="3">				
+                      <Label htmlFor="lastname">Conditions</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <select id="select" innerRef={input => (this.condition = input)} className="form-control" onChange={this.conditionsChange}>
+						{optionTemplate}
+					  </select> 		  
+                   </Col>
+                  </FormGroup>
+                  <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
                     </Col>
@@ -278,7 +305,6 @@ class DonationAdd extends Component {
                   </select>
                     </Col>
                   </FormGroup>                
-                    
                 </Form>
               </CardBody>
               <CardFooter>
@@ -286,7 +312,6 @@ class DonationAdd extends Component {
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
             </Card>
-        
       </div>
     )
   }

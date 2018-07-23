@@ -49,6 +49,10 @@ productImage:{
  sparse:true,
  default:0   
 },
+condition:{
+ type:String,
+ trim:true,
+},
 pickupAddress:[{
       name:{
        type:String,

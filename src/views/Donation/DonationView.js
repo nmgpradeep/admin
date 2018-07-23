@@ -20,31 +20,40 @@ class DonationView extends Component {
     super(props);
     this.state = {
       viewDonation: [],
+      condition :[],
       donationId: this.props.match.params.id
     };
   }
   cancelHandler(){
     this.props.history.push("/donations");
   }
+  
+ 
+
+  
+   
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+       axios.get('/donation/getConstant').then(result => {
+           this.setState({conditions: result.data.result});            
+       });
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
-          
+          //localStorage.setItem('jwtToken', result.data.result.accessToken);          
           this.setState({ viewDonation: result.data.result});
-          console.log("viewDonation",this.state.viewDonation.productCategory.categoryName)
+          console.log("viewDonation",result.data.result);
           this.productName.value = result.data.result.productName;
           this.description.value = result.data.result.description;
           this.productCategory.value = result.data.result.productCategory.categoryName;
           this.userId.value = result.data.result.userId.firstName;
           this.size.value = result.data.result.size;
+          this.condition.value = result.data.result.condition;
           this.color.value = result.data.result.color;
           this.brand.value = result.data.result.brand;
           this.productAge.value = result.data.result.productAge;
           this.productImage.value = result.data.result.productImage;
-          console.log('ddddddddddddddddd',this.state.viewDonation);
+          //console.log('ddddddddddddddddd',this.state.viewDonation);
           //~ //this.status.value = result.data.result.status;
         }
       })
@@ -111,16 +120,18 @@ class DonationView extends Component {
                   <Input type="text" innerRef={input => (this.productAge= input)}  required/>
                 </FormGroup>
                 <FormGroup>
+                  <Label htmlFor="productAge">Condition</Label>
+                  <Input type="text" innerRef={input => (this.condition= input)}  required/>
+                </FormGroup>
+                <FormGroup>
                 <Col xs="12" className="text-left">
                   <Label htmlFor="status">Image</Label>
                    </Col>
                   <Col xs="12" sm="12">
-                  <img className="linkedin" src= {'assets/uploads/donationImage/'+this.state.viewDonation.productImage} width="60"/>
-                  </Col>
-                  
+                  <img className="linkedin" src={'assets/uploads/donationImage/'+this.state.viewDonation.productImage} width="60"/>
+                  </Col>                  
                 </FormGroup>
                 <FormGroup>
-                
                   <Label htmlFor="status">Status</Label>
                   <Input type="text" value={(this.state.viewDonation.productStatus === '1')?'Active':'Inactive'} />
                 </FormGroup>
@@ -141,5 +152,5 @@ class DonationView extends Component {
 }
 // ProjectItem.propTypes = {
 //   project: PropTypes.object
-// };
+//};
 export default DonationView;

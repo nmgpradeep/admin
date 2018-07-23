@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import ReactStars from 'react-stars'
 import {
   Badge,
   Button,
@@ -34,6 +35,7 @@ class TestimonialEdit extends Component {
     this.title = React.createRef();
     this.description = React.createRef();
     this.author = React.createRef();
+    this.review = React.createRef();
     let testimonialId = this.props.match.params.id;
     this.state = {
       editTestimonial: {},
@@ -74,6 +76,12 @@ class TestimonialEdit extends Component {
     };
   }
   
+   ratingChanged = (review) => {
+        console.log('dddddddd',review);
+       this.setState({review: review});
+   }
+  
+  
   handleUser = (user) => {
 	  this.author.current = user;
 	  console.log(user);	  
@@ -83,11 +91,12 @@ class TestimonialEdit extends Component {
   cancelHandler(){
     this.props.history.push("/testimonial");
   }
+  
   submitHandler(e){
       e.preventDefault();
       console.log('in submit', this);
       let formSubmitFlag = true;
-      for (let field in this.state.validation) {
+      for(let field in this.state.validation) {
         let lastValidFieldFlag = true;
         let addTestimonial = this.state.validation;
         addTestimonial[field].valid = null;
@@ -99,7 +108,6 @@ class TestimonialEdit extends Component {
                   formSubmitFlag = false;
                   addTestimonial[field].valid = false;
                   addTestimonial[field].message = addTestimonial[field].rules[fieldCheck].message;
-
                }
               break;
           }
@@ -112,6 +120,7 @@ class TestimonialEdit extends Component {
         editTestimonial.title = this.title.value;
         editTestimonial.description = this.description.value;
         editTestimonial.author = this.author.value;
+        editTestimonial.review = this.state.review;
         console.log("editTestimonial",editTestimonial)
         axios.put('/testimonial/updateTestimonial', editTestimonial).then(result => {
           if(result.data.code ===200){
@@ -122,14 +131,14 @@ class TestimonialEdit extends Component {
   }
 
   componentDidMount() {
-      axios.get('/testimonial/viewTestimonial/' + this.state.testimonialId).then(result => {
-		  
-         if(result.data.code === 200){
+      axios.get('/testimonial/viewTestimonial/' + this.state.testimonialId).then(result => {		  
+         if(result.data.code === 200){			
            this.setState({ editTestimonial: result.data.result});          
            this.title.value = result.data.result.title;
            this.description.value = result.data.result.description;
            this.author.value = result.data.result.author;
-           console.log('HERE in component Did mount', this);
+           this.review.value = result.data.result.review;
+          // console.log('HERE in component Did mount',this.review.value);
         }
       })
       .catch((error) => {
@@ -151,15 +160,12 @@ class TestimonialEdit extends Component {
                 <Link to="/testimonial" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
-              
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Testimonial Title</Label>
                       <Input type="text" innerRef={input => (this.title = input)}   placeholder="Title" />
-
                       {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
-
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -169,11 +175,16 @@ class TestimonialEdit extends Component {
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                      
 					   <FormGroup>						
 						  <Label htmlFor="author">User</Label>									  
 						  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editTestimonial.author}/>						
 					  </FormGroup>
+                    </Col>
+                    <Col xs="4" sm="12">
+                      <FormGroup>                  
+                      <Label >Reviews</Label>                      
+					       <ReactStars count={5} onChange={this.ratingChanged} size={27} color2={'#ffd700'}  innerRef={input => (this.review = input)} value={this.state.editTestimonial.review}/>
+                      </FormGroup>
                   </Col>
                 </Row>
                 <Row>

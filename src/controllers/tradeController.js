@@ -44,7 +44,6 @@ const nodemailer = require('nodemailer');
 ///function to save new Trade in the list
 const newTrades = (req, res) => {
   console.log('<<<<<<<<<<<', JSON.stringify(req.body))
- 
   const data = req.body;
       let now = new Date();
         Trade.create(req.body, (err, result) => {
@@ -55,16 +54,14 @@ const newTrades = (req, res) => {
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
-        } else {
-         
+        } else {         
           return res.send({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
             result: result
           })
-
         }
-      })
+    })
 }
 
 /*
@@ -87,12 +84,11 @@ const viewTrades = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
-            });
-
+         });
       }
     }
   })
@@ -103,7 +99,7 @@ const viewTrades = (req, res) => {
  **/
 //Function to update the Trades status.
 const updateStatus = (req, res) => { 
-	console.log("REQ0",req.body)
+console.log("REQ0",req.body)
   Trade.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -121,7 +117,7 @@ const updateStatus = (req, res) => {
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
              result: result
-            });
+          });
       }
     }    
   })

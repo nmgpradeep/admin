@@ -137,7 +137,7 @@ class Products extends Component {
                     <th>Size</th>
                     <th>Color</th>
                     <th>Brand</th>
-                    <th>Age</th>
+                    <th>Age Of Item</th>
                     <th>Images</th>
                     <th>Status</th>
                     <th>Action</th>

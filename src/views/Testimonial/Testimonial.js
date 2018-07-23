@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
 import Moment from 'moment';
+import ReactStars from 'react-stars'
 // import PropTypes from 'prop-types';
 class Testimonial extends Component {
   constructor(props){
@@ -18,6 +19,8 @@ Capitalize(str){
         <td>{this.props.testimonial.title}</td>
         <td>{this.props.testimonial.description}</td>
         <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>   
+        <td>
+         <ReactStars  count={5} size={15} color2={'#ffd700'} edit={false} value={this.props.testimonial.review}  /></td>
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.testimonial)} color={(this.props.testimonial.status == '1')?'success':'danger'}>
             {(this.props.testimonial.status == '1')?'Active':'Inctive'}
