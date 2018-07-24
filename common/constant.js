@@ -7,7 +7,6 @@ module.exports = {
     'SMTP_FROM_EMAIL': '"pitchandswitch 👻" pitchandswitch.com',
     'cmsimage_path':'/var/www/html/pitchswitch/public/assets/uploads/cmsPageImage/',
     'donationimage_path':'/var/www/html/pitchswitch/public/assets/uploads/donationImage/',
-
     'product_path': '/var/www/html/pitchswitch/public/assets/uploads/Products/',
     'advertisementimage_path': '/var/www/html/pitchswitch/public/assets/uploads/AdvertisementImage/',
     'donation_conditions':[{'id':'1','name':'New'},{'id':'2','name':'old'},{'id':'3','name':'Excellent'},{'id':'4','name':'Very Old'}]
