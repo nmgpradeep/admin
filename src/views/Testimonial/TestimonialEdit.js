@@ -120,7 +120,7 @@ class TestimonialEdit extends Component {
         editTestimonial.title = this.title.value;
         editTestimonial.description = this.description.value;
         editTestimonial.author = this.author.value;
-        editTestimonial.review = this.state.review;
+        editTestimonial.review = this.state.review;  
         console.log("editTestimonial",editTestimonial)
         axios.put('/testimonial/updateTestimonial', editTestimonial).then(result => {
           if(result.data.code ===200){
@@ -146,7 +146,6 @@ class TestimonialEdit extends Component {
           this.props.history.push("/login");
         }
       });
-
   }
   render() {
     return (

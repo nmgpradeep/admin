@@ -143,16 +143,14 @@ class SubscriptionEdit extends Component {
       axios.get('/subscription/viewSubscription/' + this.state.subscriptionId).then(result => {
        // console.log(result); 
          if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
+        //  //localStorage.setItem('jwtToken', result.data.result.accessToken);
            this.setState({ editSubscription: result.data.result});
-          
            this.subscriptionName.value = result.data.result.subscriptionName;
            this.description.value = result.data.result.description;
            this.price.value = result.data.result.price;
            this.totalTradePermitted.value = result.data.result.totalTradePermitted;
            this.totalInventoryAllowed.value = result.data.result.totalInventoryAllowed;
            this.timePeriod.value = result.data.result.timePeriod;
-
         }
       })
       .catch((error) => {

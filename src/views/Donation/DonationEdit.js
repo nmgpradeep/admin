@@ -42,6 +42,7 @@ class DonationEdit extends Component {
     this.size = React.createRef();
     this.color = React.createRef();
     this.brand = React.createRef();
+    this.condition = React.createRef();
     this.productAge = React.createRef();
     this.productImage = React.createRef();
 
@@ -49,6 +50,8 @@ class DonationEdit extends Component {
     this.state = {
       editDonation: {},
      // author : '',
+      condition :[],
+      conditionsValue: '', 
       donationId: donationId,
       validation:{
         productName: {
@@ -56,7 +59,6 @@ class DonationEdit extends Component {
             notEmpty: {
               message: 'Product name can\'t be left blank',
               valid: false
-
             }
           },
           valid: null,
@@ -126,9 +128,15 @@ class DonationEdit extends Component {
 	  this.setState({selectedFile: event.target.files[0]})
    }
    
+   
   cancelHandler(){
     this.props.history.push("/donations");
   }
+  
+   conditionsChange = (value) => {	 
+        this.setState({conditionValue: value.target.value});
+   } 
+   
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -151,34 +159,40 @@ class DonationEdit extends Component {
         this.setState({ validation: addDonation});
       }
 
-      if(formSubmitFlag){
-		const data = new FD();
-		data.append('_id',this.state.donationId);				
+      if(formSubmitFlag){	
+		const data = new FD();		
+		data.append('data', this.state.editDonation);
+		data.append('_id', this.state.editDonation._id);
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory',this.state.category);
-		data.append('userId', this.author.value);
+		data.append('productCategory',this.category.value);
+		data.append('userId',this.author.value);
 		data.append('size', this.size.value);
+		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
 		data.append('brand', this.brand.value);
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile){
-		   data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)
-	    } else {
-		   data.append('productImage', this.state.editDonation.productImage);
-		}		
+		    data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);
+		} else {
+			data.append('productImage', this.state.editDonation.productImage); 
+	    }
         axios.put('/donation/updateDonation', data).then(result => {
 			console.log('resultImages ',result);
-          if(result.data.code === 200){
-            this.props.history.push("/donations");
+             if(result.data.code === 200){
+               this.props.history.push("/donations");
           }
         }); 
       }
   }
+  
+  conditionsChange = (value) => {	   
+         this.setState({conditionValue: value.target.value});
+   } 
 
   componentDidMount() {   
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
-         if(result.data.code === 200){           
+         if(result.data.code === 200){
            this.setState({ editDonation: result.data.result});           
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
@@ -187,11 +201,14 @@ class DonationEdit extends Component {
            this.category.value = result.data.result.productCategory._id;
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
-           this.productAge.value = result.data.result.productAge;
-           this.productImage.value = result.data.result.productImage;
-           ///console.log('listing',this.category.value);
+           this.productAge.value = result.data.result.productAge;                   
+           //this.productImage.value = result.data.result.productImage;
         }
       })
+       axios.get('/donation/getConstant').then(result => {
+           this.setState({conditions: result.data.result});
+           
+       })
       .catch((error) => {
         if(error.status === 401) {
           this.props.history.push("/login");
@@ -200,6 +217,11 @@ class DonationEdit extends Component {
 
   }
   render() {
+	  let optionTemplate;
+	    if(this.state.conditions){
+			let conditionsList = this.state.conditions;
+		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
+       }
     return (
       <div className="animated fadeIn">
         <Row>
@@ -211,6 +233,7 @@ class DonationEdit extends Component {
                 <Link to="/donations" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
+               <Form action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Product Name</Label>
@@ -234,8 +257,6 @@ class DonationEdit extends Component {
 						   <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editDonation.category}/>	
 					  </FormGroup>
                   </Col>
-               
-                 
                    <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="size">Size</Label>
@@ -261,9 +282,17 @@ class DonationEdit extends Component {
 						  <img src={'assets/uploads/donationImage/'+this.state.editDonation.productImage} width="60"/>
 					   </FormGroup>
                    </Col>
+                   <Col xs="4" sm="12">				
+                      <FormGroup>
+						 <Label htmlFor="brand">Conditions</Label> 
+                          <select id="select" reference={(condition)=> this.condition = condition} value={this.state.editDonation.condition} className="form-control" onChange={this.conditionsChange}>
+						   {optionTemplate}
+					     </select> 		  
+                      </FormGroup>
+                   </Col>
                     <Col xs="4" sm="12">
 						<FormGroup>
-						  <Label htmlFor="productAge">Age</Label>
+						  <Label htmlFor="productAge">Age Of Item</Label>
 						  <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
 						</FormGroup>
                     </Col>
@@ -275,6 +304,7 @@ class DonationEdit extends Component {
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
                 </Row>
+                </Form>
                </CardBody>
             </Card>
           </Col>

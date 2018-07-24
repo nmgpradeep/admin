@@ -18,6 +18,7 @@ import axios from 'axios';
 class DonationView extends Component {
   constructor(props){
     super(props);
+    this.condition = React.createRef();
     this.state = {
       viewDonation: [],
       condition :[],
@@ -27,34 +28,25 @@ class DonationView extends Component {
   cancelHandler(){
     this.props.history.push("/donations");
   }
-  
- 
-
-  
    
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
        axios.get('/donation/getConstant').then(result => {
            this.setState({conditions: result.data.result});            
        });
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);          
           this.setState({ viewDonation: result.data.result});
           console.log("viewDonation",result.data.result);
           this.productName.value = result.data.result.productName;
           this.description.value = result.data.result.description;
-          this.productCategory.value = result.data.result.productCategory.categoryName;
-          this.userId.value = result.data.result.userId.firstName;
           this.size.value = result.data.result.size;
-          this.condition.value = result.data.result.condition;
+          this.productCategory.value = result.data.result.productCategory.categoryName;
           this.color.value = result.data.result.color;
+          this.userId.value = result.data.result.userId.firstName;           
+          this.condition.value = result.data.result.condition;    
           this.brand.value = result.data.result.brand;
-          this.productAge.value = result.data.result.productAge;
+          this.productAge.value = result.data.result.productAge; 
           this.productImage.value = result.data.result.productImage;
-          //console.log('ddddddddddddddddd',this.state.viewDonation);
-          //~ //this.status.value = result.data.result.status;
         }
       })
       .catch((error) => {
@@ -64,6 +56,11 @@ class DonationView extends Component {
       });
   }
   render() {
+	  let optionTemplate;
+	    if(this.state.conditions){
+			let conditionsList = this.state.conditions;
+		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
+       }
     return (
       <div className="animated fadeIn">
         <Row>
@@ -113,15 +110,17 @@ class DonationView extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="brand">Brand</Label>
-                  <Input type="text" innerRef={input => (this.brand= input)} />
+                  <Input type="text" nnerRef={input => (this.brand = input)} value={this.state.viewDonation.brand}/>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="productAge">Age</Label>
-                  <Input type="text" innerRef={input => (this.productAge= input)}  required/>
+                  <Label htmlFor="productAge">Age Of Item</Label>
+                  <Input type="text" innerRef={input => (this.productAge = input)} value={this.state.viewDonation.productAge}  required/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="productAge">Condition</Label>
-                  <Input type="text" innerRef={input => (this.condition= input)}  required/>
+                   <select id="select"  value={this.state.viewDonation.condition} className="form-control" disabled>
+					  {optionTemplate}
+				   </select> 	
                 </FormGroup>
                 <FormGroup>
                 <Col xs="12" className="text-left">

@@ -127,6 +127,12 @@ class DonationAdd extends Component {
       }
     } 
   }
+  
+   cancelHandler(){
+    this.props.history.push("/donations");
+   }
+  
+  
   fileChangedHandler = (event) => {
 	this.setState({selectedFile: event.target.files[0]})
   }
@@ -143,10 +149,9 @@ class DonationAdd extends Component {
            this.setState({conditions: result.data.result});
            
        });
-   }
-   
-   conditionsChange = (value) => {
-	   //console.log("value",value.target.value)
+   } 
+     
+   conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
    } 
 
@@ -201,7 +206,7 @@ class DonationAdd extends Component {
     return (
       <div>
         <Card>
-            <CardHeader>
+             <CardHeader>
                 <strong>New Donation Form</strong>
               </CardHeader>
               <CardBody>
@@ -269,7 +274,7 @@ class DonationAdd extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="productAge">Age</Label>
+                      <Label htmlFor="productAge">Age Of Item</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.productAge.valid === false} innerRef={input => (this.productAge = input)} placeholder="Age" />
@@ -305,13 +310,17 @@ class DonationAdd extends Component {
                   </select>
                     </Col>
                   </FormGroup>                
-                </Form>
+                 <Row>
+                  <Col xs="4" className="text-right">
+                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+                  </Col>
+                  <Col xs="4">
+                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+                  </Col>
+                 </Row>        
+                  </Form>
               </CardBody>
-              <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
-              </CardFooter>
-            </Card>
+          </Card>
       </div>
     )
   }
