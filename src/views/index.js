@@ -22,7 +22,7 @@ import { Advertisements, Advertisement, AdvertisementEdit} from './Advertisement
 import { Donations, Donation, DonationEdit} from './Donation'
 import { Testimonials, Testimonial, TestimonialEdit} from './Testimonial'
 import { Addon, Addons, AddonEdit, Subscription, Subscriptions, SubscriptionEdit} from './Subscriptions'
-import { Profile, EditProfile} from './AdminProfile'
+import { profile, EditProfile} from './Users'
 import { Trades, TradesAdd, TradesView} from './Trades'
 import { Brand, Brands, BrandEdit, Sizes, Size, SizeEdit} from './Attributes'
 import { Country,Countrys,CountryEdit,State,States,StateEdit,City,Citys,CityEdit} from './Location'
@@ -55,7 +55,7 @@ export {
   Trades,
   Trade,
   TradesAdd,
-  Profile,
+  profile,
   EditProfile,
   Subscription,
   Subscriptions,

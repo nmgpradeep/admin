@@ -39,7 +39,7 @@ import {
       componentDidMount() {
         //if(localStorage.getItem('jwtToken') != null)
           //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-          axios.get('/user/viewAdmin/' + this.state.adminId).then(result => {
+          axios.get('/user/viewAdmin').then(result => {
             if(result.data.code == '200'){
               //localStorage.setItem('jwtToken', result.data.result.accessToken);
               this.setState({ profile: result.data.result});
@@ -70,10 +70,14 @@ import {
                         </CardHeader>
                         <CardBody>
                             <Row>
+                                <Row>
                                 <Col md='3'>
                                 <Label>Name:</Label>
-                                <Col md='3'>{this.state.profile.firstName}</Col>
-
+                                </Col>
+                                <Col md='3'>
+                                <Label>{this.state.profile.firstName}</Label>
+                                </Col>
+                                </Row>
                                     {/* <Label>Name:</Label><br></br>
                                     <Label>Email:</Label><br></br>
                                     <Label>Phone Number:</Label><br></br>
@@ -84,7 +88,7 @@ import {
                                     <Label>Subscription Plan:</Label><br></br> */}
 
                                     
-                                </Col>
+                                
                                 <Col sm = "6">
                                     <img style={imageStyle} src="https://i.ytimg.com/vi/N1icEHtgb3g/maxresdefault.jpg" />
                                 </Col>

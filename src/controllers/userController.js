@@ -10,8 +10,9 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
-var NodeSession = require('node-session');
-session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
+var ssn;
+//var NodeSession = require('node-session');
+//session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
 
 //const nodemailer = require('nodemailer');
 // var passport = require('passport');
@@ -174,10 +175,14 @@ const login = (req, res) => {
                   })
                 })
 			
-			session.startSession(req, res, sessionValue)
-			req.session.put('user',result);
-			var value = req.session.get('user');
-			console.log("SESSION VARIABLE",value);			
+			// session.startSession(req, res, sessionValue)
+			// req.session.put('user',result);
+			// var value = req.session.get('user');
+			// console.log("SESSION VARIABLE",value);	
+         
+          // set the use data in to session
+             req.session.user= result;    
+             
             return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.LOGIN_SUCCESSFULLY,
@@ -203,9 +208,7 @@ const login = (req, res) => {
 
   })
 }
-const sessionValue = () =>{ 
-	return true;		
-}
+
 
 
 
@@ -246,6 +249,7 @@ const listUser = (req, res) => {
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
   const users = (req, res) => {
+	  console.log("SESSION",req.session)
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     User.find({ userType: { $ne: 1 }})
@@ -303,9 +307,12 @@ const viewUser = (req, res) => {
  *	Description : Function to view the available user details
  **/
 const viewAdmin = (req, res) => {
-	const id = req.params;
-	console.log('<<<<<<<<<<<',req.params);
-	User.findOne({userType:id}, (err, result) => {
+  ssn = req.session;
+  console.log("SESSION USER",ssn)
+  const id = req.params;
+  //console.log('<<<<<<<<<<<',req.params); 
+ 
+	User.find({}, (err, result) => {
     if (err) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -505,7 +512,10 @@ exports.logout = function(req, res, next) {
 
 
     } else {
-
+      req.session.destroy(function(err) {
+        console.log("Session Destroy")
+        return true;
+      })
       return res.json({
         message: constant.logout_success_msg,
         code: constant.logout_success_code
@@ -615,5 +625,6 @@ module.exports = {
 	users,
 	contustUs,
 	send,
-	dashboardStates
+  dashboardStates,
+  viewAdmin
 }

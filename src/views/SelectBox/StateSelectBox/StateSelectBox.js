@@ -7,46 +7,17 @@ var options = []
 
 class StateSelectBox extends Component {
   constructor(props) {
-    super(props);    
-    this.state = { value: 'Select a country'}; 
-        
-    this.state = {
-      countries : ''
-	}   
+    super(props);
   }
-  onChange(e) {
-		var countries = e.target.value;	  
-		this.props.onSelectCountry(countries);  
-		//this.setState({selectedUser : user});
-    console.log("Country DATA SET",countries)
-  }
-  componentDidMount(){
-	//this.props.reference.value = this.props.value;
-    axios.get('/location/listCountry').then(result => {
-		//console.log("listUser",result.data.result[0].userName);
-      if(result.data.code === 200){		  
-		  options = result.data.result;
-		  //console.log("OPTION",result.data.result);
-        this.setState({
-          options: result.data.result,          
-        });
-      }
-      
-    })
-    .catch((error) => {
-    console.log('error', error)
-      if(error.code === 401) {
-        this.props.history.push("/login");
-      }
-    });
-  }
+
+
   render() {	  
     return (
       <div className="form-group">        
-       <Input type="select" onChange={this.onChange.bind(this)} innerRef={this.props.reference} className="form-control">
-		<option value="0" >Select a Country</option>
-        {options.map(option => {
-          return <option value={option._id} key={option.countryName}>{option.countryName.toUpperCase()}</option>
+       <Input type="select" innerRef={this.props.reference} className="form-control">
+		<option value="0" >Select a State</option>
+        {this.props.options.map(option => {
+          return <option value={option._id} key={option.stateName}>{option.stateName.toUpperCase()}</option>
         })}
 	  </Input>
       </div>
