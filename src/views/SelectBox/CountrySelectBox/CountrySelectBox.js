@@ -6,21 +6,18 @@ import axios from 'axios';
 var options = []
 
 class CountrySelectBox extends Component {
-  constructor(props) {
-	  console.log('Country Props', props)
+  constructor(props) {	 
     super(props);    
-    this.state = { value: 'Select a country'}; 
-        
+    this.state = { value: 'Select a country'};         
     this.state = {
-      countries : []
-	}   
+      countries : []     
+	};    
   }
   
   componentDidMount(){
 	//getting all countries
     axios.get('/location/listCountry').then(result => {
-      if(result.data.code === 200){		
-		  console.log('Country',   result.data.result);
+      if(result.data.code === 200){				 
         this.setState({
           countries: result.data.result,          
         });

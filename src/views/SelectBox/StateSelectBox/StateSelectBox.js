@@ -3,7 +3,6 @@ import { Alert, Form, Button, Card, CardBody, CardGroup, Col, Container, Input, 
 import axios from 'axios';
 
 // a select with dynamically created options
-var options = []
 
 class StateSelectBox extends Component {
   constructor(props) {

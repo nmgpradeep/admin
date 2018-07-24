@@ -1,7 +1,7 @@
 import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
-import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox'
+import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
 import {
   Badge,
   Button,
@@ -27,6 +27,7 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
 class StateAdd extends Component {
 
   constructor(props){
@@ -36,7 +37,7 @@ class StateAdd extends Component {
     
     this.state = {
       addState: {},
-      countrys : '',
+      country : '',
       validation:{
         country: {
           rules: {
@@ -63,10 +64,12 @@ class StateAdd extends Component {
     } 
   }
 
-  handleCountry = (countrys) => {
-        this.setState({countrys: countrys});
+  handleCountry = (country) => {
+        this.setState({country: country});
   }
-    
+  cancelHandler(){
+    this.props.history.push("/state");
+  }
   submitHandler(e){
     e.preventDefault()
     let formSubmitFlag = true;
@@ -91,9 +94,8 @@ class StateAdd extends Component {
       this.setState({ validation: addState});
     }
     if(formSubmitFlag){
-	console.log("COUNTRYS",this.state.countrys)
       let addState = this.state.addState;
-      addState.country = this.state.countrys;
+      addState.country = this.state.country;
       addState.stateName = this.stateName.value;
       console.log("addState",addState)
       axios.post('/location/newState', addState  ).then(result => {
@@ -103,8 +105,6 @@ class StateAdd extends Component {
       })
     }
   }
-
-
   render(){
     return (
       <div>
@@ -120,31 +120,18 @@ class StateAdd extends Component {
                       <Label htmlFor="author">Country Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <StateSelectBox onSelectCountry={this.handleCountry}/>
+                      <CountrySelectBox onSelectCountry={this.handleCountry} />
                     </Col>
                   </FormGroup>
                   
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="description">State Name</Label>
+                      <Label htmlFor="statename">State Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.stateName.valid === false} innerRef={input => (this.stateName = input)} placeholder="Description" required/>
-                      <FormFeedback invalid={this.state.validation.stateName.valid === false}>{this.state.validation.stateName.message}</FormFeedback>
-                      
+                      <Input type="text" invalid={this.state.validation.stateName.valid === false} innerRef={input => (this.stateName = input)} placeholder="State Name" required/>
                     </Col>
                   </FormGroup>
-                  {/*<FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Author</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text"  invalid={this.state.validation.author.valid === false} innerRef={input => (this.author = input)}  placeholder="Author" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.author.valid === false}>{this.state.validation.author.message}</FormFeedback>
-                    </Col>
-                  </FormGroup> */}
-                  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
@@ -159,9 +146,17 @@ class StateAdd extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+               <div className="row">
+					<div className="text-right col-6">
+						<Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+						
+					</div>
+					<div className="col-6">
+					<Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+					</div>
+				</div>
               </CardFooter>
+            
             </Card>
         
       </div>

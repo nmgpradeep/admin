@@ -18,7 +18,7 @@ class UserSelectBox extends Component {
 		var user = e.target.value;	  
 		this.props.onSelectUser(user);  
 		//this.setState({selectedUser : user});
-    console.log("USER DATA SET",user)
+ //   console.log("USER DATA SET",user)
   }
   componentDidMount(){
 	//this.props.reference.value = this.props.value;
