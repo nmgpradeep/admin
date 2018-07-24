@@ -26,7 +26,8 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-
+var FD = require('form-data');
+var fs = require('fs');
 // import PropTypes from 'prop-types';
 class UserAdd extends Component {
   constructor(props){
@@ -38,6 +39,8 @@ class UserAdd extends Component {
     this.password = React.createRef();
     this.confirmPassword = React.createRef();
     this.email = React.createRef();
+    this.profilePic = React.createRef(),
+
     this.state = {
       addUser: {},
       validation:{
@@ -111,6 +114,9 @@ class UserAdd extends Component {
   cancelHandler(){
     this.props.history.push("/users");
   }
+  fileChangedHandler = (event) => {
+    this.setState({selectedFile: event.target.files[0]})
+  }
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -158,15 +164,24 @@ class UserAdd extends Component {
         this.setState({ validation: addUser});
       }
       if(formSubmitFlag){
-        let addUser = this.state.addUser;
-        addUser.firstName = this.firstName.value;
-        addUser.middleName = this.middleName.value;
-        addUser.lastName = this.lastName.value;
-        addUser.userName = this.userName.value;
-        addUser.password = this.password.value;
-        addUser.email = this.email.value;
-        addUser.userType = 2;
-        axios.post('/user/signup', addUser).then(result => {
+        const data =new FD()
+        data.append('firstName', this.firstName.value),
+        data.append('middleName', this.middleName.value),
+        data.append('lastName', this.lastName.value),
+        data.append('userName', this.userName.value),
+        data.append('password', this.password.value),
+        data.append('email', this.email.value),
+        data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
+        // let addUser = this.state.addUser;
+        // addUser.firstName = this.firstName.value;
+        // addUser.middleName = this.middleName.value;
+        // addUser.lastName = this.lastName.value;
+        // addUser.userName = this.userName.value;
+        // addUser.password = this.password.value;
+        // addUser.email = this.email.value;
+        // addUser.userType = 2;
+        console.log('data is here', data)
+        axios.post('/user/signup', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
           }
@@ -230,6 +245,15 @@ class UserAdd extends Component {
                   <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
                   <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
+                <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="image">Profile Image</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} name="profilePic" />
+                      {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
+                    </Col>
+                  </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

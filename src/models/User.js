@@ -42,7 +42,9 @@ sparse:true
 },
 profilePic:{
 type:String,
-trim:true
+trim:true,
+sparse:true,
+default:0 
 },
 address:{
 type:String,

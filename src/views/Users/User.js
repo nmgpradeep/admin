@@ -18,6 +18,7 @@ class User extends Component {
         <td>{this.props.user.userName}</td>
         <td>{this.props.user.email}</td>
         <td>{Moment(this.props.user.createdAt).format('d MMM YYYY')}</td>
+        <td><img src={'assets/uploads/ProfilePic/'+this.props.user.profilePic} className="avatar"/></td>
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.user)} color= {(this.props.user.userStatus === '1')?'success':'danger'}>
             {(this.props.user.userStatus === '1')?'Active':'Inctive'}

@@ -126,7 +126,7 @@ class BrandAdd extends Component {
                   </FormGroup>
                   <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                  {/* <CategorySelectBox onSelectCategory={this.handleCategory}/> */}
+                  <CategorySelectBox onSelectCategory={this.handleCategory}/>
 
                 </FormGroup>
                 </Form>

@@ -26,6 +26,8 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+var FD = require('form-data');
+var fs = require('fs');
 // import PropTypes from 'prop-types';
 class UserEdit extends Component {
   constructor(props){
@@ -35,6 +37,8 @@ class UserEdit extends Component {
     this.lastName = React.createRef();
     this.username = React.createRef();
     this.email = React.createRef();
+    this.profilePic = React.createRef();
+
     let userId = this.props.match.params.id;
     this.state = {
       editUser: {},
@@ -77,6 +81,10 @@ class UserEdit extends Component {
       }
     };
   }
+  fileChangedHandler = (event) => {
+	  this.setState({selectedFile: event.target.files[0]})
+   }
+
   cancelHandler(){
     this.props.history.push("/users");
   }
@@ -128,14 +136,26 @@ class UserEdit extends Component {
       }
 
       if(formSubmitFlag){
-        let editUser = this.state.editUser;
-        editUser.firstName = this.firstName.value;
-        editUser.middleName = this.middleName.value;
-        editUser.lastName = this.lastName.value;
-        editUser.userName = this.userName.value;
-        editUser.email = this.email.value;
-        console.log('<user id>',editUser);
-        axios.post('/user/updateUser', editUser).then(result => {
+        const data = new FD()
+        data.append('_id', this.state.userId)
+        data.append('firstName', this.firstName.value)
+        data.append('middleName', this.middleName.value)
+        data.append('lastName', this.lastName.value)
+        data.append('userName', this.userName.value)
+        data.append('email', this.email.value)
+        if(this.state.selectedFile){
+          data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
+         } else {
+          data.append('profilePic', this.state.editUser.profilePic);
+       }
+        // let editUser = this.state.editUser;
+        // editUser.firstName = this.firstName.value;
+        // editUser.middleName = this.middleName.value;
+        // editUser.lastName = this.lastName.value;
+        // editUser.userName = this.userName.value;
+        // editUser.email = this.email.value;
+        console.log('<user id>',data);
+        axios.post('/user/updateUser', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
           }
@@ -209,6 +229,11 @@ class UserEdit extends Component {
                   <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
                   <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
+                <FormGroup>
+						 <Label htmlFor="brand">Profile Image</Label>                  
+						  <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" /> 	
+						  <img src={'assets/uploads/ProfilePic/'+this.state.editUser.profilePic} width="60"/>
+					   </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

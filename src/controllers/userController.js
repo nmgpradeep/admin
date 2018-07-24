@@ -10,6 +10,11 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
+const multiparty = require('multiparty');
+const http = require('http');
+const path = require('path');
+const fs = require('fs'); //FileSystem for node.js
+var gm = require('gm'); //GraphicsMagick for node.js
 var ssn;
 //var NodeSession = require('node-session');
 //session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
@@ -36,20 +41,22 @@ var ssn;
  *	Description : Function to create a new user
  **/
 const signup = (req, res) => {
+  var form = new multiparty.Form();
+  form.parse(req, function(err, data, files) {
 
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
-  if (!req.body.firstName && !req.body.middleName && !req.body.lastName && !req.body.email && !req.body.password && !req.body.userType) {
-    return res.send({
-      code: httpResponseCode.BAD_REQUEST,
-      message: httpResponseMessage.REQUIRED_DATA
-    })
-  }
-  const data = req.body;
-  const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
-  if (flag) {
-    return res.json(flag);
-  }
-  User.findOne({ email: req.body.email }, (err, result) => {
+  console.log('<<<<<<<<<<<body data<<<<<',data)
+  // if (!req.body.firstName && !req.body.middleName && !req.body.lastName && !req.body.email && !req.body.password) {
+  //   return res.send({
+  //     code: httpResponseCode.BAD_REQUEST,
+  //     message: httpResponseMessage.REQUIRED_DATA
+  //   })
+  // }
+  //const data = req.body;
+ // const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
+  // if (flag) {
+  //   return res.json(flag);
+  // }
+  User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -61,15 +68,65 @@ const signup = (req, res) => {
       let salt = data.user_contact + unix_time
       let accessToken = md5(salt)
       req.body.accessToken = accessToken
-      User.create(req.body, (err, result) => {
+
+      User.create(data, (err, result) => {
+
 		  console.log('RES-FIND',err, result);
-        if (err) {
+        
+      if (err) {
           return res.send({
 			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
         } else {
+
+        console.log('Created-Page',err, result);
+			 // check Profile Pic and upload if exist 
+			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
+				var fileName = files.profilePic[0].originalFilename;
+				var ext = path.extname(fileName);
+				var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.profilePic[0].path, function(err, fileData) {
+				  if (err) {
+					res.send(err);
+					return;
+				  }
+				  fileName = files.profilePic[0].originalFilename;
+				  ext = path.extname(fileName);
+				  newfilename = newfilename;
+				  pathNew = constant.profileimage_path + newfilename;
+				  //return res.json(process.cwd());
+				  fs.writeFile(pathNew, fileData, function(err) {
+					if (err) {
+					  res.send(err);
+					  return;
+					}          
+
+				  });
+				});
+			  }		
+			  console.log('resultImages',result);	 
+			  User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
+				if(err){				
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {				    
+					result.profilePic = newfilename;
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					})
+				  }
+			   })	  
+			  ///end file update///	  
+
+
+
+
           delete result.password
 
 				// Generate test SMTP service account from ethereal.email
@@ -119,6 +176,7 @@ const signup = (req, res) => {
       })
     }
   })
+})
 }
 
 /** Auther	: Rajiv Kumar
@@ -342,7 +400,23 @@ const viewAdmin = (req, res) => {
  *	Description : Function to update the user details.
  **/
 const updateUser = (req, res) => {
-  User.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+  var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {
+	  //console.log('Multiple', err, fields, files);
+	   //console.log('FIELD', fields.pageTitle[0]);
+	  // if (!data.advertisementName) {
+		// return res.send({
+		//   code: httpResponseCode.BAD_REQUEST,
+		//   message: httpResponseMessage.REQUIRED_DATA
+		// })
+	  // }	  
+	  // const flag = validation.validate_all_request(data, ['advertisementName']);
+	  // if (flag) {
+		// return res.json(flag);
+	  // }
+	let now = new Date();
+	console.log(data)	
+    User.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -354,16 +428,81 @@ const updateUser = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
-        return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
-            });
+      } else {
+		   console.log('Created-Page',err, result);
+			 // check file and upload if exist 
+			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
+				var fileName = files.profilePic[0].originalFilename;
+				var ext = path.extname(fileName);
+				var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.profilePic[0].path, function(err, fileData) {
+				  if (err) {
+					res.send(err);
+					return;
+				  }
+				  fileName = files.profilePic[0].originalFilename;
+				  ext = path.extname(fileName);
+				  newfilename = newfilename;
+				  pathNew = constant.profileimage_path + newfilename;
+				  //return res.json(process.cwd());
+				  fs.writeFile(pathNew, fileData, function(err) {
+					if (err) {
+					  res.send(err);
+					  return;
+					}
+				  });
+				}); 
+			  
+			  User.update({ _id:data._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
+				if(err){				
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {				    
+					result.profilePic = newfilename;
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					});
+				  }				  
+				 
+			   })				    
+            }
+            else {
+			   return res.json({
+				  code: httpResponseCode.EVERYTHING_IS_OK,
+				  message: httpResponseMessage.SUCCESSFULLY_DONE,
+				 result: result
+               });	 	
+			}
+         }    
+        }
+      }) 
+    });
+  // User.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+  //   if(err){
+	// 	return res.send({
+	// 		code: httpResponseCode.BAD_REQUEST,
+	// 		message: httpResponseMessage.INTERNAL_SERVER_ERROR
+	// 	  });
+  //   }else {
+  //     if (!result) {
+  //       res.json({
+  //         message: httpResponseMessage.USER_NOT_FOUND,
+  //         code: httpResponseMessage.BAD_REQUEST
+  //       });
+  //     }else {
+  //       return res.json({
+  //             code: httpResponseCode.EVERYTHING_IS_OK,
+  //             message: httpResponseMessage.SUCCESSFULLY_DONE,
+  //            result: result
+  //           });
 
-      }
-    }
-  })
+  //     }
+  //   }
+  // })
 }
 /** Auther	: Karnika sharma
  *  Date	: July 6, 2018
