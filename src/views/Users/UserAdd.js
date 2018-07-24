@@ -180,7 +180,7 @@ class UserAdd extends Component {
         // addUser.password = this.password.value;
         // addUser.email = this.email.value;
         // addUser.userType = 2;
-        console.log('data is here', data)
+        //console.log('data is here', data)
         axios.post('/user/signup', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
