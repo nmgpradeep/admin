@@ -10,9 +10,9 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
+var ssn;
 //var NodeSession = require('node-session');
 //session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
-var ssn;
 
 //const nodemailer = require('nodemailer');
 // var passport = require('passport');
@@ -178,11 +178,11 @@ const login = (req, res) => {
 			// session.startSession(req, res, sessionValue)
 			// req.session.put('user',result);
 			// var value = req.session.get('user');
-      // console.log("SESSION VARIABLE",value);	
+			// console.log("SESSION VARIABLE",value);	
          
           // set the use data in to session
-           ssn = req.session;
-           ssn.user= result;    
+             req.session.user= result;    
+             
             return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.LOGIN_SUCCESSFULLY,
@@ -249,6 +249,7 @@ const listUser = (req, res) => {
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
   const users = (req, res) => {
+	  console.log("SESSION",req.session)
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     User.find({ userType: { $ne: 1 }})
@@ -308,8 +309,7 @@ const viewUser = (req, res) => {
 const viewAdmin = (req, res) => {
   ssn = req.session;
   console.log("SESSION USER",ssn)
-
-	const id = req.params;
+  const id = req.params;
   //console.log('<<<<<<<<<<<',req.params); 
  
 	User.find({}, (err, result) => {

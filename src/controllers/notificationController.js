@@ -17,8 +17,8 @@ session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
 const emailNotification = (req, res) => {
   //var token = getToken(req.headers);
   // if (token) {
-	var value = req.session.get('user');
-    User.find({}, (err, result) => {
+	//var value = req.session.get('user');
+    User.findOne({userType:1,email:'admin@admin.com'}, (err, result) => {
       if (err) {
         return res.send({
           code: httpResponseCode.BAD_REQUEST,

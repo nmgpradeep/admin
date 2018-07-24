@@ -4,13 +4,14 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import { AppSwitch } from '@coreui/react'
-
+import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
 
 class EmailNotification extends Component {
   constructor(props){
     super(props);
     this.state = {
-      email: [],
+      email: {},
+      user : {},
       modal: false,     
     };
     console.log('THIS OBJ', this);
@@ -21,11 +22,14 @@ class EmailNotification extends Component {
   loadCommentsFromServer(){
     axios.get('/notification/email').then(result => {
       if(result.data.code === 200){
-        this.setState({
-          countries: result.data.result,          
+		this.setState({
+          emailNotification: result.data.result.emailNotification,
+          user:result.data.result          
         });
+      
+      // console.log('emailNotification',)
       }
-      console.log(this.state.countries);
+      
     })
     .catch((error) => {
     console.log('error', error)
@@ -35,7 +39,23 @@ class EmailNotification extends Component {
     });
 
   }
-
+handleChange(e) {
+	  let userD = this.state.user;
+	  //this.setState({:e.target.checked})
+	  console.log(userD,e.target.checked)
+	  userD.emailNotification = ((e.target.checked)?0:1).toString()
+	  axios.post('/notification/email',userD).then(result => {	  
+		this.setState({
+          emailNotification: result.data.result.emailNotification,          
+        });
+	})
+	.catch((error) => {
+	console.log('error', error)
+	  if(error.code === 401) {
+		this.props.history.push("/login");
+	  }
+	});
+}
  
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
@@ -62,8 +82,15 @@ class EmailNotification extends Component {
               </CardHeader>
               <CardBody>
                 <Col xs="12" md="6">
-					  <CardBody>						
-						<AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label checked />						
+					  <CardBody>	
+						  <If condition={this.state.emailNotification =="0"}>
+							<Then>
+							 <AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label checked   onChange={e => this.handleChange(e)}/>	
+							</Then>							
+							<Else>
+							  <AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label unchecked   onChange={e => this.handleChange(e)}/>	
+							</Else>
+						  </If>		
 					  </CardBody>
 				  </Col>
               </CardBody>

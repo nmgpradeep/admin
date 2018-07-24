@@ -98,6 +98,12 @@ emailVerified:{
  trim:true,
  sparse:true,
  default:0   
+}, 
+emailNotification:{
+ type:String,
+ trim:true,
+ sparse:true,
+ default:0   
 }
 },
 {

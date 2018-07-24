@@ -59,6 +59,7 @@
     "react": "^16.4.0",
     "react-chartjs-2": "^2.7.2",
     "react-dom": "^16.4.0",
+    "react-if-elseif-else-render": "^1.0.2",
     "react-js-pagination": "^3.0.2",
     "react-loadable": "^5.4.0",
     "react-paginate": "^5.2.3",
