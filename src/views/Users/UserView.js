@@ -84,6 +84,15 @@ class UserView extends Component {
                   <Input type="text" value={this.state.viewUser.email} />
                 </FormGroup>
                 <FormGroup>
+                <Col xs="12" className="text-left">
+                  <Label htmlFor="status">Profile Image</Label>
+                   </Col>
+                  <Col xs="12" sm="12">
+                  <img className="linkedin" src= {'assets/uploads/ProfilePic/'+this.state.viewUser.profilePic} width="60"/>
+                  </Col>
+                  
+                </FormGroup>
+                <FormGroup>
                   <Label htmlFor="status">Status</Label>
                   <Input type="text" value={(this.state.viewUser.userStatus === '1')?'Active':'Inactive'} />
                 </FormGroup>

@@ -133,6 +133,7 @@ class Users extends Component {
                     <th>Username</th>
                     <th>Email</th>
                     <th>Date registered</th>
+                    <th>Profile Pic</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>

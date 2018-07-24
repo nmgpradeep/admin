@@ -25,5 +25,5 @@ router.get('/viewCity/:id',locationController.viewCitys)
 router.put('/updateCity',locationController.updateCitys)
 router.delete('/deleteCity/:id',locationController.deleteCitys)
 router.post('/status',locationController.Status)
-	router.get('/cities/:page', locationController.listCitys)
+router.get('/cities/:page', locationController.listCitys)
 module.exports = router;

@@ -29,6 +29,7 @@ import {
   Row,
 } from 'reactstrap';
 // import PropTypes from 'prop-types';
+
 class CityEdit extends Component {
   constructor(props){
     super(props);
@@ -80,7 +81,7 @@ class CityEdit extends Component {
   handleCountry = (country) => { 
         axios.get('/location/getState/' +country ).then(result => {
           console.log('countryId',result)
-          if(result.data.code == '200'){  
+          if(result.data.code === 200){  
             this.setState({states: result.data.result, country: country});
           }
         })
@@ -143,7 +144,7 @@ class CityEdit extends Component {
       }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       console.log("cityId",this.state.cityId)        
@@ -161,17 +162,15 @@ class CityEdit extends Component {
           this.props.history.push("/login");
         }
       });
-      console.log("statescitycon", this.state.editCity)
+    
      // get all state  
-   axios.get('/location/getState/' + this.state.editCity.countrySelect).then(result => {
-	  console.log('countryId',result)
-	  if(result.data.code == '200'){  
-		this.setState({states: result.data.result});
+    axios.get('/location/getState/' + this.state.editCity.countrySelect).then(resultState => {
+	  console.log('countryId',resultState)
+	  if(resultState.data.code == 200){  
+		this.setState({states: resultState.data.result});
 	  }
 	})
-		
-		
-		console.log("states", this.state.states)
+	
   }
   render() {
     return (

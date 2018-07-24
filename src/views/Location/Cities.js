@@ -70,7 +70,7 @@ class Cities extends Component {
 	  console.log("STATUS",city)
     city.status = (1 - parseInt(city.status)).toString();
     console.log("CHANGE-STATUS",city)
-    axios.post('/location/Status',city).then(result => {
+    axios.post('/location/status',city).then(result => {
       if(result.data.code === 200){
         let citys = this.state.citys;
         let cityIndex = citys.findIndex(x => x._id === city._id);

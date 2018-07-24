@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox'
+import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
 import {
   Badge,
   Button,
@@ -36,7 +36,7 @@ class StateEdit extends Component {
     let stateId = this.props.match.params.id;
     this.state = {
       editState: {},
-      countrys : '',
+      country : '',
       stateId: stateId,
       validation:{
         country:{
@@ -62,11 +62,9 @@ class StateEdit extends Component {
       }
     };
   }
-  
-  handleCountrys = (countrys) => {
-	  this.country.current = countrys;
-	  console.log(countrys);	  
-        //this.setState({user: user});
+    
+   handleCountry = (country) => {
+       this.country.current = country;       
   }
     
   cancelHandler(){
@@ -115,12 +113,10 @@ class StateEdit extends Component {
       axios.get('/location/viewState/' + this.state.stateId).then(result => {
        // console.log(result); 
          if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
-           this.setState({ editState: result.data.result});
-          
+        //localStorage.setItem('jwtToken', result.data.result.accessToken);
+           this.setState({ editState: result.data.result});          
            this.country.value = result.data.result.country;
-           this.stateName.value = result.data.result.stateName;
-           console.log('HERE in component Did mount', this);
+           this.stateName.value = result.data.result.stateName;          
         }
       })
       .catch((error) => {
@@ -146,9 +142,8 @@ class StateEdit extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label >Country Name</Label>
-                      <StateSelectBox onSelectCountry={this.handleCountrys} reference={(country)=> this.country = country} value={this.state.editState.country}/>
-
+                      <Label >Country Name</Label>                      
+					  <CountrySelectBox onSelectCountry={this.handleCountry} reference={(country)=> this.country = country} value={this.state.editState.country}/>
                       {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
 
                     </FormGroup>
@@ -160,15 +155,19 @@ class StateEdit extends Component {
                     </FormGroup>
                     </Col>
                 </Row>
-                <Row>
-                  <Col xs="6" className="text-right">
-                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
-                  </Col>
-                  <Col xs="6">
-                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
-                  </Col>
-                </Row>
+               
                </CardBody>
+               <CardFooter>
+               <div className="row">
+					<div className="text-right col-6">
+						<Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+						
+					</div>
+					<div className="col-6">
+					<Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+					</div>
+				</div>
+              </CardFooter>
             </Card>
           </Col>
         </Row>

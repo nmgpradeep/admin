@@ -81,6 +81,9 @@ class AdvertisementAdd extends Component {
   fileChangedHandler = (event) => {
     this.setState({selectedFile: event.target.files[0]})
   }
+  cancelHandler(){
+    this.props.history.push("/advertisement");
+  }
 
   submitHandler(e){
     e.preventDefault()
@@ -194,7 +197,7 @@ class AdvertisementAdd extends Component {
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Button type="reset" size="sm" color="danger" onClick={()=>this.cancelHandler()}><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
             </Card>
         

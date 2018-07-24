@@ -317,7 +317,7 @@ const viewStates = (req, res) => {
 }
   
 const getState = (req, res) => { 
-  console.log('adfasdfasdfasdf',req.params);
+  console.log('country IDDDD',req.params);
   State.find({ country:req.params.id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
