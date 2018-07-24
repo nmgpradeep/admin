@@ -36,8 +36,7 @@ class CmsPageEdit extends Component {
     super(props);
     this.pageTitle = React.createRef();
     this.pageHeading = React.createRef();
-    this.description = React.createRef();
-  
+    this.description = React.createRef();  
     this.bannerImage = React.createRef();    
     let pageId = this.props.match.params.id;
     

@@ -175,9 +175,11 @@ const viewDonation = (req, res) => {
  *	Description : Function to update the donation
  **/
 const updateDonation = (req, res) => { 
+	
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	  //console.log('Multiple', err, fields, files);
+	   console.log('Multiple', data);
+	   
 	   //console.log('FIELD', fields.pageTitle[0]);
 	  if (!data.productName) {
 		return res.send({
@@ -189,8 +191,9 @@ const updateDonation = (req, res) => {
 	  if (flag) {
 		return res.json(flag);
 	  }
+	  
 	let now = new Date();	
-    Donation.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
+    Donation.findOneAndUpdate({ _id:data._id}, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -254,7 +257,7 @@ const updateDonation = (req, res) => {
          }    
         }
       }) 
-    });
+   });
 }
 
 /** Auther	: Rajiv kumar

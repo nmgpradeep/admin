@@ -110,7 +110,7 @@ class TestimonialAdd extends Component {
       this.setState({ validation: addTestimonial});
     }
     if(formSubmitFlag){
-	console.log("USER-AUTHER",this.state.user)
+	  console.log("USER-AUTHER",this.state.user)
       let addTestimonial = this.state.addTestimonial;
       addTestimonial.title = this.title.value;
       addTestimonial.description = this.description.value;
