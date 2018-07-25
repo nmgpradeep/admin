@@ -1,6 +1,7 @@
 import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import {
   Badge,
   Button,
@@ -26,6 +27,9 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+var FD = require('form-data');
+var fs = require('fs');
+
 class SizeAdd extends Component {
 
   constructor(props){
@@ -49,6 +53,12 @@ class SizeAdd extends Component {
         },  
       }
     } 
+  }
+  handleCategory = (category) => {
+    this.setState({category: category})
+  }
+  cancelHandler(){
+    this.props.history.push('/size')
   }
 
   submitHandler(e){
@@ -77,7 +87,7 @@ class SizeAdd extends Component {
     if(formSubmitFlag){
       let addSize = this.state.addSize;
       addSize.size = this.size.value;
-      addSize.category = this.category.value;
+      addSize.category = this.state.category;
       axios.post('/size/newSize', addSize  ).then(result => {
         console.log('testing', result)
         if(result.data.code === 200){
@@ -113,19 +123,20 @@ class SizeAdd extends Component {
                   </FormGroup>
                   <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                   <select innerRef={input => (this.category = input)} id="select" class="form-control" >
-					  <option value="0">Please select</option>
-					  <option value="1">Mobiles</option>
-					  <option value="2">Television</option>
-					  <option value="3">Washing Machine</option>
-                  </select>
+                  <CategorySelectBox onSelectCategory={this.handleCategory}/>
 
                 </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+				<Row>
+                  <Col xs="6" className="text-right">
+                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+                  </Col>
+                  <Col xs="6">
+                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+                  </Col>
+                </Row>				
               </CardFooter>
             </Card>
         

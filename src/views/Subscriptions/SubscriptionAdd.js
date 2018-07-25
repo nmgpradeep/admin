@@ -43,6 +43,7 @@ class SubscriptionAdd extends Component {
     
     this.state = {
       addSubscription: {},
+      subs: {},
       validation:{
         subscriptionName:{
           rules: {
@@ -77,6 +78,25 @@ class SubscriptionAdd extends Component {
         
       }
     };
+  }
+  loadCommentsFromServer(){
+    axios.get('/subscription/unlimited').then(result => {
+      if(result.data.code === 200){
+		this.setState({
+          unlimited: result.data.result.unlimited,
+          subs:result.data.result          
+        });
+      
+      // console.log('emailNotification',)
+      }
+      
+    })
+    .catch((error) => {
+    //console.log('error', error)
+      if(error.code === 401) {
+        this.props.history.push("/login");
+      }
+    });
   }
   cancelHandler(){
     this.props.history.push("/subscriptions");
@@ -113,7 +133,7 @@ class SubscriptionAdd extends Component {
         addSubscription.totalInventoryAllowed = this.totalInventoryAllowed.value;
         addSubscription.timePeriod = this.timePeriod.value;
         addSubscription.userType = 2;
-        addSubscription.unlimited = this.unlimited.value
+        //addSubscription.unlimited = this.unlimited.value
         
         axios.post('/subscription/newSubscription', addSubscription).then(result => {
           if(result.data.code == '200'){
@@ -124,15 +144,40 @@ class SubscriptionAdd extends Component {
   }
 
   handleChange(e){
-    
+    let subsd = this.state.subs;
+	  //this.setState({:e.target.checked})
+	  console.log(subsd,e.target.checked)
+	  subsd.unlimited = ((e.target.checked)?0:1).toString()
+	  axios.post('/subscription/unlimited ',subsd).then(result => {	  
+		this.setState({
+      unlimited: result.data.result.unlimited,          
+        });
+	})
+	.catch((error) => {
+	//console.log('error', error)
+	  if(error.code === 401) {
+		this.props.history.push("/login");
+	  }
+	});
   }
-
-
-  toggle(event) {
+  componentDidMount() {
+    //if(localStorage.getItem('jwtToken') != null)
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+      this.loadCommentsFromServer();
+  }
+  
+  toggle() {
     this.setState({
-      checkboxState: !this.state.checkboxState
+      modal: !this.state.modal
     });
   }
+
+
+  // toggle(event) {
+  //   this.setState({
+  //     checkboxState: !this.state.checkboxState
+  //   });
+  
 
   render() {
     
@@ -180,17 +225,25 @@ class SubscriptionAdd extends Component {
                   <Input type="text" innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed"/>
                   {/* <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback> */}
                 </FormGroup>
-                <FormGroup>
-                <label>UNLIMITED</label><br />
+            
+                <FormGroup row>
+                <Col md="3">
+                <label>Unlimited</label><br />
+                </Col>
+                <Col xs="12" md="9">
                 <If condition={this.state.unlimited =="0"}>
 							<Then>
-							 <AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label checked   onChange={e => this.handleChange(e)}/>	
+              <AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} checked label dataOn={'\u2713'} dataOff={'\u2715'} onChange={e => this.handleChange(e)}/>
+
 							</Then>							
 							<Else>
-							  <AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label unchecked   onChange={e => this.handleChange(e)}/>	
+              <AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} unchecked label dataOn={'\u2713'} dataOff={'\u2715'} onChange={e => this.handleChange(e)}/>
+
 							</Else>
-						  </If>		
+						  </If>
+              </Col>		
                 </FormGroup>
+                
                 <FormGroup>
                   <Label htmlFor="tIA">Time Period</Label>
                   <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />

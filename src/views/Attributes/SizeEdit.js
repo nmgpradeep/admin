@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+import InputElement from "../InputElement/InputElement";
 import {
   Badge,
   Button,
@@ -26,6 +28,10 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+
+var FD = require('form-data');
+var fs = require('fs');
+
 // import PropTypes from 'prop-types';
 class SizeEdit extends Component {
   constructor(props){
@@ -49,6 +55,9 @@ class SizeEdit extends Component {
         }
       }
     };
+  }
+  handleCategory = (category) => {
+    this.category.current = category;
   }
   cancelHandler(){
     this.props.history.push("/size");
@@ -77,11 +86,14 @@ class SizeEdit extends Component {
       }
 
       if(formSubmitFlag){
-        let editSize = this.state.editSize;
-        editSize.size = this.size.value;
-        editSize.category = this.category.value;
-        console.log("editSize",editSize)
-        axios.put('/size/updateSize', editSize).then(result => {
+        let data = new FD();
+        data.append('size', this.size.value)
+        data.append('category', this.category.value)
+        // let editSize = this.state.editSize;
+        // editSize.size = this.size.value;
+        // editSize.category = this.category.value;
+        // console.log("editSize",editSize)
+        axios.put('/size/updateSize', data).then(result => {
           if(result.data.code ===200){
             this.props.history.push("/size");
           }
@@ -126,22 +138,17 @@ class SizeEdit extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Sizes</Label>
-                      <Input type="number" innerRef={input => (this.size = input)} />
+                      <Input type="text" innerRef={input => (this.size = input)} />
 
                       {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
 
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                     <FormGroup>
-					  <Label htmlFor="category">Category</Label>
-					   <select innerRef={input => (this.category = input)} id="select" class="form-control" >
-						  <option value="0">Please select</option>
-						  <option value="1">Mobiles</option>
-						  <option value="2">Television</option>
-						  <option value="3">Washing Machines</option>
-					  </select>
-                    </FormGroup>
+					   <FormGroup>						
+						  <Label htmlFor="author">Category</Label>									  
+						   <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editSize.category}/>	
+					  </FormGroup>
                   </Col>
                 </Row>
                 <Row>

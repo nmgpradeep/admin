@@ -130,7 +130,9 @@ class AddonAdd extends Component {
       })
     }
   }
-
+  cancelHandler(){
+    this.props.history.push("/addon");
+  }
 
   render(){
     return (
