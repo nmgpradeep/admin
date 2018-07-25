@@ -120,8 +120,9 @@ class AdvertisementAdd extends Component {
       // addAdv.description = this.description.value;
       // addAdv.redirectURL = this.redirectURL.value;
       // addAdv.image = this.image.value;
+      //console.log('asdasdfasfasfdasdf',data);
       axios.post('/advertisement/newAds', data).then(result => {
-        if(result.data.code == '200'){
+        if(result.data.code ==200){
           this.props.history.push('/advertisement');
         }
       })
@@ -171,7 +172,6 @@ class AdvertisementAdd extends Component {
                     </Col>
                   </FormGroup>
                   
-                  
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="image">Advertisement Image</Label>
@@ -192,13 +192,16 @@ class AdvertisementAdd extends Component {
                   </select>
                     </Col>
                   </FormGroup>
-                    
+                   <Row>
+                  <Col xs="6" className="text-right">
+                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+                  </Col>
+                  <Col xs="6">
+                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+                  </Col>
+                </Row>  
                 </Form>
               </CardBody>
-              <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger" onClick={()=>this.cancelHandler()}><i className="fa fa-ban"></i> Reset</Button>
-              </CardFooter>
             </Card>
         
       </div>

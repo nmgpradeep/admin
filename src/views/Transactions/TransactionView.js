@@ -25,11 +25,17 @@ class TransactionView extends Component {
     this.props.history.push("/transactions");
   }
   componentDidMount() {
-      axios.get('/transaction/viewTransaction/' + this.state.viewTransactionId).then(result => {
-		  console.log(result);
+      axios.get('/transaction/viewTransaction/' + this.state.viewTransactionId).then(result => {		  
         if(result.data.code == '200'){         
           this.setState({ viewTransaction: result.data.result});
-          console.log(result.data.result);
+          console.log('dddddddddd',result.data.result);
+          this.paymentId.value = result.data.result.paymentId;
+          this.status.value = result.data.result.status;
+          this.transactionAmount.value = result.data.result.transactionAmount;
+          this.transactionDate.value = result.data.result.transactionDate;
+          this.transactionId.value = result.data.result.transactionId;
+          this.transactionType.value = result.data.result.transactionType;
+          this.updatedAt.value = result.data.result.updatedAt;
         }
       })
       .catch((error) => {
@@ -40,54 +46,46 @@ class TransactionView extends Component {
   }
   render() {
     return (
-      <div className="animated fadeIn">
+       <div className="animated fadeIn">
         <Row>
           <Col xs="12" sm="12">
             <Card>
               <CardHeader>
-                <strong>User</strong>
-                <small> Edit</small>
+                <strong>Testimonial</strong>
+                <small> View</small>
               </CardHeader>
               <CardBody>
                 <FormGroup>
-                  <Label htmlFor="id"></Label>
-                  <Input type="text" value={this.state.viewTransaction._id} />
+                  <Label htmlFor="id">Payment ID</Label>
+                  <Input type="text" value={this.state.viewTransaction.paymentId} />
                 </FormGroup>
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="company">Transaction ID</Label>
-                      <Input type="text" value={this.state.viewTransaction.transactionId} />
+                      <Label htmlFor="company">Transaction Amount</Label>
+                      <Input type="text" value={this.state.viewTransaction.transactionAmount} />
                     </FormGroup>
-                    </Col>
-                    <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="middlename">Transaction Type</Label>
-                      <Input type="text" value={this.state.viewTransaction.transactionType} />
-                    </FormGroup>
-                    </Col>
-                    <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="lastname">User ID</Label>
-                      <Input type="text" value={this.state.viewTransaction.userId} />
-                    </FormGroup>
-                  </Col>
+                    </Col>                    
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="username">Payment ID</Label>
-                  <Input type="text" value={this.state.viewTransaction.paymentId} />
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="email">TransactionDate</Label>
+                  <Label htmlFor="username">TransactionDate</Label>
                   <Input type="text" value={this.state.viewTransaction.transactionDate} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email">Transaction Amount</Label>
-                  <Input type="text" value={this.state.viewTransaction.transactionAmount} />
+                  <Label htmlFor="email">Transaction Id</Label>
+                  <Input type="text"  value={this.state.viewTransaction.transactionId} required/>
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Transaction Type</Label>
+                  <Input type="text"  value={this.state.viewTransaction.transactionType} required/>
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Updated At</Label>
+                  <Input type="text"  value={this.state.viewTransaction.updatedAt} required/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="status">Status</Label>
-                  <Input type="text" value={(this.state.viewTransaction.userStatus === '1')?'Active':'Inactive'} />
+                  <Input type="text" value={(this.state.viewTransaction.status === '1')?'Active':'Inactive'} />
                 </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
@@ -100,7 +98,7 @@ class TransactionView extends Component {
               </CardBody>
             </Card>
           </Col>
-        </Row>        
+        </Row>
         </div>
     );
   }

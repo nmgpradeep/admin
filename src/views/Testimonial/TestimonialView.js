@@ -31,7 +31,6 @@ class TestimonialView extends Component {
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/testimonial/viewTestimonial/' + this.state.testimonialId).then(result => {
         if(result.data.code == '200'){
-          //console.log('resussssssssss',result.data.result);
           this.setState({ viewTestimonial: result.data.result});
           this.title.value = result.data.result.title;
           this.description.value = result.data.result.description;

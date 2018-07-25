@@ -45,7 +45,7 @@ const create = (req, res) => {
 			} else {
 			  console.log('Created-Page',err, result);
 			 // check file and upload if exist 
-			 if ((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
+			 if((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
 				var fileName = files.productImage[0].originalFilename;
 				var ext = path.extname(fileName);
 				var newfilename = files.productImage[0].fieldName + '-' + Date.now() + ext;
@@ -87,7 +87,7 @@ const create = (req, res) => {
 			  ///end file update///	  
 			}
 		  })
-       });  
+    });  
 }
 /** Auther	: Rajiv kumar
  *  Date	: June 22, 2018
@@ -175,11 +175,9 @@ const viewDonation = (req, res) => {
  *	Description : Function to update the donation
  **/
 const updateDonation = (req, res) => { 
-	
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	   console.log('Multiple', data);
-	   
+	  //console.log('Multiple', err, fields, files);
 	   //console.log('FIELD', fields.pageTitle[0]);
 	  if (!data.productName) {
 		return res.send({
@@ -191,7 +189,6 @@ const updateDonation = (req, res) => {
 	  if (flag) {
 		return res.json(flag);
 	  }
-	  
 	let now = new Date();	
     Donation.findOneAndUpdate({ _id:data._id}, data, { new:true },(err,result) => {
     if(err){

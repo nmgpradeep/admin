@@ -64,6 +64,7 @@ class Categories extends Component {
         }
       });
   }
+  
   handlePageClick = data => {
     let currentPage = data.selected + 1;
     this.setState({ currentPage: currentPage }, () => {

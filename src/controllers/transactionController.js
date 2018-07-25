@@ -8,32 +8,61 @@ const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 
 
+//~ /** Auther	: Rajiv Kumar
+ //~ *  Date	: June 18, 2018
+ //~ *	Description : Function to list the available user on the plateform
+ //~ **/
+//~ const listTransaction = (req, res) => {
+  //~ var perPage = constant.PER_PAGE_RECORD
+    //~ var page = req.params.page || 1;
+    //~ Transaction.find({})
+      //~ .skip((perPage * page) - perPage)
+      //~ .limit(perPage)
+      //~ .exec(function(err, transactions) {
+          //~ Transaction.count().exec(function(err, count) {
+            //~ if (err) return next(err)
+              //~ return res.json({
+                  //~ code: httpResponseCode.EVERYTHING_IS_OK,
+                  //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  //~ result: transactions,
+                  //~ total : count,
+                  //~ current: page,
+                  //~ perPage: perPage,
+                  //~ pages: Math.ceil(count / perPage)
+              //~ });
+        //~ })
+    //~ });
+//~ }
+
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
- *	Description : Function to list the available user on the plateform
- **/
-const listTransaction = (req, res) => {
+ */
+/// function to list all category available in  collection
+const transactions = (req, res) => {
   var perPage = constant.PER_PAGE_RECORD
-    var page = req.params.page || 1;
-    Transaction.find({})
-      .skip((perPage * page) - perPage)
-      .limit(perPage)
-      .exec(function(err, transactions) {
-          Transaction.count().exec(function(err, count) {
-            if (err) return next(err)
-              return res.json({
-                  code: httpResponseCode.EVERYTHING_IS_OK,
-                  message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: transactions,
-                  total : count,
-                  current: page,
-                  perPage: perPage,
-                  pages: Math.ceil(count / perPage)
-              });
-        })
-    });
-}
-
+  var page = req.params.page || 1;
+  Transaction.find({})
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    // .populate('sellerId')
+    // .populate('receiverId')
+    // .populate('sellerProductId')
+    .populate('parent',['title'])
+    .exec(function(err, categories) {
+        Transaction.count().exec(function(err, count) {
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: categories,
+                total : count,
+                current: page,
+                perPage: perPage,
+                pages: Math.ceil(count / perPage)
+            });
+          })
+      });
+  }
 /** Auther	: Karnika sharma
  *  Date	: July 3, 2018
  *	Description : Function to view the available user details
@@ -93,7 +122,7 @@ const changeStatus = (req, res) => {
 
 //contactus form 
 module.exports = {
-	listTransaction,
+	transactions,
 	viewTransaction,
 	changeStatus
 }

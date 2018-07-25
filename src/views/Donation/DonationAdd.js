@@ -114,16 +114,16 @@ class DonationAdd extends Component {
             valid: null,
             message: ''
           },
-          productImage: {
-           rules: {
-              notEmpty: {
-               message: 'Image can\'t be left blank',
-                valid: false
-              }
-            },
-            valid: null,
-            message: ''
-          },
+          //~ productImage: {
+           //~ rules: {
+              //~ notEmpty: {
+               //~ message: 'Image can\'t be left blank',
+                //~ valid: false
+              //~ }
+            //~ },
+            //~ valid: null,
+            //~ message: ''
+          //~ },
       }
     } 
   }
@@ -187,7 +187,10 @@ class DonationAdd extends Component {
 		data.append('color', this.color.value);
 		data.append('brand', this.brand.value);
 		data.append('productAge', this.productAge.value);
-		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name)			
+		if(this.state.selectedFile)
+		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);																																																																																																																																																																																																																																																																											
+		else
+		data.append('productImage','NULL');			
         axios.post('/donation/donate', data).then(result => {
 	     console.log('resultImages ',result);
           if(result.data.code === 200){

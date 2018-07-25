@@ -17,6 +17,7 @@ var gm = require('gm'); //GraphicsMagick for node.js
  *  Date	: June 25, 2018
  **/
 ///function to save new advertisement in the list
+
 const create = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
@@ -34,7 +35,7 @@ const create = (req, res) => {
 	  }
 		  let now = new Date();		
 		  Advertisement.create(data, (err, result) => {
-			  console.log('RES-Page',err, result);
+			 // console.log('RES-Page',err, result);
 			if (err) {
 			  return res.send({
 				errr : err,
@@ -44,16 +45,16 @@ const create = (req, res) => {
 			} else {
 			  console.log('Created-Page',err, result);
 			 // check file and upload if exist 
-			 if ((files.image) && files.image.length > 0 && files.image != '') {
-				var fileName = files.image[0].originalFilename;
+			 if((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
+				var fileName = files.productImage[0].originalFilename;
 				var ext = path.extname(fileName);
-				var newfilename = files.image[0].fieldName + '-' + Date.now() + ext;
-				fs.readFile(files.image[0].path, function(err, fileData) {
+				var newfilename = files.productImage[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.productImage[0].path, function(err, fileData) {
 				  if (err) {
 					res.send(err);
 					return;
 				  }
-				  fileName = files.image[0].originalFilename;
+				  fileName = files.productImage[0].originalFilename;
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.advertisementimage_path + newfilename;
@@ -67,7 +68,7 @@ const create = (req, res) => {
 				  });
 				});
 			  }		
-			  console.log('resultImages',result);	 
+			  console.log('resultImgas',result);	 
 			  Advertisement.update({ _id:result._id },  { "$set": { "image": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){				
 					return res.send({
@@ -75,7 +76,7 @@ const create = (req, res) => {
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
 				} else {				    
-					result.image = newfilename;
+					result.productImage = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -86,8 +87,89 @@ const create = (req, res) => {
 			  ///end file update///	  
 			}
 		  })
-       });  
+    });  
 }
+
+
+
+
+
+//~ 
+//~ 
+//~ 
+//~ 
+//~ 
+//~ 
+//~ const create = (req, res) => {
+  //~ var form = new multiparty.Form();
+  //~ form.parse(req, function(err, data, files) {
+	  //~ if (!data.advertisementName) {
+		//~ return res.send({
+		  //~ code: httpResponseCode.BAD_REQUEST,
+		  //~ message: httpResponseMessage.REQUIRED_DATA
+		//~ })
+	  //~ }	  
+	  //~ //console.log('asdfasdfasdfasdfasdfasdfasfdasdfadf',data);
+	  //~ const flag = validation.validate_all_request(data, ['advertisementName']);
+	  //~ if (flag) {
+		//~ return res.json(flag);
+	  //~ }
+		  //~ let now = new Date();		
+		  //~ Advertisement.create(data, (err, result) => {
+			  //~ console.log('RES-Page',err, result);
+			//~ if (err) {
+			  //~ return res.send({
+				//~ errr : err,
+				//~ code: httpResponseCode.BAD_REQUEST,
+				//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  //~ })
+			//~ } else {
+			  //~ console.log('Created-Page',err, result);
+			 //~ // check file and upload if exist 
+			 //~ if ((files.image) && files.image.length > 0 && files.image != '') {
+				//~ var fileName = files.image[0].originalFilename;
+				//~ var ext = path.extname(fileName);
+				//~ var newfilename = files.image[0].fieldName + '-' + Date.now() + ext;
+				//~ fs.readFile(files.image[0].path, function(err, fileData) {
+				  //~ if (err) {
+					//~ res.send(err);
+					//~ return;
+				  //~ }
+				  //~ fileName = files.image[0].originalFilename;
+				  //~ ext = path.extname(fileName);
+				  //~ newfilename = newfilename;
+				  //~ pathNew = constant.advertisementimage_path + newfilename;
+				  //~ //return res.json(process.cwd());
+				  //~ fs.writeFile(pathNew, fileData, function(err) {
+					//~ if (err) {
+					  //~ res.send(err);
+					  //~ return;
+					//~ }          
+//~ 
+				  //~ });
+				//~ });
+			  //~ }		
+			  //~ console.log('resultImages',result);	 
+			  //~ Advertisement.update({ _id:result._id },  { "$set": { "image": newfilename } }, { new:true }, (err,fileupdate) => {
+				//~ if(err){				
+					//~ return res.send({
+						//~ code: httpResponseCode.BAD_REQUEST,
+						//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
+					//~ });
+				//~ } else {				    
+					//~ result.image = newfilename;
+					//~ return res.send({
+						//~ code: httpResponseCode.EVERYTHING_IS_OK,
+						//~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+						//~ result: result
+					//~ })
+				  //~ }
+			   //~ })	  
+			  //~ ///end file update///	  
+			//~ }
+		  //~ })
+       //~ });  
+//~ }
 
 
 /** Auther	: Rajiv kumar

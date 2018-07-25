@@ -12,7 +12,7 @@ class Donations extends Component {
       donations: [],
       modal: false,
       currentPage: 1,
-      PerPage: 5,
+      PerPage: 1,
       totalPages: 1,
       donationsCount: 0
     };
