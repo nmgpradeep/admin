@@ -7,6 +7,8 @@ router.get('/viewSubscription/:id',subscriptionController.viewSubscription)
 router.put('/updateSubscription',subscriptionController.updateSubscription)
 router.post('/changeStatus',subscriptionController.changeStatus)
 router.delete('/deleteSubscription/:id',subscriptionController.deleteSubscription)
+router.get('/unlimited/', subscriptionController.unlimited)
+router.post('/unlimited/', subscriptionController.unlimitedUpdate)
 
 /// Routes for addOn pack
 router.post('/newAddon',subscriptionController.newAddon)

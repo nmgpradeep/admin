@@ -303,14 +303,14 @@ class DonationAdd extends Component {
                   </select>
                     </Col>
                   </FormGroup>                
-                 <Row>
-                  <Col xs="4" className="text-right">
+                  <Row>
+                  <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
                   </Col>
-                  <Col xs="4">
+                  <Col xs="6">
                     <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
                   </Col>
-                 </Row>        
+                </Row>      
                   </Form>
               </CardBody>
           </Card>

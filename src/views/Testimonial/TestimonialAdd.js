@@ -80,6 +80,12 @@ class TestimonialAdd extends Component {
      console.log(rating)
        this.setState({rating: rating});
   }
+
+  cancelHandler(){
+    this.props.history.push("/testimonial");
+   }
+  
+  
   
   
   handleUser = (user) => {
@@ -193,12 +199,18 @@ class TestimonialAdd extends Component {
 					 </Input>                   
                     </Col>
                   </FormGroup>                    
+               
+              <Row>
+                  <Col xs="6" className="text-right">
+                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+                  </Col>
+                  <Col xs="6">
+                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+                  </Col>
+                </Row>
                 </Form>
               </CardBody>
-              <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
-              </CardFooter>
+              
             </Card>
         
       </div>

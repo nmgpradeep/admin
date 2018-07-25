@@ -12,7 +12,7 @@ class Size extends Component {
       <tr key={this.props.size._id}>
       <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.size.size}</td>
-        <td>{this.props.size.category}</td>
+        <td>{(this.props.size.category)?this.props.size.category.title:''}</td>
        
         <td>
           <Link to={'/size/edit/' + this.props.size._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>

@@ -178,6 +178,61 @@ const deleteSubscription = (req, res) => {
   })
 }
 
+/**Auther : Saurabh Agarwal
+ * Date   : July 25, 2018
+ * Description  : Function for unlimited subscription
+*/
+const unlimited = (req,res) => {
+  const id = req.params.id;
+  Subscription.findById({_id:id}, (err,result)=>{
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,             
+             result: result
+            });
+      }
+    }
+
+  })
+}
+
+const unlimitedUpdate = (req, res) => {
+  Subscription.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.SUCCESSFULLY_DONE,
+             result: result
+            });
+
+      }
+    }
+  })
+}
+
+
 /**
  * Auther : Rajiv Kumar
  * Date: July 6, 2018
@@ -392,12 +447,15 @@ const updateStatus = (req, res) => {
   })
 }
 
+
 module.exports = {
   create,
   subscriptions,
   viewSubscription,
   updateSubscription,
   deleteSubscription,
+  unlimited,
+  unlimitedUpdate,
   changeStatus,
   newAddon,
   listAddon,

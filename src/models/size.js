@@ -14,8 +14,8 @@ var SizeSchema = new Schema ({
         trim:true
     },
     category:{
-           type:String,
-           trim:true
+        type: Schema.Types.ObjectId,
+        ref: 'Category'
     },
 },
 {
