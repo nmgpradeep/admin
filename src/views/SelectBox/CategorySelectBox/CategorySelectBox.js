@@ -22,7 +22,7 @@ class CategorySelectBox extends Component {
   }
   
   componentDidMount(){
-    axios.get('/category/categories').then(result => {
+    axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){		  
 		  options = result.data.result;
         this.setState({

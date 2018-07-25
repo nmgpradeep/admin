@@ -151,7 +151,7 @@ class BrandEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-       axios.get("/category/categories")
+       axios.get("/category/allCategories")
       .then(result => {
         if (result.data.code === 200) {
           let oldState = this.state.brandForm;
