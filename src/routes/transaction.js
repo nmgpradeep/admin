@@ -5,7 +5,6 @@ const transactionController= require('../controllers/transactionController');
 //passport.authenticate('jwt', { session: false}),
 router.get('/transactions',transactionController.transactions)
 router.get('/viewTransaction/:id',transactionController.viewTransaction);
-
 router.get('/transactions/:page', transactionController.listTransaction);
 router.post('/changeStatus',transactionController.changeStatus);
 module.exports = router;
