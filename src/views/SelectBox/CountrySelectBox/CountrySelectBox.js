@@ -6,7 +6,8 @@ import axios from 'axios';
 var options = []
 
 class CountrySelectBox extends Component {
-  constructor(props) {	 
+  constructor(props) {	
+	  console.log('PROPS', props); 
     super(props);    
     this.state = { value: 'Select a country'};         
     this.state = {
@@ -18,9 +19,15 @@ class CountrySelectBox extends Component {
 	//getting all countries
     axios.get('/location/listCountry').then(result => {
       if(result.data.code === 200){				 
+		
         this.setState({
           countries: result.data.result,          
-        });
+        }, ()=>{
+			if(this.props.countryID){
+				this.props.onSelectCountry(this.props.countryID);
+				this.props.reference = this.props.countryID;
+			}
+		});
       }
       
     })
@@ -33,8 +40,10 @@ class CountrySelectBox extends Component {
   }
   render() {	  
     return (
-      <div className="form-group">        
-       <Input type="select" onChange={(e) => this.props.onSelectCountry(e.target.value)} innerRef={this.props.reference} className="form-control">
+      <div className="form-group">      {this.props.countryId}  
+       <Input type="select" 
+		onChange={(e) => this.props.onSelectCountry(e.target.value)}
+		innerRef={this.props.reference} className="form-control">
 		<option value="0" >Select a Country</option>
         {this.state.countries.map(option => {
           return <option value={option._id} key={option.countryName}>{option.countryName.toUpperCase()}</option>

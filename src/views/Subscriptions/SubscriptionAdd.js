@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { AppSwitch } from '@coreui/react'
+import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
 import {
   Badge,
   Button,
@@ -120,16 +122,11 @@ class SubscriptionAdd extends Component {
         });
       }
   }
-  // handleCheckbox(){
-  //   const checkbox = document.getElementById('unlimited')
-  //   const text = document.getElementById('text')
-  //   if(checkbox.checked==true){
-  //     text.style.display = "block"
-  //   }
-  //   else{
-  //     text.style.display = "none"
-  //   }
-  // }
+
+  handleChange(e){
+    
+  }
+
 
   toggle(event) {
     this.setState({
@@ -183,10 +180,17 @@ class SubscriptionAdd extends Component {
                   <Input type="text" innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed"/>
                   {/* <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback> */}
                 </FormGroup>
-                <span><input type="checkbox" onClick={this.toggle.bind(this)} defaultValue={false}  id ='unlimited'/>
-                {/* <p id="text" style="display:none">Checkbox is CHECKED!</p> */}
-                  <label>UNLIMITED</label>
-                </span>
+                <FormGroup>
+                <label>UNLIMITED</label><br />
+                <If condition={this.state.unlimited =="0"}>
+							<Then>
+							 <AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label checked   onChange={e => this.handleChange(e)}/>	
+							</Then>							
+							<Else>
+							  <AppSwitch className={'mx-1'} variant={'pill'} color={'success'} label unchecked   onChange={e => this.handleChange(e)}/>	
+							</Else>
+						  </If>		
+                </FormGroup>
                 <FormGroup>
                   <Label htmlFor="tIA">Time Period</Label>
                   <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />

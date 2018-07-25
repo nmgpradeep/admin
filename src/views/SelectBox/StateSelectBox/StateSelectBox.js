@@ -5,11 +5,6 @@ import axios from 'axios';
 // a select with dynamically created options
 
 class StateSelectBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-
   render() {	  
     return (
       <div className="form-group">        

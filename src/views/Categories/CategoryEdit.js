@@ -145,11 +145,12 @@ class CategoryEdit extends Component {
   
   submitHandler(e) {
     e.preventDefault();
-    let categoryObj = {};
+    let categoryObj = {_id: this.state.categoryId};
     for (let key in this.state.categoryForm) {
       categoryObj[key] = this.state.categoryForm[key].value;
     }
-    axios.post("/category/create", categoryObj).then(result => {
+    console.log('categoryObj submitHandler', categoryObj);
+    axios.put("/category/updateCategory", categoryObj).then(result => {
       if (result.data.code == "200") {
         this.props.history.push("/categories");
       }
@@ -186,8 +187,13 @@ class CategoryEdit extends Component {
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           let categoryForm = this.state.categoryForm;
           for (let key in categoryForm) {
-			  categoryForm[key].value = result.data.result[key];
+			  if(key === 'parent'){
+				  categoryForm[key].value = result.data.result[key]._id;
+			  }else{
+				  categoryForm[key].value = result.data.result[key];
+			  }
 		  }
+		  console.log('categoryForm', categoryForm);
 		  this.setState({categoryForm: categoryForm});
         }
       })

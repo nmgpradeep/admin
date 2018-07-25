@@ -13,8 +13,8 @@ const constant = require('../../common/constant')
 */
 // Function to save new Brand in the list
 
-const createBrands = (req, res) => {
-    console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+const createBrands = (req, res) => {   
+	console.log("req",req.body)
     if (!req.body.brandName) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -60,7 +60,7 @@ const listBrands = (req, res) => {
     Brand.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
-      //.populate('brandCategory',['categoryName'])
+      .populate({ path: "category", model: "Category"})
       .exec(function(err, brand) {
           Brand.count().exec(function(err, count) {
             if (err) return next(err)
