@@ -197,7 +197,7 @@ class DonationEdit extends Component {
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
            this.size.value = result.data.result.size;
-           this.author.value = result.data.result.userId._id;; 
+           this.author.value = result.data.result.userId._id; 
            this.category.value = result.data.result.productCategory._id;
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;

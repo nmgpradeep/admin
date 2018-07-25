@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import Category from './Category';
 import User from './User';
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
+import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
 import {
   Badge,
   Button,
@@ -42,11 +46,13 @@ class ProductEdit extends Component {
     this.description =React.createRef();
     this.parent = React.createRef();
     this.status = React.createRef();  
-    this.size = React.createRef();
     this.color = React.createRef();
-    this.brand = React.createRef();       
     this.productAge = React.createRef();
     this.productImage = React.createRef();
+    this.category = React.createRef();
+    this.author = React.createRef();
+    this.brand = React.createRef();
+    this.size = React.createRef();
     let productId = this.props.match.params.id;
 
     this.state = {
@@ -70,8 +76,22 @@ class ProductEdit extends Component {
     };
     this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
   }
+
+    handleCategory = (category) => {
+       this.category.current = category;
+    }
+    handleUser = (user) => {
+	  this.author.current = user;
+    }
   
-   categoryhandleContentChange(value) {			
+    handleBrand = (brand) => {
+       this.brand.current = brand;
+    }
+    handleSize = (size) => {
+	  this.size.current = size;
+    }
+  
+  categoryhandleContentChange(value) {			
       this.setState({categories:value })    
   } 
   
@@ -132,6 +152,7 @@ class ProductEdit extends Component {
         });
       }
   }
+  
 
   componentDidMount() {  	 
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
@@ -140,9 +161,10 @@ class ProductEdit extends Component {
         this.setState({editProduct: result.data.result});
         this.productName.value = result.data.result.productName;
         this.description.value = result.data.result.description;
-        this.size.value = result.data.result.size;
+        //this.size.value = result.data.result.size;
         this.color.value = result.data.result.color;
-        this.brand.value = result.data.result.brand;
+        //this.brand.value = result.data.result.brand;
+        this.author.value = result.data.result.userId._id; 
         this.productAge.value = result.data.result.productAge;
         this.setState({productImage: result.data.result.productImage});
       }      
@@ -172,16 +194,7 @@ class ProductEdit extends Component {
   }
   
   render() {
-	   let categories,users;
-       if(this.state.categories){
-          let categoryList = this.state.categories;
-          categories = categoryList.map(category => <Category key={category._id}  category={category}/>);
-       }
-       if(this.state.users){
-          let userList = this.state.users;
-          users = userList.map(user => <User key={user._id}  user={user}/>);
-       }
-	  
+	   
 	  
    return (
       <div className="animated fadeIn">
@@ -210,19 +223,15 @@ class ProductEdit extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                   <select innerRef={input => (this.category = input)} id="select"  className="form-control"  onChange={this.categoryhandleContentChange}>	                   
-                    {categories}
-                    </select>
+                   <CategorySelectBox onSelectCategory={this.handleCategory}/>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="user">User</Label>
-                   <select innerRef={input => (this.user = input)} id="select" className="form-control" >
-					 {users}
-                  </select>
+                  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editProduct.author}/>    
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="size">Size</Label>
-                  <Input type="text" innerRef={input => (this.size = input)} placeholder="Size" />
+                  <SizeSelectBox onSelectSize={this.handleSize}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="color">Color</Label>
@@ -230,7 +239,7 @@ class ProductEdit extends Component {
                 </FormGroup>
                    <FormGroup>
                   <Label htmlFor="brand">Brand</Label>
-                  <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
+                   <BrandSelectBox onSelectBrand={this.handleBrand}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="age">Age Of Item</Label>

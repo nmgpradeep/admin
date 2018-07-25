@@ -114,16 +114,6 @@ class DonationAdd extends Component {
             valid: null,
             message: ''
           },
-          //~ productImage: {
-           //~ rules: {
-              //~ notEmpty: {
-               //~ message: 'Image can\'t be left blank',
-                //~ valid: false
-              //~ }
-            //~ },
-            //~ valid: null,
-            //~ message: ''
-          //~ },
       }
     } 
   }

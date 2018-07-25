@@ -18,8 +18,7 @@ Capitalize(str){
         <td>{this.props.product.description}</td>
         <td>{(this.props.product.category)? this.props.product.category.categoryName:''}</td>  
         <td>{(this.props.product.user)?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
-
-        <td>{this.props.product.size}</td>
+        <td>{this.props.product.size.size}</td>
         <td>{this.props.product.color}</td>  
         <td>{this.props.product.brand}</td>
         <td>{this.props.product.productAge}</td>     

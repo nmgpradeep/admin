@@ -9,12 +9,11 @@ const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 const constant  = require('../../common/constant')
-
 const multiparty = require('multiparty');
 const http = require('http');
 const path = require('path');
 const fs = require('fs'); //FileSystem for node.js
-var gm = require('gm'); //GraphicsMagick for node.js
+var gm = require('gm');
 
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
@@ -23,7 +22,7 @@ var gm = require('gm'); //GraphicsMagick for node.js
 const create = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err,data,files){
-    //console.log('message data', data.productName)
+    console.log('message data', data)
     if(!data.productName){
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -125,9 +124,25 @@ const allProducts = (req, res) => {
 			foreignField: "_id",
 			as: "category"
 		}
+	},{
+		$lookup: {
+			from: "sizes",
+			localField: "size",
+			foreignField: "_id",
+			as: "size"
+		}
+	
+	},{
+		$lookup: {
+			from: "brands",
+			localField: "brand",
+			foreignField: "_id",
+			as: "brand"
+		}
 	}])
      .skip((perPage * page) - perPage)
-     .limit(perPage)      
+     .limit(perPage)        
+     
      .exec(function(err, products) {	
 		//products.populate('userId',['firstName','lastName']);
 		//products.populate('productCategory',['categoryName']);	 

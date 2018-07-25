@@ -30,6 +30,7 @@ class Products extends Component {
   }
    loadCommentsFromServer() {
       axios.get('/product/products/'+this.state.currentPage).then(result => {
+		  console.log('rs',result);
         if(result.data.code === 200){
           this.setState({
             products: result.data.result,

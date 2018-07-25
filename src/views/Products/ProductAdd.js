@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import Category from './Category';
 import User from './User';
+import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
+import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
+import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
 //import Category from './User';
 import {
   Badge,
@@ -40,7 +44,7 @@ class ProductAdd extends Component {
     super(props);
     this.productName = React.createRef();
     this.description = React.createRef();
-    this.size = React.createRef();
+    //this.size = React.createRef();
     this.parent = React.createRef();
     this.status = React.createRef();
     this.state = {
@@ -72,13 +76,27 @@ class ProductAdd extends Component {
     this.setState({selectedFile: event.target.files[0]})
   }
   
+  handleUser = (user) => {
+        this.setState({user: user});
+  }
+   handleCategory = (category) => {
+        this.setState({category: category});
+  }
+  handleBrand = (brand) => {
+        this.setState({brand: brand});
+  }
+  handleSize = (size) => {
+        this.setState({size: size});
+  }
+  
+  
   cancelHandler(){
     this.props.history.push("/products");
   }
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
-      for (let field in this.state.validation) {
+      for(let field in this.state.validation) {
         let lastValidFieldFlag = true;
         let addProduct = this.state.validation;
         addProduct[field].valid = null;
@@ -99,48 +117,28 @@ class ProductAdd extends Component {
       }
       if(formSubmitFlag){
         console.log("state",this.state)
-
         const data = new FD();
         console.log('FORM DATA START', this.productName.value);
         data.append('productName', this.productName.value)
         data.append('description', this.description.value)
-        data.append('size', this.size.value)
+        data.append('size', this.state.size)
         data.append('color', this.color.value)
-        data.append('brand', this.brand.value)
+        data.append('brand', this.state.brand)
         data.append('productAge', this.productAge.value)
         data.append('userId', this.state.user)
         data.append('productCategory', this.state.category)
         data.append('bannerImage', this.state.selectedFile)
         //data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
         console.log("data",data);
-
-        // let addProduct = this.state.addProduct;
-        // addProduct.productName = this.productName.value;
-        // addProduct.description = this.description.value;
-        // addProduct.size = this.size.value;
-        // addProduct.color = this.color.value;
-        // addProduct.brand = this.brand.value;       
-        // addProduct.productAge = this.productAge.value;
-        // addProduct.userId = '5b236b4ad73fe224efedae86';
-        // addProduct.productCategory = '5b3ca9c23d43f138959e3224';  
-        
         axios.post('/product/create', data).then(result => {
-          if(result.data.code == '200'){
+          if(result.data.code == 200){
             this.props.history.push("/products");
           }
         });
       }
   }
   
-   //~ categoryhandleContentChange(value) {	
-	  //~ alert('asdf');
-	  //~ console.log('<<<<<<<<<<<<<<<<<<<<<<<content value',value);    
-      //~ this.setState({ categoryValue: value });
-  //~ }
-  
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/category/categories').then(result => {
         if(result.data.code == '200'){
           this.setState({
@@ -149,8 +147,7 @@ class ProductAdd extends Component {
         }
         console.log(this.state.categories);
       })
-      axios.get('/user/users/1' ).then(result => {
-	  console.log('<<<<<<<<<<<<<<<<<<<<usersssss>',result);
+      axios.get('/user/users/1' ).then(result => {	 
       if(result.data.code ===200){
         this.setState({
           users: result.data.result,         
@@ -166,16 +163,6 @@ class ProductAdd extends Component {
   }
   
   render() {
-	   let categories,users;
-       if(this.state.categories){
-          let categoryList = this.state.categories;
-          categories = categoryList.map(category => <Category key={category._id}  category={category}/>);
-       }
-       if(this.state.users){
-          let userList = this.state.users;
-          users = userList.map(user => <User key={user._id}  user={user}/>);
-       }
-	  
 	  
     return (
       <div className="animated fadeIn">
@@ -204,19 +191,15 @@ class ProductAdd extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                   <select innerRef={input => (this.category = input)} id="select"  className="form-control"  onChange={this.categoryhandleContentChange}>	                   
-                    {categories}
-                    </select>
+                    <CategorySelectBox onSelectCategory={this.handleCategory}/>
                 </FormGroup>
                  <FormGroup>
-                  <Label htmlFor="user">User</Label>
-                   <select innerRef={input => (this.user = input)} id="select" className="form-control" >
-					 {users}
-                  </select>
+                  <Label htmlFor="user">User</Label>                  
+					<UserSelectBox onSelectUser={this.handleUser}/>                 
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="size">Size</Label>
-                  <Input type="text" innerRef={input => (this.size = input)} placeholder="Size" />
+                  <SizeSelectBox onSelectSize={this.handleSize}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="color">Color</Label>
@@ -224,7 +207,7 @@ class ProductAdd extends Component {
                 </FormGroup>
                    <FormGroup>
                   <Label htmlFor="brand">Brand</Label>
-                  <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
+                  <BrandSelectBox onSelectBrand={this.handleBrand}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="age">Age Of Item</Label>
@@ -234,7 +217,6 @@ class ProductAdd extends Component {
                       <Label htmlFor="lastname">Banner Image</Label>
                       <Input type="file" multiple="multiple" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
                     </FormGroup>
-
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

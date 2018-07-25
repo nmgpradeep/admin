@@ -27,7 +27,6 @@ const createBrands = (req, res) => {
       return res.json(flag);
     }
     let now = new Date();
-      
     Brand.create(req.body, (err, result) => {
         console.log('RES-brandName',err, result);
         if (err) {
@@ -47,6 +46,30 @@ const createBrands = (req, res) => {
         }
     })
       
+}
+
+const listingbrand = (req, res) => {
+    Brand.find({}, (err, result) => {
+      if (err) {
+        return res.send({
+          code: httpResponseCode.BAD_REQUEST,
+          message: httpResponseMessage.INTERNAL_SERVER_ERROR
+        })
+      } else {
+        if (!result) {
+          res.json({
+            message: httpResponseMessage.USER_NOT_FOUND,
+            code: httpResponseMessage.BAD_REQUEST
+          });
+        }else {
+          return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+               result: result
+              });
+         }
+      }
+    });
 }
 
 /* 
@@ -165,5 +188,6 @@ module.exports = {
     listBrands,
     updateBrands,
     viewBrands,
-    deleteBrands
+    deleteBrands,
+    listingbrand
 }
