@@ -1,8 +1,7 @@
-import React,{ Component }from 'react'
-import {Link} from 'react-router-dom';
-import axios from 'axios'
-import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
-import StateSelectBox from '../SelectBox/StateSelectBox/StateSelectBox'
+import React, { Component } from 'react';
+import { Link } from "react-router-dom";
+import axios from 'axios';
+import InputElement from "../InputElement/InputElement";
 import {
   Badge,
   Button,
@@ -28,168 +27,216 @@ import {
   Label,
   Row,
 } from 'reactstrap';
+// import PropTypes from 'prop-types';
+
 class CityAdd extends Component {
-
   constructor(props){
-    super(props)
-    this.countrySelect = React.createRef(),
-    this.stateSelect = React.createRef(),
-    this.cityName = React.createRef(),
-    
+    super(props);
+    this.countrySelect = React.createRef();
+    this.stateSelect = React.createRef();
+    this.cityName = React.createRef();
     this.state = {
-      addCity: {},
-      country : '',
-      states : [],
-      validation:{
+      cityForm: {
         countrySelect: {
-          rules: {
-            notEmpty: {
-              message: 'Country name can\'t be left blank',
-              valid: false
-
-            }
+          elementType: "select-simple",
+          elementConfig: {
+            options: []
           },
-          valid: null,
-          message: ''
+          value: "",
+          label: "Country",
+          title: "countryName",
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false
         },
-        stateSelect:{
-          rules: {
-            notEmpty: {
-              message: 'State name can\'t be left blank',
-              valid: false
-            }
+        stateSelect: {
+          elementType: "select-simple",
+          elementConfig: {
+            options: []
           },
-          valid: null,
-          message: ''
+          value: "",
+          label: "State",
+          title: "stateName",
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false
         },
         cityName: {
-            rules: {
-                notEmpty: {
-                    message: 'City name can\'t be left blank',
-                    valid: false
+          elementType: "input",
+          elementConfig: {
+            type: "text",
+            placeholder: "City Name"
+          },
+          value: "",
+          label: "City Name",
+          title: "cityName",
+          validation: {
+            required: true
+          },
+          valid: false,
+          touched: false
+        }
+      }
+    };
+   }
+  
+  handleCountry = (country) => { 	  
+	axios.get('/location/getState/' +country ).then(result => {
+	  console.log('countryId',result)
+	  if(result.data.code === 200){  
+		const updatedCityForm = {
+		  ...this.state.cityForm
+		};
+		updatedCityForm.stateSelect.elementConfig.options = result.data.result;
+		this.setState({cityForm: updatedCityForm});
+	  }
+	})
+  }
+  
+  checkValidity(value, rules) {
+    let isValid = false;
+    if (rules.required) {
+      isValid = value.trim() != "" && isValid;
+    }
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+    return isValid;
+  }
+  inputChangedHandler = (event, inputIdentifier) => {
+    const updatedCityForm = {
+      ...this.state.cityForm
+    };
+    const updatedCityFormElement = {
+      ...updatedCityForm[inputIdentifier]
+    };
+    updatedCityFormElement.value = event.target.value;
+    updatedCityFormElement.valid = this.checkValidity(
+      updatedCityFormElement.value,
+      updatedCityFormElement.validation
+    );
+    if(inputIdentifier === 'countrySelect'){
+		this.handleCountry(updatedCityFormElement.value);
+	}
+    
+    updatedCityFormElement.touched = true;
+    updatedCityForm[inputIdentifier] = updatedCityFormElement;
+    this.setState({ cityForm: updatedCityForm });
+  };
+  
+  cancelHandler(){
+    this.props.history.push("/city");
+  }
+  submitHandler(e) {
+    e.preventDefault();
+    let addCity = {};
+    for (let key in this.state.cityForm) {
+      addCity[key] = this.state.cityForm[key].value;
+    }
+    axios.post('/location/newCity', addCity).then(result => {
+      if (result.data.code == "200") {
+        this.props.history.push("/city");
+      }
+    });
+  }
+  
+
+  componentDidMount() {
+    //if(localStorage.getItem('jwtToken') != null)
+      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+	  axios.get('/location/listCountry').then(result => {
+      if(result.data.code === 200){
+        const updatedCityForm = {
+		  ...this.state.cityForm
+		};
+		updatedCityForm.countrySelect.elementConfig.options = result.data.result;
+		this.setState({cityForm: updatedCityForm});		
+      }      
+    })
+    .catch((error) => {
+    console.log('error', error)
+      if(error.code === 401) {
+        this.props.history.push("/login");
+      }
+    });
+  }
+  
+  render() {
+    const formElementsArray = [];
+    for (let key in this.state.cityForm) {
+      formElementsArray.push({
+        id: key,
+        config: this.state.cityForm[key]
+      });
+    }
+    console.log('FRMEM', formElementsArray);
+    let form = (
+      <Form noValidate>
+        {formElementsArray.map(formElement => (
+          <Row key={formElement.id}>
+            <Col xs="4" sm="12">
+              <InputElement
+                key={formElement.id}
+                label={formElement.config.label}
+                elementType={formElement.config.elementType}
+                elementConfig={formElement.config.elementConfig}
+                changed={event =>
+                  this.inputChangedHandler(event, formElement.id)
                 }
-            },
-            valid: null,
-            message: ''
-        }
-      }
-    } 
-  }
-
-  handleCountry = (country) => { 
-        axios.get('/location/getState/' +country ).then(result => {
-          console.log('countryId',result)
-          if(result.data.code == '200'){  
-            this.setState({states: result.data.result, country: country});
-          }
-        })
-  }
-  
-  handleState(state){
-	  this.setState({state: state});
-  }
-  
-  submitHandler(e){
-    e.preventDefault()
-    let formSubmitFlag = true;
-    for (let field in this.state.validation) {
-      let lastValidFieldFlag = true;
-      let addCity = this.state.validation;
-      addCity[field].valid = null;
-      for(let fieldCheck in this.state.validation[field].rules){
-        //~ switch(fieldCheck){
-          //~ case 'notEmpty':
-            //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
-                //~ lastValidFieldFlag = false;
-                //~ formSubmitFlag = false;
-                //~ addTestimonial[field].valid = false;
-                //~ addTestimonial[field].message = addTestimonial[field].rules[fieldCheck].message;
-
-             //~ }
-            //~ break;
-          
-        //~ }
-      }
-      this.setState({ validation: addCity});
-    }
-    if(formSubmitFlag){
-    console.log("COUNTRYS",this.state.countrys)
-    console.log("STATES",this.state.states)
-      let addCity = this.state.addCity;
-      addCity.countrySelect = this.state.country;
-      addCity.stateSelect = this.state.state;
-      addCity.cityName = this.cityName.value;
-      console.log("addCity",addCity)
-      axios.post('/location/newCity', addCity  ).then(result => {
-        if(result.data.code == '200'){
-          this.props.history.push('./City');
-        }
-      })
-    }
-  }
-
-
-  render(){
+                title={formElement.config.title}
+                value={formElement.config.value}
+              />
+            </Col>
+          </Row>
+        ))}
+        <Row>
+          <Col xs="6" className="text-right">
+            <Button
+              onClick={e => this.submitHandler(e)}
+              color="success"
+              className="px-4"
+            >
+              Submit
+            </Button>
+          </Col>
+          <Col xs="6">
+            <Button
+              onClick={() => this.cancelHandler()}
+              color="primary"
+              className="px-4"
+            >
+              Cancel
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    );
     return (
-      <div>
-        <Card>
+      <div className="animated fadeIn">
+        <Row>
+          <Col xs="12" sm="12">
+            <Card>
               <CardHeader>
-                <strong>New City Form</strong>
-                <Link to="/city" className="btn btn-success btn-sm pull-right">Back</Link>
+                <strong>Add City</strong>
               </CardHeader>
-              <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="countryName">Country Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <CountrySelectBox onSelectCountry={this.handleCountry} />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="stateName">State Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <StateSelectBox onSelectState={this.handleState} options={this.state.states}/>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="description">City Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.cityName.valid === false} innerRef={input => (this.cityName = input)} />
-                      <FormFeedback invalid={this.state.validation.cityName.valid === false}>{this.state.validation.cityName.message}</FormFeedback>
-                      
-                    </Col>
-                  </FormGroup>
-               
-                  
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="Status">Status</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
-                  </select>
-                    </Col>
-                  </FormGroup>                    
-                </Form>
-              </CardBody>
-              <CardFooter>
-                <Button type="submit" size="sm" color="primary"  onClick={(e)=>this.submitHandler(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
-              </CardFooter>
-            </Card>
-        
+
+              <CardBody>{form}</CardBody>
+
+              </Card>
+          </Col>
+        </Row>
       </div>
-    )
+    );
   }
-
 }
-
+// ProjectItem.propTypes = {
+//   project: PropTypes.object
+// };
 export default CityAdd;

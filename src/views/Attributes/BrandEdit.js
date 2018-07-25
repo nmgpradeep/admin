@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+import InputElement from "../InputElement/InputElement";
 
 import {
   Badge,
@@ -37,65 +38,109 @@ class BrandEdit extends Component {
   constructor(props){
     super(props);
     this.brandName = React.createRef();
-    this.brandCategory = React.createRef();
+    this.category = React.createRef();
     let brandId = this.props.match.params.id;
-    this.state = {
-      editBrand: {},
+     this.state = {
       brandId: brandId,
-      validation:{
-        brandName:{
-          rules: {
-            notEmpty: {
-              message: 'Brand Name field can\'t be left blank',
-              valid: false
-            }
+      brandForm: {
+        brandName: {
+          elementType: "input",
+          elementConfig: {
+            type: "text",
+            placeholder: "Brand Name"
           },
-          valid: null,
-          message: ''
+          value: "",
+          label: "Brand Name",
+          validation: {
+            required: true
+          },
+          valid: false,
+          touched: false
+        },
+         category: {
+          elementType: "select",
+          elementConfig: {
+            options: []
+          },
+          value: "",
+          label: "Category",
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false
         }
       }
     };
   }
 
-  // handleCategory = (category) => {
-  //   this.category.current = category;
-  // }
+  
+  checkValidity(value, rules) {
+    let isValid = false;
+    if (rules.required) {
+      isValid = value.trim() != "" && isValid;
+    }
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+    return isValid;
+  }
+   inputChangedHandler = (event, inputIdentifier) => {
+    const updatedBrand = {
+      ...this.state.brandForm
+    };
+    const updatedFormElement = {
+      ...updatedBrand[inputIdentifier]
+    };
+    updatedFormElement.value = event.target.value;
+    updatedFormElement.valid = this.checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+    updatedFormElement.touched = true;
+    updatedBrand[inputIdentifier] = updatedFormElement;
+    this.setState({ brandForm: updatedBrand });
+  };
+  handleTreeChange(e, data, inputIdentifier) {
+    const updatedBrand = {
+      ...this.state.brandForm
+    };
+    const updatedFormElement = {
+      ...updatedBrand[inputIdentifier]
+    };
+    if (updatedFormElement.value != data.selected) {
+      updatedFormElement.value = data.selected;
+      updatedFormElement.valid = this.checkValidity(
+        updatedFormElement.value,
+        updatedFormElement.validation
+      );
+      updatedFormElement.touched = true;
+      updatedBrand[inputIdentifier] = updatedFormElement;
+      this.setState(oldState => {
+        if (oldState.brandForm[inputIdentifier].value != data.selected)
+          return { brandForm: updatedBrand };
+        return false;
+      });
+    }
+  }
 
   cancelHandler(){
     this.props.history.push("/brand");
   }
+  
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
-      for (let field in this.state.validation) {
-        let lastValidFieldFlag = true;
-        let addBrand = this.state.validation;
-        addBrand[field].valid = null;
-        for(let fieldCheck in this.state.validation[field].rules){
-          switch(fieldCheck){
-            case 'notEmpty':
-              if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  lastValidFieldFlag = false;
-                  formSubmitFlag = false;
-                  addBrand[field].valid = false;
-                  addBrand[field].message = addBrand[field].rules[fieldCheck].message;
-
-               }
-              break;
-          }
-        }
-        this.setState({ validation: addBrand});
-      }
-
-      if(formSubmitFlag){
-        // const data = new FD()
-        // data.append('brandName', this.brandName.value)
-        // data.append('brandCategory', this.state.category)
+      if(formSubmitFlag){        
         let editBrand = this.state.editBrand;
-        editBrand.brandName = this.brandName.value;
-        editBrand.category = this.category.value;
-        console.log("editBrand",editBrand)
-        axios.put('/brand/updatebrand', editBrand).then(result => {
+         let brandObj = {_id: this.state.brandId};
+			for (let key in this.state.brandForm) {
+			  brandObj[key] = this.state.brandForm[key].value;
+			}
+        axios.put('/brand/updatebrand', brandObj).then(result => {
           if(result.data.code ===200){
             this.props.history.push("/brand");
           }
@@ -106,14 +151,40 @@ class BrandEdit extends Component {
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+       axios.get("/category/categories")
+      .then(result => {
+        if (result.data.code === 200) {
+          let oldState = this.state.brandForm;
+          oldState.category.elementConfig.options = result.data.result.filter((cat)=> (cat._id !== this.state.category));
+          this.setState(
+            {
+              brandForm: oldState
+            }
+          );
+        }
+      })
+      .catch(error => {
+        console.log("ERROR", error);
+        if (error.status === 401) {
+          this.props.history.push("/login");
+        }
+      });  
+    //if(localStorage.getItem('jwtToken') != null)
+      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/brand/viewBrand/' + this.state.brandId).then(result => {
-       // console.log(result); 
-         if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
-           this.setState({ editBrand: result.data.result});
-          
-           this.brandName.value = result.data.result.brandName;
-           this.category.value = result.data.result.category;
+		  console.log("category",result)
+        if(result.data.code == '200'){
+          //localStorage.setItem('jwtToken', result.data.result.accessToken);
+          let brandForm = this.state.brandForm;
+          for (let key in brandForm) {
+			  if(key === 'category'){
+				  brandForm[key].value = result.data.result[key]._id;
+			  }else{
+				  brandForm[key].value = result.data.result[key];
+			  }
+		  }
+		  console.log('brandForm', brandForm);
+		  this.setState({brandForm: brandForm});
         }
       })
       .catch((error) => {
@@ -124,6 +195,57 @@ class BrandEdit extends Component {
 
   }
   render() {
+	  const formElementsArray = [];
+    for (let key in this.state.brandForm) {
+      formElementsArray.push({
+        id: key,
+        config: this.state.brandForm[key]
+      });
+    }
+    console.log("Form elements", formElementsArray);
+    let form = (
+      <Form noValidate>
+        {formElementsArray.map(formElement => (
+          <Row key={formElement.id}>
+            <Col xs="4" sm="12">
+              <InputElement
+                key={formElement.id}
+                label={formElement.config.label}
+                elementType={formElement.config.elementType}
+                elementConfig={formElement.config.elementConfig}
+                changed={event =>
+                  this.inputChangedHandler(event, formElement.id)
+                }
+                treechanged={(event, data) => {
+                  return this.handleTreeChange(event, data, formElement.id);
+                }}
+                value={formElement.config.value}
+              />
+            </Col>
+          </Row>
+        ))}
+        <Row>
+          <Col xs="6" className="text-right">
+            <Button
+              onClick={e => this.submitHandler(e)}
+              color="success"
+              className="px-4"
+            >
+              Submit
+            </Button>
+          </Col>
+          <Col xs="6">
+            <Button
+              onClick={() => this.cancelHandler()}
+              color="primary"
+              className="px-4"
+            >
+              Cancel
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    );
     return (
       <div className="animated fadeIn">
         <Row>
@@ -137,31 +259,8 @@ class BrandEdit extends Component {
               <CardBody>
               
                 <Row>
-                  <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label >Brand Name</Label>
-                      <Input type="text" innerRef={input => (this.brandName = input)} />
-
-                      {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
-
-                    </FormGroup>
-                    </Col>
-                    <Col xs="4" sm="12">
-                     <FormGroup>
-					  <Label htmlFor="category">Category</Label>
-            <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editBrand.category}/>	
-
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs="6" className="text-right">
-                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
-                  </Col>
-                  <Col xs="6">
-                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
-                  </Col>
-                </Row>
+                   <CardBody>{form}</CardBody>
+                </Row>                
                </CardBody>
             </Card>
           </Col>

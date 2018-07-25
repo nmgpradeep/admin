@@ -43,19 +43,6 @@ var ssn;
 const signup = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
-
-  console.log('<<<<<<<<<<<body data<<<<<',data)
-  // if (!req.body.firstName && !req.body.middleName && !req.body.lastName && !req.body.email && !req.body.password) {
-  //   return res.send({
-  //     code: httpResponseCode.BAD_REQUEST,
-  //     message: httpResponseMessage.REQUIRED_DATA
-  //   })
-  // }
-  //const data = req.body;
- // const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
-  // if (flag) {
-  //   return res.json(flag);
-  // }
   User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
@@ -80,8 +67,6 @@ const signup = (req, res) => {
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
         } else {
-
-        console.log('Created-Page',err, result);
 			 // check Profile Pic and upload if exist 
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
@@ -105,29 +90,26 @@ const signup = (req, res) => {
 
 				  });
 				});
-			  }		
-			  console.log('resultImages',result);	 
-			  User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
+				
+				User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){				
-					return res.send({
+					return res.json({
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
 				} else {				    
 					result.profilePic = newfilename;
-					return res.send({
+					return res.json({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,
 						result: result
 					})
 				  }
 			   })	  
+			  }		
 			  ///end file update///	  
-
-
-
-
-          delete result.password
+			
+			delete result.password
 
 				// Generate test SMTP service account from ethereal.email
 				// Only needed if you don't have a real mail account for testing
@@ -166,7 +148,7 @@ const signup = (req, res) => {
 						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 					});
 
-          return res.send({
+          return res.json({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
             result: result
@@ -306,8 +288,8 @@ const listUser = (req, res) => {
 
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
-  const users = (req, res) => {
-	  console.log("SESSION",req.session)
+  const users = (req, res) => {	 
+	  console.log("USER LISTING",req.param)
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     User.find({ userType: { $ne: 1 }})

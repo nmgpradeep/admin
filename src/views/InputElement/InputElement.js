@@ -3,6 +3,7 @@ import { FormGroup, FormFeedback, Label } from "reactstrap";
 import TreeView from "react-simple-jstree";
 const inputElement = props => {
   let inputElement = null;
+  console.log('Props', props);
   const iterative = (newElements = [], lavel = 0) => {
     return newElements.map(newElement => {
       let baseCatClass = [];
@@ -78,6 +79,26 @@ const inputElement = props => {
         </select>
       );
       break;
+    case "select-simple":
+      inputElement = (
+        <select
+          key={props.key}
+          className={inputClasses.join(" ")}
+          onChange={props.changed}
+          value={props.value}
+        >
+          <option value="0" key="0">
+            --Select--
+          </option>
+          {props.elementConfig.options.map(option => {
+			  return <option value={option._id} key={option._id}>
+				{option[props.title]}
+			  </option>
+		  })}
+        </select>
+      );
+      break;
+      
     case "tree":
       inputElement = (
         <TreeView
