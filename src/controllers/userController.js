@@ -58,7 +58,7 @@ const signup = (req, res) => {
 
       User.create(data, (err, result) => {
 
-		  console.log('RES-FIND',err, result);
+		  //console.log('RES-FIND',err, result);
         
       if (err) {
           return res.send({
@@ -288,8 +288,8 @@ const listUser = (req, res) => {
 
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
-  const users = (req, res) => {	 
-	  console.log("USER LISTING",req.param)
+  const users = (req, res) => {
+	  //console.log("SESSION",req.session)
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     User.find({ userType: { $ne: 1 }})

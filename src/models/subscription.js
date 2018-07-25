@@ -30,9 +30,11 @@ type:String,
 trim:true
 },
 unlimited:{
-type:Boolean,
-default: false
-},
+    type:String,
+    trim:true,
+    sparse:true,
+    default:0   
+   },
 status:{
  type:String,
  trim:true,
