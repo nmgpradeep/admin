@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Product = require('../models/product')
 const Donation = require('../models/donation')
 const Trade = require('../models/trade')
+const Notification = require('../models/notification')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -105,8 +106,31 @@ const signup = (req, res) => {
 						result: result
 					})
 				  }
-			   })	  
-			  }		
+			   })
+        }
+        
+        Notification.create({fromUserId:result._id}, {notificationTypeId:result.notificationTypeId}, (err,notify)=>{
+          if(err){
+            return res.json({
+              code: httpResponseCode.BAD_REQUEST,
+              message: httpResponseMessage.NOTIFICATION_ERROR
+            });
+          }else {
+            if(!notify){
+              res.json({
+                message: httpResponseMessage.USER_NOT_FOUND,
+                code: httpResponseMessage.BAD_REQUEST
+              });
+            }
+            else{
+              return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+               notify: notify
+              });
+            }
+          }
+        })
 			  ///end file update///	  
 			
 			    delete result.password

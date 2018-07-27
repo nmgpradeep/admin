@@ -10,6 +10,7 @@ module.exports = {
     'donationimage_path':'/var/www/html/pitchswitch/public/assets/uploads/donationImage/',
     'product_path': '/var/www/html/pitchswitch/public/assets/uploads/Products/',
     'advertisementimage_path': '/var/www/html/pitchandswitch/public/assets/uploads/AdvertisementImage/',
+    'notification_type':[{'id':'1','name':'New User Created'},{'id':'2','name':'New Trade Requested'},{'id':'3','name':'Trade Rejected'},{'id':'4','name':'New Message Received'}],
     'donation_conditions':[{'id':'1','name':'New'},{'id':'2','name':'old'},{'id':'3','name':'Excellent'},{'id':'4','name':'Very Old'}]
 
 };

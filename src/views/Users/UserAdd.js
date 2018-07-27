@@ -39,6 +39,7 @@ class UserAdd extends Component {
     this.password = React.createRef();
     this.confirmPassword = React.createRef();
     this.email = React.createRef();
+    this.notificationTypeId = React.createRef();
     this.profilePic = React.createRef(),
 
     this.state = {
@@ -171,6 +172,7 @@ class UserAdd extends Component {
         data.append('userName', this.userName.value),
         data.append('password', this.password.value),
         data.append('email', this.email.value),
+        data.append('notificationTypeId', '1')
         data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
         // let addUser = this.state.addUser;
         // addUser.firstName = this.firstName.value;
