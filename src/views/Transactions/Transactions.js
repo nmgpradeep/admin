@@ -150,7 +150,7 @@ class Transactions extends Component {
           </Col>
         </Row>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} external={externalCloseBtn}>
-          <ModalHeader>Modal title</ModalHeader>
+          <ModalHeader>Transaction</ModalHeader>
           <ModalBody>
             Are you sure to delete?
           </ModalBody>

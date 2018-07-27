@@ -138,29 +138,29 @@ class ProductAdd extends Component {
       }
   }
   
-  componentDidMount() {
-      axios.get('/category/categories').then(result => {
-        if(result.data.code == '200'){
-          this.setState({
-            categories: result.data.result,            
-          });
-        }
-        console.log(this.state.categories);
-      })
-      axios.get('/user/users/1' ).then(result => {	 
-      if(result.data.code ===200){
-        this.setState({
-          users: result.data.result,         
-        });
-        }
-      console.log(this.state.users);
-    })
-      .catch((error) => {
-        if(error.status === 401) {
-          this.props.history.push("/login");
-        }
-      });
-  }
+  // componentDidMount() {
+  //     axios.get('/category/categories').then(result => {
+  //       if(result.data.code == '200'){
+  //         this.setState({
+  //           categories: result.data.result,            
+  //         });
+  //       }
+  //       console.log(this.state.categories);
+  //     })
+  //     axios.get('/user/users/1' ).then(result => {	 
+  //     if(result.data.code ===200){
+  //       this.setState({
+  //         users: result.data.result,         
+  //       });
+  //       }
+  //     console.log(this.state.users);
+  //   })
+  //     .catch((error) => {
+  //       if(error.status === 401) {
+  //         this.props.history.push("/login");
+  //       }
+  //     });
+  // }
   
   render() {
     return (
