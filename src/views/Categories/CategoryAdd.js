@@ -135,7 +135,7 @@ class CategoryAdd extends Component {
   }
   componentDidMount() {
     axios
-      .get("/category/categories")
+      .get("/category/allCategories")
       .then(result => {
         if (result.data.code === 200) {
           let oldState = this.state.categoryForm;

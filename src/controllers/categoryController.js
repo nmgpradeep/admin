@@ -236,26 +236,20 @@ const updateCategory = (req, res) => {
  */
 /// function to list all products
 const allCategories = (req, res) => {
-  var perPage = constant.PER_PAGE_RECORD
-  var page = req.params.page || 1;
+  //var perPage = constant.PER_PAGE_RECORD
+  //var page = req.params.page || 1;
   Category.find({})
     .populate({ path: "children", model: "Category" })
     .populate({ path: "parent", model: "Category" })
-    .skip(perPage * page - perPage)
-    .limit(perPage)
+   // .skip(perPage * page - perPage)
+    //.limit(perPage)
     .exec(function(err, categories) {
-      Category.count().exec(function(err, count) {
         if (err) return next(err);
         return res.json({
           code: httpResponseCode.EVERYTHING_IS_OK,
           message: httpResponseMessage.SUCCESSFULLY_DONE,
-          result: categories,
-          total: count,
-          current: page,
-          perPage: perPage,
-          pages: Math.ceil(count / perPage)
-        });
-      });
+          result: categories
+        });    
     });
 };
 

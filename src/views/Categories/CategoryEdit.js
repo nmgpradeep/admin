@@ -161,7 +161,7 @@ class CategoryEdit extends Component {
   componentDidMount() {	  
 	  //this.props.reference.value = this.props.value;
     axios
-      .get("/category/categories")
+      .get("/category/allCategories")
       .then(result => {
         if (result.data.code === 200) {
           let oldState = this.state.categoryForm;
@@ -217,9 +217,9 @@ class CategoryEdit extends Component {
       <Form noValidate>
         {formElementsArray.map(formElement => (
           <Row key={formElement.id}>
-            <Col xs="4" sm="12">
+            <Col xs="4" sm="12" key={formElement.id}>
               <InputElement
-                key={formElement.id}
+				key={formElement.id}
                 label={formElement.config.label}
                 elementType={formElement.config.elementType}
                 elementConfig={formElement.config.elementConfig}
