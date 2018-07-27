@@ -16,11 +16,11 @@ Capitalize(str){
         <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
         <td>{this.props.product.description}</td>
-        <td>{(this.props.product.category)? this.props.product.category.categoryName:''}</td>  
+        <td>{(this.props.product.category)? this.props.product.category.title:''}</td>  
         <td>{(this.props.product.user)?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
-        <td>{this.props.product.size.size}</td>
+        <td>{(this.props.product.size)?this.props.product.size.size:''}</td>
         <td>{this.props.product.color}</td>  
-        <td>{this.props.product.brand}</td>
+        <td>{(this.props.product.brand)?this.props.product.brand.brandName:''}</td>
         <td>{this.props.product.productAge}</td>     
         <td>{this.props.product.productImage}</td>   
         <td>

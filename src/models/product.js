@@ -22,20 +22,20 @@ userId:{
 },
 productCategory:{
 	type: Schema.Types.ObjectId,
-    ref: 'category'
+    ref: 'Category'
 },
 productImages: [],
-size:{
-type:String,
-trim: true
-},
 color:{
 type:String,
 trim:true,
 },
 brand:{
-type:String,
-trim:true
+	type: Schema.Types.ObjectId,
+  ref: 'Brand'
+},
+size:{
+  type: Schema.Types.ObjectId,
+  ref: 'Size'
 },
 productAge:{
 type:String,
