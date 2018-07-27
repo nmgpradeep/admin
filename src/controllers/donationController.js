@@ -145,7 +145,8 @@ const viewDonation = (req, res) => {
 		.populate('userId',['firstName','lastName'])
 		.populate('productCategory',['categoryName'])
 	
-	     .exec(function(err, result){		
+	     .exec(function(err, result){
+			 console.log('rrrrrr',result);		
 			if (err) {
 			return res.send({
 			code: httpResponseCode.BAD_REQUEST,
