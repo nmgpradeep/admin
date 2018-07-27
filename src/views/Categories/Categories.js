@@ -214,7 +214,7 @@ class Categories extends Component {
           className={this.props.className}
           external={externalCloseBtn}
         >
-          <ModalHeader>Modal title</ModalHeader>
+          <ModalHeader>Category</ModalHeader>
           <ModalBody>Are you sure to delete?</ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.approveDeleteHandler}>
