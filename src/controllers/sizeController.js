@@ -84,6 +84,7 @@ const listSizes = (req, res) => {
     Size.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate({path: "category", model: "Category"})
       .exec(function(err, size) {
           Size.count().exec(function(err, count) {

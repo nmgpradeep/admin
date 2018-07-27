@@ -99,6 +99,7 @@ const donations = (req, res) => {
     Donation.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate('userId')
       .populate('userId',['firstName','lastName'])
       .populate('productCategory',['categoryName'])

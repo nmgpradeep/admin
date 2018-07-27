@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
+import StateAllSelectBox from '../SelectBox/StateSelectBox/StateAllSelectBox'
+import CitySelectBox from '../SelectBox/CitySelectBox/CitySelectBox'
+import SubscriptionSelectBox from '../SelectBox/SubscriptionSelectBox/SubscriptionSelectBox'
+
 import {
   Badge,
   Button,
@@ -36,7 +41,14 @@ class UserAdd extends Component {
     this.middleName = React.createRef();
     this.lastName = React.createRef();
     this.username = React.createRef();
-    this.password = React.createRef();
+    this.password = React.createRef();    
+    this.phoneNumber = React.createRef();
+    this.dob = React.createRef();
+    this.city = React.createRef();
+    this.state = React.createRef();
+    this.country = React.createRef();
+    this.zipCode = React.createRef();
+    this.subscriptionPlan = React.createRef();    
     this.confirmPassword = React.createRef();
     this.email = React.createRef();
     this.notificationTypeId = React.createRef();
@@ -108,10 +120,84 @@ class UserAdd extends Component {
           },
           valid: null,
           message: ''
-        }
+        },
+        dob: {
+          rules: {
+            notEmpty: {
+              message: 'Dob field can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        phoneNumber: {
+          rules: {
+            notEmpty: {
+              message: 'Contact fields can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        city: {
+          rules: {
+            notEmpty: {
+              message: 'city fields can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        state: {
+          rules: {
+            notEmpty: {
+              message: 'city fields can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        country: {
+          rules: {
+            notEmpty: {
+              message: 'city fields can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        zipCode: {
+          rules: {
+            notEmpty: {
+              message: 'zipCode fields can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
       }
     };
   }
+  
+  handleCountry = (country) => {
+        this.setState({country: country});
+  }
+  handleState = (state) => {
+        this.setState({state: state});
+  }
+  handleCity = (city) => {
+        this.setState({city: city});
+  }
+  handleSubscription = (subscriptions) => {
+        this.setState({subscriptions: subscriptions});
+  }
+  
   cancelHandler(){
     this.props.history.push("/users");
   }
@@ -174,15 +260,13 @@ class UserAdd extends Component {
         data.append('email', this.email.value),
         data.append('notificationTypeId', '1')
         data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
-        // let addUser = this.state.addUser;
-        // addUser.firstName = this.firstName.value;
-        // addUser.middleName = this.middleName.value;
-        // addUser.lastName = this.lastName.value;
-        // addUser.userName = this.userName.value;
-        // addUser.password = this.password.value;
-        // addUser.email = this.email.value;
-        // addUser.userType = 2;
-        //console.log('data is here', data)
+        data.append('phoneNumber', this.phoneNumber.value),
+        data.append('dob', this.dob.value),
+        data.append('city', this.state.city),
+        data.append('state', this.state.state),
+        data.append('country', this.state.country),
+        data.append('zipCode', this.zipCode.value),
+        data.append('subscriptionPlan', this.state.subscriptionPlan),
         axios.post('/user/signup', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
@@ -192,7 +276,6 @@ class UserAdd extends Component {
   }
 
   render() {
-
     return (
       <div className="animated fadeIn">
         <Row>
@@ -256,6 +339,44 @@ class UserAdd extends Component {
                       {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
                     </Col>
                   </FormGroup>
+                  
+                 <FormGroup>
+                  <Label htmlFor="contactnumber">ContactNumber</Label>
+                  <Input type="text" invalid={this.state.validation.phoneNumber.valid === false} innerRef={input => (this.phoneNumber = input)} placeholder="ContactNumber" />
+               
+                </FormGroup>
+                
+                 <FormGroup>
+                  <Label htmlFor="username">DOB</Label>
+                  <Input type="text" invalid={this.state.validation.dob.valid === false} innerRef={input => (this.dob = input)} placeholder="DOB" />
+                 
+                </FormGroup>
+               
+                 <FormGroup>
+                  <Label htmlFor="username">Country</Label>
+                  <CountrySelectBox onSelectCountry={this.handleCountry}/>
+                </FormGroup>
+                
+                 <FormGroup>
+                  <Label htmlFor="state">State</Label>
+                  <StateAllSelectBox onSelectState={this.handleState}/>
+                </FormGroup>
+                 
+                 <FormGroup>
+                  <Label htmlFor="city">City</Label>
+                  <CitySelectBox onSelectCity={this.handleCity}/>
+                </FormGroup>
+                
+                 <FormGroup>
+                  <Label htmlFor="text">ZipCode</Label>
+                  <Input type="text" invalid={this.state.validation.zipCode.valid === false} innerRef={input => (this.zipCode = input)} placeholder="zipCode" />
+                </FormGroup>
+                
+                 <FormGroup>
+                  <Label htmlFor="username">Subscription Plan</Label>                 
+                  <SubscriptionSelectBox onSelectSubscription={this.handleSubscription}/>
+                </FormGroup>
+                  
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

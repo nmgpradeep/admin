@@ -97,6 +97,7 @@ const categories = (req, res) => {
     // .populate('receiverId')
     // .populate('sellerProductId')
     .populate('parent',['title'])
+    .sort({createdAt:-1})
     .exec(function(err, categories) {
         Category.count().exec(function(err, count) {
           if (err) return next(err)

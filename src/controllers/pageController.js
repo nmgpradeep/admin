@@ -100,6 +100,7 @@ const pages = (req, res) => {
     Page.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .exec(function(err, pages) {
           Page.count().exec(function(err, count) {
             if (err) return next(err)

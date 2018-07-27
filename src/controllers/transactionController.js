@@ -18,6 +18,7 @@ const listTransaction = (req, res) => {
     Transaction.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .exec(function(err, transactions) {
           Transaction.count().exec(function(err, count) {
             if (err) return next(err)

@@ -12,15 +12,17 @@ router.post('/updateStatus',locationController.updateStatus)
 router.get('/countries/:page', locationController.listCountry)
 //State routes
 router.post('/newState',locationController.createStates)
-router.get('/listState',locationController.listStates)
+router.get('/listingStates',locationController.listingStates)
 router.get('/viewState/:id',locationController.viewStates)
 router.put('/updateState',locationController.updateStates)
 router.delete('/deleteState/:id',locationController.deleteStates)
 router.post('/changeStatus',locationController.changeStatus)
 router.get('/States/:page', locationController.listStates)
+
 //City routes
 router.post('/newCity',locationController.createCitys)
 router.get('/listCity',locationController.listCitys)
+router.get('/listingcities',locationController.listingcities)
 router.get('/viewCity/:id',locationController.viewCitys)
 router.put('/updateCity',locationController.updateCitys)
 router.delete('/deleteCity/:id',locationController.deleteCitys)
