@@ -83,6 +83,7 @@ const listBrands = (req, res) => {
     Brand.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate({ path: "category", model: "Category"})
       .exec(function(err, brand) {
           Brand.count().exec(function(err, count) {

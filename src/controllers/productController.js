@@ -142,7 +142,7 @@ const allProducts = (req, res) => {
 	}])
      .skip((perPage * page) - perPage)
      .limit(perPage)        
-     
+     .sort({createdAt:-1})
      .exec(function(err, products) {	
 		//products.populate('userId',['firstName','lastName']);
 		//products.populate('productCategory',['categoryName']);	 

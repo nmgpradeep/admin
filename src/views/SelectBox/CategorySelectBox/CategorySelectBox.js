@@ -9,16 +9,14 @@ class CategorySelectBox extends Component {
   constructor(props) {
     super(props);    
     this.state = { value: 'Select Category'}; 
-        
     this.state = {
 			category : ''
 	}   
   }
   onChange(e) {
 		var category = e.target.value;	  
-		this.props.onSelectCategory(category);  
-		//this.setState({selectedUser : user});
-    console.log("USER DATA SET",category)
+		this.props.onSelectCategory(category);  		
+        console.log("USER DATA SET",category)
   }
   
   componentDidMount(){
@@ -29,7 +27,6 @@ class CategorySelectBox extends Component {
           options: result.data.result,          
         });
       }
-      
     })
    .catch((error) => {
     console.log('error', error)
@@ -48,7 +45,6 @@ class CategorySelectBox extends Component {
         })}
 	  </Input>
       </div>
-      
     )
   }
 }

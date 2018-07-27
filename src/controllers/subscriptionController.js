@@ -82,6 +82,7 @@ const subscriptions = (req, res) => {
     Subscription.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .exec(function(err, subscription) {
           Subscription.count().exec(function(err, count) {
             if (err) return next(err)
@@ -98,7 +99,33 @@ const subscriptions = (req, res) => {
         });
 }
 
+/** Author	: Saurabh Agarwal
+ *  Date	: July 17, 2018
+ */
+/// function to list all States
+const listingsubscription = (req, res) => {  
+	Subscription.find({}, (err, result) => {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,             
+             result: result
+            });
 
+      }
+    }
+  })
+ }
 /** Auther	: Rajiv kumar
  *  Date	: June 21, 2018
  *	Description : Function to view the available Subscription plan
@@ -410,11 +437,11 @@ const deleteAddon = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
     }
-		return res.json({
+	  return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
-            });
+      });
   })
 }
 
@@ -423,7 +450,7 @@ const deleteAddon = (req, res) => {
  **/
 //Function to update the Addon status.
 const updateStatus = (req, res) => { 
-	console.log("REQ0",req.body)
+ console.log("REQ0",req.body)
   Addon.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -462,5 +489,6 @@ module.exports = {
   updateAddon,
   viewAddon,
   deleteAddon,
-  updateStatus
+  updateStatus,
+  listingsubscription
 }

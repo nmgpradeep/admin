@@ -40,6 +40,11 @@ type:String,
 trim:true,
 sparse:true
 },
+dob:{
+type:String,
+trim:true,
+sparse:true
+},
 profilePic:{
 type:String,
 trim:true,

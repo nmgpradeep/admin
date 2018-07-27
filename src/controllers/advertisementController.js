@@ -182,6 +182,7 @@ const advertisements = (req, res) => {
     Advertisement.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .exec(function(err, advertisement) {
           Advertisement.count().exec(function(err, count) {
             if (err) return next(err)
@@ -344,8 +345,7 @@ const deleteadvertisement = (req, res) => {
  *  Date	: June 25, 2018
  *	Description : Function to update the advertisement status.
  **/
-const updateStatus = (req, res) => { 
-	console.log("REQ0",req.body)
+const updateStatus = (req, res) => { 	
   Advertisement.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -363,7 +363,7 @@ const updateStatus = (req, res) => {
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
              result: result
-            });
+          });
       }
     }    
   })

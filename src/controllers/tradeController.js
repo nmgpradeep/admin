@@ -17,6 +17,7 @@ const nodemailer = require('nodemailer');
     Trade.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate('sellerId')
       .populate('receiverId')
       .populate('sellerProductId')

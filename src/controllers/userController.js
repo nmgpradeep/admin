@@ -295,6 +295,7 @@ const listUser = (req, res) => {
     User.find({ userType: { $ne: 1 }})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .exec(function(err, users) {
           User.count().exec(function(err, count) {
             if (err) return next(err)
@@ -463,28 +464,6 @@ const updateUser = (req, res) => {
         }
       }) 
     });
-  // User.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
-  //   if(err){
-	// 	return res.send({
-	// 		code: httpResponseCode.BAD_REQUEST,
-	// 		message: httpResponseMessage.INTERNAL_SERVER_ERROR
-	// 	  });
-  //   }else {
-  //     if (!result) {
-  //       res.json({
-  //         message: httpResponseMessage.USER_NOT_FOUND,
-  //         code: httpResponseMessage.BAD_REQUEST
-  //       });
-  //     }else {
-  //       return res.json({
-  //             code: httpResponseCode.EVERYTHING_IS_OK,
-  //             message: httpResponseMessage.SUCCESSFULLY_DONE,
-  //            result: result
-  //           });
-
-  //     }
-  //   }
-  // })
 }
 /** Auther	: Karnika sharma
  *  Date	: July 6, 2018
@@ -726,11 +705,8 @@ const send = (req, res) => {
 				return console.log(error);
 			}
 			console.log('Message sent: %s', info.messageId);
-			// Preview only available when sending through an Ethereal account
 			console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 			res.render('contactus',{msg:'Email has been send'})
-			// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-			// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 		});
 }
 
