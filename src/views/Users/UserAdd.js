@@ -51,7 +51,6 @@ class UserAdd extends Component {
     this.subscriptionPlan = React.createRef();    
     this.confirmPassword = React.createRef();
     this.email = React.createRef();
-    this.notificationTypeId = React.createRef();
     this.profilePic = React.createRef(),
 
     this.state = {
@@ -135,36 +134,6 @@ class UserAdd extends Component {
           rules: {
             notEmpty: {
               message: 'Contact fields can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        city: {
-          rules: {
-            notEmpty: {
-              message: 'city fields can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        state: {
-          rules: {
-            notEmpty: {
-              message: 'city fields can\'t be left blank',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        country: {
-          rules: {
-            notEmpty: {
-              message: 'city fields can\'t be left blank',
               valid: false
             }
           },
@@ -258,16 +227,16 @@ class UserAdd extends Component {
         data.append('userName', this.userName.value),
         data.append('password', this.password.value),
         data.append('email', this.email.value),
-        data.append('notificationTypeId', '1')
-        data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
+        data.append('profilePic', this.state.selectedFile)
         data.append('phoneNumber', this.phoneNumber.value),
         data.append('dob', this.dob.value),
         data.append('city', this.state.city),
         data.append('state', this.state.state),
         data.append('country', this.state.country),
         data.append('zipCode', this.zipCode.value),
-        data.append('subscriptionPlan', this.state.subscriptionPlan),
+        data.append('subscriptionPlan', this.state.subscriptionPlan)
         axios.post('/user/signup', data).then(result => {
+          console.log('USER DATA', data)
           if(result.data.code == '200'){
             this.props.history.push("/users");
           }
@@ -330,16 +299,6 @@ class UserAdd extends Component {
                   <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
                   <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
-                <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="image">Profile Image</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} name="profilePic" />
-                      {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
-                    </Col>
-                  </FormGroup>
-                  
                  <FormGroup>
                   <Label htmlFor="contactnumber">ContactNumber</Label>
                   <Input type="text" invalid={this.state.validation.phoneNumber.valid === false} innerRef={input => (this.phoneNumber = input)} placeholder="ContactNumber" />
@@ -376,6 +335,16 @@ class UserAdd extends Component {
                   <Label htmlFor="username">Subscription Plan</Label>                 
                   <SubscriptionSelectBox onSelectSubscription={this.handleSubscription}/>
                 </FormGroup>
+                <FormGroup row>
+                <Col md="3">
+                      <Label htmlFor="image">Profile Image</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} name="profilePic" />
+                      {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
+                    </Col>
+                  </FormGroup>
+                  
                   
                 <Row>
                   <Col xs="6" className="text-right">

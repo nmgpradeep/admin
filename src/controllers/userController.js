@@ -109,7 +109,13 @@ const signup = (req, res) => {
 			   })
         }
         
-        Notification.create({fromUserId:result._id}, {notificationTypeId:result.notificationTypeId}, (err,notify)=>{
+        Notification.create({fromUserId:result._id}, (err,notify)=>{
+          let notificationTypeId= constant.notification_type; 
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            notify: notificationTypeId
+          });
           if(err){
             return res.json({
               code: httpResponseCode.BAD_REQUEST,
