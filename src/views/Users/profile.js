@@ -1,30 +1,30 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import {
-    Badge,
-    Button,
-    ButtonDropdown,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Collapse,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Fade,
-    Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText,
-    Label,
-    Row,
+import {    
+  Badge,
+  Button,
+  ButtonDropdown,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Col,
+  Collapse,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Fade,
+  Form,
+  FormGroup,
+  FormText,
+  FormFeedback,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Label,
+  Row,
   } from 'reactstrap';
 
   class Profile extends Component {
@@ -40,7 +40,7 @@ import {
         //if(localStorage.getItem('jwtToken') != null)
           //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
           axios.get('/user/viewAdmin').then(result => {
-            if(result.data.code == '200'){
+            if(result.data.code === 200){
               //localStorage.setItem('jwtToken', result.data.result.accessToken);
               this.setState({ profile: result.data.result});
               

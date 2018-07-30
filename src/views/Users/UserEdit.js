@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
+import StateAllSelectBox from '../SelectBox/StateSelectBox/StateAllSelectBox'
+import CitySelectBox from '../SelectBox/CitySelectBox/CitySelectBox'
+import SubscriptionSelectBox from '../SelectBox/SubscriptionSelectBox/SubscriptionSelectBox'
 import {
   Badge,
   Button,
@@ -37,6 +41,13 @@ class UserEdit extends Component {
     this.lastName = React.createRef();
     this.username = React.createRef();
     this.email = React.createRef();
+    this.phoneNumber = React.createRef();
+    this.dob = React.createRef();
+    this.city = React.createRef();
+    this.state = React.createRef();
+    this.country = React.createRef();
+    this.zipCode = React.createRef();
+    this.subscriptionPlan = React.createRef();
     this.profilePic = React.createRef();
 
     let userId = this.props.match.params.id;
@@ -84,6 +95,18 @@ class UserEdit extends Component {
   fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
    }
+   handleCountry = (country) => {
+    this.setState({country: country});
+}
+handleState = (state) => {
+    this.setState({state: state});
+}
+handleCity = (city) => {
+    this.setState({city: city});
+}
+handleSubscription = (subscriptions) => {
+    this.setState({subscriptions: subscriptions});
+}
 
   cancelHandler(){
     this.props.history.push("/users");
@@ -143,6 +166,14 @@ class UserEdit extends Component {
         data.append('lastName', this.lastName.value)
         data.append('userName', this.userName.value)
         data.append('email', this.email.value)
+        data.append('phoneNumber', this.phoneNumber.value)
+        data.append('dob', this.dob.value)
+        data.append('city', this.city.value)
+        data.append('state',this.state.state)
+        data.append('country',this.country.value)
+        data.append('zipCode', this.zipCode.value)
+        data.append('subscriptionPlan',this.subscriptionPlan.value)
+
         if(this.state.selectedFile){
           data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
          } else {
@@ -175,10 +206,18 @@ class UserEdit extends Component {
           this.lastName.value = result.data.result.lastName;
           this.userName.value = result.data.result.userName;
           this.email.value = result.data.result.email;
+          this.phoneNumber.value = result.data.result.phoneNumber
+          this.dob.value = result.data.result.dob
+          this.city.value = result.data.result.city
+          this.state.value = result.data.result.state
+          this.country.value = result.data.result.country
+          this.zipCode.value = result.data.result.zipCode
+          this.subscriptionPlan.value = result.data.result.subscriptionPlan
+          this.profilePic.value = result.data.result.profilePic
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -229,11 +268,40 @@ class UserEdit extends Component {
                   <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
                   <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
+              <FormGroup>
+               <Label>Contact Number</Label>
+               <Input type='text' innerRef={input => (this.phoneNumber = input)} placeholder='Contact Number'/>
+              </FormGroup>
+              <FormGroup>
+               <Label>DOB</Label>
+               <Input type='text' innerRef={input => (this.dob = input)} placeholder='DOB'/>
+              </FormGroup>
+              <FormGroup>
+               <Label>City</Label>
+               <CitySelectBox onSelectCity={this.handleCity} reference={(city)=> this.city=city} value = {this.state.editUser.city}/>
+              </FormGroup>
+              <FormGroup>
+               <Label>State</Label>
+               <StateAllSelectBox onSelectState={this.handleState} reference={(state)=> this.state=state} value = {this.state.editUser.state}/>
+              </FormGroup>
+              <FormGroup>
+               <Label>Country</Label>
+               <CountrySelectBox onSelectCountry={this.handleCountry} reference={(country)=> this.country=country} value={this.state.editUser.country} />
+              </FormGroup>
+              <FormGroup>
+               <Label>Zip Code</Label>
+               <Input type='text' innerRef={input => (this.zipCode = input)} placeholder='Contact Number'/>
+              </FormGroup>
+              <FormGroup>
+               <Label>Subscription Plan</Label>
+               <SubscriptionSelectBox onSelectSubscription = {this.handleSubscription} reference={(subscriptionPlan) => this.subscriptionPlan=subscriptionPlan} value={this.state.editUser.subscriptionPlan}/>
+              </FormGroup>
                 <FormGroup>
 						 <Label htmlFor="brand">Profile Image</Label>                  
 						  <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" /> 	
 						  <img src={'assets/uploads/ProfilePic/'+this.state.editUser.profilePic} width="60"/>
 					   </FormGroup>
+
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

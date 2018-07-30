@@ -22,6 +22,7 @@ class UserSelectBox extends Component {
   }
   componentDidMount(){
 	//this.props.reference.value = this.props.value;
+	 //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
     axios.get('/user/listUser').then(result => {
 		//console.log("listUser",result.data.result[0].userName);
       if(result.data.code === 200){		  

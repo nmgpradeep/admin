@@ -282,7 +282,7 @@ const updateProduct = (req, res) => {
 					}
 				  });
 				}); 
-			  console.log('asdfasdfasdfasdfadfsad',newfilename);
+			  //console.log('asdfasdfasdfasdfadfsad',newfilename);
 			  Product.update({ _id:data._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){				
 					return res.send({

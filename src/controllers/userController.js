@@ -16,27 +16,26 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs'); //FileSystem for node.js
 var gm = require('gm'); //GraphicsMagick for node.js
-var ssn;
+var passport = require('passport');
+require('../config/passport')(passport);
+var jwt = require('jsonwebtoken');
+var settings = require('../config/settings'); // get settings file
 //var NodeSession = require('node-session');
 //session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
 
-//const nodemailer = require('nodemailer');
-// var passport = require('passport');
-// require('../config/passport')(passport);
-// var getToken = function (headers) {
-//   if (headers && headers.authorization) {
-//     var parted = headers.authorization.split(' ');
-//     if (parted.length === 2) {
-//       return parted[1];
-//     } else {
-//       return null;
-//     }
-//   } else {
-//     return null;
-//   }
-// };
-
-
+getToken = function (headers) {	
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');    
+    if (parted.length) {		
+      return parted[0];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+ 
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to create a new user
@@ -109,7 +108,13 @@ const signup = (req, res) => {
 			   })
         }
         
-        Notification.create({fromUserId:result._id}, {notificationTypeId:result.notificationTypeId}, (err,notify)=>{
+        Notification.create({fromUserId:result._id}, (err,notify)=>{
+          let notificationTypeId= constant.notification_type; 
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            notify: notificationTypeId
+          });
           if(err){
             return res.json({
               code: httpResponseCode.BAD_REQUEST,
@@ -217,6 +222,9 @@ const login = (req, res) => {
       } else if (result.userType === req.body.userType) {
         result.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
+			 
+			  
+			  
             var now = new Date();
             var unix_time = moment().unix()
             var salt = data.user_contact + unix_time
@@ -232,25 +240,40 @@ const login = (req, res) => {
               }, {
                 new: true
               }).lean().exec(function (err, result) {
+				  
                 if (err)
                   return res.send({
                     code: httpResponseCode.BAD_REQUEST,
                     message: httpResponseMessage.INTERNAL_SERVER_ERROR
                   })
                 })
-			
 			// session.startSession(req, res, sessionValue)
 			// req.session.put('user',result);
 			// var value = req.session.get('user');
 			// console.log("SESSION VARIABLE",value);	
          
           // set the use data in to session
-             req.session.user= result;    
-             
+             req.session.user = result; 
+             console.log("LOgin SESSION ", req.session)
+              req.session.reload(function () {
+				req.session.save(function (err) {
+				  if (err) return res.end(err.message)
+				  res.end('saved')
+				})
+			  })
+			  
+			  
+			  
+			//////////////////// JWT Token   ///////////////////
+			// if user is found and password is right create a token
+           var token = jwt.sign(result.toJSON(), settings.secret);
+          // return the information including token as JSON
+
             return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.LOGIN_SUCCESSFULLY,
-             result: result
+              result: result,
+              token:token
             });
 
           } else {
@@ -370,9 +393,13 @@ const resetPassword = (req,res) => {
  *  Date	: June 18, 2018
  *	Description : Function to list the available user on the plateform
  **/
-const listUser = (req, res) => {
-  //var token = getToken(req.headers);
-  // if (token) {
+const listUser = (req, res) => {	
+	
+  var token = getToken(req.headers);  
+  if (token) {	  
+		decoded = jwt.verify(token,settings.secret);	  
+		var userId = decoded.id;
+		console.log("decoded",decoded)
     User.find({}, (err, result) => {
       if (err) {
         return res.send({
@@ -395,9 +422,9 @@ const listUser = (req, res) => {
         }
       }
     });
-  // } else {
-  //   return res.status(403).send({code: 403, message: 'Unauthorized.'});
-  // }
+   } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+   }
 }
 
 //Auther	: Rajiv Kumar Date	: June 22, 2018
@@ -462,33 +489,40 @@ const viewUser = (req, res) => {
  *	Description : Function to view the available user details
  **/
 const viewAdmin = (req, res) => {
-  ssn = req.session;
-  console.log("SESSION USER",ssn)
-  const id = req.params;
-  //console.log('<<<<<<<<<<<',req.params); 
- 
-	User.find({}, (err, result) => {
-    if (err) {
-      return res.send({
-        code: httpResponseCode.BAD_REQUEST,
-        message: httpResponseMessage.INTERNAL_SERVER_ERROR
-      })
-    } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      }else {
-        return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
-            });
+var token = getToken(req.headers);  
+   if (token) {	  
+		decoded = jwt.verify(token,settings.secret);	  
+		var userId = decoded.id;
+		console.log("decoded",decoded)
+		  
+		  const id = req.params;
+		  //console.log('<<<<<<<<<<<',req.params); 
+		 
+			User.find({}, (err, result) => {
+			if (err) {
+			  return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  })
+			} else {
+			  if (!result) {
+				res.json({
+				  message: httpResponseMessage.USER_NOT_FOUND,
+				  code: httpResponseMessage.BAD_REQUEST
+				});
+			  }else {
+				return res.json({
+					  code: httpResponseCode.EVERYTHING_IS_OK,
+					  message: httpResponseMessage.SUCCESSFULLY_DONE,
+					 result: result
+					});
 
-      }
-    }
-  })
+			  }
+			}
+		  })
+	}else {
+	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
 }
 
 
@@ -652,6 +686,29 @@ const deleteUser = (req, res) => {
              result: result
             });
   })
+}
+
+/** Auther	: Rajiv Kumar
+ *  Date	: July , 2018
+ *	Description : Function to getLoggedInUser
+ **/
+const getLoggedInUser = (req, res) => {
+	var token = getToken(req.headers);  
+	
+	if (token) {	  
+		decoded = jwt.verify(token,settings.secret);	  
+		var userId = decoded._id;
+		console.log("decoded",decoded,userId)
+		  User.findOne({_id: userId}).then(function(user){       
+			return res.json({
+				  code: httpResponseCode.EVERYTHING_IS_OK,
+				  message: httpResponseMessage.SUCCESSFULLY_DONE,
+				 result: user
+				});
+        });		
+  }else {
+	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
 }
 
 
@@ -836,8 +893,9 @@ module.exports = {
 	users,
 	contustUs,
 	send,
-  dashboardStates,
-  viewAdmin,
-  forgotPassword,
-  resetPassword
+	getLoggedInUser,
+    dashboardStates,
+   viewAdmin,
+   forgotPassword,
+   resetPassword
 }

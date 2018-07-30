@@ -22,15 +22,15 @@ import { Login,ForgetPassword, Page404, Page500, Register, ResetPassword, CheckM
 // import { renderRoutes } from 'react-router-config';
 
 //import http from 'http';
-
 const port=5001;
 const basePath ='';// '/react-test';
 axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port + basePath;
-
+//console.log("localStorage",localStorage.getItem('jwtToken'))
+axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 class App extends Component {
   constructor(props){
     super(props);
-    console.log('TOken', localStorage.getItem('jwtToken'));
+    //console.log('TOken', localStorage.getItem('jwtToken'));
     if(localStorage.getItem('jwtToken') === null){
       window.location.href="#/login";
     }
