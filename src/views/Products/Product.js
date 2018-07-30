@@ -11,18 +11,15 @@ Capitalize(str){
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
   render() {
-    return (    
+    return (
+   
       <tr key={this.props.product._id}>		
         <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
         <td>{this.props.product.description}</td>
-        <td>{(this.props.product.category)? this.props.product.category.title:''}</td>  
         <td>{(this.props.product.user)?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
-        <td>{(this.props.product.size)?this.props.product.size.size:''}</td>
-        <td>{this.props.product.color}</td>  
-        <td>{(this.props.product.brand)?this.props.product.brand.brandName:''}</td>
         <td>{this.props.product.productAge}</td>     
-        <td>{this.props.product.productImage}</td>   
+        <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40"/></td>
         <td>
           <Badge onClick={this.props.changeStatus.bind(this, this.props.product)} color={(this.props.product.productStatus === '1')?'success':'danger'}>
             {(this.props.product.productStatus === '1')?'Active':'Inctive'}
