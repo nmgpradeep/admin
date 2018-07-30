@@ -119,14 +119,14 @@ class DonationEdit extends Component {
   }
     handleCategory = (category) => {
        this.category.current = category;
-  }
+    }
     handleUser = (user) => {
 	  this.author.current = user;
     }
   
-   fileChangedHandler = (event) => {
+    fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
-   }
+    }
    
    
   cancelHandler(){

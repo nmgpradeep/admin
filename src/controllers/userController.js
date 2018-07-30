@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Product = require('../models/product')
 const Donation = require('../models/donation')
 const Trade = require('../models/trade')
+const Notification = require('../models/notification')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -104,14 +105,37 @@ const signup = (req, res) => {
 						result: result
 					})
 				  }
-			   })	  
-			  }		
+			   })
+        }
+        
+        Notification.create({fromUserId:result._id}, {notificationTypeId:result.notificationTypeId}, (err,notify)=>{
+          if(err){
+            return res.json({
+              code: httpResponseCode.BAD_REQUEST,
+              message: httpResponseMessage.NOTIFICATION_ERROR
+            });
+          }else {
+            if(!notify){
+              res.json({
+                message: httpResponseMessage.USER_NOT_FOUND,
+                code: httpResponseMessage.BAD_REQUEST
+              });
+            }
+            else{
+              return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+               notify: notify
+              });
+            }
+          }
+        })
 			  ///end file update///	  
 			
-			delete result.password
+			    delete result.password
 
-				// Generate test SMTP service account from ethereal.email
-				// Only needed if you don't have a real mail account for testing
+			  	// Generate test SMTP service account from ethereal.email
+				  // Only needed if you don't have a real mail account for testing
 
 					// create reusable transporter object using the default SMTP transport
 					let transporter = nodemailer.createTransport({
@@ -266,7 +290,97 @@ const login = (req, res) => {
   })
 }
 
+/* 
+  *Auther : Saurabh Agarwal
+  *Date   : July 26, 2018
+  *Description  : Function to operate Forget Password
+*/
 
+const forgotPassword = (req,res) => {
+  res.render('ResetPassword')
+  User.findOne({ email: req.body.email, userType: req.body.userType }, (err,result)=> {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      } else {
+        let transporter = nodemailer.createTransport({
+          host: constant.SMTP_HOST,
+          port: constant.SMTP_PORT,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: constant.SMTP_USERNAME, // generated ethereal user
+            pass: constant.SMTP_PASSWORD // generated ethereal password
+          }
+        });
+        host=req.get('host');
+        link="http://"+req.get('host')+"/user/resetPassword/"+result._id;
+        // setup email data with unicode symbols
+        let mailOptions = {
+          from: constant.SMTP_FROM_EMAIL, // sender address
+          to: 'saurabh.agarwal@newmediaguru.org', // list of receivers
+          subject: 'Please click on the below link to reset password ✔', // Subject line
+          text: 'Hello world?', // plain text body
+          html : "Hello,<br> Please Click on the link to reset your password.<br><a href="+link+">Click here to reset</a>"
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message sent: %s', info.messageId);
+          // Preview only available when sending through an Ethereal account
+          console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+          res.render('ResetPassword')
+          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+          // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+        });
+        return res.json({
+          code: httpResponseCode.EVERYTHING_IS_OK,
+          message: httpResponseMessage.SUCCESSFULLY_DONE,
+          result: result
+        })
+      }
+  }
+})
+}
+
+/**
+ * Auther : Saurabh Agarwal
+ * Date   : July 27, 2018
+ * Description  : Function to reset Password
+ */
+const resetPassword = (req,res) => {
+
+  User.findOneAndUpdate({_id:req.params.id}, req.body, {new:true}, (err,result)=> {
+    if(err){
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    }else if(!result){
+      res.json({
+        message: httpResponseMessage.USER_NOT_FOUND,
+        code: httpResponseMessage.BAD_REQUEST
+      });
+    } else {
+      return res.json({
+        code: httpResponseCode.EVERYTHING_IS_OK,
+        message: httpResponseMessage.SUCCESSFULLY_DONE,
+       result: result
+      });
+      
+    }
+  })
+}
 
 
 /** Auther	: Rajiv Kumar
@@ -316,6 +430,7 @@ const listUser = (req, res) => {
     User.find({ userType: { $ne: 1 }})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .exec(function(err, users) {
           User.count().exec(function(err, count) {
             if (err) return next(err)
@@ -491,28 +606,6 @@ const updateUser = (req, res) => {
         }
       }) 
     });
-  // User.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
-  //   if(err){
-	// 	return res.send({
-	// 		code: httpResponseCode.BAD_REQUEST,
-	// 		message: httpResponseMessage.INTERNAL_SERVER_ERROR
-	// 	  });
-  //   }else {
-  //     if (!result) {
-  //       res.json({
-  //         message: httpResponseMessage.USER_NOT_FOUND,
-  //         code: httpResponseMessage.BAD_REQUEST
-  //       });
-  //     }else {
-  //       return res.json({
-  //             code: httpResponseCode.EVERYTHING_IS_OK,
-  //             message: httpResponseMessage.SUCCESSFULLY_DONE,
-  //            result: result
-  //           });
-
-  //     }
-  //   }
-  // })
 }
 /** Auther	: Karnika sharma
  *  Date	: July 6, 2018
@@ -777,11 +870,8 @@ const send = (req, res) => {
 				return console.log(error);
 			}
 			console.log('Message sent: %s', info.messageId);
-			// Preview only available when sending through an Ethereal account
 			console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 			res.render('contactus',{msg:'Email has been send'})
-			// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-			// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 		});
 }
 
@@ -797,7 +887,9 @@ module.exports = {
 	users,
 	contustUs,
 	send,
-	dashboardStates,
-	viewAdmin,
-	getLoggedInUser
+	getLoggedInUser,
+    dashboardStates,
+   viewAdmin,
+   forgotPassword,
+   resetPassword
 }

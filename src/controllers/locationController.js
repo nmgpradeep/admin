@@ -67,6 +67,7 @@ const listCountry = (req,res) => {
     Country.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       //.populate({path: "author", model :"User"})
       .exec(function (err, country){
           Country.count().exec(function(err, count) {
@@ -239,33 +240,13 @@ const createStates = (req, res) => {
  *  Date	: July 17, 2018
  */
 /// function to list all States
-const listStates = (req, res) => { 
-  // Testimonial.find({},(err,result)=>{
-	// 	if (!result) {
-	// 		res.json({
-	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
-	// 		  code: httpResponseMessage.BAD_REQUEST
-	// 		});
-	// 	  }else {				
-	// 		return res.json({
-	// 			  code: httpResponseCode.EVERYTHING_IS_OK,				
-	// 			  result: result
-	// 			});
-	// 	  }
-  //   })
-  
-  
-  
-    //~ Testimonial.find({})
-    //~ .populate('author').exec((err, posts) => {
-      //~ console.log("Populated author " + posts[0].author);
-    //~ })
-    
+const listStates = (req, res) => {     
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     State.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate('country')
       //.populate({path: "author", model :"User"})
       .exec(function (err, state){
@@ -284,8 +265,60 @@ const listStates = (req, res) => {
             })
         });
 }
+/** Author	: Saurabh Agarwal
+ *  Date	: July 17, 2018
+ */
+/// function to list all States
+const listingStates = (req, res) => {  
+	State.find({}, (err, result) => {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,             
+             result: result
+            });
 
+      }
+    }
+  })
+ }
+/** Author	: Saurabh Agarwal
+ *  Date	: July 17, 2018
+ */
+/// function to list all States
+const listingcities = (req, res) => {  
+	City.find({}, (err, result) => {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,             
+             result: result
+            });
 
+      }
+    }
+  })
+ }
 /** Author	: Saurabh Agarwal
  *  Date	: July 17, 2018
 **/
@@ -464,32 +497,12 @@ const createCitys = (req, res) => {
  */
 /// function to list all Citys
 const listCitys = (req, res) => { 
-  // Testimonial.find({},(err,result)=>{
-	// 	if (!result) {
-	// 		res.json({
-	// 		  message: httpResponseMessage.ITEM_NOT_FOUND,
-	// 		  code: httpResponseMessage.BAD_REQUEST
-	// 		});
-	// 	  }else {				
-	// 		return res.json({
-	// 			  code: httpResponseCode.EVERYTHING_IS_OK,				
-	// 			  result: result
-	// 			});
-	// 	  }
-  //   })
-  
-  
-  
-    //~ Testimonial.find({})
-    //~ .populate('author').exec((err, posts) => {
-      //~ console.log("Populated author " + posts[0].author);
-    //~ })
-    
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     City.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate('countrySelect',(['countryName']))
       .populate('stateSelect')
       .exec(function (err, city){
@@ -637,10 +650,12 @@ module.exports = {
   changeStatus,
   createCitys,
   listCitys,
+  listingStates,
   updateCitys,
   viewCitys,
   deleteCitys,
   Status,
-  getState
+  getState,
+  listingcities
 
 }

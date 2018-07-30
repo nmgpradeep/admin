@@ -99,6 +99,7 @@ const donations = (req, res) => {
     Donation.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate('userId')
       .populate('userId',['firstName','lastName'])
       .populate('productCategory',['categoryName'])
@@ -145,7 +146,8 @@ const viewDonation = (req, res) => {
 		.populate('userId',['firstName','lastName'])
 		.populate('productCategory',['categoryName'])
 	
-	     .exec(function(err, result){		
+	     .exec(function(err, result){
+			 console.log('rrrrrr',result);		
 			if (err) {
 			return res.send({
 			code: httpResponseCode.BAD_REQUEST,

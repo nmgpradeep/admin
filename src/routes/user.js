@@ -18,6 +18,8 @@ router.delete('/deleteUser/:id',userController.deleteUser);
 router.get('/dashboardStates',userController.dashboardStates);
 router.get('/viewAdmin/:id',userController.viewAdmin);
 router.get('/getLoggedInUser',userController.getLoggedInUser);
+router.post('/forgotPassword', userController.forgotPassword);
+router.get('/resetPassword/:id', userController.resetPassword)
 // router.put('/updateAdmin',userController.updateAdmin);
 
 module.exports = router;

@@ -137,7 +137,7 @@ class ProductAdd extends Component {
         });
       }
   }
-  
+
   componentDidMount() {
       axios.get('/category/allCategories').then(result => {
         if(result.data.code == '200'){
@@ -161,9 +161,8 @@ class ProductAdd extends Component {
         }
       });
   }
-  
+
   render() {
-	  
     return (
       <div className="animated fadeIn">
         <Row>
@@ -187,8 +186,7 @@ class ProductAdd extends Component {
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>                  
                     <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
-                    
-                </FormGroup>
+               </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
                     <CategorySelectBox onSelectCategory={this.handleCategory}/>

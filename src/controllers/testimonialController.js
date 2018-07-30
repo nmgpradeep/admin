@@ -79,6 +79,7 @@ const listTestimonials = (req, res) => {
     Testimonial.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .sort({createdAt:-1})
       .populate('author')
       //.populate({path: "author", model :"User"})
       .exec(function (err, testimonial){

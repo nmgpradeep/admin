@@ -438,10 +438,21 @@ const EmailNotification = Loadable({
 	loading : Loading,
 });
 
+const ForgetPassword = Loadable({
+  loader:() => import('./views/Pages/Login/ForgetPassword'),
+  loading : Loading,
+});
+const ResetPassword = Loadable({
+  loader: () => import('./views/Pages/Login/ResetPassword'),
+  loading : Loading,
+});
+
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
+  { path: '/forgotPassword', exact: true, name: 'Forget Password', component: ForgetPassword},
+  { path: '/resetPassword', exact: true, name: 'Reset Password', component: ResetPassword},
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   
   { path: '/users/add', exact: true,name: 'Add User', component: UserAdd },
