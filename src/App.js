@@ -25,7 +25,7 @@ import { Login,ForgetPassword, Page404, Page500, Register, ResetPassword, CheckM
 const port=5001;
 const basePath ='';// '/react-test';
 axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + ':' + port + basePath;
-console.log("localStorage",localStorage.getItem('jwtToken'))
+//console.log("localStorage",localStorage.getItem('jwtToken'))
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 class App extends Component {
   constructor(props){

@@ -68,15 +68,38 @@ class DefaultHeader extends Component {
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
-         <NavItem className="d-md-down-none">
+         {/*  <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
           </NavItem>
-         {/* <NavItem className="d-md-down-none">
+        <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-list"></i></NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
           </NavItem> */}
+          <AppHeaderDropdown direction="down">
+            <DropdownToggle nav>
+            <NavItem className="d-md-down-none">
+            <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
+          </NavItem>
+            </DropdownToggle>
+            <DropdownMenu right style={{ right: 'auto' }}>
+              <DropdownItem header tag="div" className="text-center"><strong>You have 5 notifications </strong></DropdownItem>
+              <DropdownItem><i className="icon-user-follow text-success"></i> New User registered {' '}<Badge color="info">42</Badge></DropdownItem>
+              <DropdownItem><i className="icon-basket-loaded text-primary"></i> New Trade Requested <Badge color="success">42</Badge></DropdownItem>
+              <DropdownItem><i className="icon-basket-loaded text-secondary"></i> Trade Rejected<Badge color="danger">42</Badge></DropdownItem>
+              <DropdownItem><i className="icon-note"></i> New Message Received {' '}<Badge color="warning">42</Badge></DropdownItem>
+              {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
+              
+              {/* <DropdownItem><i className="fa fa-user" href = "../../views/AdminProfile/Profile.js"></i> Profile</DropdownItem>
+              <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
+              <DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
+              <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
+              <DropdownItem divider />
+              <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
+              <DropdownItem onClick={this.logoutHandler}><i className="fa fa-lock"></i> Logout</DropdownItem> */}
+            </DropdownMenu>
+          </AppHeaderDropdown>
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>Welcome <strong>{this.state.user.userName} </strong>
               <img src={'assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@pitchandswitch.com" />

@@ -29,6 +29,11 @@ class Users extends Component {
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
   
+  componentDidMount() {    
+      console.log("COMPONENT");
+      this.loadCommentsFromServer();
+  }
+  
   loadCommentsFromServer() {
     axios.get('/user/users/' + this.state.currentPage).then(result => {
       if(result.data.code ===200){
@@ -55,12 +60,7 @@ class Users extends Component {
         this.loadCommentsFromServer();
       });
   };
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      this.loadCommentsFromServer();
-
-  }
+ 
   userDeleteHandler (id){
     this.setState({
       approve: false,
