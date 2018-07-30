@@ -4,9 +4,9 @@ import { Badge} from 'reactstrap';
 import Moment from 'moment';
 // import PropTypes from 'prop-types';
 class Subscription extends Component {
-  constructor(props){
-    super(props);
-  }
+  //~ constructor(props){
+    //~ super(props);
+  //~ }
   render() {
     return (
       <tr key={this.props.subscription._id}>

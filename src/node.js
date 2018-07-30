@@ -23,8 +23,9 @@ const notification = require("./routes/notification")
 const morgan=require('morgan')
 const http = require('http');
 const fs = require('fs');
+var cookieParser = require('cookie-parser');
 var session = require('express-session')
-
+var auth = require('./routes/auth');
 //mongoose.connect(config.db)
 mongoose.connect('mongodb://pitchnswitch:nmg251@ds147450.mlab.com:47450/pitch-switch');
 app.set('port', (5000));
@@ -37,26 +38,38 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }));
-  app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+extended: true
+}));
+app.use(bodyParser.json());
+
+app.use(cookieParser());
 
  
 app.use(morgan('dev'));
 
 //Exoress session object
 app.set('trust proxy', 1) // trust first proxy
+var MemoryStore =session.MemoryStore;
 app.use(session({
-  secret: 'ssshhhhh',
+  key: 'userId',
+  secret: 'pitchandswitch',
   resave: false,
-  saveUninitialized: true,
+  store: new MemoryStore(),
+  saveUninitialized: false,
   cookie: { secure: true },
   cookie: { maxAge: 60000 }
 }))
 
+app.use((req, res, next) => {
+    if (req.cookies.userId && !req.session.user) {
+        res.clearCookie('user_sid');        
+    }
+    next();
+});
 
 app.use('/user', user);
+app.use('/api/auth', auth);
 app.use('/category', category);
 app.use('/product', product);
 app.use('/subscription',subscription);

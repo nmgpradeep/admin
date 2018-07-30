@@ -4,9 +4,7 @@ import { Badge} from 'reactstrap';
 import Moment from 'moment';
 // import PropTypes from 'prop-types';
 class User extends Component {
-  constructor(props){
-    super(props);          
-  }
+
   Capitalize(str){
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }

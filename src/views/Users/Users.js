@@ -4,10 +4,10 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import User from './User';
 import ReactPaginate from 'react-paginate';
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
+var passport = require('passport');
+console.log('passport', passport);
+require('../../config/passport')(passport);
+console.log('newpassport', passport);
 
 class Users extends Component {
   constructor(props){
@@ -27,6 +27,11 @@ class Users extends Component {
     }
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
+  }
+  
+  componentDidMount() {    
+      console.log("COMPONENT");
+      this.loadCommentsFromServer();
   }
   
   loadCommentsFromServer() {
@@ -55,12 +60,7 @@ class Users extends Component {
         this.loadCommentsFromServer();
       });
   };
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-      this.loadCommentsFromServer();
-
-  }
+ 
   userDeleteHandler (id){
     this.setState({
       approve: false,
