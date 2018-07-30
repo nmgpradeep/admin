@@ -1,10 +1,13 @@
 const router = require('express').Router();
 var passport = require('passport');
+var express = require('express');
+var jwt = require('jsonwebtoken');
 require('../config/passport')(passport);
+passport.authenticate('jwt', { session: false});
 const userController= require('../controllers/userController');
 router.post('/signup',userController.signup);
 router.post('/login',userController.login);
-//passport.authenticate('jwt', { session: false}),
+
 router.get('/users/:page', userController.users);
 router.get('/listUser', userController.listUser);
 router.get('/viewUser/:id',userController.viewUser);
@@ -14,6 +17,7 @@ router.post('/changeStatus',userController.changeStatus);
 router.delete('/deleteUser/:id',userController.deleteUser);
 router.get('/dashboardStates',userController.dashboardStates);
 router.get('/viewAdmin/:id',userController.viewAdmin);
+router.get('/getLoggedInUser',userController.getLoggedInUser);
 // router.put('/updateAdmin',userController.updateAdmin);
 
 module.exports = router;

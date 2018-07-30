@@ -4,9 +4,9 @@ import { Badge } from "reactstrap";
 // import PropTypes from 'prop-types';
 
 class Category extends Component {
-  constructor(props) {
-    super(props);
-  }
+  //~ constructor(props) {
+    //~ super(props);
+  //~ }
   render() {
     return (
       <tr key={this.props.category._id}>

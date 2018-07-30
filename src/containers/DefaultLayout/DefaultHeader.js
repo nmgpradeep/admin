@@ -5,24 +5,44 @@ import PropTypes from 'prop-types';
 import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import logo from '../../assets/img/brand/logo.png'
 import sygnet from '../../assets/img/brand/sygnet.svg'
-
+import axios from 'axios'
 const propTypes = {
   children: PropTypes.node,
 };
 
 const defaultProps = {};
-
 class DefaultHeader extends Component {
   constructor(props) {
     super(props);
+    
+    this.state = {
+			user:{}
+	}
+	
     this.logoutHandler = this.logoutHandler.bind(this);
   }
+
+
+
   logoutHandler = (e) => {
-    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('jwtToken');    
     window.location.reload();
     //this.props.history.push('/login');
   };
-  render() {
+  
+  componentDidMount(){
+	axios.get('/user/getLoggedInUser').then(result => {
+		console.log("result",result)
+		this.setState({ user:result.data.result})			
+	})
+	
+  }
+ 
+  Capitalize(str){
+	//return str.charAt(0).toUpperCase() + str.slice(1);
+} 
+
+  render() {	 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
     return (
@@ -48,18 +68,18 @@ class DefaultHeader extends Component {
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
-         {/* <NavItem className="d-md-down-none">
+         <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
           </NavItem>
-          <NavItem className="d-md-down-none">
+         {/* <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-list"></i></NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
           </NavItem> */}
           <AppHeaderDropdown direction="down">
-            <DropdownToggle nav>
-              <img src={'assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+            <DropdownToggle nav>Welcome <strong>{this.state.user.userName} </strong>
+              <img src={'assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@pitchandswitch.com" />
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
               {/*<DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
@@ -79,7 +99,7 @@ class DefaultHeader extends Component {
             </DropdownMenu>
           </AppHeaderDropdown>
         </Nav>
-        <AppAsideToggler className="d-md-down-none" />
+        {/*<AppAsideToggler className="d-md-down-none" /> */}
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>
     );

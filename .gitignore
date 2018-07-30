@@ -4,13 +4,13 @@
 node_modules/*
 package-lock.json
 sessions/*
-session/
+common/constant.js
 
 # production
 /build
 
 #Assets directory for unwanted image and file
-assets/uploads/*
+public/assets/uploads/*
 # misc
 .DS_Store
 .idea

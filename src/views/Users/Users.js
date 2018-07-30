@@ -4,10 +4,10 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import User from './User';
 import ReactPaginate from 'react-paginate';
-// var passport = require('passport');
-//  console.log('passport', passport);
-//  require('../../config/passport')(passport);
-// console.log('newpassport', passport);
+var passport = require('passport');
+console.log('passport', passport);
+require('../../config/passport')(passport);
+console.log('newpassport', passport);
 
 class Users extends Component {
   constructor(props){

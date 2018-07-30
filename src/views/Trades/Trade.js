@@ -4,10 +4,9 @@ import { Badge} from 'reactstrap';
 import Moment from 'moment';
 // import PropTypes from 'prop-types';
 class Trade extends Component {
-  constructor(props){
-    super(props);
-    
-  }
+  //~ constructor(props){
+    //~ super(props);    
+  //~ }
   render() {
     return (
       <tr key={this.props.trade._id}>

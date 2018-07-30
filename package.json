@@ -25,6 +25,7 @@
     "bootstrap": "^4.1.1",
     "chart.js": "^2.7.2",
     "classnames": "^2.2.6",
+    "cookie-parser": "^1.4.3",
     "core-js": "^2.5.7",
     "cors": "^2.8.4",
     "enzyme": "^3.3.0",

@@ -17,15 +17,17 @@ class Login extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
-    console.log('REFS', this.email.value +', ' + this.password.value);
+   // console.log('REFS', this.email.value +', ' + this.password.value);
     const email = this.email.value;
     const password = this.password.value;
 
     axios.post('/user/login', { email: email, password:password, userType: '1'})
       .then((result) => {
+		  
         console.log('LOGIN RESULT', result)
-        if(result.data.code == '200'){
-          localStorage.setItem('jwtToken', result.data.result.accessToken);
+        if(result.data.code === 200){
+		  console.log("accessToken",result.data.token)		
+          localStorage.setItem('jwtToken', result.data.token);
           this.setState({ message: '' });
           this.props.history.push('/dashboard');
         }else{

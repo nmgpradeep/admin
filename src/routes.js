@@ -6,10 +6,12 @@ import DefaultLayout from './containers/DefaultLayout';
 function Loading() {
   return <div>Loading...</div>;
 }
+
 const Breadcrumbs = Loadable({
   loader: () => import('./views/Base/Breadcrumbs'),
   loading: Loading,
 });
+
 const Cards = Loadable({
   loader: () => import('./views/Base/Cards'),
   loading: Loading,
@@ -169,6 +171,7 @@ const Widgets = Loadable({
   loader: () => import('./views/Widgets/Widgets'),
   loading: Loading,
 });
+
 
 // Loder for Users
 const Users = Loadable({

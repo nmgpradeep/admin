@@ -3,8 +3,7 @@ import {Link} from 'react-router-dom';
 import {
   Button,
   Card,
-  CardBody,
-  CardFooter,
+  CardBody, 
   CardHeader,
   Col,
   FormGroup,
@@ -30,7 +29,7 @@ class ProductView extends Component {
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');     
      axios.get('/product/viewProduct/' + this.state.productId).then(result => {
 		 console.log('view products',result);
-         if(result.data.code == '200'){
+         if(result.data.code === 200){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ viewProducts: result.data.result});
         }
