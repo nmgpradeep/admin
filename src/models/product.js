@@ -37,6 +37,10 @@ size:{
   type: Schema.Types.ObjectId,
   ref: 'Size'
 },
+condition:{
+  type: String,
+  ref: 'Size'
+},
 productAge:{
 type:String,
 trim:true

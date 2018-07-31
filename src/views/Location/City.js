@@ -16,8 +16,8 @@ class City extends Component {
         <td>{(this.props.city.stateSelect)?this.props.city.stateSelect.stateName:''}</td>
         <td>{this.props.city.cityName}</td>
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this, this.props.city)} color={(this.props.city.status == '1')?'success':'danger'}>
-            {(this.props.city.status == '1')?'Active':'Inctive'}
+          <Badge onClick={this.props.changeStatus.bind(this, this.props.city)} color={(this.props.city.status == '1')?'danger':'success'}>
+            {(this.props.city.status == '1')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>

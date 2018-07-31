@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import {
    Badge,
   Button,
@@ -44,11 +45,23 @@ class UserView extends Component {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           this.setState({ viewUser: result.data.result});
-          
+          this.firstName.value = result.data.result.firstName
+          this.middleName.value = result.data.result.middleName
+          this.lastName.value = result.data.result.lastName
+          this.userName.value = result.data.result.userName
+          this.email.value = result.data.result.email
+          this.phoneNumber.value = result.data.result.phoneNumber
+          this.dob.value = result.data.result.dob
+          this.city.value = result.data.result.city
+          this.state.value = result.data.result.state
+          this.country.value = result.data.result.country
+          this.zipCode.value = result.data.result.zipCode
+          this.subscriptionPlan.value = result.data.result.subscriptionPlan
+          this.profilePic.value = result.data.result.profilePic         
         }
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if(error.status === 401) {
           this.props.history.push("/login");
         }
       });
@@ -95,6 +108,34 @@ class UserView extends Component {
                 <FormGroup>
                   <Label htmlFor="email">Email</Label>
                   <Input type="text" value={this.state.viewUser.email} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="phoneNumber">Contact Number</Label>
+                  <Input type="text" value={this.state.viewUser.phoneNumber} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="dob">DOB</Label>
+                  <Input type="text" value={this.state.viewUser.dob} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">City</Label>
+                  <Input type="text" value={this.state.viewUser.city} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">State</Label>
+                  <Input type="text" value={this.state.viewUser.state} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Country</Label>
+                  <Input type="text" value={this.state.viewUser.country} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="zipCode">Zip Code</Label>
+                  <Input type="text" value={this.state.viewUser.zipCode} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">Subscription Plan  </Label>
+                  <Input type="text" value={this.state.viewUser.subscriptionPlan} />
                 </FormGroup>
                 <FormGroup>
                 <Col xs="12" className="text-left">

@@ -28,9 +28,7 @@ import {
   Row,
 } from 'reactstrap';
 
-// a select with dynamically created options
-	var options = []
-// import PropTypes from 'prop-types';
+var options = []
 class CategoryEdit extends Component {
   constructor(props){
     super(props);
@@ -39,9 +37,8 @@ class CategoryEdit extends Component {
     this.parent = React.createRef();
     this.status = React.createRef();
     let categoryId = this.props.match.params.id;
-    
 	
-	 this.state = {
+	this.state = {
       categoryId: categoryId,
       categoryForm: {
         title: {

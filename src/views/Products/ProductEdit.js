@@ -7,6 +7,10 @@ import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
 import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
+
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
+
 import {
   Badge,
   Button,
@@ -33,10 +37,9 @@ import {
   Row,
 } from 'reactstrap';
 
-import ReactQuill from 'react-quill'; // ES6
-import 'react-quill/dist/quill.snow.css'; // ES6
 var FD = require('form-data');
 var fs = require('fs');
+
 
 // import PropTypes from 'prop-types';
 class ProductEdit extends Component {
@@ -48,9 +51,10 @@ class ProductEdit extends Component {
     this.status = React.createRef();  
     this.color = React.createRef();
     this.productAge = React.createRef();
-    this.productImage = React.createRef();
+    this.productImages = React.createRef();
     this.category = React.createRef();
     this.author = React.createRef();
+    this.condition = React.createRef();
     this.brand = React.createRef();
     this.size = React.createRef();
     let productId = this.props.match.params.id;
@@ -98,6 +102,16 @@ class ProductEdit extends Component {
   cancelHandler(){
     this.props.history.push("/products");
   }
+  
+   fileChangedHandler = (event) => {	
+	  this.setState({selectedFile: event.target.files[0]})
+	   console.log('ddddddddd',this.state.selectedFile);
+	  
+   }
+   conditionsChange = (value) => {	 
+        this.setState({conditionValue: value.target.value});
+   }
+  
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -138,36 +152,47 @@ class ProductEdit extends Component {
       }
 
       if(formSubmitFlag){
-        let editProduct = this.state.editProduct;
-        editProduct.productName = this.productName.value;
-        editProduct.description = this.description.value;
-        editProduct.size = this.size.value;
-        editProduct.color = this.color.value;
-        editProduct.brand = this.brand.value;       
-        editProduct.productAge = this.productAge.value;        
-        axios.put('/product/updateProduct', editProduct).then(result => {
-          if(result.data.code == '200'){
-            this.props.history.push("/products");
+		const data = new FD();		
+		data.append('data', this.state.editProduct);
+		data.append('_id', this.state.editProduct._id);
+		data.append('productName', this.productName.value);
+		data.append('description', this.description.value);
+		data.append('productCategory',this.category.value);
+		data.append('productAge',this.productAge.value);
+		data.append('userId',this.author.value);
+		data.append('size', this.size.value);
+		data.append('condition', this.state.conditionValue);
+		data.append('color', this.color.value);
+		data.append('brand', this.brand.value);
+		if(this.state.selectedFile){
+		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
+		} else {
+			data.append('productImages', this.state.editProduct.productImages); 
+	    }
+	      axios.put('/product/updateProduct', data).then(result => {
+          if(result.data.code == 200){
+           this.props.history.push("/products");
           }
         });
-      }
-  }
-  
+         
+      }  
+   }
 
   componentDidMount() {  	 
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
-      console.log('Results Data',result);
+      //console.log('Results Data',result);
       if(result.data.code === 200) {
         this.setState({editProduct: result.data.result});
         this.productName.value = result.data.result.productName;
         this.description.value = result.data.result.description;
-        //this.size.value = result.data.result.size;
-        this.color.value = result.data.result.color;
-        //this.brand.value = result.data.result.brand;
+        this.category.value = result.data.result.productCategory._id;
+        this.brand.value = result.data.result.brand._id;
+        this.size.value = result.data.result.size._id;
+        this.color.value = result.data.result.color;        
         this.author.value = result.data.result.userId._id; 
-        this.productAge.value = result.data.result.productAge;
-        this.setState({productImage: result.data.result.productImage});
-      }      
+        this.productAge.value = result.data.result.productAge;        
+        this.setState({productImages: result.data.result.productImages});
+       }      
       })     
        axios.get('/category/categories').then(result => {
         if(result.data.code === 200){
@@ -176,15 +201,18 @@ class ProductEdit extends Component {
           });
         }        
       })
-      
       axios.get('/user/users/1' ).then(result => {	 
       if(result.data.code ===200){
         this.setState({
           users: result.data.result,         
         });
-        }
+         }
         console.log(this.state.users);
       })
+       axios.get('/donation/getConstant').then(result => {
+           this.setState({conditions: result.data.result});
+           
+       })
       .catch((error) => {
         if(error.status === 401) {
           this.props.history.push("/login");
@@ -194,8 +222,11 @@ class ProductEdit extends Component {
   }
   
   render() {
-	   
-	  
+	 let optionTemplate;
+	   if(this.state.conditions){
+			let conditionsList = this.state.conditions;
+		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
+       }
    return (
       <div className="animated fadeIn">
         <Row>
@@ -206,50 +237,55 @@ class ProductEdit extends Component {
                  <Button onClick={()=>this.cancelHandler()} color="primary" className="btn btn-success btn-sm pull-right">Back</Button>
               </CardHeader>
               <CardBody>
-              <Form noValidate>
+              <Form noValidate action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="company">Name</Label>
-                      <Input type="text"  innerRef={input => (this.productName = input)} placeholder="Product Name" />
-                      {/* <FormFeedback invalid={this.state.validation.productName.valid === false}>{this.state.validation.productName.message}</FormFeedback> */}
-                    </FormGroup>
-                    </Col>
+                      <Input type="text" innerRef={input => (this.productName = input)} placeholder="Product Name" /> </FormGroup>
+                   </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="description">Description</Label>
                     <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
-                     
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="category">Category</Label>
-                   <CategorySelectBox onSelectCategory={this.handleCategory}/>
+                  <Label htmlFor="category">Category</Label>                 
+                   <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editProduct.category}/>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="user">User</Label>
                   <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editProduct.author}/>    
                 </FormGroup>
                  <FormGroup>
-                  <Label htmlFor="size">Size</Label>
-                  <SizeSelectBox onSelectSize={this.handleSize}/>
+                  <Label htmlFor="size">Size</Label>                  
+                  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size} value={this.state.editProduct.size}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="color">Color</Label>
                   <Input type="text" innerRef={input => (this.color = input)} placeholder="Color" />
                 </FormGroup>
-                   <FormGroup>
-                  <Label htmlFor="brand">Brand</Label>
-                   <BrandSelectBox onSelectBrand={this.handleBrand}/>
+                    <FormGroup>
+                    <Label htmlFor="brand">Brand</Label>
+                   <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={this.state.editProduct.brand}/>
                 </FormGroup>
+                 <FormGroup>
+				  <Label htmlFor="brand">Conditions</Label> 
+                   <select id="select" reference={(condition)=> this.condition = condition} value={this.state.editProduct.condition} className="form-control" onChange={this.conditionsChange}>
+				   {optionTemplate}
+				    </select> 		  
+                 </FormGroup>
+                
                 <FormGroup>
                   <Label htmlFor="age">Age Of Item</Label>
                   <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
                 </FormGroup>
                 <FormGroup>
-                      <Label htmlFor="lastname">Banner Image</Label>
-                      <Input type="file" innerRef={input => (this.bannerImage = input)} placeholder="Banner Image" />
-                    </FormGroup>
-
+                   <Label htmlFor="lastname">Product Image</Label>                  	
+					 <Input type="file" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Product Image" /> 	
+					
+					<img src={'assets/uploads/Products/'+this.state.productImages} width="60"/>
+                </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

@@ -56,8 +56,8 @@ type:String,
 trim:true
 },
 city:{
-type:String,
-trim:true
+type:Schema.Types.ObjectId,
+ref: 'City'
 },
 state:{
 type:String,
