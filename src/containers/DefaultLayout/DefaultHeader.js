@@ -13,16 +13,12 @@ const propTypes = {
 const defaultProps = {};
 class DefaultHeader extends Component {
   constructor(props) {
-    super(props);
-    
+    super(props);    
     this.state = {
 			user:{}
-	}
-	
+	}	
     this.logoutHandler = this.logoutHandler.bind(this);
   }
-
-
 
   logoutHandler = (e) => {
     localStorage.removeItem('jwtToken');    

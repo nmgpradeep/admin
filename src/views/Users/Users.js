@@ -21,7 +21,6 @@ class Users extends Component {
       usersCount: 0,
       offset: 0
     };
-   // console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
@@ -36,6 +35,7 @@ class Users extends Component {
   
   loadCommentsFromServer() {
     axios.get('/user/users/' + this.state.currentPage).then(result => {
+		console.log('asdf');
       if(result.data.code ===200){
         this.setState({
           users: result.data.result,
@@ -43,9 +43,8 @@ class Users extends Component {
           PerPage: result.data.perPage,
           totalPages: result.data.pages,
           total_count:result.data.total
-        });
-        }
-      //console.log(this.state.users);
+          });
+        }      
     })
     .catch((error) => {
       //console.log('error', error)
@@ -68,6 +67,7 @@ class Users extends Component {
     });
     this.toggle();
   }
+  
   changeStatusHandler(user){
     user.userStatus = (1 - parseInt(user.userStatus)).toString();
     axios.post('/user/changeStatus', user).then(result => {
@@ -128,7 +128,7 @@ class Users extends Component {
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-					          <th>S.No.</th>
+					<th>S.No.</th>
                     <th>Name</th>
                     <th>Username</th>
                     <th>Email</th>

@@ -23,10 +23,12 @@ class ForgetPassword extends Component {
     axios.post('/user/forgotPassword', { email: email, userType: '1'})
       .then((result) => {
         console.log('Forget password result', result)
-        if(result.data.code == '200'){
-          localStorage.setItem('jwtToken', result.data.result.accessToken);
-          // this.setState({ message: '' });
-          this.props.history.push('/checkMail');
+        if(result.data.code ==200){
+          localStorage.setItem('jwtToken', result.data.result.accessToken);         
+          this.setState({
+            message: result.data.message
+          });        
+          //this.props.history.push('/checkMail');
         }else{
           this.setState({
             message: result.data.message
@@ -68,7 +70,7 @@ class ForgetPassword extends Component {
                     </InputGroup>
                    
                     {message !== '' &&
-                      <Alert color="danger">
+                      <Alert color="success">
                         { message }
                       </Alert>
                     } 

@@ -274,7 +274,7 @@ handleSubscription = (subscriptions) => {
               </FormGroup>
               <FormGroup>
                <Label>DOB</Label>
-               <Input type='text' innerRef={input => (this.dob = input)} placeholder='DOB'/>
+               <Input type='date' innerRef={input => (this.dob = input)} placeholder='DOB' width="20%"/>
               </FormGroup>
               <FormGroup>
                <Label>City</Label>
