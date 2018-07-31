@@ -27,6 +27,7 @@ class DefaultHeader extends Component {
   };
   
   componentDidMount(){
+	axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 	axios.get('/user/getLoggedInUser').then(result => {
 		console.log("result",result)
 		this.setState({ user:result.data.result})			
