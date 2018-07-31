@@ -30,6 +30,9 @@ import {
 import ReactQuill from 'react-quill'; // ES6
 import 'react-quill/dist/quill.snow.css'; // ES6
 
+var FD = require('form-data');
+var fs = require('fs');
+
 // import PropTypes from 'prop-types';
 class CmsPageEdit extends Component {
   constructor(props){
@@ -103,10 +106,16 @@ class CmsPageEdit extends Component {
       }
       
       if(formSubmitFlag){
-        let editPage = this.state.editPage;
-        editPage.pageTitle = this.pageTitle.value;
-        editPage.pageHeading = this.pageHeading.value;
-        axios.put('/page/updatePage', editPage).then(result => {
+        const data = new FD();		
+		console.log('FORM DATA START', this.pageTitle.value);
+		data.append('pageTitle', this.pageTitle.value);
+		data.append('pageHeading', this.pageHeading.value);
+		data.append('description', this.state.text);
+        // let editPage = this.state.editPage;
+        // editPage.pageTitle = this.pageTitle.value;
+        // editPage.pageHeading = this.pageHeading.value;
+        // editPage.description = this.description.value;
+        axios.put('/page/updatePage', data).then(result => {
          if(result.data.code === 200){
             this.props.history.push("/pages");
           }
@@ -118,7 +127,8 @@ class CmsPageEdit extends Component {
    componentDidMount() {   
       axios.get('/page/viewPage/' + this.state.pageId).then(result => {			  
         if(result.data.code === 200){			
-		    this.setState({ editPage: result.data.result});
+          console.log('page details', result.data.result)
+		   this.setState({ editPage: result.data.result});
 			this.pageTitle.value = result.data.result.pageTitle;
 			this.pageHeading.value = result.data.result.pageHeading;          
 			this.setState({ bannerImage: result.data.result.bannerImage});
@@ -172,8 +182,7 @@ class CmsPageEdit extends Component {
                 </Row>
                 <FormGroup>
                   <Label htmlFor="content">Contents</Label>
-                    <ReactQuill defaultValue={this.state.editorHtml} innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleChange}
-                   />
+                    <ReactQuill defaultValue={this.state.editorHtml} innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleContentChange} />
                 </FormGroup> 
                 <Row>
                   <Col xs="6" className="text-right">

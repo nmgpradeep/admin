@@ -105,7 +105,6 @@ fileChangedHandler = (event) => {
       }
       if(formSubmitFlag){
 		console.log("state",this.state)
-		//console.log('IMAGE', this.bannerImage.files[0]);
 		const data = new FD();		
 		console.log('FORM DATA START', this.pageTitle.value);
 		data.append('pageTitle', this.pageTitle.value);
@@ -113,19 +112,7 @@ fileChangedHandler = (event) => {
 		data.append('description', this.state.text);
 		//data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
 		data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
-		console.log("data",data);
-		//console.log('HHH', this.bannerImage.files[0].name);
-		//form.append('bannerImage', fs.createReadStream(this.bannerImage.files[0].name));
-        //~ let newPage = this.state.newPage;
-        //~ newPage.pageTitle = this.pageTitle.value;
-        //~ newPage.pageHeading = this.pageHeading.value;
-        //~ newPage.description = this.state.text;
-        //~ newPage.bannerImage = this.bannerImage.files[0];   
-        //~ let axiosConfig = {
-		  //~ headers: {
-			  //~ 'Content-Type': 'multipart/form-data'
-		  //~ }
-		//~ };
+		console.log("data",data)
         axios.post('/page/newPage', data).then(result => {
 			console.log('resultImages ',result);
           if(result.data.code === 200){

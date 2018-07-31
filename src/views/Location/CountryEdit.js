@@ -145,7 +145,7 @@ class CountryEdit extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label >COuntry Name</Label>
+                      <Label >Country Name</Label>
                       <Input type="text" innerRef={input => (this.countryName = input)}   placeholder="COuntry Name" />
 
                       {/* <FormFeedback invalid={this.state.validation.advertisementName.valid === false}>{this.state.validation.advertisementName.message}</FormFeedback> */}
@@ -155,7 +155,7 @@ class CountryEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="middlename">Country Code</Label>
-                      <Input type="textarea" innerRef={input => (this.countryCode = input)} placeholder="Country Code" />
+                      <Input type="text" innerRef={input => (this.countryCode = input)} placeholder="Country Code" />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
