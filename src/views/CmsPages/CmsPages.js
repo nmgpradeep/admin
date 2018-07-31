@@ -152,7 +152,8 @@ class CmsPages extends Component {
                     <th>S.No</th>
                     <th>Title</th>
                     <th>Heading</th>
-                    <th>Content</th>                  
+                    <th>Content</th>
+                    <th>Image</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>

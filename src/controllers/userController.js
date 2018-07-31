@@ -295,7 +295,6 @@ const login = (req, res) => {
 
   })
 }
-
 /* 
   *Auther : Saurabh Agarwal
   *Date   : July 26, 2018
@@ -526,7 +525,7 @@ const listUser = (req, res) => {
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
   const users = (req, res) => {
-	  //console.log("SESSION",req.session)
+	  console.log("SESSION",req);
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     User.find({ userType: { $ne: 1 }})
@@ -591,8 +590,7 @@ var token = getToken(req.headers);
 		var userId = decoded.id;
 		console.log("decoded",decoded)
 		  
-		  const id = req.params;
-		  //console.log('<<<<<<<<<<<',req.params); 
+		  const id = req.params;	
 		 
 			User.find({}, (err, result) => {
 			if (err) {
@@ -804,7 +802,7 @@ const getLoggedInUser = (req, res) => {
 				 result: user
 				});
         });		
-  }else {
+  } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
 }
@@ -900,7 +898,7 @@ exports.logout = function(req, res, next) {
  *	Description : Function to states on admin dashboard
  **/
 const dashboardStates = (req, res) => {
-	console.log('dashboardStates from user controller')
+	//console.log('dashboardStates from user controller')
 	var totalUser = 0
 	var totalProduct = 0
 	var totalTrade = 0
@@ -943,7 +941,7 @@ const send = (req, res) => {
   </ul>
   <h4>${req.body.message}</h4>`;
 
-  // Generate test SMTP service account from ethereal.email
+    // Generate test SMTP service account from ethereal.email
 	// Only needed if you don't have a real mail account for testing
 
 		// create reusable transporter object using the default SMTP transport

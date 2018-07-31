@@ -100,13 +100,7 @@ class ProductAdd extends Component {
     this.props.history.push("/products");
   }
   
-  
-   componentDidMount() {    
-       axios.get('/donation/getConstant').then(result => {
-           this.setState({conditions: result.data.result});
-           
-       });
-   } 
+ 
    
     fileChangedHandler = (event) => {	
 	  this.setState({selectedFile: event.target.files[0]})
@@ -179,6 +173,11 @@ class ProductAdd extends Component {
         }
       console.log(this.state.users);
     })
+    axios.get('/donation/getConstant').then(result => {
+      this.setState({conditions: result.data.result});
+      console.log('conditions', result.data.result)
+      
+  })
       .catch((error) => {
         if(error.status === 401) {
           this.props.history.push("/login");

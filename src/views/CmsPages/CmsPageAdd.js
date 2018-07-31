@@ -67,18 +67,17 @@ class CmsPageAdd extends Component {
         }
       }
     };
-    this.handleContentChange = this.handleContentChange.bind(this)
-     this.fileChangedHandler = this.fileChangedHandler.bind(this)
+     this.handleContentChange = this.handleContentChange.bind(this)
+      this.fileChangedHandler = this.fileChangedHandler.bind(this)
   }
   handleContentChange(value) {	  
     this.setState({ text: value })
-    
   }
   
+  fileChangedHandler = (event) => {
+	  this.setState({selectedFile: event.target.files[0]})
+  }
 
-fileChangedHandler = (event) => {
-	this.setState({selectedFile: event.target.files[0]})
-}
   cancelHandler(){
     this.props.history.push("/pages");
   }
@@ -131,8 +130,7 @@ fileChangedHandler = (event) => {
             <Card>
               <CardHeader>
                 <strong>New CMS Page</strong>
-                <small></small>
-              </CardHeader>
+                <Link to="/pages" className="btn btn-success btn-sm pull-right">Back</Link>              </CardHeader>
               <CardBody>
               <Form noValidate encType="multipart/form-data">
                 <Row>

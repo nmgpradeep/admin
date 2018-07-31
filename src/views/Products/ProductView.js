@@ -28,14 +28,9 @@ class ProductView extends Component {
       axios.get('/donation/getConstant').then(result => {
            this.setState({conditions: result.data.result});            
        });
-     axios.get('/product/viewProduct/' + this.state.productId).then(result => {
+      axios.get('/product/viewProduct/' + this.state.productId).then(result => {
 		 console.log('view products',result);
-
-     
-
          if(result.data.code === 200){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
-
           this.setState({ viewProducts: result.data.result});
           this.condition.value = result.data.result.condition;
           this.productCategory.value = result.data.result.productCategory.title;
@@ -91,8 +86,7 @@ class ProductView extends Component {
                   </Col>
                 </Row>   
                  <FormGroup>
-                  <Label htmlFor="UserId">User Id</Label>
-                 
+                  <Label htmlFor="UserId">User Id</Label>                 
                   <Input type="text" value={this.state.viewProducts.userId?this.state.viewProducts.userId.firstName:''}/>
                 </FormGroup>            
                 <FormGroup>
