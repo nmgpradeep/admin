@@ -4,7 +4,7 @@ module.exports = {
     'SMTP_PORT': 587,
     'SMTP_USERNAME': 'parmjeet.singh',
     'SMTP_PASSWORD': 'nmg@2k16',
-    'SMTP_FROM_EMAIL': '"pitchandswitch 👻" pitchandswitch.com',
+    //'SMTP_FROM_EMAIL': '"pitchandswitch 👻" pitchandswitch.com',
 
     'profileimage_path':'/var/www/html/PnSAdmin/public/assets/uploads/ProfilePic/',
     'cmsimage_path':'/var/www/html/PnSAdmin/public/assets/uploads/cmsPageImage/',

@@ -302,12 +302,10 @@ class UserAdd extends Component {
                  <FormGroup>
                   <Label htmlFor="contactnumber">ContactNumber</Label>
                   <Input type="text" invalid={this.state.validation.phoneNumber.valid === false} innerRef={input => (this.phoneNumber = input)} placeholder="ContactNumber" />
-               
                 </FormGroup>
-                
-                 <FormGroup>
+               <FormGroup>
                   <Label htmlFor="username">DOB</Label>
-                  <Input type="text" invalid={this.state.validation.dob.valid === false} innerRef={input => (this.dob = input)} placeholder="DOB" />
+                  <Input type="date" invalid={this.state.validation.dob.valid === false} innerRef={input => (this.dob = input)} placeholder="DOB" width="20%" />
                  
                 </FormGroup>
                
@@ -344,7 +342,6 @@ class UserAdd extends Component {
                       {/* <FormFeedback invalid={this.state.validation.image.valid === false}>{this.state.validation.image.message}</FormFeedback> */}
                     </Col>
                   </FormGroup>
-                  
                   
                 <Row>
                   <Col xs="6" className="text-right">
