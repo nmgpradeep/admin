@@ -19,8 +19,8 @@ Capitalize(str){
         <td>{this.props.country.countryCode}</td>
         {/* <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>    */}
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this, this.props.country)} color={(this.props.country.status == '1')?'success':'danger'}>
-            {(this.props.country.status == '1')?'Active':'Inctive'}
+          <Badge onClick={this.props.changeStatus.bind(this, this.props.country)} color={(this.props.country.status == '1')?'danger':'success'}>
+            {(this.props.country.status == '1')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>

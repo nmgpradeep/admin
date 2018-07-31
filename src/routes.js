@@ -277,7 +277,6 @@ const AdvertisementView = Loadable({
 
 });
 
-
 //loding Subscription component
 const Subscriptions = Loadable({
 	loader : () => import('./views/Subscriptions/Subscriptions'),
@@ -449,8 +448,8 @@ const ResetPassword = Loadable({
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/forgotPassword', exact: true, name: 'Forget Password', component: ForgetPassword},
-  { path: '/resetPassword', exact: true, name: 'Reset Password', component: ResetPassword},
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard },  
+  { path: '/resetPassword/:id', name: 'Reset Password', component: ResetPassword},
+  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/users/add', exact: true,name: 'Add User', component: UserAdd },
   { path: '/users/edit/:id',name: 'Edit User', component: UserEdit },
   { path: '/users/view/:id', name: 'View User', component: UserView },  

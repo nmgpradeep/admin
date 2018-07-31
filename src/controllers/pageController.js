@@ -155,6 +155,21 @@ const viewPage = (req, res) => {
 const updatePage = (req, res) => { 
 	//const id = req.params.id;
      //Page.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
+       var form = new multiparty.Form();
+       form.parse(req, function(err,data,files) {
+         if(!data.pageTitle){
+           return res.send({
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.REQUIRED_DATA
+           })
+         }
+         const flag = validation.validate_all_request(data, ['pageTitle']);
+         if(flag){
+           return res.json(flag);
+         }
+         let now = new Date();
+
+       
 	 Page.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
@@ -177,6 +192,7 @@ const updatePage = (req, res) => {
       }
     }    
   })
+})
 }
 
 /** Auther	: Rajiv kumar

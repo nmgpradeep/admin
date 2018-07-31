@@ -13,16 +13,12 @@ const propTypes = {
 const defaultProps = {};
 class DefaultHeader extends Component {
   constructor(props) {
-    super(props);
-    
+    super(props);    
     this.state = {
 			user:{}
-	}
-	
+	}	
     this.logoutHandler = this.logoutHandler.bind(this);
   }
-
-
 
   logoutHandler = (e) => {
     localStorage.removeItem('jwtToken');    
@@ -63,9 +59,9 @@ class DefaultHeader extends Component {
             <NavLink href="#/users">Users</NavLink>
           </NavItem>*/}
           
-          <NavItem className="px-3">
+          {/* <NavItem className="px-3">
             <NavLink href="#">Settings</NavLink>
-          </NavItem>
+          </NavItem> */}
         </Nav>
         <Nav className="ml-auto" navbar>
          {/*  <NavItem className="d-md-down-none">
@@ -113,7 +109,7 @@ class DefaultHeader extends Component {
               <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
                */}
               <DropdownItem><i className="fa fa-user" href = "../../views/AdminProfile/Profile.js"></i> Profile</DropdownItem>
-              <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
+              {/* <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem> */}
               {/*<DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
               <DropdownItem divider />

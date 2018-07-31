@@ -301,8 +301,7 @@ const login = (req, res) => {
   *Description  : Function to operate Forget Password
 */
 
-const forgotPassword = (req,res) => {
-  res.render('ResetPassword')
+const forgotPassword = (req,res) => {  
   User.findOne({ email: req.body.email, userType: req.body.userType }, (err,result)=> {
     if (err) {
       return res.send({
@@ -326,31 +325,33 @@ const forgotPassword = (req,res) => {
           }
         });
         host=req.get('host');
-        link="http://"+req.get('host')+"/user/resetPassword/"+result._id;
+        //link="http://"+req.get('host')+"/user/resetPassword/"+result._id;
+       
+        link = constant.PUBLIC_URL + "#/resetPassword/"+result._id;
         // setup email data with unicode symbols
         let mailOptions = {
           from: constant.SMTP_FROM_EMAIL, // sender address
-          to: 'saurabh.agarwal@newmediaguru.org', // list of receivers
+          to: req.body.email, // list of receivers
           subject: 'Please click on the below link to reset password ✔', // Subject line
           text: 'Hello world?', // plain text body
           html : "Hello,<br> Please Click on the link to reset your password.<br><a href="+link+">Click here to reset</a>"
         };
-
+console.log("mailOptions",mailOptions)
         // send mail with defined transport object
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             return console.log(error);
           }
-          console.log('Message sent: %s', info.messageId);
+          //console.log('Message sent: %s', info.messageId);
           // Preview only available when sending through an Ethereal account
-          console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-          res.render('ResetPassword')
+          //console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+          //res.render('ResetPassword')
           // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
           // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         });
         return res.json({
           code: httpResponseCode.EVERYTHING_IS_OK,
-          message: httpResponseMessage.SUCCESSFULLY_DONE,
+          message: "Reset Password link has been sent successfully to your email, Please Check Your Mail To Reset Password",
           result: result
         })
       }
