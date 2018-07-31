@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Alert, Form, Button, Card, CardBody, CardGroup, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
+var code = 201;
 class Login extends Component {
   constructor() {
     super();
@@ -77,11 +79,18 @@ class Login extends Component {
                       </InputGroupAddon>
                       <Input type="password" innerRef={input => (this.password = input)} placeholder="Password" />
                     </InputGroup>
-                    {message !== '' &&
-                      <Alert color="danger">
-                        { message }
-                      </Alert>
-                    }
+					<If condition={message !== '' && code ===200}>
+						<Then>
+							<Alert color="success">
+								{ message }
+							</Alert>
+						</Then>
+						<ElseIf condition={message !== '' && code !==201 }>
+							<Alert color="danger">
+								{ message }
+							</Alert>
+						</ElseIf>						
+					  </If>
                     <Row>
                       <Col xs="6">
                         <Button color="primary" onClick={this.loginClickHandler} className="px-4">Login</Button>
