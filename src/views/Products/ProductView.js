@@ -25,13 +25,22 @@ class ProductView extends Component {
     this.props.history.push("/products");
   }
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');     
+      axios.get('/donation/getConstant').then(result => {
+           this.setState({conditions: result.data.result});            
+       });
      axios.get('/product/viewProduct/' + this.state.productId).then(result => {
 		 console.log('view products',result);
+
+     
+
          if(result.data.code === 200){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
+
           this.setState({ viewProducts: result.data.result});
+          this.condition.value = result.data.result.condition;
+          this.productCategory.value = result.data.result.productCategory.title;
+          this.userId.value = result.data.result.userId.firstName; 
+          console.log('ddddddd',this.state.viewProducts);
         }
       })
       .catch((error) => {
@@ -41,6 +50,11 @@ class ProductView extends Component {
       });
   }
   render() {
+	  let optionTemplate;
+	    if(this.state.conditions){
+			let conditionsList = this.state.conditions;
+		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
+       }
     return (
       <div className="animated fadeIn">
         <Row>
@@ -72,13 +86,18 @@ class ProductView extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="lastname">Category</Label>
-                      <Input type="text" value={this.state.viewProducts.category} />
+                      <Input type="text" value={this.state.viewProducts.productCategory?this.state.viewProducts.productCategory.title:""} />
                     </FormGroup>
                   </Col>
-                </Row>               
+                </Row>   
+                 <FormGroup>
+                  <Label htmlFor="UserId">User Id</Label>
+                 
+                  <Input type="text" value={this.state.viewProducts.userId?this.state.viewProducts.userId.firstName:''}/>
+                </FormGroup>            
                 <FormGroup>
                   <Label htmlFor="email">Size</Label>
-                  <Input type="text" value={this.state.viewProducts.size} />
+                  <Input type="text" value={this.state.viewProducts.size?this.state.viewProducts.size.size:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">Color</Label>
@@ -86,13 +105,25 @@ class ProductView extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">Brand</Label>
-                  <Input type="text" value={this.state.viewProducts.brand} />
+                  <Input type="text" value={this.state.viewProducts.brand?this.state.viewProducts.brand.brandName:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">Age Of Item</Label>
                   <Input type="text" value={this.state.viewProducts.productAge} />
                 </FormGroup>
                 <FormGroup>
+                <FormGroup>
+                  <Label htmlFor="productAge">Condition</Label>
+                   <select id="select"  value={this.state.viewProducts.condition} className="form-control" disabled>
+					  {optionTemplate}
+				   </select> 	
+                </FormGroup>
+                <FormGroup>
+                    <Label htmlFor="productAge">Image</Label>
+                    <Col xs="12">
+                    <img className="linkedin" src={'assets/uploads/Products/'+this.state.viewProducts.productImages} width="60"/> 
+                     </Col>	
+                </FormGroup>
                   <Label htmlFor="status">Status</Label>
                   <Input type="text" value={(this.state.viewProducts.productStatus === '1')?'Active':'Inactive'} />
                 </FormGroup>

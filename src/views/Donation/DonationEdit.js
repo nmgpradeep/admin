@@ -49,7 +49,6 @@ class DonationEdit extends Component {
     let donationId = this.props.match.params.id;
     this.state = {
       editDonation: {},
-     // author : '',
       condition :[],
       conditionsValue: '', 
       donationId: donationId,
@@ -126,6 +125,7 @@ class DonationEdit extends Component {
   
     fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
+	  console.log('asdfasfdasdf',this.state.selectedFile);
     }
    
    
@@ -188,6 +188,7 @@ class DonationEdit extends Component {
   
   conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
+         
    } 
 
   componentDidMount() {   
@@ -201,13 +202,11 @@ class DonationEdit extends Component {
            this.category.value = result.data.result.productCategory._id;
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
-           this.productAge.value = result.data.result.productAge;                   
-           //this.productImage.value = result.data.result.productImage;
+           this.productAge.value = result.data.result.productAge;  
         }
       })
        axios.get('/donation/getConstant').then(result => {
-           this.setState({conditions: result.data.result});
-           
+           this.setState({conditions: result.data.result});           
        })
       .catch((error) => {
         if(error.status === 401) {
@@ -218,7 +217,7 @@ class DonationEdit extends Component {
   }
   render() {
 	  let optionTemplate;
-	    if(this.state.conditions){
+	   if(this.state.conditions){
 			let conditionsList = this.state.conditions;
 		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
        }
