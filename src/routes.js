@@ -452,7 +452,7 @@ const ResetPassword = Loadable({
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/forgotPassword', exact: true, name: 'Forget Password', component: ForgetPassword},
-  { path: '/resetPassword', exact: true, name: 'Reset Password', component: ResetPassword},
+  { path: '/resetPassword/:id', name: 'Reset Password', component: ResetPassword},
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   
   { path: '/users/add', exact: true,name: 'Add User', component: UserAdd },

@@ -114,7 +114,6 @@ class CmsPageEdit extends Component {
       }
     }
 
-
    componentDidMount() {   
       axios.get('/page/viewPage/' + this.state.pageId).then(result => {			  
         if(result.data.code === 200){			

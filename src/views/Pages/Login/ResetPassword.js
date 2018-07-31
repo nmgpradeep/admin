@@ -13,8 +13,6 @@ class ResetPassword extends Component {
       message: ''
     };
   }
-
-
   submitHandler(e){
     e.PreventDefault();
     let formSubmitFlag = true;
@@ -24,8 +22,10 @@ class ResetPassword extends Component {
       changePassword.confirmPassword = this.changePassword.value;
       console.log('new password', changePassword)
       axios.post('/user/resetPassword', changePassword).then(result=>{
-        if(result.data.code == '200'){
-          this.props.history.push('/login');
+        if(result.data.code === 200){         
+          this.setState({
+            message: result.data.message
+          });       
         }
       })
     } 

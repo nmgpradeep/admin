@@ -7,7 +7,6 @@ passport.authenticate('jwt', { session: false});
 const userController= require('../controllers/userController');
 router.post('/signup',userController.signup);
 router.post('/login',userController.login);
-
 router.get('/users/:page', userController.users);
 router.get('/listUser', userController.listUser);
 router.get('/viewUser/:id',userController.viewUser);
