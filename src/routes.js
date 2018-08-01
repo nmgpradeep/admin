@@ -372,8 +372,6 @@ const BrandEdit = Loadable({
   loader: () => import('./views/Attributes/BrandEdit'),
   loading: Loading,
 });
-
-//loader for Size by Saurabh
 const Sizes = Loadable({
   loader: () => import('./views/Attributes/Sizes'),
   loading: Loading,
