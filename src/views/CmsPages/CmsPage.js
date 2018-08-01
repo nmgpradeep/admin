@@ -13,14 +13,16 @@ class CmsPage extends Component {
       <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.cmsPage.pageTitle}</td>
         <td>{this.props.cmsPage.pageHeading}</td>
-        <td>{this.props.cmsPage.description.replace(/<(?:.|\n)*?>/gm, '')}</td>      
+        <td>{this.props.cmsPage.description.replace(/<(?:.|\n)*?>/gm, '')}</td>
+        <td><img src={'assets/uploads/cmsPageImage/'+this.props.cmsPage.bannerImage} className='avatar'/></td>
         <td>
           <Badge  onClick={this.props.changeStatus.bind(this, this.props.cmsPage)} color={(this.props.cmsPage.status === '1')?'success':'danger'}>
             {(this.props.cmsPage.status === '1')?'Active':'Inctive'}
           </Badge>
         </td>
         <td>         
-         <Link to={'/pages/edit/' + this.props.cmsPage._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>         
+         <Link to={'/pages/edit/' + this.props.cmsPage._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link> 
+         <Link to={'/pages/view/' + this.props.cmsPage._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>        
           <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteCmsPage.bind(this, this.props.cmsPage._id)} ></i>&nbsp;
         </td>
       </tr>

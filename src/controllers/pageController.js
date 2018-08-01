@@ -66,14 +66,14 @@ const create = (req, res) => {
 
 				  });
 				});
-			  }			 
+			  }
 			  Page.update({ _id:result._id },  { "$set": { "bannerImage": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){				
+				if(err){
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
-				} else {				    
+				} else {
 					result.bannerImage = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
@@ -81,13 +81,12 @@ const create = (req, res) => {
 						result: result
 					})
 				  }
-			   })	  
+			   })
 			  ///end file update///	  
 			}
 		  })
 		  
- });   
-    
+ });
 }
 
 /** Auther	: Rajiv kumar
@@ -168,29 +167,64 @@ const updatePage = (req, res) => {
            return res.json(flag);
          }
          let now = new Date();
-
-       
-	 Page.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+	 Page.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
     } else {
-		//console.log('RESILTSSSSSSSSSSSSSSSS',result);
-      if (!result) {
+      if(!result){
         res.json({
-          message: httpResponseMessage.DATA_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseCode.BAD_REQUEST
+        })
       }else {
-        return res.json({
+      if((files.bannerImage)&& files.bannerImage.length>0 && files.bannerImage != '') {
+        var fileName = files.bannerImage[0].originalFilename;
+        var ext = path.extname(fileName);
+        var newfilename = files.bannerImage[0].fieldName + '-' + Date.now() + ext;
+        fs.readFile(files.bannerImage[0].path, function(err, fileData) {
+          if(err) {
+            res.send(err);
+            return;
+          }
+          fileName = files.bannerImage[0].originalFilename;
+          ext = path.extname(fileName);
+          newfilename = newfilename;
+          pathNew = constant.cmsimage_path+newfilename;
+          fs.writeFile(pathNew, fileData, function(err) {
+            if(err){
+              res.send(err);
+              return
+            }
+          });
+        });
+        Page.update({_id:data._id}, {"$set": {"bannerImage":newfilename}},{new:true}, (err,fileupdate) => {
+          if(err){
+            return res.send({
+              code: httpResponseCode.BAD_REQUEST,
+              message: httpResponseMessage.FILE_UPLOAD_ERROR
+            })
+          } else {
+            result.bannerImage = newfilename;
+            return res.send({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
-            });
+              result: result
+            })
+          }
+        })
       }
-    }    
+      else {
+        return res.json({
+         code: httpResponseCode.EVERYTHING_IS_OK,
+         message: httpResponseMessage.SUCCESSFULLY_DONE,
+        result: result
+              });	 	
+     }
+    }
+    }
   })
 })
 }

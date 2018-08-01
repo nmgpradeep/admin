@@ -7,7 +7,7 @@ import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
 import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
-//import Category from './User';
+
 import {
   Badge,
   Button,
@@ -98,6 +98,7 @@ class ProductAdd extends Component {
   cancelHandler(){
     this.props.history.push("/products");
   }
+
    componentDidMount() {    
        axios.get('/donation/getConstant').then(result => {
            this.setState({conditions: result.data.result});
@@ -175,6 +176,11 @@ class ProductAdd extends Component {
         }
       console.log(this.state.users);
     })
+    axios.get('/donation/getConstant').then(result => {
+      this.setState({conditions: result.data.result});
+      console.log('conditions', result.data.result)
+      
+  })
       .catch((error) => {
         if(error.status === 401) {
           this.props.history.push("/login");

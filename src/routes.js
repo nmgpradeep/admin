@@ -257,6 +257,10 @@ const CmsPageEdit = Loadable({
   loader: () => import('./views/CmsPages/CmsPageEdit'),
   loading: Loading,
 });
+const CmsPageView = Loadable({
+  loader: () => import('./views/CmsPages/CmsPageView'),
+  loading: Loading,
+})
 
 // loader for advertisement by saurabh
 const Advertisements = Loadable({
@@ -470,6 +474,7 @@ const routes = [
   { path: '/donations', name: 'Donations', component: Donations },  
   { path: '/pages/add', exact: true,name: 'New Page', component: CmsPageAdd},
   { path: '/pages/edit/:id',  name:'Edit Page', component:CmsPageEdit},
+  { path: '/pages/view/:id', name: 'View Page', component: CmsPageView},
   { path: '/pages', name: 'CMS Pages', component: CmsPages },
   { path: '/advertisement/add', exact: true,name: 'Add Advertisement', component: AdvertisementAdd },
   { path: '/advertisement/edit/:id', name: 'Edit Advertisement', component: AdvertisementEdit },
