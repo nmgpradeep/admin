@@ -2,7 +2,7 @@ module.exports = {
 	'PUBLIC_URL':'http://localhost:3006/',
     'PER_PAGE_RECORD': 10,
     'SMTP_HOST':'smtp.sendgrid.net',
-    'SMTP_PORT': 587,
+    'SMTP_PORT': 587,    
     'SMTP_FROM_EMAIL': 'rajiv.kumar@newmediaguru.net',
     'profileimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/ProfilePic/',
     'cmsimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/cmsPageImage/',
