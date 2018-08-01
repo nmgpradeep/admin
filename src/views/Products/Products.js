@@ -28,6 +28,7 @@ class Products extends Component {
     this.toggle = this.toggle.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
+  
    loadCommentsFromServer() {
       axios.get('/product/products/'+this.state.currentPage).then(result => {
 		console.log('rsddddddddddddddddd',result);

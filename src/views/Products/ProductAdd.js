@@ -7,7 +7,7 @@ import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
 import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
-//import Category from './User';
+
 import {
   Badge,
   Button,
@@ -17,7 +17,7 @@ import {
   CardFooter,
   CardHeader,
   Col,
-  Collapse,
+  Collapse,	
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
@@ -95,20 +95,23 @@ class ProductAdd extends Component {
         this.setState({size: size});
   }
   
-  
   cancelHandler(){
     this.props.history.push("/products");
   }
-  
- 
+
+   componentDidMount() {    
+       axios.get('/donation/getConstant').then(result => {
+           this.setState({conditions: result.data.result});
+           
+       });
+   } 
    
-    fileChangedHandler = (event) => {	
-	  this.setState({selectedFile: event.target.files[0]})
-	   //console.log('ddddddddd',this.state.selectedFile);	  
+   fileChangedHandler = (event) => {	
+	   this.setState({selectedFile: event.target.files[0]})	   
    }
      
    conditionsChange = (value) => {	   
-         this.setState({conditionValue: value.target.value});
+       this.setState({conditionValue: value.target.value});
    } 
   
   submitHandler(e){

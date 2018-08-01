@@ -63,28 +63,51 @@ class CmsPageView extends Component {
     return(
       <div className = 'animated fadeIn'>
       <Row>
-        <Col xs='12' md='9' className='mb-4'>
+        <Col xs='12' md='12' className='mb-4'>
         <Nav tabs>
         <NavItem>
           <NavLink className={classnames({active: this.state.activeTab === '1'})} onClick={() => {this.toggle('1');}}>
-          Content
+          CMS Page View
           </NavLink>
         </NavItem>
-        <NavItem>
+        {/* <NavItem>
           <NavLink className={classnames({active: this.state.activeTab==='2'})} onClick={()=>{this.toggle('2');}}>
             Image
           </NavLink>
-        </NavItem>
+        </NavItem> */}
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId='1'>
-            {this.state.viewPage.description}
+          <Row>
+            <Col xs='12' md='3' className='mb-4'>
+              <Label><strong>Page Title:</strong></Label></Col>
+              <Col xs='12' md='4'>
+              {this.state.viewPage.pageTitle} <br></br></Col>
+              <Col xs='12' md='5'>
+            <img  src= {'assets/uploads/cmsPageImage/'+this.state.viewPage.bannerImage} width='120'/>
+            </Col>
+              </Row>
+              <Row>
+              <Col xs='12' md='3' className='mb-4'>
+              <Label><strong>Page Heading:</strong></Label></Col>
+              <Col xs='12' md='4'>
+              {this.state.viewPage.pageHeading}
+              </Col>
+          </Row>
+          <Row>
+          <Col xs='12' md='3'>
+          <Label><strong>Page Content:</strong></Label></Col>
+          <Col xs='12' md='9'>
+          {this.state.viewPage.description}
+          </Col>
+          </Row>
+            
           </TabPane>
-          <TabPane tabId='2'>
+          {/* <TabPane tabId='2'>
                 <Col xs="12" sm="12">
                   <img  src= {'assets/uploads/cmsPageImage/'+this.state.viewPage.bannerImage} width='700'/>
                 </Col>
-          </TabPane>
+          </TabPane> */}
         </TabContent>
         </Col>
       </Row>
