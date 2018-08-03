@@ -18,43 +18,43 @@ class ResetPassword extends Component {
     super();    
     this.password = React.createRef();
     this.confirmPassword = React.createRef();
-   // let userId = this.props.params.id;
-  
         this.state = {
-      resetPassword: {},
-      validation:{      
-        password:{
-          rules: {
-            notEmpty: {
-              message: 'Password field can\'t be left blank',
-              valid: false
-            },
-            minLength: {
-              length: 6,
-              message: 'Password field must have at least 6 characters long',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        confirmPassword:{
-          rules: {
-            notEmpty: {
-              message: 'Confirm password field can\'t be left blank',
-              valid: false
-            },
-            matchWith: {
-              matchWithField: 'password',
-              message: 'Confirm password must be validate with password',
-              valid: false
-            }
-          },
-          valid: null,
-          message: ''
-        },
-        
-      }
+			message: '',
+			code:9999,
+			resetPassword: {},      
+			  validation:{      
+				password:{
+				  rules: {
+					notEmpty: {
+					  message: 'Password field can\'t be left blank',
+					  valid: false
+					},
+					minLength: {
+					  length: 6,
+					  message: 'Password field must have at least 6 characters long',
+					  valid: false
+					}
+				  },
+				  valid: null,
+				  message: ''
+				},
+				confirmPassword:{
+				  rules: {
+					notEmpty: {
+					  message: 'Confirm password field can\'t be left blank',
+					  valid: false
+					},
+					matchWith: {
+					  matchWithField: 'password',
+					  message: 'Confirm password must be validate with password',
+					  valid: false
+					}
+				  },
+				  valid: null,
+				  message: ''
+				},
+				
+			  }
     };
   }
     submitHandler(e){
@@ -100,8 +100,12 @@ class ResetPassword extends Component {
      if(formSubmitFlag){     
 		const password = this.password.value;        
         axios.post('/user/updateNewPassword',{_id:this.props.match.params.id,password:password}).then(result => {      
-          if(result.data.code == 200){
-            this.props.history.push("/login");
+          if(result.data.code === 200){
+           // this.props.history.push("/login");
+             this.setState({
+				message: result.data.message,
+				code :result.data.code
+			}); 
           }
         });
       }
@@ -109,7 +113,7 @@ class ResetPassword extends Component {
   
   
   render() {
-    const { password, confirmPassword, message } = this.state;
+    const { password, confirmPassword, message,code } = this.state;   
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -137,7 +141,7 @@ class ResetPassword extends Component {
 								{ message }
 							</Alert>
 						</Then>
-						<ElseIf condition={message !== '' && code !==201 }>
+						<ElseIf condition={message !== '' && code !==200 }>
 							<Alert color="danger">
 								{ message }
 							</Alert>

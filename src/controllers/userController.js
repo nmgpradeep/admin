@@ -196,15 +196,17 @@ const signup = (req, res) => {
  **/
 const login = (req, res) => {
 	console.log("login",req.body);
-    if (!req.body.email && !req.body.password && !req.body.userType) {
-    return res.send({
-      code: httpResponseCode.BAD_REQUEST,
-      message: httpResponseMessage.REQUIRED_DATA
-    })
-  }
+    if (!req.body.email && !req.body.password) {
+		return res.json({
+		  code: httpResponseCode.BAD_REQUEST,
+		  message: httpResponseMessage.REQUIRED_DATA
+		})
+	}
+	
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if (flag) {
+	  console.log("flag",flag)
     return res.json(flag);
   }
   User.findOne({ email: req.body.email, userType: req.body.userType }, (err, result) => {
@@ -300,7 +302,12 @@ const login = (req, res) => {
   *Date   : July 26, 2018
   *Description  : Function to operate Forget Password
 */
-const forgotPassword = (req,res) => {  
+const forgotPassword = (req,res) => { 
+ const data = req.body;
+ const flag = validation.validate_all_request(data, ['email']);
+ if (flag) {
+	return res.json(flag);
+ } 
   User.findOne({ email: req.body.email, userType: req.body.userType }, (err,result)=> {
     if (err) {
       return res.send({
@@ -310,8 +317,8 @@ const forgotPassword = (req,res) => {
     } else {
       if (!result) {
         res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
+          code: httpResponseCode.BAD_REQUEST,
+          message: httpResponseMessage.USER_NOT_FOUND
         });
       } else {
         let transporter = nodemailer.createTransport({
@@ -446,6 +453,7 @@ const resetPassword = (req,res) => {
  *	Description : Function to update the user password.
  **/
 const updateNewPassword = (req, res) => {
+	//console.log("req.body.password",req.body.password)
 	bcrypt.genSalt(10, function (err, salt) {
             if (err) {
                 return next(err);
@@ -457,31 +465,32 @@ const updateNewPassword = (req, res) => {
 						message: httpResponseMessage.INTERNAL_SERVER_ERROR
 				})
                 }
-                req.body.password= hash;               
-            });
-        });	
-   User.findOneAndUpdate({
-       _id: req.body._id
-	}, {
-		'$set': { "password": req.body.password }
-	  }, {
-		new: true
-	  }).lean().exec(function (err, result) {
-		  
-		if (err){
-		  return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR
-		  })
-		}else{
-			 return res.json({
-			  code: httpResponseCode.EVERYTHING_IS_OK,
-			  message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
-			  result: result
+                //console.log("req.body.password.hash",hash)
+                User.findOneAndUpdate({
+				   _id: req.body._id
+				}, {
+					'$set': { "password": hash }
+				  }, {
+					new: true
+				  }).lean().exec(function (err, result) {
+					  
+					if (err){
+					  return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					  })
+					}else{
+						 return res.json({
+						  code: httpResponseCode.EVERYTHING_IS_OK,
+						  message: httpResponseMessage.PASSWORD_CHANGE_SUCCESSFULLY,
+						  result: result
+						});
+					}
+					  
+				 })    
 			});
-		}
-		  
-	 })
+		});	    
+  
 }
 
 /** Auther	: Rajiv Kumar
@@ -525,27 +534,31 @@ const listUser = (req, res) => {
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
   const users = (req, res) => {
-	  console.log("SESSION",req);
-    var perPage = constant.PER_PAGE_RECORD
-    var page = req.params.page || 1;
-    User.find({ userType: { $ne: 1 }})
-      .skip((perPage * page) - perPage)
-      .limit(perPage)
-      .sort({createdAt:-1})
-      .exec(function(err, users) {
-          User.count().exec(function(err, count) {
-            if (err) return next(err)
-              return res.json({
-                  code: httpResponseCode.EVERYTHING_IS_OK,
-                  message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: users,
-                  total : count,
-                  current: page,
-                  perPage: perPage,
-                  pages: Math.ceil(count / perPage)
-              });
-            })
-        });
+	var token = getToken(req.headers); 	
+		if (token) {	  		
+		var perPage = constant.PER_PAGE_RECORD
+		var page = req.params.page || 1;
+		User.find({ userType: { $ne: 1 }})
+		  .skip((perPage * page) - perPage)
+		  .limit(perPage)
+		  .sort({createdAt:-1})
+		  .exec(function(err, users) {
+			  User.count().exec(function(err, count) {
+				if (err) return next(err)
+				  return res.json({
+					  code: httpResponseCode.EVERYTHING_IS_OK,
+					  message: httpResponseMessage.SUCCESSFULLY_DONE,
+					  result: users,
+					  total : count,
+					  current: page,
+					  perPage: perPage,
+					  pages: Math.ceil(count / perPage)
+				  });
+				})
+			});
+		}else{
+			  return res.status(403).send({code: 403, message: 'Unauthorized.'});
+		}
     }
 
 
@@ -730,7 +743,6 @@ const updateAdmin = (req, res) => {
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
             });
-
       }
     }
   })
@@ -789,12 +801,11 @@ const deleteUser = (req, res) => {
  *	Description : Function to getLoggedInUser
  **/
 const getLoggedInUser = (req, res) => {
-	var token = getToken(req.headers);  
-	
+	var token = getToken(req.headers); 	
 	if (token) {	  
 		decoded = jwt.verify(token,settings.secret);	  
 		var userId = decoded._id;
-		console.log("decoded",decoded,userId)
+		//console.log("decoded",decoded,userId)
 		  User.findOne({_id: userId}).then(function(user){       
 			return res.json({
 				  code: httpResponseCode.EVERYTHING_IS_OK,

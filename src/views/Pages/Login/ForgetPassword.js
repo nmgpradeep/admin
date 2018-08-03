@@ -9,7 +9,8 @@ class ForgetPassword extends Component {
     this.email = React.createRef();    
     this.state = {
       email: '',     
-      message: ''
+      message: '',
+      code:9999
     };
   }
 
@@ -26,12 +27,14 @@ class ForgetPassword extends Component {
         if(result.data.code ==200){
           localStorage.setItem('jwtToken', result.data.result.accessToken);         
           this.setState({
-            message: result.data.message
+            message: result.data.message,
+            code :result.data.code
           });        
           //this.props.history.push('/checkMail');
         }else{
           this.setState({
-            message: result.data.message
+            message: result.data.message,
+            code :result.data.code
           });
         }
       })
@@ -48,7 +51,7 @@ class ForgetPassword extends Component {
  
 
   render() {
-    const { email, password, message } = this.state;
+    const { email, password, message,code } = this.state;
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -69,8 +72,13 @@ class ForgetPassword extends Component {
                       <Input type="text" innerRef={input => (this.email = input)} placeholder="Username/Email" />
                     </InputGroup>
                    
-                    {message !== '' &&
+                    {message !== '' && code === 200 &&
                       <Alert color="success">
+                        { message }
+                      </Alert>
+                    } 
+                    {message !== '' && code !== 200 &&
+                      <Alert color="danger">
                         { message }
                       </Alert>
                     } 
