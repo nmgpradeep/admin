@@ -69,75 +69,49 @@ const signup = (req, res) => {
         } else {
 			 // check Profile Pic and upload if exist 
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
-				var fileName = files.profilePic[0].originalFilename;
-				var ext = path.extname(fileName);
-				var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
-				fs.readFile(files.profilePic[0].path, function(err, fileData) {
-				  if (err) {
-					res.send(err);
-					return;
-				  }
-				  fileName = files.profilePic[0].originalFilename;
-				  ext = path.extname(fileName);
-				  newfilename = newfilename;
-				  pathNew = constant.profileimage_path + newfilename;
-				  //return res.json(process.cwd());
-				  fs.writeFile(pathNew, fileData, function(err) {
-					if (err) {
-					  res.send(err);
-					  return;
-					}          
+					var fileName = files.profilePic[0].originalFilename;
+					var ext = path.extname(fileName);
+					var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
+					fs.readFile(files.profilePic[0].path, function(err, fileData) {
+					  if (err) {
+						res.send(err);
+						return;
+					  }
+					  fileName = files.profilePic[0].originalFilename;
+					  ext = path.extname(fileName);
+					  newfilename = newfilename;
+					  pathNew = constant.profileimage_path + newfilename;
+					  //return res.json(process.cwd());
+					  fs.writeFile(pathNew, fileData, function(err) {
+						if (err) {
+						  res.send(err);
+						  return;
+						}          
 
-				  });
-				});
-				
-				User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){				
-					return res.json({
-						code: httpResponseCode.BAD_REQUEST,
-						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					  });
 					});
-				} else {				    
-					result.profilePic = newfilename;
+					
+					User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
+					if(err){				
+						return res.json({
+							code: httpResponseCode.BAD_REQUEST,
+							message: httpResponseMessage.FILE_UPLOAD_ERROR
+						});
+					}
+				   })
+				}        
+				//Save data in notification collection to send notification to the admin
+				//console.log("notification_type",constant.notification_type)
+				var notification = new Notification({ notificationTypeId:1,fromUserId:result._id,toUserId:1});
+				notification.save(function (err) {
+				if(err){
 					return res.json({
-						code: httpResponseCode.EVERYTHING_IS_OK,
-						message: httpResponseMessage.SUCCESSFULLY_DONE,
-						result: result
-					})
-				  }
-			   })
-        }
-        
-        Notification.create({fromUserId:result._id}, (err,notify)=>{
-          let notificationTypeId= constant.notification_type; 
-          return res.json({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            notify: notificationTypeId
-          });
-          if(err){
-            return res.json({
-              code: httpResponseCode.BAD_REQUEST,
-              message: httpResponseMessage.NOTIFICATION_ERROR
-            });
-          }else {
-            if(!notify){
-              res.json({
-                message: httpResponseMessage.USER_NOT_FOUND,
-                code: httpResponseMessage.BAD_REQUEST
-              });
-            }
-            else{
-              return res.json({
-                code: httpResponseCode.EVERYTHING_IS_OK,
-                message: httpResponseMessage.SUCCESSFULLY_DONE,
-               notify: notify
-              });
-            }
-          }
-        })
-			  ///end file update///	  
-			
+					  code: httpResponseCode.BAD_REQUEST,
+					  message: httpResponseMessage.NOTIFICATION_ERROR
+					});
+				  }		
+				});
+			  ///end file update///	
 			    delete result.password
 
 			  	// Generate test SMTP service account from ethereal.email
@@ -163,7 +137,6 @@ const signup = (req, res) => {
 						text: 'Hello world?', // plain text body
 						html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
 					};
-
 					// send mail with defined transport object
 					transporter.sendMail(mailOptions, (error, info) => {
 						if (error) {
@@ -802,20 +775,63 @@ const deleteUser = (req, res) => {
  **/
 const getLoggedInUser = (req, res) => {
 	var token = getToken(req.headers); 	
-	if (token) {	  
+	if (token) {	
+		var totalNotifications  = 0;
 		decoded = jwt.verify(token,settings.secret);	  
 		var userId = decoded._id;
 		//console.log("decoded",decoded,userId)
-		  User.findOne({_id: userId}).then(function(user){       
-			return res.json({
-				  code: httpResponseCode.EVERYTHING_IS_OK,
-				  message: httpResponseMessage.SUCCESSFULLY_DONE,
-				 result: user
+		  User.findOne({_id: userId}).then(function(user){   
+			Notification.find({toUserId:1,isRead:0}, function (err, notifications) {
+			if(err){
+				return res.json({
+				  message: 'notification Error',
+				  code: httpResponseMessage.BAD_REQUEST
 				});
-        });		
+			}
+				return res.json({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: user,
+						totalNotifications:notifications.length,
+						notifications : notifications,
+						notification_type:constant.notification_type
+					});
+			});		
+     });
   } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
+}
+
+
+
+/** Auther	: Rajiv Kumar
+ *  Date	: August 3, 2018
+ *	Description : Function to change the notification status as Read
+ **/
+const resdNotification = (req, res) => {
+  Notification.update({ _id:req.body._id },  { "$set": { "isRead": 1 } }, { new:true }, (err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
+             result: result
+            });
+
+      }
+    }
+  })
 }
 
 
@@ -1005,5 +1021,6 @@ module.exports = {
    viewAdmin,
    forgotPassword,
    resetPassword,
-   updateNewPassword
+   updateNewPassword,
+   resdNotification
 }

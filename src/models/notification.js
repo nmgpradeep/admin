@@ -11,9 +11,7 @@ var bcrypt = require('bcrypt-nodejs');
 var NotificationSchema = new Schema({
 notificationTypeId:{ 
 	type: String,
-	trim: true
-	// type: Schema.Types.ObjectId, 
-	// ref: 'NotificationType' 
+	trim: true	
 },
 fromUserId:{
 	type: String,
@@ -22,6 +20,12 @@ fromUserId:{
 toUserId: { 
 type: String,
 trim: true
+},
+//0->unread,1->Read
+isRead:{
+	type:String,
+	trim:true,
+	default:0
 }
 },
 {

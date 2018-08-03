@@ -19,6 +19,7 @@ router.get('/viewAdmin/:id',userController.viewAdmin);
 router.get('/getLoggedInUser',userController.getLoggedInUser);
 router.post('/forgotPassword', userController.forgotPassword);
 router.get('/resetPassword/:id', userController.resetPassword)
-router.post('/updateNewPassword', userController.updateNewPassword)
+router.post('/updateNewPassword', userController.updateNewPassword);
+router.post('/resdNotification', userController.resdNotification);
 // router.put('/updateAdmin',userController.updateAdmin);
 module.exports = router;
