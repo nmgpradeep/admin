@@ -71,9 +71,7 @@ class Transactions extends Component {
     this.setState({ endDt:enddate.target.value });
   }
   
-  searchHandler = () => {
-	  //console.log('adfasfdasfdasdfasd',this.state.startDt);
-	  //console.log('adfasfdasfdasdfasd',this.state.endDt);
+  searchHandler = () => {	  
 	   if(this.state.startDt || this.state.endDt) {
 		   const data = new FD();
 		   data.append('start', this.state.startDt) 
