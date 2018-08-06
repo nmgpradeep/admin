@@ -39,6 +39,7 @@ class SubscriptionAdd extends Component {
     this.totalTradePermitted = React.createRef();
     this.totalInventoryAllowed = React.createRef();
     this.timePeriod = React.createRef();
+    this.status = React.createRef();
     this.unlimited = React.createRef();
     
     this.state = {
@@ -133,10 +134,13 @@ class SubscriptionAdd extends Component {
         addSubscription.totalInventoryAllowed = this.totalInventoryAllowed.value;
         addSubscription.timePeriod = this.timePeriod.value;
         addSubscription.userType = 2;
+        addSubscription.status = this.status.value;
+        console.log("addSubscription",addSubscription)
         //addSubscription.unlimited = this.unlimited.value
         
+        
         axios.post('/subscription/newSubscription', addSubscription).then(result => {
-          if(result.data.code == '200'){
+          if(result.data.code === 200){
             this.props.history.push("/subscriptions");
           }
         });
@@ -251,11 +255,10 @@ class SubscriptionAdd extends Component {
                 </FormGroup>
                 <FormGroup>                    
                     <Label htmlFor="Status">Status</Label>                    
-                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
+                    <Input type="select" innerRef={input => (this.status = input)} id="status" class="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
-                  </select>
-                    
+                  </Input>                    
                 </FormGroup> 
                 <Row>
                   <Col xs="6" className="text-right">

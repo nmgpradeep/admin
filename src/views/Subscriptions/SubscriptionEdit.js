@@ -36,6 +36,7 @@ class SubscriptionEdit extends Component {
     this.totalTradePermitted = React.createRef();
     this.totalInventoryAllowed = React.createRef();
     this.timePeriod = React.createRef();
+    this.status = React.createRef();
     let subscriptionId = this.props.match.params.id;
     this.state = {
       editSubscription: {},

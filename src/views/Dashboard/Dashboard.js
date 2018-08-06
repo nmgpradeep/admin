@@ -514,7 +514,7 @@ componentDidMount(){
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-info">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
+              {/*  <ButtonGroup className="float-right">
                   <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => { this.setState({ card1: !this.state.card1 }); }}>
                     <DropdownToggle caret className="p-0" color="transparent">
                       <i className="icon-settings"></i>
@@ -526,12 +526,14 @@ componentDidMount(){
                       <DropdownItem>Something else here</DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">{this.state.users}</div>
-                <div>Users</div>
+                </ButtonGroup> */}
+                <Link to="/users" className="text-white">
+					<div className="text-value">{this.state.users}</div>
+					<div>Users</div>
+                </Link>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData2} options={cardChartOpts2} height={70} />
+                {/*<Line data={cardChartData2} options={cardChartOpts2} height={70} /> */}
               </div>
             </Card>
           </Col>
@@ -539,7 +541,7 @@ componentDidMount(){
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-primary">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
+             {/*   <ButtonGroup className="float-right">
                   <Dropdown id='card2' isOpen={this.state.card2} toggle={() => { this.setState({ card2: !this.state.card2 }); }}>
                     <DropdownToggle className="p-0" color="transparent">
                       <i className="icon-location-pin"></i>
@@ -550,12 +552,14 @@ componentDidMount(){
                       <DropdownItem>Something else here</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
-                </ButtonGroup>
-                <div className="text-value">{this.state.products}</div>
-                <div>Products</div>
+                </ButtonGroup> */}
+                <Link to="/products" className="text-white">
+					<div className="text-value">{this.state.products}</div>
+					<div>Products</div>
+				</Link>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData1} options={cardChartOpts1} height={70} />
+              {/*  <Line data={cardChartData1} options={cardChartOpts1} height={70} /> */}
               </div>
             </Card>
           </Col>
@@ -563,7 +567,7 @@ componentDidMount(){
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-warning">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
+              {/*  <ButtonGroup className="float-right">
                   <Dropdown id='card3' isOpen={this.state.card3} toggle={() => { this.setState({ card3: !this.state.card3 }); }}>
                     <DropdownToggle caret className="p-0" color="transparent">
                       <i className="icon-settings"></i>
@@ -574,12 +578,14 @@ componentDidMount(){
                       <DropdownItem>Something else here</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
-                </ButtonGroup>
-                <div className="text-value">{this.state.trades}</div>
-                <div>Trades</div>
+                </ButtonGroup> */}
+                <Link to="/trades" className="text-white">
+					<div className="text-value">{this.state.trades}</div>
+					<div>Trades</div>
+				</Link>
               </CardBody>
               <div className="chart-wrapper" style={{ height: '70px' }}>
-                <Line data={cardChartData3} options={cardChartOpts3} height={70} />
+              {/*  <Line data={cardChartData3} options={cardChartOpts3} height={70} /> */}
               </div>
             </Card>
           </Col>
@@ -587,7 +593,7 @@ componentDidMount(){
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-danger">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
+               {/* <ButtonGroup className="float-right">
                   <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
                     <DropdownToggle caret className="p-0" color="transparent">
                       <i className="icon-settings"></i>
@@ -598,12 +604,14 @@ componentDidMount(){
                       <DropdownItem>Something else here</DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">{this.state.donations}</div>
-                <div>Donations</div>
+                </ButtonGroup> */}
+                <Link to="/donations" className="text-white">
+					<div className="text-value">{this.state.donations}</div>
+					<div>Donations</div> 
+                </Link>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
+                {/* <Bar data={cardChartData4} options={cardChartOpts4} height={70} /> */}
               </div>
             </Card>
           </Col>
