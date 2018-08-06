@@ -40,8 +40,6 @@ class Transaction extends Component {
 			is_married: true
 		}
 	  ];
-	   
-	   
 	  
     return (
       <tr key={this.props.transaction._id}>
@@ -64,7 +62,7 @@ class Transaction extends Component {
                     <ExcelColumn label="Wallet Money" value="amount"/>
                     <ExcelColumn label="Gender" value="sex"/>
                     <ExcelColumn label="Marital Status"
-                                 value={(col) => col.is_married ? "Married" : "Single"}/>
+                     value={(col) => col.is_married ? "Married" : "Single"}/>
                 </ExcelSheet>
            </ExcelFile>
         </td>

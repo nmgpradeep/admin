@@ -129,34 +129,46 @@ const changeStatus = (req, res) => {
 const searchQuery =  (req, res) => {	
   var form = new multiparty.Form();
     form.parse(req, function(err, data, files) {
-	  console.log('ffffffffffffffffffffff', data);
-	  Transaction.update(
-    { _id: req.body._id },
-    { $set: { status: req.body.status } },
-    { new: true },
-    (err, result) => {
-      if (err) {
-        return res.send({
-          code: httpResponseCode.BAD_REQUEST,
-          message: httpResponseMessage.INTERNAL_SERVER_ERROR
-        });
-      } else {
-        if (!result) {
-          res.json({
-            message: httpResponseMessage.CATEGORY_NOT_FOUND,
-            code: httpResponseMessage.BAD_REQUEST
-          });
-        } else {
-          return res.json({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
-            result: result
-          });
-        }
-      }
-    }
-  );
-	  
+	  console.log('data',data);			  
+	  //~ Transaction.find({
+			//~ transactionDate: {
+				//~ $gt:  data.start,
+				//~ $lt:  data.end
+			//~ }
+		//~ }), function(err, positions) {			
+			//~ if (err) {
+				//~ console.log("ERR",err)
+			//~ }
+			//~ else {
+				//~ console.log("positions",positions);
+				//~ res.json(positions);
+			//~ }
+		//~ }
+		
+		var start,
+            end;
+
+        // set time zone
+      //  moment().tz("Europe/Copenhagen").format();
+
+        start = moment(data.start[0]).toDate();
+        end = moment(data.end[0]).toDate();
+        console.log("start",start)
+        console.log("end",end)        
+
+        Transaction.
+            find({
+                transactionDate: {
+                    $gte: start,
+                    $lte: end
+                }
+            },{transactionDate: 1}).
+            exec(function(err, bookings) {
+                if (err) console.log(err);
+                console.log(bookings);
+
+                res.json(bookings);
+            });
     });
 };
 

@@ -77,6 +77,7 @@ class Transactions extends Component {
 		   data.append('start', this.state.startDt) 
            data.append('end', this.state.endDt) 
            axios.post('/transaction/searchQuery', data).then(result => {
+			   console.log('resultsssssssssssss'.result);
 		   if(result.data.code === 200) {
 				//let transactions = this.state.transactions;       
 				//this.loadCommentsFromServer();
