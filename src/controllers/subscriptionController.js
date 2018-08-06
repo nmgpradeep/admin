@@ -8,8 +8,6 @@ const constant = require('../../common/constant')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 
-
-
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
  */
