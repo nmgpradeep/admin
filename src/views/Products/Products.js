@@ -31,7 +31,7 @@ class Products extends Component {
   
    loadCommentsFromServer() {
       axios.get('/product/products/'+this.state.currentPage).then(result => {
-		console.log('rsddddddddddddddddd',result);
+		
         if(result.data.code === 200){
           this.setState({
             products: result.data.result,
@@ -83,6 +83,7 @@ class Products extends Component {
       }
     });
   }
+  
   toggle() {
     this.setState({
       modal: !this.state.modal
@@ -116,6 +117,7 @@ class Products extends Component {
        let productList = this.state.products;
        products = productList.map((product,index) => <Product key={product._id} onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product} sequenceNumber={index+1}/>);
       }
+      
      let paginationItems =[];
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (

@@ -14,8 +14,8 @@ transactionType:{
  trim:true
 },
 userId:{
-    type:String,
-    trim:true
+    type:Schema.Types.ObjectId,
+    ref:'user'
 },
 paymentId:{
 	type:String,
@@ -35,6 +35,7 @@ status:{
   sparse:true,
   default:0   
 }
+
 },
 {
   timestamps:true

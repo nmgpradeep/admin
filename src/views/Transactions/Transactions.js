@@ -57,6 +57,7 @@ class Transactions extends Component {
     this.loadCommentsFromServer();
     axios.get('/transaction/transactions/' + this.state.currentPage).then(result => {
         if(result.data.code == 200){
+			console.log('rsssssssss',result);
           this.setState({
             transactions: result.data.result,
             currentPage: result.data.current,
@@ -66,9 +67,7 @@ class Transactions extends Component {
           });
         }
       })
-    
-    
-  }
+   }
   
    transactionDeleteHandler (id){
     this.setState({
@@ -93,7 +92,7 @@ class Transactions extends Component {
 		   data.append('start', this.state.startDt) 
            data.append('end', this.state.endDt) 
            axios.post('/transaction/searchQuery', data).then(result => {
-			   console.log('resultsssssssssssss'.result);
+		   console.log('resultsssssssssssss'.result);
 		   if(result.data.code === 200) {
 				//let transactions = this.state.transactions;       
 				//this.loadCommentsFromServer();
@@ -136,9 +135,7 @@ class Transactions extends Component {
       transactionsExcel = dataSet1.map((transaction,index) => <Transaction sequenceNo={index} key={transaction._id}   transaction={transaction}/>);      
       
      
-    return (
-    
-    
+    return (    
       <div className="animated fadeIn">
         <Row>
           <Col>
@@ -160,7 +157,7 @@ class Transactions extends Component {
                   </Col>
                  
                  <Col xs="3">
-                   <ExcelFile element={<button class="fa fa-download" aria-hidden="true"></button>}>
+                   <ExcelFile element={<button class="mr-1 btn btn-info" aria-hidden="true">Export Excel</button>}>
 						<ExcelSheet data={dataSet1} name="transactionId">
 							<ExcelColumn label="Transaction Id" value="transactionId"/>
 							<ExcelColumn label="Transaction Type" value="transactionType"/>
@@ -180,9 +177,9 @@ class Transactions extends Component {
                   <thead>
 					  <tr>
 						<th>S.No</th>
+						<th>Transaction Id</th>
 						<th>TransactionType</th>
 						<th>UserId</th>
-						<th>PaymentId</th>
 						<th>TransactionDate</th>
 						<th>TransactionAmount</th>
 						<th>Status</th>

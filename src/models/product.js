@@ -24,6 +24,7 @@ productCategory:{
 	type: Schema.Types.ObjectId,
     ref: 'Category'
 },
+
 productImages: [],
 color:{
 type:String,

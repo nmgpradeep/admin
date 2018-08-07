@@ -192,8 +192,7 @@ const changeStatus = (req, res) => {
  *	Description : Function to view the available product
 **/
 const viewProduct = (req, res) => {
-	const id = req.params.id;
-	//console.log('<<<<<<<<<<<Product>>>>',id); 
+	const id = req.params.id;	
 	Product.findById({_id:id})
 		.populate('userId')
 		.populate('userId',['firstName','lastName'])
@@ -202,25 +201,23 @@ const viewProduct = (req, res) => {
 		.populate('size',['size'])
 	
 	    .exec(function(err, result){
-			 console.log('rrrrrr',result);		
+			//console.log('rrrrrr',result);		
 			if (err) {
 			return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			})
 			} else {
 			if (!result) {
-			res.json({
-			message: httpResponseMessage.USER_NOT_FOUND,
-			code: httpResponseMessage.BAD_REQUEST
-			});
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
 			}else {
-			return res.json({
-
-			code: httpResponseCode.EVERYTHING_IS_OK,             
-			result: result
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,             
+				result: result
 			});
-
 			}
 		}
 	}); 
@@ -281,8 +278,7 @@ const updateProduct = (req, res) => {
 					  return;
 					}
 				  });
-				}); 
-			  //console.log('asdfasdfasdfasdfadfsad',newfilename);
+				}); 			  
 			  Product.update({ _id:data._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){				
 					return res.send({

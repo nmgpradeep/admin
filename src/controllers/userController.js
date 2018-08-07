@@ -541,7 +541,6 @@ const listUser = (req, res) => {
  **/
 const viewUser = (req, res) => {
 	const id = req.params.id;
-	//console.log('<<<<<<<<<<<',id);
 	User.findOne({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -575,9 +574,7 @@ var token = getToken(req.headers);
 		decoded = jwt.verify(token,settings.secret);	  
 		var userId = decoded.id;
 		console.log("decoded",decoded)
-		  
 		  const id = req.params;	
-		 
 			User.find({}, (err, result) => {
 			if (err) {
 			  return res.send({
@@ -590,17 +587,16 @@ var token = getToken(req.headers);
 				  message: httpResponseMessage.USER_NOT_FOUND,
 				  code: httpResponseMessage.BAD_REQUEST
 				});
-			  }else {
+			  } else {
 				return res.json({
-					  code: httpResponseCode.EVERYTHING_IS_OK,
-					  message: httpResponseMessage.SUCCESSFULLY_DONE,
-					 result: result
-					});
-
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					message: httpResponseMessage.SUCCESSFULLY_DONE,
+					result: result
+				});
 			  }
 			}
-		  })
-	}else {
+		})
+	} else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
 }
@@ -797,7 +793,7 @@ const getLoggedInUser = (req, res) => {
 						notification_type:constant.notification_type
 					});
 			});		
-     });
+       });
   } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
@@ -864,11 +860,9 @@ const verifyEmail = (req, res) => {
   })
 }
 
-
 /// Log out users
 exports.logout = function(req, res, next) {
   var data = req.body;
-
   var flag = form_validation.validate_all_request(data, ['userId', 'accessToken']);
   if (flag) {
     res.json(flag);
@@ -958,8 +952,7 @@ const contustUs = (req, res) => {
  }
 
 const send = (req, res) => {
-	console.log(req.body.name);
-
+  console.log(req.body.name);
   const output =`<p>You have a new contact request</p>
   <h3>Contact Deatils</h3>
   <ul>
@@ -970,15 +963,11 @@ const send = (req, res) => {
 
     // Generate test SMTP service account from ethereal.email
 	// Only needed if you don't have a real mail account for testing
-
-		// create reusable transporter object using the default SMTP transport
 		let transporter = nodemailer.createTransport({
 			host: constant.SMTP_HOST,
 			port: constant.SMTP_PORT,
 			secure: false, // true for 465, false for other ports
-			auth: {
-				//~ user: account.user, // generated ethereal user
-				//~ pass: account.pass // generated ethereal password
+			auth: {			
 				user: constant.SMTP_USERNAME, // generated ethereal user
 				pass: constant.SMTP_PASSWORD // generated ethereal password
 			}

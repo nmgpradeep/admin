@@ -32,6 +32,9 @@ Status:{
  trim:true,
  sparse:true,
  default:0
+ //Switch => 0
+ //Completed => 1
+ //Rejected => 2
 }
 },
 {

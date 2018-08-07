@@ -21,8 +21,10 @@ const listTransaction = (req, res) => {
     Transaction.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
+      .populate({ path: "userId", model: "User"})    
       .sort({createdAt:-1})
       .exec(function(err, transactions) {
+		  console.log("transactions",transactions)
           Transaction.count().exec(function(err, count) {
             if (err) return next(err)
               return res.json({
@@ -97,6 +99,7 @@ const viewTransaction = (req, res) => {
 
 
 const changeStatus = (req, res) => {
+	console.log('asdfasfd',req.body.status);
   Transaction.update(
     { _id: req.body._id },
     { $set: { status: req.body.status } },
@@ -129,9 +132,27 @@ const changeStatus = (req, res) => {
 const searchQuery =  (req, res) => {	
   var form = new multiparty.Form();
     form.parse(req, function(err, data, files) {
-	  console.log('data',data); 
+	  console.log('data',data);			  
+	  //~ Transaction.find({
+			//~ transactionDate: {
+				//~ $gt:  data.start,
+				//~ $lt:  data.end
+			//~ }
+		//~ }), function(err, positions) {			
+			//~ if (err) {
+				//~ console.log("ERR",err)
+			//~ }
+			//~ else {
+				//~ console.log("positions",positions);
+				//~ res.json(positions);
+			//~ }
+		//~ }
+		
 		var start,
             end;
+
+        // set time zone
+      //  moment().tz("Europe/Copenhagen").format();
 
         start = moment(data.start[0]).toDate();
         end = moment(data.end[0]).toDate();

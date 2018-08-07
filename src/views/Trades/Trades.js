@@ -17,11 +17,11 @@ class Trades extends Component {
       totalPages: 1,
       tradesCount: 0
     };
-    console.log('THIS OBJ', this);
+    //console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
-    this.toggle = this.toggle.bind(this);
+     this.toggle = this.toggle.bind(this);
   }
 
   loadCommentsFromServer(){
@@ -38,8 +38,8 @@ class Trades extends Component {
       console.log(this.state.trades);
     })
     .catch((error) => {
-    console.log('error', error)
-      if(error.code === 401) {
+       console.log('error', error)
+        if(error.code === 401) {
         this.props.history.push("/login");
       }
     });
@@ -54,24 +54,33 @@ class Trades extends Component {
 };
   
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+     axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       this.loadCommentsFromServer();
   }
   
   changeStatusHandler(trade){
-	  console.log("STATUS",trade)
-    trade.status = (1 - parseInt(trade.status)).toString();
+    trade.status = (1 - parseInt(trade.Status)).toString();
     console.log("CHANGE-STATUS",trade)
     axios.post('/trade/updateStatus',trade).then(result => {
       if(result.data.code === 200){
         let trades = this.state.trades;
         let tradeIndex = trades.findIndex(x => x._id === trade._id);
-        trades[tradeIndex].status = trade.status.toString();
+        trades[tradeIndex].Status = trade.Status.toString();
         this.setState({ trades: trades });
+        this.loadCommentsFromServer();
       }
     });
   }
+  
+  returnRaisedHandler(trade){
+    trade.id = trade._id;
+    axios.post('/trade/returnraised',trade).then(result => {
+      if(result.data.code === 200){
+        //this.loadCommentsFromServer();
+      }
+    });
+  }
+  
   toggle() {
     this.setState({
       modal: !this.state.modal
@@ -82,11 +91,10 @@ class Trades extends Component {
    let trades;
      if(this.state.trades){
        let tradeList = this.state.trades;
-       trades = tradeList.map((trade,index) => <Trade sequenceNo={index} key={trade._id}  updateStatus={(trade) => this.changeStatusHandler(trade)}   trade={trade}/>);
+       trades = tradeList.map((trade,index) => <Trade sequenceNo={index} key={trade._id}  updateStatus={(trade) => this.changeStatusHandler(trade)} returnRaised = {(trade) => this.returnRaisedHandler(trade)}   trade={trade}/>);
      }
 
      let paginationItems =[];
-
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
