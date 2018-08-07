@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Col,
   FormGroup,
@@ -34,7 +33,7 @@ class DonationView extends Component {
            this.setState({conditions: result.data.result});            
        });
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
-        if(result.data.code == '200'){
+        if(result.data.code === 200){
           this.setState({ viewDonation: result.data.result});
           console.log("viewDonation",result.data.result);
           this.productName.value = result.data.result.productName;
@@ -127,7 +126,7 @@ class DonationView extends Component {
                   <Label htmlFor="status">Image</Label>
                    </Col>
                   <Col xs="12" sm="12">
-                  <img className="linkedin" src={'assets/uploads/donationImage/'+this.state.viewDonation.productImage} width="60"/>
+                  <img className="linkedin" src={'assets/uploads/donationImage/'+this.state.viewDonation.productImage} width="60" alt="Donation Image"/>
                   </Col>                  
                 </FormGroup>
                 <FormGroup>

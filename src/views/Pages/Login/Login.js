@@ -19,7 +19,6 @@ class Login extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-
    // console.log('REFS', this.email.value +', ' + this.password.value);
     const email = this.email.value;
     const password = this.password.value;

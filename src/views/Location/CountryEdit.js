@@ -1,29 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import {
-  Badge,
   Button,
-  ButtonDropdown,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Col,
-  Collapse,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
-  Form,
   FormGroup,
-  FormText,
-  FormFeedback,
   Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
   Label,
   Row,
 } from 'reactstrap';
@@ -33,6 +18,8 @@ class CountryEdit extends Component {
     super(props);
     this.countryName = React.createRef();
     this.countryCode = React.createRef();
+    this.status = React.createRef();
+        
     let countryId = this.props.match.params.id;
     this.state = {
       editCountry: {},
@@ -99,9 +86,10 @@ class CountryEdit extends Component {
         let editCountry = this.state.editCountry;
         editCountry.countryName = this.countryName.value;
         editCountry.countryCode = this.countryCode.value;
+        editCountry.status = this.status.value;
         console.log("editCountry",editCountry)
         axios.put('/location/updateCountry', editCountry).then(result => {
-          if(result.data.code ===200){
+          if(result.data.code === 200){
             this.props.history.push("/country");
           }
         });
@@ -119,6 +107,7 @@ class CountryEdit extends Component {
           
            this.countryName.value = result.data.result.countryName;
            this.countryCode.value = result.data.result.countryCode;
+           this.status.value = result.data.result.status;
            console.log('HERE in component Did mount', this);
         }
       })
@@ -156,6 +145,15 @@ class CountryEdit extends Component {
                     <FormGroup>
                       <Label htmlFor="middlename">Country Code</Label>
                       <Input type="text" innerRef={input => (this.countryCode = input)} placeholder="Country Code" />
+                    </FormGroup>
+                    </Col>
+                   <Col xs="4" sm="12">
+                    <FormGroup>
+                      <Label htmlFor="Status">Status</Label>
+                      <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
+						<option value="1" >Active</option>
+						<option value="0" selected={(this.status.value =="0")?'selected':' '}>Inactive</option>					
+					</Input>
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

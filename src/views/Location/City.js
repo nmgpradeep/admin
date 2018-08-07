@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
-import Moment from 'moment';
+//import Moment from 'moment';
 // import PropTypes from 'prop-types';
 class City extends Component {
-  constructor(props){
-    super(props);
-  }
+  //~ constructor(props){
+    //~ super(props);
+  //~ }
   render() {
     console.log(this.props)
     return (
@@ -28,7 +28,4 @@ class City extends Component {
     );
   }
 }
-// ProjectItem.propTypes = {
-//   project: PropTypes.object
-// };
 export default City;
