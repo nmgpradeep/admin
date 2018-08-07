@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Form,  Input, InputGroup,  InputGroupAddon,  InputGroupText, } from 'reactstrap';
 import axios from 'axios';
+import ReactExport from "react-data-export";
 import Transaction from './Transaction';
 import ReactQuill from 'react-quill'; // ES6
 import 'react-quill/dist/quill.snow.css'; // ES6
 import ReactPaginate from "react-paginate";
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 var FD = require('form-data');
 var fs = require('fs');
 
@@ -42,8 +46,7 @@ class Transactions extends Component {
           });
         }
       })
-      .catch((error) => {
-		  console.log('error', error)
+      .catch((error) => {		
         if(error.code === 401) {
           this.props.history.push("/login");
         }
@@ -52,6 +55,19 @@ class Transactions extends Component {
   
   componentDidMount() {
     this.loadCommentsFromServer();
+    axios.get('/transaction/transactions/' + this.state.currentPage).then(result => {
+        if(result.data.code == 200){
+          this.setState({
+            transactions: result.data.result,
+            currentPage: result.data.current,
+            PerPage: result.data.perPage,
+            totalPages: result.data.pages,
+            transactionsCount:result.data.total
+          });
+        }
+      })
+    
+    
   }
   
    transactionDeleteHandler (id){
@@ -106,16 +122,22 @@ class Transactions extends Component {
   
   
   render() {
-     let transactions;
+     let transactions,transactionsExcel;
      if(this.state.transactions){
        let listTransaction = this.state.transactions;
        transactions = listTransaction.map((transaction,index) => <Transaction sequenceNo={index} key={transaction._id}  changeStatus={(transaction) => this.changeStatusHandler(transaction)} transaction={transaction}/>);      
      }
     
      let paginationItems =[];
-     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
+     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;    
+     
+     
+      const dataSet1 = this.state.transactions;
+      transactionsExcel = dataSet1.map((transaction,index) => <Transaction sequenceNo={index} key={transaction._id}   transaction={transaction}/>);      
+      
      
     return (
+    
     
       <div className="animated fadeIn">
         <Row>
@@ -136,11 +158,24 @@ class Transactions extends Component {
                   <Col xs="3">
                     <Button onClick={(e)=>this.searchHandler(e)} color="success" className="px-4">Submit</Button>
                   </Col>
-                 </Row>
-                 <Row>
-                   &nbsp;
-                 </Row>
+                 
+                 <Col xs="3">
+                   <ExcelFile element={<button class="fa fa-download" aria-hidden="true"></button>}>
+						<ExcelSheet data={dataSet1} name="transactionId">
+							<ExcelColumn label="Transaction Id" value="transactionId"/>
+							<ExcelColumn label="Transaction Type" value="transactionType"/>
+							<ExcelColumn label="User Id" value="userId"/>
+							<ExcelColumn label="Payment Id" value="paymentId"/>
+							<ExcelColumn label="Transaction Amount" value="transactionAmount"/>
+							<ExcelColumn label="Transaction Date" value="transactionDate"/>
+							<ExcelColumn label="Status" value="status"/>
+							 
+						</ExcelSheet>
+				   </ExcelFile>
+				   </Col>
+				  </Row>
                </Form>
+                <Row>&nbsp;</Row>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
 					  <tr>

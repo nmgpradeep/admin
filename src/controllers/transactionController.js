@@ -129,27 +129,9 @@ const changeStatus = (req, res) => {
 const searchQuery =  (req, res) => {	
   var form = new multiparty.Form();
     form.parse(req, function(err, data, files) {
-	  console.log('data',data);			  
-	  //~ Transaction.find({
-			//~ transactionDate: {
-				//~ $gt:  data.start,
-				//~ $lt:  data.end
-			//~ }
-		//~ }), function(err, positions) {			
-			//~ if (err) {
-				//~ console.log("ERR",err)
-			//~ }
-			//~ else {
-				//~ console.log("positions",positions);
-				//~ res.json(positions);
-			//~ }
-		//~ }
-		
+	  console.log('data',data); 
 		var start,
             end;
-
-        // set time zone
-      //  moment().tz("Europe/Copenhagen").format();
 
         start = moment(data.start[0]).toDate();
         end = moment(data.end[0]).toDate();
