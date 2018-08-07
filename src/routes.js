@@ -87,10 +87,10 @@ const Tabs = Loadable({
   loading: Loading,
 });
 
-const Tooltips = Loadable({
-  loader: () => import('./views/Base/Tooltips'),
-  loading: Loading,
-});
+//~ const Tooltips = Loadable({
+  //~ loader: () => import('./views/Base/Tooltips'),
+  //~ loading: Loading,
+//~ });
 
 const BrandButtons = Loadable({
   loader: () => import('./views/Buttons/BrandButtons'),

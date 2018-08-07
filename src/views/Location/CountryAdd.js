@@ -1,29 +1,15 @@
 import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
-import axios from 'axios'
-import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
-import {
-  Badge,
-  Button,
-  ButtonDropdown,
+import axios from 'axios';
+import { 
+  Button, 
   Card,
-  CardBody,
-  CardFooter,
+  CardBody, 
   CardHeader,
   Col,
-  Collapse,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
   Form,
-  FormGroup,
-  FormText,
-  FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
+  FormGroup, 
+  Input, 
   Label,
   Row,
 } from 'reactstrap';
@@ -33,6 +19,7 @@ class CountryAdd extends Component {
     super(props)
     this.countryName = React.createRef(),
     this.countryCode = React.createRef(),
+    this.status = React.createRef(),
         
     this.state = {
       addCountry: {},
@@ -100,6 +87,7 @@ cancelHandler(){
       let addCountry = this.state.addCountry;
       addCountry.countryName = this.countryName.value;
       addCountry.countryCode = this.countryCode.value;
+      addCountry.status = this.status.value;
       console.log("addCountry",addCountry)
       axios.post('/location/newCountry', addCountry  ).then(result => {
         if(result.data.code == '200'){
@@ -137,30 +125,19 @@ cancelHandler(){
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" innerRef={input => (this.countryCode = input)} />
-                      {/* <FormFeedback invalid={this.state.validation.countryCode.valid === false}>{this.state.validation.countryCode.message}</FormFeedback> */}
-                      
                     </Col>
                   </FormGroup>
-                  {/*<FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="author">Author</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text"  invalid={this.state.validation.author.valid === false} innerRef={input => (this.author = input)}  placeholder="Author" required/>
-                      
-                      <FormFeedback invalid={this.state.validation.author.valid === false}>{this.state.validation.author.message}</FormFeedback>
-                    </Col>
-                  </FormGroup> */}
+                 
                   
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
+                    <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
 					  <option value="1">Active</option>
 					  <option value="0">Inactive</option>					
-                  </select>
+                  </Input>
                     </Col>
                   </FormGroup>                    
                 </Form>
