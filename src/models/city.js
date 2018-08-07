@@ -24,8 +24,7 @@ cityName: {
 status:{
  type:String,
  trim:true,
- sparse:true,
- default:0   
+ sparse:true 
 },
 },
 {

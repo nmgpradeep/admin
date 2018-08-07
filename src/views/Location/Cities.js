@@ -72,10 +72,10 @@ class Cities extends Component {
     console.log("CHANGE-STATUS",city)
     axios.post('/location/status',city).then(result => {
       if(result.data.code === 200){
-        let citys = this.state.citys;
-        let cityIndex = citys.findIndex(x => x._id === city._id);
-        citys[cityIndex].status = city.status.toString();
-        this.setState({ citys: citys });
+        let Cities = this.state.Cities;
+        let cityIndex = Cities.findIndex(x => x._id === city._id);
+        Cities[cityIndex].status = city.status.toString();
+        this.setState({ Cities: Cities });
       }
     });
   }

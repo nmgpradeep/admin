@@ -151,8 +151,8 @@ class CountryEdit extends Component {
                     <FormGroup>
                       <Label htmlFor="Status">Status</Label>
                       <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
-						<option value="1" >Active</option>
-						<option value="0" selected={(this.status.value =="0")?'selected':' '}>Inactive</option>					
+						<option value="0" >Active</option>
+						<option value="1" selected={(this.status.value =="0")?'selected':' '}>Inactive</option>					
 					</Input>
                     </FormGroup>
                     </Col>

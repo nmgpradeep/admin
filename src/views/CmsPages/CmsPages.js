@@ -130,9 +130,7 @@ class CmsPages extends Component {
      if(this.state.cmsPages){
        let pageList = this.state.cmsPages;
        cmsPages = pageList.map((cmsPage,index) => <CmsPage sequenceNo={index} key={cmsPage._id} onDeleteCmsPage={this.cmsPageDeleteHandler.bind(this)} changeStatus={(cmsPage) => this.changeStatusHandler(cmsPage)}   cmsPage={cmsPage}/>);
-     }
-     
-
+     }     
      let paginationItems =[];
 
     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;

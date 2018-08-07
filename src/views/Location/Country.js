@@ -18,8 +18,8 @@ Capitalize(str){
         <td>{this.props.country.countryCode}</td>
         {/* <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>    */}
         <td>
-          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.country)} color={(this.props.country.status =="0")?'danger':'success'}>
-            {(this.props.country.status =="0")?'Inctive':'Active'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.country)} color={(this.props.country.status =="1")?'danger':'success'}>
+            {(this.props.country.status =="1")?'Inctive':'Active'}
           </Badge>
         </td>
         <td>

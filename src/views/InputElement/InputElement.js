@@ -98,6 +98,24 @@ const inputElement = props => {
         </select>
       );
       break;
+    case "select-status":
+      inputElement = (
+        <select
+          key={props.key}
+          className={inputClasses.join(" ")}
+          onChange={props.changed}
+          value={props.value}
+        >
+         
+          {props.elementConfig.options.map(option => {
+			  return <option value={option._id} key={option._id}>
+				{option.title}
+			  </option>
+		  })}
+        </select>
+      );
+      break;
+      
       
     case "tree":
       inputElement = (

@@ -59,30 +59,27 @@ const create = (req, res) => {
 				  pathNew = constant.cmsimage_path + newfilename;
 				  //return res.json(process.cwd());
 				  fs.writeFile(pathNew, fileData, function(err) {
-					if (err) {
-					  res.send(err);
-					  return;
-					}          
+							  Page.update({ _id:result._id },  { "$set": { "bannerImage": newfilename } }, { new:true }, (err,fileupdate) => {
+								if(err){
+									return res.json({
+										code: httpResponseCode.BAD_REQUEST,
+										message: httpResponseMessage.FILE_UPLOAD_ERROR
+									});
+								} else {					
+									return res.json({
+										code: httpResponseCode.EVERYTHING_IS_OK,
+										message: httpResponseMessage.SUCCESSFULLY_DONE,
+										result: result
+									})
+								  }
+							   })
 
-				  });
+							 });
+				  
+				
+			    ///end file update///	  
 				});
 			  }
-			  Page.update({ _id:result._id },  { "$set": { "bannerImage": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){
-					return res.send({
-						code: httpResponseCode.BAD_REQUEST,
-						message: httpResponseMessage.FILE_UPLOAD_ERROR
-					});
-				} else {
-					result.bannerImage = newfilename;
-					return res.send({
-						code: httpResponseCode.EVERYTHING_IS_OK,
-						message: httpResponseMessage.SUCCESSFULLY_DONE,
-						result: result
-					})
-				  }
-			   })
-			  ///end file update///	  
 			}
 		  })
 		  
