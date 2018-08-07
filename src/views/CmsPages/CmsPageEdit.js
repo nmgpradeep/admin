@@ -71,18 +71,18 @@ class CmsPageEdit extends Component {
         }
       }
     };
-    //this.handleContentChange = this.handleContentChange.bind(this)
-      // this.handleContentChange = this.handleContentChange.bind(this)
+    this.handleContentChange = this.handleContentChange.bind(this)
+    
   }  
  
   fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
   }
 
-  // handleContentChange(value) {	  
-  //   this.setState({ text: value })
+  handleContentChange(value) {	  
+     this.setState({ text: value })
     
-  // }
+  }
     
   cancelHandler(){
     this.props.history.push("/pages");
@@ -112,16 +112,19 @@ class CmsPageEdit extends Component {
       
       if(formSubmitFlag){
         const data = new FD();		
-    console.log('FORM DATA START', this.pageTitle.value);
-    data.append('_id', this.state.pageId)
+		console.log('FORM DATA START', this.pageTitle.value);
+		data.append('_id', this.state.pageId)
 		data.append('pageTitle', this.pageTitle.value);
 		data.append('pageHeading', this.pageHeading.value);
-    data.append('description', this.state.text);
-    if(this.state.selectedFile){
-      data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
-     } else {
-      data.append('bannerImage', this.state.editPage.bannerImage);
-   }	
+		data.append('description', this.state.text);
+		//console.log("data",data)
+		//console.log("this.description.value",this.description.value)
+		//console.log("this.description.value", this.state.text)
+		if(this.state.selectedFile){
+		  data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
+		 } else {
+		  data.append('bannerImage', this.state.editPage.bannerImage);
+	   }	
         // let editPage = this.state.editPage;
         // editPage.pageTitle = this.pageTitle.value;
         // editPage.pageHeading = this.pageHeading.value;
@@ -191,14 +194,14 @@ class CmsPageEdit extends Component {
                     <FormGroup>
 						 <Label htmlFor="brand">Banner Image</Label>                  
 						  <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
-						  <img src={'assets/uploads/cmsimage_path/'+this.state.editPage.bannerImage} width="60"/>
+						  <img src={'assets/uploads/cmsPageImage/'+this.state.editPage.bannerImage} width="60"/>
 					   </FormGroup>
                     
                   </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="content">Contents</Label>
-                    <ReactQuill defaultValue={this.state.editorHtml} innerRef={input => (this.description = input)}   value={this.state.text || ''}  />
+                    <ReactQuill defaultValue={this.state.editorHtml} innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleContentChange}/>
                 </FormGroup> 
                 <Row>
                   <Col xs="6" className="text-right">

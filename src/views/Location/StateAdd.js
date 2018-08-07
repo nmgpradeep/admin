@@ -34,6 +34,7 @@ class StateAdd extends Component {
     super(props)
     this.country = React.createRef(),
     this.stateName = React.createRef(),
+    this.status = React.createRef(),
     
     this.state = {
       addState: {},
@@ -97,6 +98,7 @@ class StateAdd extends Component {
       let addState = this.state.addState;
       addState.country = this.state.country;
       addState.stateName = this.stateName.value;
+      addState.status = this.status.value;
       console.log("addState",addState)
       axios.post('/location/newState', addState  ).then(result => {
         if(result.data.code == '200'){
@@ -137,10 +139,10 @@ class StateAdd extends Component {
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" className="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
-                  </select>
+                     <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
+					  <option value="0">Active</option>
+					  <option value="1">Inactive</option>					
+					</Input>
                     </Col>
                   </FormGroup>                    
                 </Form>

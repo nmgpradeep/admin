@@ -37,6 +37,7 @@ class CityEdit extends Component {
     this.countrySelect = React.createRef();
     this.stateSelect = React.createRef();
     this.cityName = React.createRef();
+    this.status = React.createRef();
     let cityId = this.props.match.params.id;
     this.state = {
       cityId: cityId,

@@ -9945,3 +9945,8 @@ html body .app.flex-row.align-items-center {
 .mousePointer {  
     cursor: pointer !important;  
 }  
+
+.read-more-button{
+    color: lightseagreen;
+    cursor: pointer !important;  
+}

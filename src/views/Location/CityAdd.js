@@ -35,6 +35,7 @@ class CityAdd extends Component {
     this.countrySelect = React.createRef();
     this.stateSelect = React.createRef();
     this.cityName = React.createRef();
+    this.status = React.createRef();
     this.state = {
       cityForm: {
         countrySelect: {
@@ -79,7 +80,21 @@ class CityAdd extends Component {
           },
           valid: false,
           touched: false
-        }
+        },
+        statusSelect: {
+          elementType: "select-status",
+          elementConfig: {
+            options: [{ _id:0,title: 'Active' }, { _id:1,title: 'Inactive' }]
+          },
+          value: "",
+          label: "Status",
+          title: "Status",
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false
+        },
       }
     };
    }
@@ -140,6 +155,9 @@ class CityAdd extends Component {
     for (let key in this.state.cityForm) {
       addCity[key] = this.state.cityForm[key].value;
     }
+    console.log("addCity",addCity)
+    addCity.status=addCity.statusSelect
+    console.log("addCity1",addCity)
     axios.post('/location/newCity', addCity).then(result => {
       if (result.data.code == "200") {
         this.props.history.push("/city");
@@ -225,8 +243,8 @@ class CityAdd extends Component {
             <Card>
               <CardHeader>
                 <strong>Add City</strong>
-              </CardHeader>
-
+                 <Link to="/city" className="btn btn-success btn-sm pull-right">Back</Link>
+              </CardHeader>              
               <CardBody>{form}</CardBody>
 
               </Card>

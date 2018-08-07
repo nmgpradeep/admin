@@ -46,7 +46,7 @@ class CountrySelectBox extends Component {
 		innerRef={this.props.reference} className="form-control">
 		<option value="0" >Select a Country</option>
         {this.state.countries.map(option => {
-          return <option value={option._id} key={option.countryName}>{option.countryName.toUpperCase()}</option>
+          return <option value={option._id} key={option.countryName} selected={(this.props.value === option._id)?'selected':''}>{option.countryName.toUpperCase()}</option>
         })}
 	  </Input>
       </div>

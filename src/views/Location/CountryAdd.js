@@ -135,8 +135,8 @@ cancelHandler(){
                     </Col>
                     <Col xs="12" md="9">
                     <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
+					  <option value="0">Active</option>
+					  <option value="1">Inactive</option>					
                   </Input>
                     </Col>
                   </FormGroup>                    

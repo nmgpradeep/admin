@@ -33,10 +33,10 @@ class StateEdit extends Component {
     super(props);
     this.country = React.createRef();
     this.stateName = React.createRef();
+    this.status = React.createRef();
     let stateId = this.props.match.params.id;
     this.state = {
-      editState: {},
-      country : '',
+      editState: {},     
       stateId: stateId,
       validation:{
         country:{
@@ -98,6 +98,7 @@ class StateEdit extends Component {
         let editState = this.state.editState;
         editState.country = this.country.value;
         editState.stateName = this.stateName.value;
+        editState.status = this.status.value;
         console.log("editState",editState)
         axios.put('/location/updateState', editState).then(result => {
           if(result.data.code ===200){
@@ -114,9 +115,11 @@ class StateEdit extends Component {
        // console.log(result); 
          if(result.data.code === 200){
         //localStorage.setItem('jwtToken', result.data.result.accessToken);
-           this.setState({ editState: result.data.result});          
+           this.setState({ editState: result.data.result});
+           
            this.country.value = result.data.result.country;
            this.stateName.value = result.data.result.stateName;          
+           this.status.value = result.data.result.status;          
         }
       })
       .catch((error) => {
@@ -152,6 +155,15 @@ class StateEdit extends Component {
                     <FormGroup>
                       <Label htmlFor="middlename">State Name</Label>
                       <Input type="text" innerRef={input => (this.stateName = input)} placeholder="State Name" />
+                    </FormGroup>
+                    </Col>
+                    <Col xs="4" sm="12">
+                    <FormGroup>
+                      <Label htmlFor="middlename">Status</Label>
+                       <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
+						<option value="0" >Active</option>
+						<option value="1" selected={(this.status.value =="0")?'selected':' '}>Inactive</option>					
+					  </Input>
                     </FormGroup>
                     </Col>
                 </Row>

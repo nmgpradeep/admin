@@ -14,8 +14,8 @@ class State extends Component {
         <td>{this.props.state.stateName}</td>
         {/* <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>    */}
         <td>
-          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.state)} color={(this.props.state.status =="0")?'danger':'success'}>
-            {(this.props.state.status =="0")?'Inctive':'Active'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.state)} color={(this.props.state.status =="1")?'danger':'success'}>
+            {(this.props.state.status =="1")?'Inctive':'Active'}
           </Badge>
         </td>
         <td>
