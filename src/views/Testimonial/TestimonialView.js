@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReadMoreReact from 'read-more-react';
 import {
   Button,
   Card,
@@ -81,15 +82,15 @@ class TestimonialView extends Component {
                   </Col> */}
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="username">Description</Label>
-                  <Input type="text" value={this.state.viewTestimonial.description} />
+                  <Label htmlFor="description">Description</Label>                
+                  <Input type="textarea" value={this.state.viewTestimonial.description} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email">Author</Label>
-                  <Input type="text"  value={this.state.viewTestimonial.author} required/>
+                  <Label htmlFor="auther">Author</Label>
+                  <Input type="text"  value={(this.state.viewTestimonial.author)?this.state.viewTestimonial.author.userName:''} required/>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email">Review</Label>
+                  <Label htmlFor="review">Review</Label>
                    <ReactStars  count={5} size={24} color2={'#ffd700'} edit={false} value={this.state.viewTestimonial.review}  />
                 </FormGroup>
                 <FormGroup>
