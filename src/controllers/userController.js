@@ -608,19 +608,7 @@ var token = getToken(req.headers);
  **/
 const updateUser = (req, res) => {
   var form = new multiparty.Form();
-	form.parse(req, function(err, data, files) {
-	  //console.log('Multiple', err, fields, files);
-	   //console.log('FIELD', fields.pageTitle[0]);
-	  // if (!data.advertisementName) {
-		// return res.send({
-		//   code: httpResponseCode.BAD_REQUEST,
-		//   message: httpResponseMessage.REQUIRED_DATA
-		// })
-	  // }	  
-	  // const flag = validation.validate_all_request(data, ['advertisementName']);
-	  // if (flag) {
-		// return res.json(flag);
-	  // }
+	form.parse(req, function(err, data, files) {	 
 	let now = new Date();
 	console.log(data)	
     User.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
@@ -637,7 +625,6 @@ const updateUser = (req, res) => {
         });
       } else {
 		   console.log('Created-Page',err, result);
-			 // check file and upload if exist 
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -651,7 +638,7 @@ const updateUser = (req, res) => {
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.profileimage_path + newfilename;
-				  //return res.json(process.cwd());
+				  
 				  fs.writeFile(pathNew, fileData, function(err) {
 					if (err) {
 					  res.send(err);
@@ -687,7 +674,7 @@ const updateUser = (req, res) => {
          }    
         }
       }) 
-    });
+  });
 }
 /** Auther	: Karnika sharma
  *  Date	: July 6, 2018

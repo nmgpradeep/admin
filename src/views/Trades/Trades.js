@@ -26,6 +26,7 @@ class Trades extends Component {
 
   loadCommentsFromServer(){
     axios.get('/trade/Trades/' + this.state.currentPage).then(result => {
+	console.log('asdfasdfasdasd',result);
       if(result.data.code === 200){
         this.setState({
           trades: result.data.result,
@@ -76,7 +77,7 @@ class Trades extends Component {
     trade.id = trade._id;
     axios.post('/trade/returnraised',trade).then(result => {
       if(result.data.code === 200){
-        //this.loadCommentsFromServer();
+        this.loadCommentsFromServer();
       }
     });
   }
