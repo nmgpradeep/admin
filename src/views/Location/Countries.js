@@ -4,8 +4,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import Country from './Country'
-
-
 class Countries extends Component {
   constructor(props){
     super(props);
@@ -17,7 +15,7 @@ class Countries extends Component {
       totalPages: 1,
       countriesCount: 0
     };
-    console.log('THIS OBJ', this);
+    //console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
@@ -73,9 +71,9 @@ class Countries extends Component {
     this.toggle();
   }
   changeStatusHandler(country){
-	  console.log("STATUS",country)
+	  //console.log("STATUS",country)
       country.status = (1 - parseInt(country.status)).toString();
-    console.log("CHANGE-STATUS",country)
+	 //console.log("CHANGE-STATUS",country)
     axios.post('/location/updateStatus',country).then(result => {
       if(result.data.code === 200){
         let countries = this.state.countries;

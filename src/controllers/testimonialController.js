@@ -106,28 +106,19 @@ const listTestimonials = (req, res) => {
 //Function to view the testimonials details
 const viewTestimonials = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<testimonials>>>>',id);  
-	Testimonial.findById({_id:id}, (err, result) => {
-    if (err) {
-      return res.send({
-        code: httpResponseCode.BAD_REQUEST,
-        message: httpResponseMessage.INTERNAL_SERVER_ERROR
-      })
-    } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
+	Testimonial.findById({_id:id})
+      .populate('author')      
+      .exec(function (err, testimonial){
+          Testimonial.count().exec(function(err, count) {
+            if (err) return next(err)
+          //  console.log('The author is %s', testimonial[0].author);
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: testimonial                  
+              });
+            })
         });
-      }else {
-        return res.json({
-             code: httpResponseCode.EVERYTHING_IS_OK,             
-             result: result
-            });
-
-      }
-    }
-  })
 }
 
 

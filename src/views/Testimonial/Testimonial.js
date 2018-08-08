@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
 import Moment from 'moment';
 import ReactStars from 'react-stars'
+import ReadMoreReact from 'read-more-react';
 // import PropTypes from 'prop-types';
 class Testimonial extends Component {
   constructor(props){
@@ -17,8 +18,8 @@ Capitalize(str){
       <tr key={this.props.testimonial._id}>
       <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.testimonial.title}</td>
-        <td>{this.props.testimonial.description}</td>
-        <td>{this.Capitalize(this.props.testimonial.author.firstName)} {this.Capitalize(this.props.testimonial.author.lastName)}</td>   
+        <td><ReadMoreReact text={this.props.testimonial.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} /></td>
+        <td>{(this.props.testimonial.author)?this.Capitalize(this.props.testimonial.author.firstName):''} {(this.props.testimonial.author)?this.Capitalize(this.props.testimonial.author.lastName):''}</td>   
         <td>
          <ReactStars  count={5} size={15} color2={'#ffd700'} edit={false} value={this.props.testimonial.review}  /></td>
         <td>
