@@ -7,11 +7,10 @@ import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
 
 // import PropTypes from 'prop-types';
 class Trade extends Component {
-  //~ constructor(props){
-    //~ super(props);    
-  //~ }
+	
   render() {
     return (
+   
       <tr key={this.props.trade._id}>
         <td>{this.props.sequenceNo + 1} </td>
         <td>{(this.props.trade.sellerId)?this.props.trade.sellerId.firstName:''}</td>
@@ -24,7 +23,7 @@ class Trade extends Component {
               <If condition={this.props.trade.Status == '0'}>
 				<Then>Switch
 				</Then>
-				<ElseIf condition={this.props.trade.Status == '1'}>
+				<ElseIf condition={this.props.trade.Status === '1'}>
 				  Completed
 				  </ElseIf>
 				<Else>
@@ -32,8 +31,26 @@ class Trade extends Component {
 				</Else>
 			  </If>        
            </Badge> 
-           {'  '}<Badge onClick={this.props.returnRaised.bind(this, this.props.trade)} color={(this.props.trade.Status == '1')?'success':'danger'}>
-              {(this.props.trade.Status == '1')?'Return':''}
+           {'  '}
+           <Badge onClick={this.props.returnRaised.bind(this, this.props.trade)} color={(this.props.trade.Status == '1')?'success':'danger'}>           
+               <If condition={this.props.trade.Status === '0'}>
+                  <Then>{' '}</Then>				
+			   <ElseIf condition={this.props.trade.Status === '1'}>
+				 
+				    <If condition={this.props.trade.sendReturnStatus ==='1'}>
+				      <Then> 
+							Returned
+				      </Then>
+				       <Else> 
+							Return				
+				       </Else>
+				     </If>
+				  </ElseIf>
+				<Else>
+				  Rejected
+				</Else>
+			  </If>             
+             
            </Badge>
         </td>
         <td>

@@ -28,13 +28,16 @@ receiverProductId:{
 	ref: 'Product'
 },
 Status:{
- type:String,
- trim:true,
- sparse:true,
- default:0
- //Switch => 0
- //Completed => 1
- //Rejected => 2
+  type:String,
+  trim:true,
+  sparse:true,
+  default:0 
+},
+sendReturnStatus:{
+  type:String,
+  trim:true,
+  sparse:true,
+  default:0	
 }
 },
 {

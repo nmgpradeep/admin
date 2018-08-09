@@ -21,7 +21,7 @@ toUserId: {
 type: String,
 trim: true
 },
-//0->unread,1->Read
+
 isRead:{
 	type:String,
 	trim:true,

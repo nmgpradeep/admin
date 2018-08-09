@@ -104,11 +104,11 @@ const updateStatus = (req, res) => {
 console.log('dadfasfdasfasf',req.body);
   Trade.update({ _id:req.body._id },  { "$set": { "Status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
-		return res.send({
+	 return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
@@ -131,7 +131,7 @@ console.log('dadfasfdasfasf',req.body);
  **/
 //Function to update the Trades status.
 const returnraised = (req, res) => {
-	Trade.findById({_id:req.body._id}, (err, result) => {
+	Trade.findById({_id:req.body._id}, (err, result) => {		
     if (err) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -144,35 +144,24 @@ const returnraised = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
       } else {
-        return res.json({
-            //code: httpResponseCode.EVERYTHING_IS_OK,             
-             //console.log('rrrrr',result);
-             //~ var notification = new Notification({ notificationTypeId:1,fromUserId:res.receiverId,toUserId:1});
-				//~ notification.save(function (err) {
-				//~ if(err){
-					//~ return res.json({
-					  //~ code: httpResponseCode.BAD_REQUEST,
-					  //~ message: httpResponseMessage.NOTIFICATION_ERROR
-					//~ });
-				  //~ }		
-				//~ });
+		    //Trade.sendReturnStatus = 1
+            var notification = new Notification({ notificationTypeId:1,fromUserId:result.receiverId,toUserId:1});
+				notification.save(function (err) {
+				if(err){
+					return res.json({
+					  code: httpResponseCode.BAD_REQUEST,
+					  message: httpResponseMessage.NOTIFICATION_ERROR
+					});
+				  }		
+				});
+			return res.json({	
+				 code: httpResponseCode.EVERYTHING_IS_OK,
+                 message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+                 result: result				
            });
         }
      }
   })
-	
-	
-	
-	
-    //~ var notification = new Notification({ notificationTypeId:1,fromUserId:res.receiverId,toUserId:1});
-	//~ notification.save(function (err) {
-	//~ if(err){
-		//~ return res.json({
-		  //~ code: httpResponseCode.BAD_REQUEST,
-		  //~ message: httpResponseMessage.NOTIFICATION_ERROR
-		//~ });
-	  //~ }		
-	//~ });
 }  
   
   
