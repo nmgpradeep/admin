@@ -171,22 +171,22 @@ class DonationEdit extends Component {
           }
         }); 
       }
-  }
-  
+  }  
   conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
-         
    } 
 
   componentDidMount() {   
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
-         if(result.data.code === 200){
+         if(result.data.code === 200){	
+			console.log('asdfasdf',result.data.result.condition);
            this.setState({ editDonation: result.data.result});           
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
            this.size.value = result.data.result.size;
-           this.author.value = result.data.result.userId._id; 
-           this.category.value = result.data.result.productCategory._id;
+           this.author.value = result.data.result.userId?result.data.result.userId._id:''; 
+           this.category.value = result.data.result.productCategory?result.data.result.productCategory._id:'';
+           //this.condition.value = result.data.result.condition?result.data.result.condition:'';
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
            this.productAge.value = result.data.result.productAge;  
@@ -200,7 +200,6 @@ class DonationEdit extends Component {
           this.props.history.push("/login");
         }
       });
-
   }
   render() {
 	  let optionTemplate;
@@ -271,12 +270,12 @@ class DonationEdit extends Component {
                    <Col xs="4" sm="12">				
                       <FormGroup>
 						 <Label htmlFor="brand">Conditions</Label> 
-                          <select id="select" reference={(condition)=> this.condition = condition} value={this.state.editDonation.condition} className="form-control" onChange={this.conditionsChange}>
+                          <select id="select" reference={(condition)=> this.condition = condition} value={this.state.condition} className="form-control" onChange={this.conditionsChange}>
 						   {optionTemplate}
 					     </select> 		  
                       </FormGroup>
                    </Col>
-                    <Col xs="4" sm="12">
+                   <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="productAge">Age Of Item</Label>
 						  <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />

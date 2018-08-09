@@ -10,7 +10,6 @@ class Trade extends Component {
 	
   render() {
     return (
-   
       <tr key={this.props.trade._id}>
         <td>{this.props.sequenceNo + 1} </td>
         <td>{(this.props.trade.sellerId)?this.props.trade.sellerId.firstName:''}</td>
@@ -36,7 +35,6 @@ class Trade extends Component {
                <If condition={this.props.trade.Status === '0'}>
                   <Then>{' '}</Then>				
 			   <ElseIf condition={this.props.trade.Status === '1'}>
-				 
 				    <If condition={this.props.trade.sendReturnStatus ==='1'}>
 				      <Then> 
 							Returned

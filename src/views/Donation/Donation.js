@@ -13,7 +13,7 @@ class Donation extends Component {
       <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.donation.productName}</td>
         <td>{this.props.donation.description}</td>        
-        <td>{(this.props.donation.productCategory)?this.props.donation.productCategory.categoryName:''}</td>
+        <td>{(this.props.donation.productCategory)?this.props.donation.productCategory.title:''}</td>
         <td>{(this.props.donation.userId)? this.props.donation.userId.firstName:''}</td>
         <td>{this.props.donation.size}</td>
         <td>{this.props.donation.color}</td>

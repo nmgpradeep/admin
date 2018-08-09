@@ -16,6 +16,7 @@ class Donations extends Component {
       totalPages: 1,
       donationsCount: 0
     };
+    
     console.log('THIS OBJ', this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
@@ -26,6 +27,7 @@ class Donations extends Component {
 
   loadCommentsFromServer(){
     axios.get('/donation/donations/' + this.state.currentPage).then(result => {
+		console.log('rs',result);
       if(result.data.code === 200){
         this.setState({
           donations: result.data.result,
@@ -35,7 +37,7 @@ class Donations extends Component {
           donationsCount:result.data.total
         });
       }
-      console.log(this.state.donations);
+      //console.log(this.state.donations);
     })
     .catch((error) => {
     console.log('error', error)

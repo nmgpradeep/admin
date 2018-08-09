@@ -34,8 +34,7 @@ const create = (req, res) => {
 		return res.json(flag);
 	  }
 		  let now = new Date();		
-		  Donation.create(data, (err, result) => {
-			 // console.log('RES-Page',err, result);
+		  Donation.create(data, (err, result) => {			
 			if (err) {
 			  return res.send({
 				errr : err,
@@ -43,8 +42,7 @@ const create = (req, res) => {
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			  })
 			} else {
-			  console.log('Created-Page',err, result);
-			 // check file and upload if exist 
+			  console.log('Created-Page',err, result);			
 			 if((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
 				var fileName = files.productImage[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -102,7 +100,7 @@ const donations = (req, res) => {
       .sort({createdAt:-1})
       .populate('userId')
       .populate('userId',['firstName','lastName'])
-      .populate('productCategory',['categoryName'])
+      .populate('productCategory',['title'])
       .exec(function(err, donation) {
 		 //console.log("Donated User",donation[0].userId)
 		 //console.log("Donated productCategory",donation[0].category)		 
