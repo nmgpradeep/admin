@@ -76,8 +76,7 @@ class TestimonialEdit extends Component {
     };
   }
   
-   ratingChanged = (review) => {
-        console.log('dddddddd',review);
+   ratingChanged = (review) => {       
        this.setState({review: review});
    }
   
@@ -85,7 +84,7 @@ class TestimonialEdit extends Component {
   handleUser = (user) => {
 	  this.author.current = user;
 	  console.log(user);	  
-        //this.setState({user: user});
+      this.setState({user: user});
   }
     
   cancelHandler(){
@@ -120,7 +119,8 @@ class TestimonialEdit extends Component {
         editTestimonial.title = this.title.value;
         editTestimonial.description = this.description.value;
         editTestimonial.author = this.author.value;
-        editTestimonial.review = this.state.review;  
+        editTestimonial.review = this.state.review;
+        console.log("editTestimonial",editTestimonial)
         console.log("editTestimonial",editTestimonial)
         axios.put('/testimonial/updateTestimonial', editTestimonial).then(result => {
           if(result.data.code ===200){
@@ -132,13 +132,15 @@ class TestimonialEdit extends Component {
 
   componentDidMount() {
       axios.get('/testimonial/viewTestimonial/' + this.state.testimonialId).then(result => {		  
-         if(result.data.code === 200){			
+         if(result.data.code === 200){		
+			//console.log('HERE in component Did mount',result);
+			//this.setState({review:result.data.result.review}, function(){console.log('CCC state', this.state)})          
            this.setState({ editTestimonial: result.data.result});          
            this.title.value = result.data.result.title;
            this.description.value = result.data.result.description;
-           this.author.value = result.data.result.author;
-           this.review.value = result.data.result.review;
-          // console.log('HERE in component Did mount',this.review.value);
+           this.author.value = result.data.result.author._id;
+           //this.review.value = result.data.result.review;
+           this.setState({review:result.data.result.review}, function(){console.log('CCC state', this.state)})          
         }
       })
       .catch((error) => {
@@ -182,7 +184,7 @@ class TestimonialEdit extends Component {
                     <Col xs="4" sm="12">
                       <FormGroup>                  
                       <Label >Reviews</Label>                      
-					       <ReactStars count={5} onChange={this.ratingChanged} size={27} color2={'#ffd700'}  innerRef={input => (this.review = input)} value={this.state.editTestimonial.review}/>
+					       <ReactStars count={5} onChange={this.ratingChanged} size={27} color2={'#ffd700'}  innerRef={input => (this.review = input)} value={this.state.review}/>
                       </FormGroup>
                   </Col>
                 </Row>
