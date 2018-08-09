@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
 import Moment from 'moment';
+import ReadMoreReact from 'read-more-react';
 // import PropTypes from 'prop-types';
 class Advertisement extends Component {
   constructor(props){
@@ -12,18 +13,18 @@ class Advertisement extends Component {
       <tr key={this.props.adv._id}>
       <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.adv.advertisementName}</td>
-        <td>{this.props.adv.description}</td>
+        <td><ReadMoreReact text={this.props.adv.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} /></td>
         <td>{this.props.adv.redirectURL}</td>   
         <td><img src={'assets/uploads/AdvertisementImage/'+this.props.adv.image} className="avatar"/></td>
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this, this.props.adv)} color={(this.props.adv.status == '1')?'success':'danger'}>
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.adv)} color={(this.props.adv.status == '1')?'success':'danger'}>
             {(this.props.adv.status == '1')?'Active':'Inctive'}
           </Badge>
         </td>
         <td>
           <Link to={'/advertisement/edit/' + this.props.adv._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           <Link to={'/advertisement/view/' + this.props.adv._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
-          <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteAdv.bind(this, this.props.adv._id)} ></i>&nbsp;
+          <i className="fa fa-trash fa-md mousePointer"  onClick={this.props.onDeleteAdv.bind(this, this.props.adv._id)} ></i>&nbsp;
         </td>
       </tr>
     );

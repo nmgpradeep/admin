@@ -185,7 +185,7 @@ class TestimonialAdd extends Component {
                       <Label htmlFor="author">Reviews</Label>
                     </Col>
                     <Col xs="12" md="9">
-					  <ReactStars  count={5} onChange={this.ratingChanged} size={24} color2={'#ffd700'}  innerRef={input => (this.review = input)}/>
+					  <ReactStars  count={5} onChange={this.ratingChanged} size={24} color2={'#ffd700'}  innerRef={input => (this.review = input)} value={this.state.rating}/>
 					</Col>
                   </FormGroup>  
                   <FormGroup row>
@@ -198,8 +198,7 @@ class TestimonialAdd extends Component {
 						<option value="0">Inactive</option>
 					 </Input>                   
                     </Col>
-                  </FormGroup>                    
-               
+                  </FormGroup> 
               <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
