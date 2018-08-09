@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { AppSwitch } from '@coreui/react';
+import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
 import {
   Badge,
   Button,
@@ -40,6 +42,8 @@ class SubscriptionEdit extends Component {
     let subscriptionId = this.props.match.params.id;
     this.state = {
       editSubscription: {},
+      subs: {},
+      disabled: false,
       subscriptionId: subscriptionId,
       validation:{
         subscriptionName:{
@@ -137,14 +141,37 @@ class SubscriptionEdit extends Component {
         });
       }
   }
-
+handleChange(e){
+    let subsd = this.state.subs;
+	  //this.setState({:e.target.checked})
+	if(e.target.checked){
+		this.setState( {disabled: !this.state.disabled} )
+	}else{
+		this.setState( {disabled: !this.state.disabled} )
+	}
+	  console.log(subsd,e.target.checked)
+	  subsd._id = this.props.match.params.id;
+	  subsd.unlimited = ((e.target.checked)?1:0).toString()
+	  axios.post('/subscription/unlimited',subsd).then(result => {	  
+		this.setState({
+			unlimited: result.data.result.unlimited,          
+        });
+	})
+	.catch((error) => {
+	//console.log('error', error)
+	  if(error.code === 401) {
+		this.props.history.push("/login");
+	  }
+	});
+  }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/subscription/viewSubscription/' + this.state.subscriptionId).then(result => {
-       // console.log(result); 
+       console.log("subscription",result); 
          if(result.data.code === 200){
         //  //localStorage.setItem('jwtToken', result.data.result.accessToken);
+        
            this.setState({ editSubscription: result.data.result});
            this.subscriptionName.value = result.data.result.subscriptionName;
            this.description.value = result.data.result.description;
@@ -152,6 +179,7 @@ class SubscriptionEdit extends Component {
            this.totalTradePermitted.value = result.data.result.totalTradePermitted;
            this.totalInventoryAllowed.value = result.data.result.totalInventoryAllowed;
            this.timePeriod.value = result.data.result.timePeriod;
+           this.setState({ unlimited : result.data.result.unlimited});
         }
       })
       .catch((error) => {
@@ -185,31 +213,49 @@ class SubscriptionEdit extends Component {
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="middlename">Description</Label>
+                      <Label htmlFor="description">Description</Label>
                       <Input type="textarea" innerRef={input => (this.description = input)}  />
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="lastname">Price</Label>
+                      <Label htmlFor="price">Price ($)</Label>
                       <Input type="number"   innerRef={input => (this.price = input)} required/>
                     </FormGroup>
                   </Col>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                    <Label htmlFor="username">Total Trade Permitted</Label>
+                    <Label htmlFor="Trade">Total Trade Permitted</Label>
                   <Input type="number" innerRef={input => (this.totalTradePermitted = input)} />
                     </FormGroup>
                   </Col>
-                  <Col xs="4" sm="12">
+                  <Col xs="4" sm="8">
                     <FormGroup>
-                    <Label htmlFor="username">Total Inventory Allowed</Label>
-                  <Input type="number" innerRef={input => (this.totalInventoryAllowed = input)} />
+                    <Label htmlFor="Inventory">Total Inventory Allowed</Label>
+                  <Input type="number" disabled = {(this.state.disabled)? "disabled" : ""} innerRef={input => (this.totalInventoryAllowed = input)} />
                     </FormGroup>
                   </Col>
+                  <Col xs="4" sm="4">
+                    <FormGroup>
+                    <Label htmlFor="Unlimited">Unlimited{this.state.unlimited}</Label>
+                     <FormGroup>
+					<If condition={this.state.unlimited =="1"}>
+						<Then>
+					<AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} checked label dataOn={'\u2713'} dataOff={'\u2715'} onChange={e => this.handleChange(e)}/>
+
+						</Then>							
+						<Else>
+					<AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} unchecked label dataOn={'\u2713'} dataOff={'\u2715'} onChange={e => this.handleChange(e)}/>
+
+						</Else>
+					  </If>
+					   </FormGroup>
+                    </FormGroup>
+                  </Col>
+                  
                   <Col xs="4" sm="12">
                     <FormGroup>
-                    <Label htmlFor="username">Time Period</Label>
+                    <Label htmlFor="username">Time Period (Month)</Label>
                   <Input type="number" innerRef={input => (this.timePeriod = input)}  />
                     </FormGroup>
                   </Col>

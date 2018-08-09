@@ -128,10 +128,10 @@ class Subscriptions extends Component {
                     <th>S.No</th>
                     <th>Subscription Name</th>
                     <th>Description</th>
-                    <th>Price</th>                  
+                    <th>Price($)</th>                  
                     <th>Total Trade Permitted</th>
                     <th>Total Inventory Allowed</th>
-                    <th>Time Period</th>
+                    <th>Time Period(Month)</th>
                     <th>Added On</th>
                     <th>Status</th>
                     <th>Action</th>

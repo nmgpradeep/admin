@@ -38,6 +38,7 @@ class AdvertisementAdd extends Component {
     this.description = React.createRef(),
     this.redirectURL = React.createRef(),
     this.image = React.createRef(),
+    this.status = React.createRef(),
 
     
     this.state = {
@@ -113,6 +114,7 @@ class AdvertisementAdd extends Component {
       data.append('advertisementName', this.advertisementName.value),
       data.append('description', this.description.value),
       data.append('redirectURL', this.redirectURL.value),
+      data.append('status', this.status.value),
       data.append('image', this.state.selectedFile, this.state.selectedFile.name)
 
       // let addAdv = this.state.addAdv;
@@ -156,7 +158,7 @@ class AdvertisementAdd extends Component {
                       <Label htmlFor="description">Description</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
+                      <Input type="textarea" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
                       <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
                       
                     </Col>
@@ -186,10 +188,10 @@ class AdvertisementAdd extends Component {
                       <Label htmlFor="Status">Status</Label>
                     </Col>
                     <Col xs="12" md="9">
-                    <select innerRef={input => (this.status = input)} id="status" class="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
-                  </select>
+                    <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
+					  <option value="0">Active</option>
+					  <option value="1">Inactive</option>					
+					</Input>                         
                     </Col>
                   </FormGroup>
                    <Row>

@@ -208,8 +208,7 @@ const deleteSubscription = (req, res) => {
  * Description  : Function for unlimited subscription
 */
 const unlimited = (req,res) => {
-  const id = req.params.id;
-  Subscription.findById({_id:id}, (err,result)=>{
+  Subscription.update({ _id : req.body._id }, {"$set" :{"unlimited":req.body.unlimited}}, {new : true}, (err, result) => {
     if (err) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,

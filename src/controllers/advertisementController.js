@@ -43,18 +43,18 @@ const create = (req, res) => {
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			  })
 			} else {
-			  console.log('Created-Page',err, result);
+			//  console.log('Created-Page',err, result);
 			 // check file and upload if exist 
-			 if((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
-				var fileName = files.productImage[0].originalFilename;
+			 if((files.image) && files.image.length > 0 && files.image != '') {
+				var fileName = files.image[0].originalFilename;
 				var ext = path.extname(fileName);
-				var newfilename = files.productImage[0].fieldName + '-' + Date.now() + ext;
-				fs.readFile(files.productImage[0].path, function(err, fileData) {
+				var newfilename = files.image[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.image[0].path, function(err, fileData) {
 				  if (err) {
 					res.send(err);
 					return;
 				  }
-				  fileName = files.productImage[0].originalFilename;
+				  fileName = files.image[0].originalFilename;
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.advertisementimage_path + newfilename;
@@ -67,9 +67,8 @@ const create = (req, res) => {
 
 				  });
 				});
-			  }		
-			  console.log('resultImgas',result);	 
-			  Advertisement.update({ _id:result._id },  { "$set": { "image": newfilename } }, { new:true }, (err,fileupdate) => {
+				Advertisement.update({ _id:result._id },  { "$set": { "image": newfilename } }, { new:true }, (err,fileupdate) => {
+				//	console.log("fileupdate",fileupdate)
 				if(err){				
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
@@ -83,16 +82,13 @@ const create = (req, res) => {
 						result: result
 					})
 				  }
-			   })	  
+			   })	 
+			  }		   
 			  ///end file update///	  
 			}
 		  })
     });  
 }
-
-
-
-
 
 //~ 
 //~ 
@@ -197,7 +193,6 @@ const advertisements = (req, res) => {
               });
             })
         });
-// }
 }
 
 
@@ -207,7 +202,6 @@ const advertisements = (req, res) => {
 **/
 const viewadvertisement = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<advertisement>>>>',id);  
 	Advertisement.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
