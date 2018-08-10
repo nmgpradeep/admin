@@ -19,14 +19,14 @@ class Subscription extends Component {
         <td>{this.props.subscription.timePeriod}</td>       
         <td>{Moment(this.props.subscription.createdAt).format('d MMM YYYY')}</td>
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this,this.props.subscription)} color= {(this.props.subscription.status === '1')?'success':'danger'}>
-            {(this.props.subscription.status === '1')?'Active':'Inctive'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this,this.props.subscription)} color= {(this.props.subscription.status === '1')?'danger':'success'}>
+            {(this.props.subscription.status === '1')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>
           <Link to={'/subscriptions/edit/' + this.props.subscription._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           <Link to={'/subscriptions/view/' + this.props.subscription._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
-          <i className="fa fa-trash fa-md" onClick={this.props.onDeleteSubscription.bind(this, this.props.subscription._id)}></i>&nbsp;
+          <i className="fa fa-trash fa-md mousePointer" onClick={this.props.onDeleteSubscription.bind(this, this.props.subscription._id)}></i>&nbsp;
         </td>
       </tr>
     );

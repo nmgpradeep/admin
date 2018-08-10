@@ -17,8 +17,8 @@ class Advertisement extends Component {
         <td>{this.props.adv.redirectURL}</td>   
         <td><img src={'assets/uploads/AdvertisementImage/'+this.props.adv.image} className="avatar"/></td>
         <td>
-          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.adv)} color={(this.props.adv.status == '1')?'success':'danger'}>
-            {(this.props.adv.status == '1')?'Active':'Inctive'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.adv)} color={(this.props.adv.status == '1')?'danger':'success'}>
+            {(this.props.adv.status == '1')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>

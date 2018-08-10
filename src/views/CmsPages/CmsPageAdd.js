@@ -158,7 +158,7 @@ class CmsPageAdd extends Component {
                   </Col>
                    <Col xs="4" sm="12">					
                     <FormGroup>
-                      <Label htmlFor="lastname">Banner Image</Label>
+                      <Label htmlFor="bannerImage">Banner Image</Label>
                       <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
                     </FormGroup>
                   </Col>

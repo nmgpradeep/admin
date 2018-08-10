@@ -16,8 +16,7 @@ description:{
 image:{
     type:String,
     trim:true,
-    sparse:true,
-    default:0 
+    sparse:true   
 },
 redirectURL:{
 type:String,
@@ -26,8 +25,7 @@ trim:true
 status:{
  type:String,
  trim:true,
- sparse:true,
- default:0   
+ sparse:true 
 },
 },
 {

@@ -45,6 +45,7 @@ class SubscriptionAdd extends Component {
     this.state = {
       addSubscription: {},
       subs: {},
+      disabled: false,
       validation:{
         subscriptionName:{
           rules: {
@@ -86,11 +87,9 @@ class SubscriptionAdd extends Component {
 		this.setState({
           unlimited: result.data.result.unlimited,
           subs:result.data.result          
-        });
-      
+        });      
       // console.log('emailNotification',)
-      }
-      
+      }      
     })
     .catch((error) => {
     //console.log('error', error)
@@ -119,8 +118,7 @@ class SubscriptionAdd extends Component {
                   addSubscription[field].message = addSubscription[field].rules[fieldCheck].message;
 
                }
-              break;
-           
+              break;           
           }
         }
         this.setState({ validation: addSubscription});
@@ -135,10 +133,9 @@ class SubscriptionAdd extends Component {
         addSubscription.timePeriod = this.timePeriod.value;
         addSubscription.userType = 2;
         addSubscription.status = this.status.value;
+        addSubscription.unlimited = this.state.unlimited;
         console.log("addSubscription",addSubscription)
         //addSubscription.unlimited = this.unlimited.value
-        
-        
         axios.post('/subscription/newSubscription', addSubscription).then(result => {
           if(result.data.code === 200){
             this.props.history.push("/subscriptions");
@@ -148,21 +145,14 @@ class SubscriptionAdd extends Component {
   }
 
   handleChange(e){
-    let subsd = this.state.subs;
-	  //this.setState({:e.target.checked})
-	  console.log(subsd,e.target.checked)
-	  subsd.unlimited = ((e.target.checked)?0:1).toString()
-	  axios.post('/subscription/unlimited ',subsd).then(result => {	  
-		this.setState({
-      unlimited: result.data.result.unlimited,          
-        });
-	})
-	.catch((error) => {
-	//console.log('error', error)
-	  if(error.code === 401) {
-		this.props.history.push("/login");
-	  }
-	});
+     //this.setState({:e.target.checked})	 
+	let  unlimited = ((e.target.checked)?1:0).toString()	
+	this.setState({unlimited:unlimited});
+	if(e.target.checked){
+		this.setState( {disabled: !this.state.disabled} )
+	}else{
+		this.setState( {disabled: !this.state.disabled} )
+	}
   }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
@@ -177,11 +167,6 @@ class SubscriptionAdd extends Component {
   }
 
 
-  // toggle(event) {
-  //   this.setState({
-  //     checkboxState: !this.state.checkboxState
-  //   });
-  
 
   render() {
     
@@ -201,9 +186,7 @@ class SubscriptionAdd extends Component {
                     <FormGroup>
                       <Label htmlFor="subscriptionName">Subscription Name</Label>
                       <Input type="text" invalid={this.state.validation.subscriptionName.valid === false} innerRef={input => (this.subscriptionName = input)} placeholder="Subscription Name" />
-
                       <FormFeedback invalid={this.state.validation.subscriptionName.valid === false}>{this.state.validation.subscriptionName.message}</FormFeedback>
-
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -214,7 +197,7 @@ class SubscriptionAdd extends Component {
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
-                      <Label htmlFor="price">Price</Label>
+                      <Label htmlFor="price">Price ($)</Label>
                       <Input type="number" innerRef={input => (this.price = input)} placeholder="Price" />
                     </FormGroup>
                   </Col>
@@ -226,7 +209,7 @@ class SubscriptionAdd extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="tIA">Total Inventory Allowed</Label>
-                  <Input type="text" innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed"/>
+                  <Input type="text" disabled = {(this.state.disabled)? "disabled" : ""} innerRef={input => (this.totalInventoryAllowed = input)} placeholder="Total Inventory Allowed"/>
                   {/* <FormFeedback invalid={this.state.validation.totalInventoryAllowed.valid === false}>{this.state.validation.totalInventoryAllowed.message}</FormFeedback> */}
                 </FormGroup>
             
@@ -235,7 +218,7 @@ class SubscriptionAdd extends Component {
                 <label>Unlimited</label><br />
                 </Col>
                 <Col xs="12" md="9">
-                <If condition={this.state.unlimited =="0"}>
+                <If condition={this.state.unlimited =="1"}>
 							<Then>
               <AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} checked label dataOn={'\u2713'} dataOff={'\u2715'} onChange={e => this.handleChange(e)}/>
 
@@ -249,16 +232,16 @@ class SubscriptionAdd extends Component {
                 </FormGroup>
                 
                 <FormGroup>
-                  <Label htmlFor="tIA">Time Period</Label>
-                  <Input type="number"   innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />
+                  <Label htmlFor="tIA">Time Period (Month)</Label>
+                  <Input type="number" innerRef={input => (this.timePeriod   = input)} placeholder="Time Period" />
 
                 </FormGroup>
                 <FormGroup>                    
                     <Label htmlFor="Status">Status</Label>                    
-                    <Input type="select" innerRef={input => (this.status = input)} id="status" class="form-control" >
-					  <option value="1">Active</option>
-					  <option value="0">Inactive</option>					
-                  </Input>                    
+                   <Input type="select" innerRef={input => (this.status = input)} id="status" className="form-control" >
+					  <option value="0">Active</option>
+					  <option value="1">Inactive</option>					
+					</Input>                     
                 </FormGroup> 
                 <Row>
                   <Col xs="6" className="text-right">
