@@ -100,7 +100,7 @@ class DefaultHeader extends Component {
             <DropdownMenu right style={{ right: 'auto' }}>
 				 <DropdownItem header tag="div" className="text-center"><strong>You have {this.state.totalNotifications} notifications</strong></DropdownItem>
 				  {this.state.notifications.map((notification, i) => { 
-					   return (<DropdownItem key={i} onClick={this.changeStatusHandler.bind(this,notification)}><i className="icon-user-follow text-success">{' '}{' '}</i>New User Registered<Badge color="info" key={i} style={{right:'1px'}}>{' '}{this.state.totalNotifications}</Badge></DropdownItem>
+					   return (<DropdownItem key={i} onClick={this.changeStatusHandler.bind(this,notification)}><i className="icon-user-follow text-success">{' '}{' '}</i>New User Registered<Badge color="info" key={i} style={{right:'1px'}}>{''}{/*this.state.totalNotifications*/}</Badge></DropdownItem>
 					   ) 
 					})
 				}
@@ -134,7 +134,7 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
               <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
                */}
-              <DropdownItem><i className="fa fa-user" href = "../../views/AdminProfile/Profile.js"></i> Profile</DropdownItem>
+              <DropdownItem><Link to="admin/myProfile"><i className="fa fa-user"></i> Profile</Link></DropdownItem>
               {/* <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem> */}
               {/*<DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>

@@ -15,7 +15,7 @@ router.post('/updateUser',userController.updateUser);
 router.post('/changeStatus',userController.changeStatus);
 router.delete('/deleteUser/:id',userController.deleteUser);
 router.get('/dashboardStates',userController.dashboardStates);
-router.get('/viewAdmin/:id',userController.viewAdmin);
+router.get('/myProfle/:id',userController.myProfle);
 router.get('/getLoggedInUser',userController.getLoggedInUser);
 router.post('/forgotPassword', userController.forgotPassword);
 router.get('/resetPassword/:id', userController.resetPassword)

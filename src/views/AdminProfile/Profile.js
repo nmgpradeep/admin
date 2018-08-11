@@ -31,24 +31,23 @@ import {
       constructor(props){
           super(props);
           this.state = {
-              profile: [],
-              adminId: this.props.match.params.id
+              profile: []       
           };
       }
-
       componentDidMount() {
         //if(localStorage.getItem('jwtToken') != null)
-          //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-          axios.get('/user/viewAdmin/' + this.state.adminId).then(result => {
-            if(result.data.code == '200'){
+         //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+          axios.get('/user/getLoggedInUser').then(result => {
+			  console.log("result.data",result.data.result)
+            if(result.data.code === 200){
+				console.log("result.data.result",result.data.result)
               //localStorage.setItem('jwtToken', result.data.result.accessToken);
-              this.setState({ profile: result.data.result});
-              
+              this.setState({ profile: result.data.result});              
             }
           })
           .catch((error) => {
             if(error.status === 401) {
-              this.props.history.push("/login");
+          //    this.props.history.push("/login");
             }
           });
       }
@@ -56,8 +55,8 @@ import {
 
   render() {
     const imageStyle = {
-        width: 400,
-        height: 350
+        width: 150,
+        height: 150
     }
       return(
           <div className = "animated fadeIn">
@@ -68,27 +67,139 @@ import {
                             <strong>Admin Profile</strong>
                             <Link to="/editprofile  " className="btn btn-success btn-sm pull-right">Edit Profile</Link>
                         </CardHeader>
+                        
                         <CardBody>
-                            <Row>
-                                <Col md='3'>
-                                <Label>Name:</Label>
-                                <Col md='3'>{this.state.profile.firstName}</Col>
-
-                                    {/* <Label>Name:</Label><br></br>
-                                    <Label>Email:</Label><br></br>
-                                    <Label>Phone Number:</Label><br></br>
-                                    <Label>Address:</Label><br></br>
-                                    <Label>City:</Label><br></br>
-                                    <Label>Country:</Label><br></br>
-                                    <Label>Zip Code:</Label><br></br>
-                                    <Label>Subscription Plan:</Label><br></br> */}
-
-                                    
-                                </Col>
-                                <Col sm = "6">
-                                    <img style={imageStyle} src="https://i.ytimg.com/vi/N1icEHtgb3g/maxresdefault.jpg" />
-                                </Col>
-                            </Row>
+                          <Row>
+                           <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="name">Name :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.firstName+ ' '+ this.state.profile.lastName}
+								</FormGroup>
+							</Col>
+							</Row>
+                          <Row>
+                           <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="username">UserName :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.userName}
+								</FormGroup>
+							</Col>
+							</Row>
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="email">Email :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.email}
+								</FormGroup>
+							</Col>
+							</Row>
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="phoneNumber">Phone Number :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.phoneNumber}
+								</FormGroup>
+							</Col>
+							</Row>
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="address">Address :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.userStatus}
+								</FormGroup>
+							</Col>
+							</Row>
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="city">City :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.city}
+								</FormGroup>
+							</Col>
+							</Row>							
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="state">State :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.state}
+								</FormGroup>
+							</Col>
+							</Row>							
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="country">Country :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.country}
+								</FormGroup>
+							</Col>
+							</Row>
+							
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="zipcode">Zip Code :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.zipCode}
+								</FormGroup>
+							</Col>
+							</Row>
+							<Row>
+							 <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="subscriptionPlan">Subscription Plan :</Label>
+								</FormGroup>
+							</Col>
+							<Col xs="4" sm="6">
+								<FormGroup>
+										{this.state.profile.subscriptionPlan}
+								</FormGroup>
+							</Col>
+							</Row>
+							<Row>
+						  <Col xs="4" sm="2">
+								<FormGroup>
+										<Label htmlFor="profilePic">Profile Picture :</Label>
+								</FormGroup>
+							</Col>
+						  <Col xs="4" sm="6" >
+							  <img style={imageStyle} src="https://i.ytimg.com/vi/N1icEHtgb3g/maxresdefault.jpg"/>
+						  </Col>
+						</Row>
                         </CardBody>
                     </Card>
                 </Col>

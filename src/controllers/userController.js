@@ -568,14 +568,14 @@ const viewUser = (req, res) => {
  *  Date	: July 6, 2018
  *	Description : Function to view the available user details
  **/
-const viewAdmin = (req, res) => {
+const myProfle = (req, res) => {
 var token = getToken(req.headers);  
    if (token) {	  
 		decoded = jwt.verify(token,settings.secret);	  
-		var userId = decoded.id;
-		console.log("decoded",decoded)
-		  const id = req.params;	
-			User.find({}, (err, result) => {
+		var userId = decoded.id;		
+			User.find({_id:userId})
+			.populate('city')
+			.exec(function (err, result){
 			if (err) {
 			  return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -994,9 +994,9 @@ module.exports = {
 	send,
 	getLoggedInUser,
     dashboardStates,
-   viewAdmin,
-   forgotPassword,
-   resetPassword,
-   updateNewPassword,
-   resdNotification
+    myProfle,
+    forgotPassword,
+    resetPassword,
+    updateNewPassword,
+    resdNotification
 }
