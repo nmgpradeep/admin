@@ -43,6 +43,7 @@ class UserEdit extends Component {
     this.email = React.createRef();
     this.phoneNumber = React.createRef();
     this.dob = React.createRef();
+    this.address = React.createRef();
     this.city = React.createRef();
     this.state = React.createRef();
     this.country = React.createRef();
@@ -168,6 +169,7 @@ handleSubscription = (subscriptions) => {
         data.append('email', this.email.value)
         data.append('phoneNumber', this.phoneNumber.value)
         data.append('dob', this.dob.value)
+        data.append('address', this.address.value)
         data.append('city', this.city.value)
         data.append('state',this.state.state)
         data.append('country',this.country.value)
@@ -208,6 +210,7 @@ handleSubscription = (subscriptions) => {
           this.email.value = result.data.result.email;
           this.phoneNumber.value = result.data.result.phoneNumber
           this.dob.value = result.data.result.dob
+          this.address.value = result.data.result.address
           this.city.value = result.data.result.city
           this.state.value = result.data.result.state
           this.country.value = result.data.result.country
@@ -265,7 +268,7 @@ handleSubscription = (subscriptions) => {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="username">Email</Label>
-                  <Input type="email" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
+                  <Input type="email" disabled="disabled" invalid={this.state.validation.email.valid === false} innerRef={input => (this.email = input)} placeholder="Email" />
                   <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
               <FormGroup>
@@ -275,6 +278,10 @@ handleSubscription = (subscriptions) => {
               <FormGroup>
                <Label>DOB</Label>
                <Input type='date' innerRef={input => (this.dob = input)} placeholder='DOB' width="20%"/>
+              </FormGroup>
+              <FormGroup>
+               <Label>DOB</Label>
+               <Input type='textarea' innerRef={input => (this.address = input)} placeholder='Address'/>
               </FormGroup>
               <FormGroup>
                <Label>City</Label>
@@ -296,12 +303,11 @@ handleSubscription = (subscriptions) => {
                <Label>Subscription Plan</Label>
                <SubscriptionSelectBox onSelectSubscription = {this.handleSubscription} reference={(subscriptionPlan) => this.subscriptionPlan=subscriptionPlan} value={this.state.editUser.subscriptionPlan}/>
               </FormGroup>
-                <FormGroup>
-						 <Label htmlFor="brand">Profile Image</Label>                  
-						  <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" /> 	
-						  <img src={'assets/uploads/ProfilePic/'+this.state.editUser.profilePic} width="60"/>
-					   </FormGroup>
-
+				<FormGroup>
+				 <Label htmlFor="brand">Profile Image</Label>                  
+				  <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" /> 	
+				  <img src={'assets/uploads/ProfilePic/'+this.state.editUser.profilePic} width="60"/>
+				</FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

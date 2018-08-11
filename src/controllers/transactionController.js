@@ -154,8 +154,8 @@ const searchQuery =  (req, res) => {
         // set time zone
       //  moment().tz("Europe/Copenhagen").format();
 
-        start = moment(data.start[0]).toDate();
-        end = moment(data.end[0]).toDate();
+        start = data.start[0];
+        end = data.end[0];
         console.log("start",start)
         console.log("end",end)        
 

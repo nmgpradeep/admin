@@ -39,7 +39,7 @@ class DefaultHeader extends Component {
   componentDidMount(){
 	axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 	axios.get('/user/getLoggedInUser').then(result => {
-		console.log("result",result)
+		//console.log("result",result)
 		this.setState({ 
 			user:result.data.result,
 			notification_type:result.data.notification_type,
@@ -69,11 +69,11 @@ class DefaultHeader extends Component {
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
         <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
+         {/* <NavItem className="px-3">
             <NavLink href="/">Dashboard</NavLink>
           </NavItem>
           
-          {/*<NavItem className="px-3">
+          <NavItem className="px-3">
             <NavLink href="#/users">Users</NavLink>
           </NavItem>*/}
           
@@ -134,7 +134,7 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
               <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
                */}
-              <DropdownItem><Link to="admin/myProfile"><i className="fa fa-user"></i> Profile</Link></DropdownItem>
+              <DropdownItem><Link to="/admin/myProfile"><i className="fa fa-user"></i> Profile</Link></DropdownItem>
               {/* <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem> */}
               {/*<DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>

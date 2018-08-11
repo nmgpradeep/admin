@@ -17,7 +17,7 @@ class Size extends Component {
         <td>
           <Link to={'/size/edit/' + this.props.size._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           {/* <Link to={'/testimonial/view/' + this.props.testimonial._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link> */}
-          <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteSize.bind(this, this.props.size._id)} ></i>&nbsp;
+          <i className="fa fa-trash fa-md mousePointer"  onClick={this.props.onDeleteSize.bind(this, this.props.size._id)} ></i>&nbsp;
         </td>
       </tr>
     );

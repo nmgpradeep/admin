@@ -448,7 +448,10 @@ const MyProfile = Loadable({
   loader: () => import('./views/AdminProfile/Profile'),
   loading : Loading,
 });
-
+const EditProfile = Loadable({
+  loader: () => import('./views/AdminProfile/EditProfile'),
+  loading : Loading,
+});
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -520,6 +523,7 @@ const routes = [
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/charts', name: 'Charts', component: Charts },
   { path: '/admin/myProfile', name: 'MyProfile', component: MyProfile },
+  { path: '/admin/editProfile', name: 'EditProfile', component: EditProfile },
 ];
 
 export default routes;

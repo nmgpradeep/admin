@@ -53,7 +53,7 @@ class CategoryAdd extends Component {
           touched: false
         },
         description: {
-          elementType: "input",
+          elementType: "textarea",
           elementConfig: {
             type: "textarea",
             placeholder: "Description"

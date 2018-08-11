@@ -31,33 +31,33 @@ import {
       constructor(props){
           super(props);
           this.state = {
-              profile: []       
+              profile:{},
           };
       }
       componentDidMount() {
         //if(localStorage.getItem('jwtToken') != null)
          //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-          axios.get('/user/getLoggedInUser').then(result => {
-			  console.log("result.data",result.data.result)
-            if(result.data.code === 200){
-				console.log("result.data.result",result.data.result)
+          axios.get('/user/myProfle').then(result => {			
+            if(result.data.code === 200){				
               //localStorage.setItem('jwtToken', result.data.result.accessToken);
-              this.setState({ profile: result.data.result});              
+              this.setState({profile:result.data.result});              
+              console.log("profile state",this.state.profile[0])
             }
+            
           })
           .catch((error) => {
+			  console.log("profile error",error)
             if(error.status === 401) {
-          //    this.props.history.push("/login");
+             // this.props.history.push("/login");
             }
           });
       }
-
-
   render() {
     const imageStyle = {
         width: 150,
         height: 150
     }
+	
       return(
           <div className = "animated fadeIn">
             <Row>
@@ -65,7 +65,7 @@ import {
                     <Card>
                         <CardHeader>
                             <strong>Admin Profile</strong>
-                            <Link to="/editprofile  " className="btn btn-success btn-sm pull-right">Edit Profile</Link>
+                           {/* <Link to="/admin/editProfile" className="btn btn-success btn-sm pull-right">Edit Profile</Link> */}
                         </CardHeader>
                         
                         <CardBody>
@@ -77,7 +77,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.firstName+ ' '+ this.state.profile.lastName}
+										{this.state.profile[0]?(this.state.profile[0].firstName+ ' '+ this.state.profile[0].lastName):''}
 								</FormGroup>
 							</Col>
 							</Row>
@@ -89,7 +89,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.userName}
+										{this.state.profile[0]?(this.state.profile[0].userName):''}
 								</FormGroup>
 							</Col>
 							</Row>
@@ -101,7 +101,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.email}
+										{this.state.profile[0]?(this.state.profile[0].email):''}
 								</FormGroup>
 							</Col>
 							</Row>
@@ -113,7 +113,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.phoneNumber}
+										{this.state.profile[0]?(this.state.profile[0].phoneNumber):''}										
 								</FormGroup>
 							</Col>
 							</Row>
@@ -125,7 +125,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.userStatus}
+										{this.state.profile[0]?(this.state.profile[0].address):''}									
 								</FormGroup>
 							</Col>
 							</Row>
@@ -137,7 +137,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.city}
+										{this.state.profile[0] && this.state.profile[0].city?(this.state.profile[0].city.cityName):''}										
 								</FormGroup>
 							</Col>
 							</Row>							
@@ -149,7 +149,7 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.state}
+										{this.state.profile[0] && this.state.profile[0].state?(this.state.profile[0].state.stateName):''}
 								</FormGroup>
 							</Col>
 							</Row>							
@@ -160,8 +160,8 @@ import {
 								</FormGroup>
 							</Col>
 							<Col xs="4" sm="6">
-								<FormGroup>
-										{this.state.profile.country}
+								<FormGroup>										
+										{this.state.profile[0] && this.state.profile[0].country?(this.state.profile[0].country.countryName):''}
 								</FormGroup>
 							</Col>
 							</Row>
@@ -174,22 +174,22 @@ import {
 							</Col>
 							<Col xs="4" sm="6">
 								<FormGroup>
-										{this.state.profile.zipCode}
+										{this.state.profile[0]?(this.state.profile[0].zipCode):''}											
 								</FormGroup>
 							</Col>
 							</Row>
-							<Row>
+							{/*<Row>
 							 <Col xs="4" sm="2">
 								<FormGroup>
 										<Label htmlFor="subscriptionPlan">Subscription Plan :</Label>
 								</FormGroup>
 							</Col>
 							<Col xs="4" sm="6">
-								<FormGroup>
-										{this.state.profile.subscriptionPlan}
+								<FormGroup>										
+										{this.state.profile[0]?(this.state.profile[0].subscriptionPlan):''}
 								</FormGroup>
 							</Col>
-							</Row>
+							</Row> */}
 							<Row>
 						  <Col xs="4" sm="2">
 								<FormGroup>
@@ -197,7 +197,7 @@ import {
 								</FormGroup>
 							</Col>
 						  <Col xs="4" sm="6" >
-							  <img style={imageStyle} src="https://i.ytimg.com/vi/N1icEHtgb3g/maxresdefault.jpg"/>
+							  <img style={imageStyle} src="https://i.ytimg.com/vi/N1icEHtgb3g/maxresdefault.jpg" alt=""/>
 						  </Col>
 						</Row>
                         </CardBody>

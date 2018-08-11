@@ -16,7 +16,7 @@ class Brand extends Component {
         <td>
           <Link to={'/brand/edit/' + this.props.brand._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           {/* <Link to={'/testimonial/view/' + this.props.testimonial._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link> */}
-          <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteBrand.bind(this, this.props.brand._id)} ></i>&nbsp;
+          <i className="fa fa-trash fa-md mousePointer"  onClick={this.props.onDeleteBrand.bind(this, this.props.brand._id)} ></i>&nbsp;
         </td>
       </tr>
     );

@@ -54,8 +54,7 @@ const signup = (req, res) => {
       let unix_time = moment().unix()
       let salt = data.user_contact + unix_time
       let accessToken = md5(salt)
-      req.body.accessToken = accessToken
-
+      req.body.accessToken = accessToken      
       User.create(data, (err, result) => {
 
 		  //console.log('RES-FIND',err, result);
@@ -569,12 +568,15 @@ const viewUser = (req, res) => {
  *	Description : Function to view the available user details
  **/
 const myProfle = (req, res) => {
+	//User.findOne({_id: userId}).then(function(user){ 
 var token = getToken(req.headers);  
    if (token) {	  
 		decoded = jwt.verify(token,settings.secret);	  
-		var userId = decoded.id;		
-			User.find({_id:userId})
+		var userId = decoded._id;		
+			User.find({_id:userId})		
 			.populate('city')
+			.populate('state')
+			.populate('country')
 			.exec(function (err, result){
 			if (err) {
 			  return res.send({
@@ -771,14 +773,14 @@ const getLoggedInUser = (req, res) => {
 				  code: httpResponseMessage.BAD_REQUEST
 				});
 			}
-				return res.json({
-						code: httpResponseCode.EVERYTHING_IS_OK,
-						message: httpResponseMessage.SUCCESSFULLY_DONE,
-						result: user,
-						totalNotifications:notifications.length,
-						notifications : notifications,
-						notification_type:constant.notification_type
-					});
+			return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					message: httpResponseMessage.SUCCESSFULLY_DONE,
+					result: user,
+					totalNotifications:notifications.length,
+					notifications : notifications,
+					notification_type:constant.notification_type
+				});
 			});		
        });
   } else {
