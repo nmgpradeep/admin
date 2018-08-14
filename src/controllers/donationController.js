@@ -61,8 +61,7 @@ const create = (req, res) => {
 					if (err) {
 					  res.send(err);
 					  return;
-					}          
-
+					}  
 				  });
 				});
 			  }		
@@ -142,10 +141,9 @@ const viewDonation = (req, res) => {
 	Donation.findById({_id:id})
 		.populate('userId')
 		.populate('userId',['firstName','lastName'])
-		.populate('productCategory',['categoryName'])
-	
+		.populate('productCategory',['title'])
 	     .exec(function(err, result){
-			 console.log('rrrrrr',result);		
+			console.log('rrrrrr',result);		
 			if (err) {
 			return res.send({
 			code: httpResponseCode.BAD_REQUEST,

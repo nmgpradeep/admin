@@ -218,7 +218,6 @@ class ProductEdit extends Component {
           this.props.history.push("/login");
         }
       });
-
   }
   
   render() {
@@ -228,78 +227,76 @@ class ProductEdit extends Component {
 		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
        }
    return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" sm="12">
-            <Card>
-              <CardHeader>
-                <strong>Edit Product</strong>
-                 <Button onClick={()=>this.cancelHandler()} color="primary" className="btn btn-success btn-sm pull-right">Back</Button>
-              </CardHeader>
-              <CardBody>
-              <Form noValidate action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
-                <Row>
-                  <Col xs="4" sm="12">
-                    <FormGroup>
-                      <Label htmlFor="company">Name</Label>
-                      <Input type="text" innerRef={input => (this.productName = input)} placeholder="Product Name" /> </FormGroup>
-                   </Col>
-                </Row>
-                <FormGroup>
-                  <Label htmlFor="description">Description</Label>
-                    <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="category">Category</Label>                 
-                   <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editProduct.category}/>
-                </FormGroup>
-                 <FormGroup>
-                  <Label htmlFor="user">User</Label>
-                  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editProduct.author}/>    
-                </FormGroup>
-                 <FormGroup>
-                  <Label htmlFor="size">Size</Label>                  
-                  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size} value={this.state.editProduct.size}/>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="color">Color</Label>
-                  <Input type="text" innerRef={input => (this.color = input)} placeholder="Color" />
-                </FormGroup>
-                    <FormGroup>
-                    <Label htmlFor="brand">Brand</Label>
-                   <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={this.state.editProduct.brand}/>
-                </FormGroup>
-                 <FormGroup>
-				  <Label htmlFor="brand">Conditions</Label> 
-                   <select id="select" reference={(condition)=> this.condition = condition} value={this.state.editProduct.condition} className="form-control" onChange={this.conditionsChange}>
-				   {optionTemplate}
-				    </select> 		  
-                 </FormGroup>
-                
-                <FormGroup>
-                  <Label htmlFor="age">Age Of Item</Label>
-                  <Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
-                </FormGroup>
-                <FormGroup>
-                   <Label htmlFor="lastname">Product Image</Label>                  	
-					 <Input type="file" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Product Image" /> 	
-					
-					<img src={'assets/uploads/Products/'+this.state.productImages} width="60"/>
-                </FormGroup>
-                <Row>
-                  <Col xs="6" className="text-right">
-                    <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
-                  </Col>
-                  <Col xs="6">
-                    <Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
-                  </Col>
-                </Row>
-                </Form>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-        </div>
+		<div className="animated fadeIn">
+			<Row>
+			<Col xs="12" sm="12">
+			<Card>
+			<CardHeader>
+			<strong>Edit Product</strong>
+			<Button onClick={()=>this.cancelHandler()} color="primary" className="btn btn-success btn-sm pull-right">Back</Button>
+			</CardHeader>
+			<CardBody>
+			<Form noValidate action="" method="post" noValidate encType="multipart/form-data" className="form-horizontal">
+			<Row>
+			<Col xs="4" sm="12">
+			<FormGroup>
+			<Label htmlFor="company">Name</Label>
+			<Input type="text" innerRef={input => (this.productName = input)} placeholder="Product Name" /> </FormGroup>
+			</Col>
+			</Row>
+			<FormGroup>
+			<Label htmlFor="description">Description</Label>
+			<Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="category">Category</Label>                 
+			<CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editProduct.category}/>
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="user">User</Label>
+			<UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editProduct.author}/>    
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="size">Size</Label>                  
+			<SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size} value={this.state.editProduct.size}/>
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="color">Color</Label>
+			<Input type="text" innerRef={input => (this.color = input)} placeholder="Color" />
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="brand">Brand</Label>
+			<BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={this.state.editProduct.brand}/>
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="brand">Conditions</Label> 
+			<select id="select" reference={(condition)=> this.condition = condition} value={this.state.editProduct.condition} className="form-control" onChange={this.conditionsChange}>
+			{optionTemplate}
+			</select> 		  
+			</FormGroup>                
+			<FormGroup>
+			<Label htmlFor="age">Age Of Item</Label>
+			<Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
+			</FormGroup>
+			<FormGroup>
+			<Label htmlFor="lastname">Product Image</Label>                  	
+			<Input type="file" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Product Image" /> 
+			<img src={'assets/uploads/Products/'+this.state.productImages} width="60"/>
+			</FormGroup>
+			<Row>
+			<Col xs="6" className="text-right">
+			<Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
+			</Col>
+			<Col xs="6">
+			<Button onClick={()=>this.cancelHandler()} color="primary" className="px-4">Cancel</Button>
+			</Col>
+			</Row>
+			</Form>
+			</CardBody>
+			</Card>
+			</Col>
+			</Row>
+		</div>
     );
   }
 }

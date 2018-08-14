@@ -77,10 +77,10 @@ class ProductAdd extends Component {
   categoryhandleContentChange(value) {			
     this.setState({categoryValue:value })    
   }
-   fileChangedHandler = (event) => {	
-	  this.setState({selectedFile: event.target.files[0]})
-	   console.log('ddddddddd',this.state.selectedFile);	  
-   }
+  
+  fileChangedHandler = (event) => {	
+	  this.setState({selectedFile: event.target.files[0]})	 
+  }
   
   handleUser = (user) => {
         this.setState({user: user});
@@ -94,15 +94,13 @@ class ProductAdd extends Component {
   handleSize = (size) => {
         this.setState({size: size});
   }
-  
   cancelHandler(){
     this.props.history.push("/products");
   }
 
    componentDidMount() {    
        axios.get('/donation/getConstant').then(result => {
-           this.setState({conditions: result.data.result});
-           
+           this.setState({conditions: result.data.result});           
        });
    } 
    
@@ -128,8 +126,7 @@ class ProductAdd extends Component {
                   lastValidFieldFlag = false;
                   formSubmitFlag = false;
                   addProduct[field].valid = false;
-                    addProduct[field].message = addProduct[field].addProduct[fieldCheck].message;
-
+                  addProduct[field].message = addProduct[field].addProduct[fieldCheck].message;
                }
               break;
           }
@@ -179,8 +176,7 @@ class ProductAdd extends Component {
     axios.get('/donation/getConstant').then(result => {
       this.setState({conditions: result.data.result});
       console.log('conditions', result.data.result)
-      
-  })
+     })
       .catch((error) => {
         if(error.status === 401) {
           this.props.history.push("/login");
@@ -236,7 +232,7 @@ class ProductAdd extends Component {
                   <Input type="text" innerRef={input => (this.color = input)} placeholder="Color" />
                 </FormGroup>
                    <FormGroup>
-                  <Label htmlFor="brand">Brand</Label>
+                 <Label htmlFor="brand">Brand</Label>
                   <BrandSelectBox onSelectBrand={this.handleBrand}/>
                 </FormGroup>
                  <FormGroup>

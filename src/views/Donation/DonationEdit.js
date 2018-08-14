@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import axios from 'axios'
 import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
+import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
+
+
 import {
   Button,  
   Card,
@@ -227,7 +231,7 @@ class DonationEdit extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="middlename">Description</Label>
-                      <Input type="text" innerRef={input => (this.description = input)} placeholder="Description" />
+                       <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
                     </FormGroup>
                     </Col>
                      <Col xs="4" sm="12">

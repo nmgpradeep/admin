@@ -35,11 +35,12 @@ class DonationView extends Component {
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
         if(result.data.code === 200){
           this.setState({ viewDonation: result.data.result});
-          console.log("viewDonation",result.data.result);
+          
+          console.log("viewDonationddddd",result.data.result);
           this.productName.value = result.data.result.productName;
           this.description.value = result.data.result.description;
           this.size.value = result.data.result.size;
-          this.productCategory.value = result.data.result.productCategory.categoryName;
+          this.productCategory.value = result.data.result.productCategory.title;
           this.color.value = result.data.result.color;
           this.userId.value = result.data.result.userId.firstName;           
           this.condition.value = result.data.result.condition;    
