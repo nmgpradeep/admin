@@ -9939,5 +9939,12 @@ body {
 .app-header .navbar-nav .dropdown-menu-right {
   right: auto; }
 
+.mousePointer {
+  cursor: pointer !important; }
+
+.read-more-button {
+  color: lightseagreen;
+  cursor: pointer !important; }
+
 html body .app.flex-row.align-items-center {
   height: 100vh; }

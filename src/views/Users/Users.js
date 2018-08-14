@@ -19,12 +19,16 @@ class Users extends Component {
       PerPage: 5,
       totalPages: 1,
       usersCount: 0,
-      offset: 0
+      offset: 0,     
+      info: false,
     };
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
+  
+     
     this.toggle = this.toggle.bind(this);
+    this.toggleInfo = this.toggleInfo.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
   }
   
@@ -82,6 +86,13 @@ class Users extends Component {
       modal: !this.state.modal
     });
   }
+  
+  toggleInfo (){
+     this.setState({
+      info: !this.state.info
+    });   
+  }
+  
   approveDeleteHandler(){
     this.setState({
       approve: true
@@ -108,7 +119,7 @@ class Users extends Component {
    let users;
      if(this.state.users){
        let userList = this.state.users;
-       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />);
+       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />);
      }
      let paginationItems =[];
 
@@ -132,6 +143,8 @@ class Users extends Component {
                     <th>Email</th>
                     <th>Date registered</th>
                     <th>Profile Pic</th>
+                    <th>Subscription Plan</th>
+                    <th>Flag</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
@@ -175,6 +188,17 @@ class Users extends Component {
             <Button color="secondary" onClick={this.toggle}>No</Button>
           </ModalFooter>
         </Modal>
+                
+        <Modal isOpen={this.state.info} toggle={this.toggleInfo} className={'modal-info ' + this.props.className}>
+		  <ModalHeader toggle={this.toggleInfo}>User Flagged</ModalHeader>
+		  <ModalBody>
+			No Flag User Available!!!
+		  </ModalBody>
+		  <ModalFooter>		
+			<Button color="secondary" onClick={this.toggleInfo}>Cancel</Button>
+		  </ModalFooter>
+		</Modal>
+		
       </div>
 
     );

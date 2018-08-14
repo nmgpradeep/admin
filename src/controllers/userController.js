@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Product = require('../models/product')
 const Donation = require('../models/donation')
 const Trade = require('../models/trade')
+const FlagUser = require('../models/flagUser')
 const Notification = require('../models/notification')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
@@ -54,8 +55,7 @@ const signup = (req, res) => {
       let unix_time = moment().unix()
       let salt = data.user_contact + unix_time
       let accessToken = md5(salt)
-      req.body.accessToken = accessToken
-
+      req.body.accessToken = accessToken      
       User.create(data, (err, result) => {
 
 		  //console.log('RES-FIND',err, result);
@@ -511,10 +511,27 @@ const listUser = (req, res) => {
 		if (token) {	  		
 		var perPage = constant.PER_PAGE_RECORD
 		var page = req.params.page || 1;
-		User.find({ userType: { $ne: 1 }})
-		  .skip((perPage * page) - perPage)
-		  .limit(perPage)
+		
+		User.aggregate([{
+		  $lookup :{
+			from: 'userSubscription', 
+			localField: '_id',
+			foreignField: 'userId',
+			as: 'subscriptionPlan'
+		  }},
+		  {
+			$lookup: {
+				from: "flagUser",
+				localField: "flagTo",
+				foreignField: "_id",
+				as: "userFlag"
+			}
+		}])
+		//User.find({ userType: { $ne: 1 }})
 		  .sort({createdAt:-1})
+		  .skip((perPage * page) - perPage)
+		  .limit(perPage)		 
+		  
 		  .exec(function(err, users) {
 			  User.count().exec(function(err, count) {
 				if (err) return next(err)
@@ -568,14 +585,17 @@ const viewUser = (req, res) => {
  *  Date	: July 6, 2018
  *	Description : Function to view the available user details
  **/
-const viewAdmin = (req, res) => {
+const myProfle = (req, res) => {
+	//User.findOne({_id: userId}).then(function(user){ 
 var token = getToken(req.headers);  
    if (token) {	  
 		decoded = jwt.verify(token,settings.secret);	  
-		var userId = decoded.id;
-		console.log("decoded",decoded)
-		  const id = req.params;	
-			User.find({}, (err, result) => {
+		var userId = decoded._id;		
+			User.find({_id:userId})		
+			.populate('city')
+			.populate('state')
+			.populate('country')
+			.exec(function (err, result){
 			if (err) {
 			  return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -771,14 +791,14 @@ const getLoggedInUser = (req, res) => {
 				  code: httpResponseMessage.BAD_REQUEST
 				});
 			}
-				return res.json({
-						code: httpResponseCode.EVERYTHING_IS_OK,
-						message: httpResponseMessage.SUCCESSFULLY_DONE,
-						result: user,
-						totalNotifications:notifications.length,
-						notifications : notifications,
-						notification_type:constant.notification_type
-					});
+			return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					message: httpResponseMessage.SUCCESSFULLY_DONE,
+					result: user,
+					totalNotifications:notifications.length,
+					notifications : notifications,
+					notification_type:constant.notification_type
+				});
 			});		
        });
   } else {
@@ -994,9 +1014,9 @@ module.exports = {
 	send,
 	getLoggedInUser,
     dashboardStates,
-   viewAdmin,
-   forgotPassword,
-   resetPassword,
-   updateNewPassword,
-   resdNotification
+    myProfle,
+    forgotPassword,
+    resetPassword,
+    updateNewPassword,
+    resdNotification
 }

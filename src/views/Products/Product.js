@@ -17,16 +17,16 @@ Capitalize(str){
         <td>{this.props.product.description}</td>
         <td>{(this.props.product.user)?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
         <td>{this.props.product.productAge}</td>     
-        <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40"/></td>
+        <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40" alt=""/></td>
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this, this.props.product)} color={(this.props.product.productStatus === '1')?'success':'danger'}>
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.product)} color={(this.props.product.productStatus === '1')?'success':'danger'}>
             {(this.props.product.productStatus === '1')?'Active':'Inctive'}
           </Badge>
         </td>
         <td>
           <Link to={'/products/edit/' + this.props.product._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           <Link to={'/products/view/' + this.props.product._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
-          <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteProduct.bind(this, this.props.product._id)} ></i>&nbsp;
+          <i className="fa fa-trash fa-md mousePointer"  onClick={this.props.onDeleteProduct.bind(this, this.props.product._id)} ></i>&nbsp;
         </td>
       </tr>
     );

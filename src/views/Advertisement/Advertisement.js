@@ -15,7 +15,7 @@ class Advertisement extends Component {
         <td>{this.props.adv.advertisementName}</td>
         <td><ReadMoreReact text={this.props.adv.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} /></td>
         <td>{this.props.adv.redirectURL}</td>   
-        <td><img src={'assets/uploads/AdvertisementImage/'+this.props.adv.image} className="avatar"/></td>
+        <td><img src={'assets/uploads/AdvertisementImage/'+this.props.adv.image} className="avatar" alt=""/></td>
         <td>
           <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.adv)} color={(this.props.adv.status == '1')?'danger':'success'}>
             {(this.props.adv.status == '1')?'Inctive':'Active'}

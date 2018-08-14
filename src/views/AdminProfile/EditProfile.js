@@ -246,12 +246,7 @@ class AdminProfile extends Component {
                   <Label htmlFor="username">Zip Code</Label>
                   <Input type="number" innerRef={input => (this.zipCode = input)} placeholder="Email" />
                   {/* <FormFeedback invalid={this.state.validation.zipCode.valid === false}>{this.state.validation.zipCode.message}</FormFeedback> */}
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="username">Subsciption Plan</Label>
-                  <Input type="text" innerRef={input => (this.phoneNumber = input)} placeholder="Email" />
-                  {/* <FormFeedback invalid={this.state.validation.phoneNumber.valid === false}>{this.state.validation.phoneNumber.message}</FormFeedback> */}
-                </FormGroup>
+                </FormGroup>               
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

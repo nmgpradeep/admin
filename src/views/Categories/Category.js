@@ -20,6 +20,7 @@ class Category extends Component {
         <td>{(this.props.category.parent)?this.props.category.parent.title:""}</td>
 		<td>
           <Badge
+			className="mousePointer"
             onClick={this.props.changeStatus.bind(this, this.props.category)}
             color={this.props.category.status === "1" ? "success" : "danger"}
           >
@@ -34,7 +35,7 @@ class Category extends Component {
             <i className="fa fa-eye fa-md" />&nbsp;
           </Link>
           <i
-            className="fa fa-trash fa-md"
+            className="fa fa-trash fa-md mousePointer"
             onClick={this.props.onDeleteCategory.bind(
               this,
               this.props.category._id

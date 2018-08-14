@@ -61,11 +61,11 @@ ref: 'City'
 },
 state:{
 type:String,
-trim:true
+ref: 'State'
 },
 country:{
 type:String,
-trim:true
+ref:'Country'
 },
 zipCode:{
 type:String,

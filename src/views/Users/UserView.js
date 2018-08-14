@@ -52,6 +52,7 @@ class UserView extends Component {
           this.email.value = result.data.result.email
           this.phoneNumber.value = result.data.result.phoneNumber
           this.dob.value = result.data.result.dob
+          this.address.value = result.data.result.address
           this.city.value = result.data.result.city
           this.state.value = result.data.result.state
           this.country.value = result.data.result.country
@@ -116,6 +117,10 @@ class UserView extends Component {
                 <FormGroup>
                   <Label htmlFor="dob">DOB</Label>
                   <Input type="text" value={this.state.viewUser.dob} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="dob">Address</Label>
+                  <Input type="textarea" value={this.state.viewUser.address} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">City</Label>

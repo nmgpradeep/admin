@@ -44,6 +44,7 @@ class UserAdd extends Component {
     this.password = React.createRef();    
     this.phoneNumber = React.createRef();
     this.dob = React.createRef();
+    this.address = React.createRef();
     this.city = React.createRef();
     this.state = React.createRef();
     this.country = React.createRef();
@@ -124,6 +125,16 @@ class UserAdd extends Component {
           rules: {
             notEmpty: {
               message: 'Dob field can\'t be left blank',
+              valid: false
+            }
+          },
+          valid: null,
+          message: ''
+        },
+        address: {
+          rules: {
+            notEmpty: {
+              message: 'address field can\'t be left blank',
               valid: false
             }
           },
@@ -230,7 +241,8 @@ class UserAdd extends Component {
         data.append('email', this.email.value),
         data.append('profilePic', this.state.selectedFile)
         data.append('phoneNumber', this.phoneNumber.value),
-        data.append('dob', this.dob.value),
+        data.append('dob', this.dob.value), 
+        data.append('address', this.address.value),
         data.append('city', this.state.city),
         data.append('state', this.state.state),
         data.append('country', this.state.country),
@@ -301,8 +313,12 @@ class UserAdd extends Component {
                   <FormFeedback invalid={this.state.validation.email.valid === false}>{this.state.validation.email.message}</FormFeedback>
                 </FormGroup>
                  <FormGroup>
-                  <Label htmlFor="contactnumber">ContactNumber</Label>
+                  <Label htmlFor="contactnumber">Contact Number</Label>
                   <Input type="text" invalid={this.state.validation.phoneNumber.valid === false} innerRef={input => (this.phoneNumber = input)} placeholder="ContactNumber" />
+                </FormGroup>
+                 <FormGroup>
+                  <Label htmlFor="contactnumber">Address</Label>
+                  <Input type="textarea" invalid={this.state.validation.address.valid === false} innerRef={input => (this.address = input)} placeholder="Address" />
                 </FormGroup>
                <FormGroup>
                <Row>

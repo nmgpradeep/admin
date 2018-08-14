@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
 import Moment from 'moment';
 // import PropTypes from 'prop-types';
+import { Button, Modal} from 'reactstrap';
 class User extends Component {
-
   Capitalize(str){
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
   render() {
     return (
       <tr key={this.props.user._id}>
@@ -16,16 +17,18 @@ class User extends Component {
         <td>{this.props.user.userName}</td>
         <td>{this.props.user.email}</td>
         <td>{Moment(this.props.user.createdAt).format('d MMM YYYY')}</td>
-        <td><img src={'assets/uploads/ProfilePic/'+this.props.user.profilePic} className="avatar"/></td>
+        <td><img src={'assets/uploads/ProfilePic/'+this.props.user.profilePic} className="avatar" alt=""/></td>
+        <td>{this.props.user.subscriptionPlan}</td>
+        <td><Button color="info" onClick={this.props.onflagUsers.bind(this, this.props.user._id)} className="mr-1">{this.props.user.userFlag.length}</Button></td>
         <td>
-          <Badge onClick={this.props.changeStatus.bind(this, this.props.user)} color= {(this.props.user.userStatus === '1')?'success':'danger'}>
-            {(this.props.user.userStatus === '1')?'Active':'Inctive'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.user)} color= {(this.props.user.userStatus === '1')?'danger':'success'}>
+            {(this.props.user.userStatus === '1')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>
           <Link to={'/users/edit/' + this.props.user._id}><i className="fa fa-edit fa-md"></i>&nbsp;</Link>
           <Link to={'/users/view/' + this.props.user._id}><i className="fa fa-eye fa-md"></i>&nbsp;</Link>
-          <i className="fa fa-trash fa-md"  onClick={this.props.onDeleteUser.bind(this, this.props.user._id)} ></i>&nbsp;
+          <i className="fa fa-trash fa-md mousePointer"  onClick={this.props.onDeleteUser.bind(this, this.props.user._id)} ></i>&nbsp;
         </td>
       </tr>
     );
