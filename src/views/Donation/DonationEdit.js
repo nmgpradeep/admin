@@ -6,7 +6,6 @@ import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
 import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
 
-
 import {
   Button,  
   Card,
@@ -119,6 +118,14 @@ class DonationEdit extends Component {
 	  console.log('asdfasfdasdf',this.state.selectedFile);
     }
    
+   handleBrand = (brand) => {
+       this.brand.current = brand;
+   }
+   
+    handleSize = (size) => {
+	  this.size.current = size;
+   }
+   
    
   cancelHandler(){
     this.props.history.push("/donations");
@@ -176,21 +183,21 @@ class DonationEdit extends Component {
         }); 
       }
   }  
-  conditionsChange = (value) => {	   
+   conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
    } 
-
+   
   componentDidMount() {   
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
          if(result.data.code === 200){	
-			console.log('asdfasdf',result.data.result.condition);
+		   //console.log('asdfasdf',result.data.result);
            this.setState({ editDonation: result.data.result});           
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
-           this.size.value = result.data.result.size;
            this.author.value = result.data.result.userId?result.data.result.userId._id:''; 
            this.category.value = result.data.result.productCategory?result.data.result.productCategory._id:'';
-           //this.condition.value = result.data.result.condition?result.data.result.condition:'';
+           this.brand.value = result.data.result.brand?result.data.result.brand._id:"";
+           this.size.value = result.data.result.size?result.data.result.size._id:"";
            this.color.value = result.data.result.color;
            this.brand.value = result.data.result.brand;
            this.productAge.value = result.data.result.productAge;  
@@ -249,7 +256,7 @@ class DonationEdit extends Component {
                    <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="size">Size</Label>
-						  <Input type="text" innerRef={input => (this.size = input)} placeholder="Size" />
+						  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size} value={this.state.editDonation.size}/>
 						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -261,7 +268,7 @@ class DonationEdit extends Component {
                     <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="brand">Brand</Label>
-						  <Input type="text" innerRef={input => (this.brand = input)} placeholder="Brand" />
+						 <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={this.state.editDonation.brand}/>
 						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

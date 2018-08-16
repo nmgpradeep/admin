@@ -44,7 +44,6 @@ class ProductAdd extends Component {
     super(props);
     this.productName = React.createRef();
     this.description = React.createRef();
-    //this.size = React.createRef();
     this.parent = React.createRef();
     this.status = React.createRef();
     this.productImages = React.createRef();
@@ -103,7 +102,6 @@ class ProductAdd extends Component {
            this.setState({conditions: result.data.result});           
        });
    } 
-   
    fileChangedHandler = (event) => {	
 	   this.setState({selectedFile: event.target.files[0]})	   
    }
@@ -133,6 +131,7 @@ class ProductAdd extends Component {
         }
         this.setState({ validation: addProduct});
       }
+      
       if(formSubmitFlag){
         console.log("state",this.state)
         const data = new FD();
@@ -156,7 +155,7 @@ class ProductAdd extends Component {
       }
   }
 
-  componentDidMount() {
+  componentDidMount(){
       axios.get('/category/allCategories').then(result => {
         if(result.data.code == '200'){
           this.setState({

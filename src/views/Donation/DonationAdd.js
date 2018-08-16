@@ -135,44 +135,43 @@ class DonationAdd extends Component {
         this.setState({category: category});
   }
   
-  handleSize = (size) => {
-        this.setState({size: size});
-  }
-  
   handleBrand = (brand) => {
         this.setState({brand: brand});
+  }
+  handleSize = (size) => {
+        this.setState({size: size});
   }
     
   componentDidMount() {    
        axios.get('/donation/getConstant').then(result => {
            this.setState({conditions: result.data.result});           
        });
-  } 
-  
+  }   
   conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
   } 
 
   submitHandler(e){
-    e.preventDefault()
-    let formSubmitFlag = true;
-    for (let field in this.state.validation) {
-      let lastValidFieldFlag = true;
-      let donationadd = this.state.validation;
-      donationadd[field].valid = null;
+   e.preventDefault();
+      let formSubmitFlag = true;
+      for(let field in this.state.validation){
+        let lastValidFieldFlag = true;
+        let addDonation = this.state.validation;
+        addDonation[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
-              if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  lastValidFieldFlag = false;
-                  formSubmitFlag = false;
-                  donationadd[field].valid = false;
-                  donationadd[field].message = donationadd[field].donationadd[fieldCheck].message;
-               }
+            //console.log('asdasdfasdasdasdf',this[field].value);
+              //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
+                  //~ lastValidFieldFlag = false;
+                  //~ formSubmitFlag = false;
+                  //~ addDonation[field].valid = false;
+                  //~ addDonation[field].message = addDonation[field].addDonation[fieldCheck].message;
+               //~ }
               break;
           }
         }
-      this.setState({ validation: donationadd});
+        this.setState({ validation: addDonation});
     }
     if(formSubmitFlag){
 		const data = new FD();				
@@ -180,17 +179,18 @@ class DonationAdd extends Component {
 		data.append('description', this.description.value);
 		data.append('productCategory',this.state.category);
 		data.append('userId', this.state.user);
-		data.append('size', this.size.value);
+		data.append('size', this.state.size);
 		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
-		data.append('brand', this.brand.value);
+		data.append('brand', this.state.brand)
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile)
-		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);					
+		 data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);					
 		else
-		data.append('productImage','NULL');			
+		data.append('productImage','NULL');	
+		data.append('condition', this.state.conditionValue);
         axios.post('/donation/donate', data).then(result => {
-	     console.log('resultImages ',result);
+	     //console.log('resultImagessssssss ',result);
           if(result.data.code === 200){
             this.props.history.push("/donations");
           }
