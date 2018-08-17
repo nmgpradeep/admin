@@ -69,6 +69,7 @@ class Products extends Component {
     });
     this.toggle();
   }
+  
   changeStatusHandler(product){
 	console.log('product',product);
     product.productStatus = (1 - parseInt(product.productStatus)).toString();

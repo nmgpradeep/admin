@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser')
 const Donation = require('../models/donation')
+const Notification = require('../models/notification')
 const User = require('../models/User')
 const Category = require('../models/category')
 const httpResponseCode = require('../helpers/httpResponseCode')
@@ -224,7 +225,7 @@ const viewuser = (req, res) => {
 			});
 
 			}
-			}
+		}
 	});
 }
 
@@ -337,32 +338,104 @@ const deleteDonation = (req, res) => {
 }
 
 
+//~ const updateStatus = (req, res) => { 
+  //~ Donation.update({ _id:req.body._id },  { "$set": { "productStatus": req.body.productStatus } }, { new:true }, (err,result) => {
+    //~ if(err){
+		//~ return res.send({
+			//~ code: httpResponseCode.BAD_REQUEST,
+			//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  //~ });
+    //~ }else {
+      //~ if (!result) {
+        //~ res.json({
+          //~ message: httpResponseMessage.USER_NOT_FOUND,
+          //~ code: httpResponseMessage.BAD_REQUEST
+        //~ });
+      //~ }else {
+        //~ return res.json({
+              //~ code: httpResponseCode.EVERYTHING_IS_OK,
+              //~ message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+             //~ result: result
+            //~ });
+      //~ }
+    //~ }    
+  //~ })
+//~ }
 /** Auther	: Rajiv Kumar
  *  Date	: June 22, 2018
  *	Description : Function to update the donation status.
  **/
-const updateStatus = (req, res) => { 
-  Donation.update({ _id:req.body._id },  { "$set": { "productStatus": req.body.productStatus } }, { new:true }, (err,result) => {
-    if(err){
-		return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR
-		  });
-    }else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      }else {
-        return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
-             result: result
-            });
-      }
-    }    
-  })
+const updateStatus = (req, res) => {	
+ var form = new multiparty.Form();
+   form.parse(req, function(err, data, files) {
+	   console.log('fields value',data.field,data.value)	
+	   var update={};
+		update[data.field[0]]=data.value[0]; 
+		console.log("update",update)
+        Donation.update({ _id:data._id },  { "$set": update}, { new:true }, (err,result) => {
+			if(err){
+				return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+				  });
+			} else {				
+				 if (!result) {
+					res.json({
+					  message: httpResponseMessage.USER_NOT_FOUND,
+					  code: httpResponseMessage.BAD_REQUEST
+					});
+			  } else {
+				  if(data.value ==2){
+				   Donation.findById({_id:data._id}, (err, result) => {
+				    var notification = new Notification({ notificationTypeId:1,fromUserId:1,toUserId:result.userId});
+				     notification.save(function (err) {
+						if(err){
+							return res.json({
+							  code: httpResponseCode.BAD_REQUEST,
+							  message: httpResponseMessage.NOTIFICATION_ERROR
+							});
+						  }						  		
+						});	
+					  })
+					  
+					  let transporter = nodemailer.createTransport({
+						host: constant.SMTP_HOST,
+						port: constant.SMTP_PORT,
+						secure: false, // true for 465, false for other ports
+						auth: {
+							user: constant.SMTP_USERNAME, // generated ethereal user
+							pass: constant.SMTP_PASSWORD // generated ethereal password
+						}
+					});
+					
+					host=req.get('host');					
+					
+					let mailOptions = {
+						from: constant.SMTP_FROM_EMAIL, // sender address
+						to:'karnika.sharma.newmediaguru@gmail.com', // list of receivers
+						subject: 'Donated product request has been cancelled.', // Subject line
+						text: 'Hello Sir,', // plain text body
+						html : "Admin has been rejected your donation request."
+					};
+					
+					transporter.sendMail(mailOptions, (error, info) => {
+						if (error) {
+							return console.log(error);
+						}
+						console.log('Message sent: %s', info.messageId);
+						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+					});					  
+				}	
+								
+				return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+				result: result
+				});
+			 }
+		   }    
+	    })
+    }); 
 }
 
 

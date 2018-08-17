@@ -176,7 +176,6 @@ class DonationEdit extends Component {
 		} else {
 			data.append('productImage', this.state.editDonation.productImage); 
 	    }
-	    console.log('asdasdfasdasdasd',data);
         axios.put('/donation/updateDonation', data).then(result => {
              if(result.data.code === 200){
                this.props.history.push("/donations");

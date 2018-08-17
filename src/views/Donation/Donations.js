@@ -29,7 +29,7 @@ class Donations extends Component {
 
   loadCommentsFromServer(){
     axios.get('/donation/donations/' + this.state.currentPage).then(result => {
-	  console.log('rs',result);
+	  //console.log('rs',result.data.result);
       if(result.data.code === 200){
         this.setState({
           donations: result.data.result,
@@ -53,7 +53,7 @@ class Donations extends Component {
     this.setState({currentPage: currentPage}, () => {
       this.loadCommentsFromServer();
     });
-};
+ };
 
   componentDidMount() {
 	   axios.get('/donation/getConstant').then(result => {
@@ -69,21 +69,8 @@ class Donations extends Component {
       approveId: id
     });
     this.toggle();
-  }
-  
-  changeStatusHandler(donation){
-	console.log("STATUS",donation)
-    donation.productStatus = (1 - parseInt(donation.productStatus)).toString();
-    console.log("CHANGE-STATUS",donation)
-    axios.post('/donation/updateStatus',donation).then(result => {
-      if(result.data.code === 200){
-        let donations = this.state.donations;
-        let donationIndex = donations.findIndex(x => x._id === donation._id);
-        donations[donationIndex].productStatus = donation.productStatus.toString();
-        this.setState({ donations: donations});
-      }
-    });
-  }
+  } 
+ 
   
    toggle() {
     this.setState({
@@ -95,8 +82,7 @@ class Donations extends Component {
 	 this.setState({ info: !this.state.info  });  
 	 axios.get('/donation/viewuser/' + id).then(result => {
         if(result.data.code === 200){
-        this.setState({userData: result.data.result}); 	
-        
+        this.setState({userData: result.data.result});        
       }      
     })
   }

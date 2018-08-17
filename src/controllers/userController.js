@@ -127,6 +127,7 @@ const signup = (req, res) => {
 							pass: constant.SMTP_PASSWORD // generated ethereal password
 						}
 					});
+					
 					host=req.get('host');
 					link="http://"+req.get('host')+"/user/verifyEmail/"+result._id;
 					// setup email data with unicode symbols
@@ -150,11 +151,11 @@ const signup = (req, res) => {
 						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 					});
 
-          return res.json({
+            return res.json({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
             result: result
-          })
+            })
 
         }
       })
