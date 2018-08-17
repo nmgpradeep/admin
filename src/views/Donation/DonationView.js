@@ -34,17 +34,17 @@ class DonationView extends Component {
        });
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
         if(result.data.code === 200){
+		  console.log('asdf', result.data.result);
           this.setState({ viewDonation: result.data.result});
           
-          console.log("viewDonationddddd",result.data.result);
           this.productName.value = result.data.result.productName;
           this.description.value = result.data.result.description;
-          this.size.value = result.data.result.size;
+          
           this.productCategory.value = result.data.result.productCategory.title;
           this.color.value = result.data.result.color;
           this.userId.value = result.data.result.userId.firstName;           
           this.condition.value = result.data.result.condition;    
-          this.brand.value = result.data.result.brand;
+          
           this.productAge.value = result.data.result.productAge; 
           this.productImage.value = result.data.result.productImage;
         }
@@ -79,6 +79,7 @@ class DonationView extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
+                   
                       <Label htmlFor="company">Product name</Label>
                       <Input type="text" innerRef={input => (this.productName= input)} />
                     </FormGroup>
@@ -92,25 +93,25 @@ class DonationView extends Component {
                     <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="Product Category">Product Category</Label>
-                      <Input type="text" innerRef={input => (this.productCategory= input)} />
+                      <Input type="text" value={this.state.viewDonation.size?this.state.viewDonation.size.size:""} />
                     </FormGroup>
                   </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="UserId">User Id</Label>
-                  <Input type="text" innerRef={input => (this.userId= input)} />
+                  <Input type="text" value={this.state.viewDonation.userId?this.state.viewDonation.userId.firstName:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="size">Size</Label>
-                  <Input type="text"  innerRef={input => (this.size= input)} />
+                   <Input type="text" value={this.state.viewDonation.size?this.state.viewDonation.size.size:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="color">Color</Label>
-                  <Input type="text" innerRef={input => (this.color= input)} />
+                  <Input type="text" value={this.state.viewDonation.color} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="brand">Brand</Label>
-                  <Input type="text" nnerRef={input => (this.brand = input)} value={this.state.viewDonation.brand}/>
+                  <Input type="text" value={this.state.viewDonation.brand?this.state.viewDonation.brand.brandName:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="productAge">Age Of Item</Label>

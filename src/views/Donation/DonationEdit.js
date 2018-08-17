@@ -115,7 +115,7 @@ class DonationEdit extends Component {
   
     fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
-	  console.log('asdfasfdasdf',this.state.selectedFile);
+	  //console.log('asdfasfdasdf',this.state.selectedFile);
     }
    
    handleBrand = (brand) => {
@@ -127,13 +127,13 @@ class DonationEdit extends Component {
    }
    
    
-  cancelHandler(){
+   cancelHandler(){
     this.props.history.push("/donations");
-  }
+   }
   
-   conditionsChange = (value) => {	 
+    conditionsChange = (value) => {	 
         this.setState({conditionValue: value.target.value});
-   } 
+   }
    
   submitHandler(e){
       e.preventDefault();
@@ -159,6 +159,7 @@ class DonationEdit extends Component {
 
       if(formSubmitFlag){	
 		const data = new FD();		
+		//console.log('cureenntntntntnt',this.state.conditionValue)
 		data.append('data', this.state.editDonation);
 		data.append('_id', this.state.editDonation._id);
 		data.append('productName', this.productName.value);
@@ -175,8 +176,8 @@ class DonationEdit extends Component {
 		} else {
 			data.append('productImage', this.state.editDonation.productImage); 
 	    }
+	    console.log('asdasdfasdasdasd',data);
         axios.put('/donation/updateDonation', data).then(result => {
-			console.log('resultImages ',result);
              if(result.data.code === 200){
                this.props.history.push("/donations");
           }
@@ -190,7 +191,7 @@ class DonationEdit extends Component {
   componentDidMount() {   
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
          if(result.data.code === 200){	
-		   //console.log('asdfasdf',result.data.result);
+		   console.log('asd',result.data.result)
            this.setState({ editDonation: result.data.result});           
            this.productName.value = result.data.result.productName;
            this.description.value = result.data.result.description;
@@ -199,7 +200,6 @@ class DonationEdit extends Component {
            this.brand.value = result.data.result.brand?result.data.result.brand._id:"";
            this.size.value = result.data.result.size?result.data.result.size._id:"";
            this.color.value = result.data.result.color;
-           this.brand.value = result.data.result.brand;
            this.productAge.value = result.data.result.productAge;  
         }
       })
@@ -256,7 +256,7 @@ class DonationEdit extends Component {
                    <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="size">Size</Label>
-						  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size} value={this.state.editDonation.size}/>
+						  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size}  value={this.state.editDonation.size}/>
 						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -268,7 +268,7 @@ class DonationEdit extends Component {
                     <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="brand">Brand</Label>
-						 <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={this.state.editDonation.brand}/>
+						 <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} />
 						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -281,7 +281,7 @@ class DonationEdit extends Component {
                    <Col xs="4" sm="12">				
                       <FormGroup>
 						 <Label htmlFor="brand">Conditions</Label> 
-                          <select id="select" reference={(condition)=> this.condition = condition} value={this.state.condition} className="form-control" onChange={this.conditionsChange}>
+                          <select id="select" reference={(condition)=> this.condition = condition} value={this.state.editDonation.condition} className="form-control" onChange={this.conditionsChange}>
 						   {optionTemplate}
 					     </select> 		  
                       </FormGroup>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
+import ReadMoreReact from 'read-more-react';
 // import PropTypes from 'prop-types';
 
 class Product extends Component {
@@ -14,7 +15,9 @@ Capitalize(str){
       <tr key={this.props.product._id}>		
         <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
-        <td>{this.props.product.description}</td>
+        <td>
+           <ReadMoreReact text={this.props.product.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} />
+        </td>
         <td>{(this.props.product.user)?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
         <td>{this.props.product.productAge}</td>     
         <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40" alt=""/></td>

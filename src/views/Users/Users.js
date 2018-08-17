@@ -22,6 +22,7 @@ class Users extends Component {
       offset: 0,     
       info: false,
     };
+    
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
