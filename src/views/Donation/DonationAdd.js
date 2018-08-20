@@ -5,6 +5,7 @@ import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
 import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
 import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
 
+
 import {
   Badge,
   Button,
@@ -241,8 +242,9 @@ class DonationAdd extends Component {
                   <Col md="3">
                       <Label htmlFor="author">Category</Label>
                     </Col>
-                 <Col md="3">
+                 <Col md="9">
                     <CategorySelectBox onSelectCategory={this.handleCategory}/>
+                 
                   </Col>
                 </FormGroup>
                 <FormGroup row>
