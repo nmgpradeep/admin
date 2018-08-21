@@ -37,18 +37,31 @@ productAge:{
  type:String,
  trim:true
 },
+
+//0=> Pending , 1 => Accepted , 2 =>Rejected
 productStatus:{
  type:String,
  trim:true,
  sparse:true,
  default:0   
 },
+
+//0 => Picked up , 1 =>Shipped , 2 => Delivered
+
+shippingStatus:{
+ type:String,
+ trim:true,
+ sparse:true,
+ default:0   
+},
+
 productImage:{
  type:String,
  trim:true,
  sparse:true,
  default:0   
 },
+
 condition:{
  type:String,
  trim:true,

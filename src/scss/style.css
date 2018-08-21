@@ -9946,5 +9946,8 @@ body {
   color: lightseagreen;
   cursor: pointer !important; }
 
+.checkbox-item {
+  display: none; }
+
 html body .app.flex-row.align-items-center {
   height: 100vh; }

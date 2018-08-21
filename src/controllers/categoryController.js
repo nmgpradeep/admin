@@ -5,6 +5,7 @@ const httpResponseMessage = require("../helpers/httpResponseMessage");
 const constant = require("../../common/constant");
 const validation = require("../middlewares/validation");
 const moment = require("moment-timezone");
+//var Promise = require('bluebird');
 
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
@@ -232,6 +233,14 @@ const updateCategory = (req, res) => {
     }
   );
 };
+
+
+function populateParents(categories) {
+     return categories.populate(categories, { path: "parent" }).then(function(categories) {
+     return categories.parent ? populateParents(categories.parent) : Promise.fulfill(categories);
+  });
+}
+
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
  */
@@ -242,15 +251,18 @@ const allCategories = (req, res) => {
   Category.find({})
     .populate({ path: "children", model: "Category" })
     .populate({ path: "parent", model: "Category" })
-   // .skip(perPage * page - perPage)
+    // .skip(perPage * page - perPage)
     //.limit(perPage)
     .exec(function(err, categories) {
+	  populateParents(categories).then(function(){	
         if (err) return next(err);
         return res.json({
           code: httpResponseCode.EVERYTHING_IS_OK,
           message: httpResponseMessage.SUCCESSFULLY_DONE,
           result: categories
-        });    
+        }); 
+      });  
+          
     });
 };
 
@@ -274,6 +286,7 @@ const deleteCategory = (req, res) => {
     });
   });
 };
+
 
 module.exports = {
   create,

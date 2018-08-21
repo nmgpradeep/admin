@@ -153,7 +153,7 @@ const returnraised = (req, res) => {
 					  message: httpResponseMessage.NOTIFICATION_ERROR
 					});
 				  }		
-				});
+			});
 			return res.json({	
 				 code: httpResponseCode.EVERYTHING_IS_OK,
                  message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,

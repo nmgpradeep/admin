@@ -2,6 +2,10 @@ import React,{ Component }from 'react'
 import axios from 'axios'
 import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
+import BrandSelectBox from '../SelectBox/BrandSelectBox/BrandSelectBox'
+import SizeSelectBox from '../SelectBox/SizeSelectBox/SizeSelectBox'
+
+
 import {
   Badge,
   Button,
@@ -11,7 +15,7 @@ import {
   CardFooter,
   CardHeader,
   Col,
-  Collapse,
+  Collapse,	
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
@@ -27,12 +31,12 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
 var FD = require('form-data');
 var fs = require('fs');
 
 class DonationAdd extends Component {
-
   constructor(props){
     super(props)
     this.productName = React.createRef(),
@@ -45,7 +49,6 @@ class DonationAdd extends Component {
     this.brand = React.createRef(),
     this.productAge = React.createRef(),
     this.productImage = React.createRef(),
-
     
     this.state = {
       donationadd: {},
@@ -118,53 +121,58 @@ class DonationAdd extends Component {
     } 
   }
   
-   cancelHandler(){
+  cancelHandler(){
     this.props.history.push("/donations");
-   }
-  
-  
+  }
   fileChangedHandler = (event) => {
 	this.setState({selectedFile: event.target.files[0]})
   }
   
-   handleUser = (user) => {
+  handleUser = (user) => {
         this.setState({user: user});
   }
+  
    handleCategory = (category) => {
         this.setState({category: category});
   }
   
-   componentDidMount() {    
+  handleBrand = (brand) => {
+        this.setState({brand: brand});
+  }
+  handleSize = (size) => {
+        this.setState({size: size});
+  }
+    
+  componentDidMount() {    
        axios.get('/donation/getConstant').then(result => {
-           this.setState({conditions: result.data.result});
-           
+           this.setState({conditions: result.data.result});           
        });
-   } 
-     
-   conditionsChange = (value) => {	   
+  }   
+  conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
-   } 
+  } 
 
   submitHandler(e){
-    e.preventDefault()
-    let formSubmitFlag = true;
-    for (let field in this.state.validation) {
-      let lastValidFieldFlag = true;
-      let donationadd = this.state.validation;
-      donationadd[field].valid = null;
-      for(let fieldCheck in this.state.validation[field].rules){
-        switch(fieldCheck){
-          case 'notEmpty':
-            if(lastValidFieldFlag === true && this[field].value.length === 0){
-                lastValidFieldFlag = false;
-                formSubmitFlag = false;
-                donationadd[field].valid = false;
-                donationadd[field].message = donationadd[field].rules[fieldCheck].message;
-             }
-            break;
+   e.preventDefault();
+      let formSubmitFlag = true;
+      for(let field in this.state.validation){
+        let lastValidFieldFlag = true;
+        let addDonation = this.state.validation;
+        addDonation[field].valid = null;
+        for(let fieldCheck in this.state.validation[field].rules){
+          switch(fieldCheck){
+            case 'notEmpty':
+            //console.log('asdasdfasdasdasdf',this[field].value);
+              //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
+                  //~ lastValidFieldFlag = false;
+                  //~ formSubmitFlag = false;
+                  //~ addDonation[field].valid = false;
+                  //~ addDonation[field].message = addDonation[field].addDonation[fieldCheck].message;
+               //~ }
+              break;
+          }
         }
-      }
-      this.setState({ validation: donationadd});
+        this.setState({ validation: addDonation});
     }
     if(formSubmitFlag){
 		const data = new FD();				
@@ -172,17 +180,18 @@ class DonationAdd extends Component {
 		data.append('description', this.description.value);
 		data.append('productCategory',this.state.category);
 		data.append('userId', this.state.user);
-		data.append('size', this.size.value);
+		data.append('size', this.state.size);
 		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
-		data.append('brand', this.brand.value);
+		data.append('brand', this.state.brand)
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile)
-		data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);																																																																																																																																																																																																																																																																											
+		 data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);					
 		else
-		data.append('productImage','NULL');			
+		data.append('productImage','NULL');	
+		data.append('condition', this.state.conditionValue);
         axios.post('/donation/donate', data).then(result => {
-	     console.log('resultImages ',result);
+	     //console.log('resultImagessssssss ',result);
           if(result.data.code === 200){
             this.props.history.push("/donations");
           }
@@ -195,7 +204,7 @@ class DonationAdd extends Component {
 	    if(this.state.conditions){
 			let conditionsList = this.state.conditions;
 		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
-       }	  
+   }	  
     return (
       <div>
         <Card>
@@ -217,9 +226,8 @@ class DonationAdd extends Component {
                     <Col md="3">
                       <Label htmlFor="description">Description</Label>
                     </Col>
-                    <Col xs="12" md="9">                    
-                      <Input type="text" invalid={this.state.validation.description.valid === false} innerRef={input => (this.description = input)} placeholder="Description" />
-                      <FormFeedback invalid={this.state.validation.description.valid === false}>{this.state.validation.description.message}</FormFeedback>
+                    <Col xs="12" md="9">   
+                       <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>  
                     </Col>
                   </FormGroup>                 
                  <FormGroup row>
@@ -234,8 +242,9 @@ class DonationAdd extends Component {
                   <Col md="3">
                       <Label htmlFor="author">Category</Label>
                     </Col>
-                 <Col md="3">
+                 <Col md="9">
                     <CategorySelectBox onSelectCategory={this.handleCategory}/>
+                 
                   </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -243,8 +252,7 @@ class DonationAdd extends Component {
                       <Label htmlFor="Size">Size</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.size.valid === false} innerRef={input => (this.size = input)} placeholder="Size" />
-                      <FormFeedback invalid={this.state.validation.size.valid === false}>{this.state.validation.size.message}</FormFeedback>
+                      <SizeSelectBox onSelectSize={this.handleSize}/>
                   </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -261,8 +269,7 @@ class DonationAdd extends Component {
                       <Label htmlFor="brand">Brand</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" invalid={this.state.validation.brand.valid === false} innerRef={input => (this.brand= input)} placeholder="Brand" />
-                      <FormFeedback invalid={this.state.validation.brand.valid === false}>{this.state.validation.brand.message}</FormFeedback>
+                       <BrandSelectBox onSelectBrand={this.handleBrand}/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -271,7 +278,7 @@ class DonationAdd extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" invalid={this.state.validation.productAge.valid === false} innerRef={input => (this.productAge = input)} placeholder="Age" />
-                      <FormFeedback invalid={this.state.validation.productAge.valid === false}>{this.state.validation.productAge.message}</FormFeedback>
+                      <FormFeedback invalid={this.state.validation.productAge.valid === false}>{this.state.validation.productAge.message} </FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -317,7 +324,6 @@ class DonationAdd extends Component {
       </div>
     )
   }
-
 }
 
 export default DonationAdd;

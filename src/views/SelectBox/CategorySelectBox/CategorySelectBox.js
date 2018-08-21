@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Alert, Form, Button, Card, CardBody, CardGroup, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
+import Select from 'react-styled-select'
+import DropdownTreeSelect from 'react-dropdown-tree-select'
+import 'react-dropdown-tree-select/dist/styles.css'
+
 
 // a select with dynamically created options
 var options = []
@@ -13,20 +17,22 @@ class CategorySelectBox extends Component {
 			category : ''
 	}   
   }
+  
   onChange(e) {
-		var category = e.target.value;	  
-		this.props.onSelectCategory(category);  		
-        console.log("USER DATA SET",category)
+		var category = e;	  
+		//this.props.onSelectCategory(e);  		
+        //console.log("USER DATA SET",category)
   }
   
   componentDidMount(){
     axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){		  
-		  options = result.data.result;
         this.setState({
-          options: result.data.result,          
+          options: result.data.result, 
+          
         });
       }
+      console.log('asdf',this.state.options);
     })
    .catch((error) => {
     console.log('error', error)
@@ -35,16 +41,65 @@ class CategorySelectBox extends Component {
       }
     });
   }
-  render() {	  
+  
+  render() {
+     let optionsLists;
+      if(this.state.options){
+        let optionsList = this.state.options;
+          optionsLists = optionsList.map(option => ({ label: option.title, value: option.title }));
+       }
+	 
+	const data = {
+	  label: 'Please select',
+	  value :'0',
+	  children: [
+		{
+		  label: 'search me too',
+		  value: 'searchmetoo',
+		  children: [
+			{
+			  label: 'asdf',
+			  value: 'asdfasdf',
+			   children: [
+					{
+					  label: '16',
+					  value: '15',				 
+					},
+					{
+					  label: '266',
+					  value: '156',				 
+					}
+			   ],	
+			}
+		  ]		  
+		},
+		{
+		  label: 'search me too',
+		  value: 'searchmetoo',
+		  children: [
+			{
+			  label: 'asdf',
+			  value: 'asdfasdf',
+			   children: [
+				{
+				  label: '16',
+				  value: '15',				 
+				},
+				{
+				  label: '266',
+				  value: '156',				 
+				}
+			   ],	
+			}
+		  ]		  
+		}
+	  ],
+	} 
+	 
+	  	  
     return (
-      <div className="form-group">        
-       <Input type="select" onChange={this.onChange.bind(this)} innerRef={this.props.reference} className="form-control">
-		<option value="0" >Select Category</option>
-        {options.map(option => {
-          return <option value={option._id} key={option.title}>{option.title}</option>
-        })}
-	  </Input>
-      </div>
+       <DropdownTreeSelect data={data} placeholderText="Search" />
+      
     )
   }
 }
