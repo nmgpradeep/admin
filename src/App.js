@@ -31,7 +31,7 @@ class App extends Component {
     super(props);
     //console.log('TOken', localStorage.getItem('jwtToken'));
     if(localStorage.getItem('jwtToken') === null){
-      window.location.href="#/login";
+       window.location.href="#/login";
     }
   }
   componentDidMount() {
@@ -49,6 +49,7 @@ class App extends Component {
           <Route exact path="/404" name="Page 404" component={Page404} />
           <Route exact path="/500" name="Page 500" component={Page500} />
           <Route path="/"  name="Home" component={DefaultLayout} />
+        
         </Switch>
       </HashRouter>
     );
