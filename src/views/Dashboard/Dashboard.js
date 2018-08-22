@@ -196,14 +196,14 @@ const cardChartOpts3 = {
 // Card Chart 4
 const cardChartData4 = {
   labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.3)',
-      borderColor: 'transparent',
-      data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
-    },
-  ],
+  //~ datasets: [
+    //~ {
+      //~ label: 'My First dataset',
+      //~ backgroundColor: 'rgba(255,255,255,.3)',
+      //~ borderColor: 'transparent',
+      //~ data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
+    //~ },
+  //~ ],
 };
 
 const cardChartOpts4 = {
@@ -382,31 +382,31 @@ for (var i = 0; i <= elements; i++) {
 const mainChart = {
   labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
   datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: hexToRgba(brandInfo, 10),
-      borderColor: brandInfo,
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: data1,
-    },
-    {
-      label: 'My Second dataset',
-      backgroundColor: 'transparent',
-      borderColor: brandSuccess,
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: data2,
-    },
-    {
-      label: 'My Third dataset',
-      backgroundColor: 'transparent',
-      borderColor: brandDanger,
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 1,
-      borderDash: [8, 5],
-      data: data3,
-    },
+    //~ {
+      //~ label: 'My First dataset',
+      //~ backgroundColor: hexToRgba(brandInfo, 10),
+      //~ borderColor: brandInfo,
+      //~ pointHoverBackgroundColor: '#fff',
+      //~ borderWidth: 2,
+      //~ data: data1,
+    //~ },
+    //~ {
+      //~ label: 'My Second dataset',
+      //~ backgroundColor: 'transparent',
+      //~ borderColor: brandSuccess,
+      //~ pointHoverBackgroundColor: '#fff',
+      //~ borderWidth: 2,
+      //~ data: data2,
+    //~ },
+    //~ {
+      //~ label: 'My Third dataset',
+      //~ backgroundColor: 'transparent',
+      //~ borderColor: brandDanger,
+      //~ pointHoverBackgroundColor: '#fff',
+      //~ borderWidth: 1,
+      //~ borderDash: [8, 5],
+      //~ data: data3,
+    //~ },
   ],
 };
 
