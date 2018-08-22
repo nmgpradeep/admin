@@ -14,30 +14,30 @@ description:{
     trim:true
 },
 price:{
-type:String,
-trim: true
+	type:String,
+	trim: true
 },
 totalTradePermitted:{
-type:String,
-trim:true,
+	type:String,
+	trim:true,
 },
 totalInventoryAllowed:{
-type:String,
-trim:true
+	type:String,
+	trim:true
 },
 timePeriod:{
-type:String,
-trim:true
+	type:String,
+	trim:true
 },
 unlimited:{
     type:String,
     trim:true,
     sparse:true    
-   },
+},
 status:{
- type:String,
- trim:true,
- sparse:true
+   type:String,
+   trim:true,
+   sparse:true
 }
 },
 {

@@ -125,8 +125,7 @@ const viewBrands = (req, res) => {
         return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
-            });
-
+        });
       }
     }
   })

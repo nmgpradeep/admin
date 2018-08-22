@@ -15,7 +15,7 @@ const categoryConstant = {
     type: String,
     trim: true,
     sparse: true,
-    default: 0
+    default: 1
   }
 };
 module.exports = categoryConstant;

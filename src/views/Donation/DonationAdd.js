@@ -124,15 +124,18 @@ class DonationAdd extends Component {
   cancelHandler(){
     this.props.history.push("/donations");
   }
+  
+  
   fileChangedHandler = (event) => {
 	this.setState({selectedFile: event.target.files[0]})
   }
   
-  handleUser = (user) => {
-        this.setState({user: user});
+  handleUser = (user) => {	 
+      this.setState({user: user}); 
+      this.setState({selectedValue: user});
   }
   
-   handleCategory = (category) => {
+  handleCategory = (category) => {
         this.setState({category: category});
   }
   
@@ -145,7 +148,7 @@ class DonationAdd extends Component {
     
   componentDidMount() {    
        axios.get('/donation/getConstant').then(result => {
-           this.setState({conditions: result.data.result});           
+           this.setState({conditions: result.data.result });           
        });
   }   
   conditionsChange = (value) => {	   
@@ -162,23 +165,17 @@ class DonationAdd extends Component {
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
-            //console.log('asdasdfasdasdasdf',this[field].value);
-              //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  //~ lastValidFieldFlag = false;
-                  //~ formSubmitFlag = false;
-                  //~ addDonation[field].valid = false;
-                  //~ addDonation[field].message = addDonation[field].addDonation[fieldCheck].message;
-               //~ }
               break;
           }
         }
         this.setState({ validation: addDonation});
     }
     if(formSubmitFlag){
-		const data = new FD();				
+		const data = new FD();
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory',this.state.category);
+		//data.append('productCategory',this.state.category);
+		data.append('productCategory','5b584fa7116a023e021c60c9');
 		data.append('userId', this.state.user);
 		data.append('size', this.state.size);
 		data.append('condition', this.state.conditionValue);
@@ -186,12 +183,11 @@ class DonationAdd extends Component {
 		data.append('brand', this.state.brand)
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile)
-		 data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);					
+		 data.append('productImage', this.state.selectedFile,this.state.selectedFile.name);					
 		else
 		data.append('productImage','NULL');	
-		data.append('condition', this.state.conditionValue);
+		data.append('condition', this.state.conditionValue);		
         axios.post('/donation/donate', data).then(result => {
-	     //console.log('resultImagessssssss ',result);
           if(result.data.code === 200){
             this.props.history.push("/donations");
           }
@@ -235,7 +231,7 @@ class DonationAdd extends Component {
                       <Label htmlFor="author">Author</Label>
                     </Col>
                  <Col md="3">
-                  <UserSelectBox onSelectUser={this.handleUser}/>
+                  <UserSelectBox  onSelectUser={this.handleUser}/>
                   </Col>
                 </FormGroup>
                  <FormGroup row>
@@ -243,8 +239,7 @@ class DonationAdd extends Component {
                       <Label htmlFor="author">Category</Label>
                     </Col>
                  <Col md="9">
-                    <CategorySelectBox onSelectCategory={this.handleCategory}/>
-                 
+                    <CategorySelectBox onSelectCategory={this.handleCategory}/>                 
                   </Col>
                 </FormGroup>
                 <FormGroup row>

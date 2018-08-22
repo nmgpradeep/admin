@@ -33,13 +33,8 @@ const create = (req, res) => {
   if (flag) {
     return res.json(flag);
   }
-  Subscription.findOne({ subscriptionName: req.body.subscriptionName}, (err, result) => {
-	
-    if (result) {
-      // const limitFlag = result.unlimited
-      // if(limitFlag=true){
-      //   result.totalInventoryAllowed = 'UNLIMITED'
-      // }
+  Subscription.findOne({ subscriptionName: req.body.subscriptionName}, (err, result) => {	
+    if (result) {     
 
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -114,12 +109,11 @@ const listingsubscription = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
-            });
-
+        });
       }
     }
   })
@@ -244,7 +238,7 @@ const unlimitedUpdate = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -357,9 +351,9 @@ const listAddon = (req, res) => {
                   current: page,
                   perPage: perPage,
                   pages: Math.ceil(count / perPage)
-              });
-            })
-        });
+             });
+         })
+    });
 }
 
 
@@ -382,12 +376,11 @@ const viewAddon = (req, res) => {
           message: httpResponseMessage.ITEM_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
-             code: httpResponseCode.EVERYTHING_IS_OK,             
-             result: result
-            });
-
+            code: httpResponseCode.EVERYTHING_IS_OK,             
+            result: result
+         });
       }
     }
   })
@@ -454,18 +447,18 @@ const updateStatus = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
              result: result
-            });
+          });
       }
     }    
   })

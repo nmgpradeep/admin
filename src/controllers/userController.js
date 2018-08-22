@@ -358,10 +358,7 @@ const forgotPassword = (req,res) => {
             </tr>
         </table>`;
         
-        host=req.get('host');
-        //link="http://"+req.get('host')+"/user/resetPassword/"+result._id;       
-       
-        // setup email data with unicode symbols
+        host=req.get('host');      
         let mailOptions = {
           from: constant.SMTP_FROM_EMAIL, // sender address
           to: req.body.email, // list of receivers
@@ -369,8 +366,7 @@ const forgotPassword = (req,res) => {
           text: 'Hello world?', // plain text body
           html : output
         };
-		//console.log("mailOptions",mailOptions)
-        // send mail with defined transport object
+		
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             return console.log(error);
@@ -398,7 +394,6 @@ const forgotPassword = (req,res) => {
  * Description  : Function to reset Password
  */
 const resetPassword = (req,res) => {
-
   User.findOneAndUpdate({_id:req.params.id}, req.body, {new:true}, (err,result)=> {
     if(err){
       return res.send({
@@ -471,8 +466,7 @@ const updateNewPassword = (req, res) => {
  *  Date	: June 18, 2018
  *	Description : Function to list the available user on the plateform
  **/
-const listUser = (req, res) => {	
-	
+const listUser = (req, res) => {
   var token = getToken(req.headers);  
   if (token) {	  
 		decoded = jwt.verify(token,settings.secret);	  
@@ -820,13 +814,13 @@ const resdNotification = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
@@ -850,7 +844,7 @@ const verifyEmail = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
@@ -968,9 +962,6 @@ const send = (req, res) => {
 	<li>${req.body.email}</li>
   </ul>
   <h4>${req.body.message}</h4>`;
-
-    // Generate test SMTP service account from ethereal.email
-	// Only needed if you don't have a real mail account for testing
 		let transporter = nodemailer.createTransport({
 			host: constant.SMTP_HOST,
 			port: constant.SMTP_PORT,
@@ -980,8 +971,6 @@ const send = (req, res) => {
 				pass: constant.SMTP_PASSWORD // generated ethereal password
 			}
 		});
-
-		// setup email data with unicode symbols
 		let mailOptions = {
 			from: constant.SMTP_FROM_EMAIL, // sender address
 			to: 'rajiv.kumar.newmediaguru@gmail.com, rajiv.kumar@newmediaguru.net', // list of receivers
@@ -989,8 +978,6 @@ const send = (req, res) => {
 			text: 'Hello world?', // plain text body
 			html: output // html body
 		};
-
-		// send mail with defined transport object
 		transporter.sendMail(mailOptions, (error, info) => {
 			if (error) {
 				return console.log(error);

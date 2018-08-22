@@ -50,7 +50,9 @@ class UserEdit extends Component {
     this.zipCode = React.createRef();
     this.subscriptionPlan = React.createRef();
     this.profilePic = React.createRef();
-
+     
+   
+     
     let userId = this.props.match.params.id;
     this.state = {
       editUser: {},
@@ -93,21 +95,21 @@ class UserEdit extends Component {
       }
     };
   }
-  fileChangedHandler = (event) => {
+   fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
    }
    handleCountry = (country) => {
-    this.setState({country: country});
-}
-handleState = (state) => {
-    this.setState({state: state});
-}
-handleCity = (city) => {
-    this.setState({city: city});
-}
-handleSubscription = (subscriptions) => {
-    this.setState({subscriptions: subscriptions});
-}
+     this.setState({country: country});
+   }
+   handleState = (state) => {
+      this.setState({state: state});
+   }
+   handleCity = (city) => {
+      this.setState({city: city});
+   }
+   handleSubscription = (subscriptions) => {
+       this.setState({subscriptions: subscriptions});
+   }
 
   cancelHandler(){
     this.props.history.push("/users");
@@ -161,7 +163,7 @@ handleSubscription = (subscriptions) => {
 
       if(formSubmitFlag){
         const data = new FD()
-        data.append('_id', this.state.userId)
+        data.append('_id', this.props.match.params.id)
         data.append('firstName', this.firstName.value)
         data.append('middleName', this.middleName.value)
         data.append('lastName', this.lastName.value)
@@ -178,9 +180,7 @@ handleSubscription = (subscriptions) => {
 
         if(this.state.selectedFile){
           data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
-         } else {
-          data.append('profilePic', this.state.editUser.profilePic);
-       }
+        }
         // let editUser = this.state.editUser;
         // editUser.firstName = this.firstName.value;
         // editUser.middleName = this.middleName.value;
@@ -200,8 +200,7 @@ handleSubscription = (subscriptions) => {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/user/viewUser/' + this.state.userId).then(result => {
-        if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
+        if(result.data.code == 200){         
           this.setState({ editUser: result.data.result});
           this.firstName.value = result.data.result.firstName;
           this.middleName.value = result.data.result.middleName;
@@ -243,13 +242,11 @@ handleSubscription = (subscriptions) => {
                     <FormGroup>
                       <Label htmlFor="company">First name</Label>
                       <Input type="text" invalid={this.state.validation.firstName.valid === false} innerRef={input => (this.firstName = input)} placeholder="First name" />
-
                       <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
-
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>
+                    <FormGroup>                      
                       <Label htmlFor="middlename">Middle name</Label>
                       <Input type="text" innerRef={input => (this.middleName = input)} placeholder="Middle name" />
                     </FormGroup>
@@ -280,7 +277,7 @@ handleSubscription = (subscriptions) => {
                <Input type='date' innerRef={input => (this.dob = input)} placeholder='DOB' width="20%"/>
               </FormGroup>
               <FormGroup>
-               <Label>DOB</Label>
+               <Label>ADDRESS</Label>
                <Input type='textarea' innerRef={input => (this.address = input)} placeholder='Address'/>
               </FormGroup>
               <FormGroup>
