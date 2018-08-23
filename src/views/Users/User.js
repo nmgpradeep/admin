@@ -16,7 +16,6 @@ class User extends Component {
         <td>{ this.props.user.email }</td>
         <td>{ Moment(this.props.user.createdAt).format('Y-M-D') }</td>
         <td><img src={'assets/uploads/ProfilePic/'+ this.props.user.profilePic } className="avatar" alt=""/></td>
-        <td>{ this.props.user.userSubscription }</td>
         <td><Button color="info" onClick={this.props.onflagUsers.bind(this, this.props.user._id)} className="mr-1">{this.props.user.userFlag.length}</Button></td>
         <td>
           <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.user)} color = {(this.props.user.userStatus === '1')?'danger':'success'}>

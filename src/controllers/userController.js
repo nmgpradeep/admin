@@ -146,7 +146,6 @@ const signup = (req, res) => {
 						console.log('Message sent: %s', info.messageId);
 						// Preview only available when sending through an Ethereal account
 						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-
 						// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 					});
@@ -251,7 +250,6 @@ const login = (req, res) => {
               result: result,
               token:token
             });
-
           } else {
             return res.json({
               message: httpResponseMessage.INVALID_USER_PASSWORD,
@@ -522,11 +520,11 @@ const listUser = (req, res) => {
 				as: "userFlag"
 			}
 		}])
-		//User.find({ userType: { $ne: 1 }})
+		  //User.find({ userType: { $ne: 1 }})
 		  .sort({createdAt:-1})
 		  .skip((perPage * page) - perPage)
 		  .limit(perPage)		 
-		  
+		  //.populate({ path: "subscriptionPlan", model: "Subscription"})
 		  .exec(function(err, users) {
 			  User.count().exec(function(err, count) {
 				if (err) return next(err)
@@ -541,7 +539,7 @@ const listUser = (req, res) => {
 				  });
 				})
 			});
-		}else{
+		} else {
 			  return res.status(403).send({code: 403, message: 'Unauthorized.'});
 		}
     }
@@ -565,12 +563,12 @@ const viewUser = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
-            });
+        });
 
       }
     }
