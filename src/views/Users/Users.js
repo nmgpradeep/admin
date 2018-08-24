@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
-import User from './User';
+//import User from './User';
+import Moment from 'moment';
 import ReactPaginate from 'react-paginate';
 //var passport = require('passport');
 //console.log('passport', passport);/
@@ -12,6 +13,9 @@ import ReactPaginate from 'react-paginate';
 class Users extends Component {
   constructor(props){
     super(props);
+     const data = [
+		{ name:'', email:'', firstName:''},
+	];
     this.state = {
       users: [],
       modal: false,
@@ -45,7 +49,12 @@ class Users extends Component {
           totalPages: result.data.pages,
           total_count:result.data.total
           });
-           console.log('ussssss',this.state.users); 
+           result.data.result.foreach(function(user) {
+					this.data.name = user.userName;
+					this.data.email = user.email;
+					this.data.firstName = user.firstName;
+			});		   
+          console.log('ussssss',this.data,this.state.users); 
         }      
     })
     .catch((error) => {    
@@ -117,13 +126,29 @@ class Users extends Component {
 
   render() {
    let users;
+   const FilterableTable = require('react-filterable-table'); 
+   const FieldRenders = require('./User');    
      if(this.state.users){
        let userList = this.state.users;
-       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />);
+        // users = userList.map(option => ({ label: option.brandName, value: option._id }));
+        //~ users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />); 
+        //~ 
      }
+     
      let paginationItems =[];
-
-     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
+	  const fields = [
+			{ name: '_id', displayName: "sequenceNumber", inputFilterable: true, sortable: true},
+			{ name: 'firstName', displayName: "First Name", inputFilterable: true, exactFilterable: true, sortable: true },
+			{ name: 'userName', displayName: "User Name", inputFilterable: true, exactFilterable: true, sortable: true },
+			{ name: 'email', displayName: "Email", inputFilterable: true, exactFilterable: true, sortable: true },
+			{ name: 'createdAt', displayName: "Date registered", inputFilterable: true, exactFilterable: true, sortable: false,render: FieldRenders.created},
+			{ name: 'profilePic', displayName: "Profile Pic", inputFilterable: false, exactFilterable: false, sortable: false,render: FieldRenders.profilePic },
+			{ name: 'userFlag', displayName: "Flag", inputFilterable: false, exactFilterable: false, sortable: false,render:FieldRenders.flag },
+			{ name: '', displayName: "Status", inputFilterable: false, exactFilterable: false, sortable: false },
+			{ name: 'Action', displayName: "Action", inputFilterable: false, exactFilterable: false, sortable: false,render:FieldRenders.action},
+	 ];
+	 
+   const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -135,23 +160,17 @@ class Users extends Component {
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
-                  <thead>
-                  <tr>
-					<th>S.No.</th>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Date registered</th>
-                    <th>Profile Pic</th>
-                    <th>Subscription Plan</th>
-                    <th>Flag</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                  </thead>
+                  <thead></thead>
                   <tbody>
-                  {users}
-                  </tbody>
+                   <FilterableTable
+						namespace="People"
+						initialSort="name"
+						data={this.state.users}
+						fields={fields}
+						noRecordsMessage="There are no people to display"
+						noFilteredRecordsMessage="No people match your filters!" />
+				
+                  </tbody>/
                 </Table>
                 <nav>
                     <ReactPaginate
@@ -198,9 +217,7 @@ class Users extends Component {
 			<Button color="secondary" onClick={this.toggleInfo}>Cancel</Button>
 		  </ModalFooter>
 		</Modal>
-		
       </div>
-
     );
   }
 }
