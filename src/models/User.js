@@ -86,6 +86,7 @@ type:String,
 trim:true,
 default:0
 },
+
 userStatus:{
  type:String,
  trim:true,

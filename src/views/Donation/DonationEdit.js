@@ -109,31 +109,33 @@ class DonationEdit extends Component {
     handleCategory = (category) => {
        this.category.current = category;
     }
+    
     handleUser = (user) => {
-	  this.author.current = user;
+		this.setState({user: user}); 
+	    //this.author.current = user;
     }
   
     fileChangedHandler = (event) => {
-	  this.setState({selectedFile: event.target.files[0]})
-	  //console.log('asdfasfdasdf',this.state.selectedFile);
+	  this.setState({selectedFile: event.target.files[0]})	  
     }
    
-   handleBrand = (brand) => {
+    handleBrand = (brand) => {
        this.brand.current = brand;
-   }
+       this.setState({brand: brand});
+    }
    
     handleSize = (size) => {
 	  this.size.current = size;
-   }
+	  this.setState({size: size});
+    }   
    
-   
-   cancelHandler(){
-    this.props.history.push("/donations");
+    cancelHandler(){
+      this.props.history.push("/donations");
    }
   
     conditionsChange = (value) => {	 
         this.setState({conditionValue: value.target.value});
-   }
+    }
    
   submitHandler(e){
       e.preventDefault();
@@ -145,12 +147,12 @@ class DonationEdit extends Component {
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
             case 'notEmpty':
-              if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  lastValidFieldFlag = false;
-                  formSubmitFlag = false;
-                  addDonation[field].valid = false;
-                  addDonation[field].message = addDonation[field].rules[fieldCheck].message;
-               }
+              //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
+                  //~ lastValidFieldFlag = false;
+                  //~ formSubmitFlag = false;
+                  //~ addDonation[field].valid = false;
+                  //~ addDonation[field].message = addDonation[field].rules[fieldCheck].message;
+               //~ }
               break;
           }
         }
@@ -159,47 +161,49 @@ class DonationEdit extends Component {
 
       if(formSubmitFlag){	
 		const data = new FD();		
-		//console.log('cureenntntntntnt',this.state.conditionValue)
 		data.append('data', this.state.editDonation);
 		data.append('_id', this.state.editDonation._id);
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory',this.category.value);
-		data.append('userId',this.author.value);
-		data.append('size', this.size.value);
+		//data.append('productCategory',this.category.value);
+		data.append('productCategory','5b584fa7116a023e021c60c9');
+		//data.append('userId',this.author.value);
+		data.append('userId', this.state.user);
+		data.append('size', this.state.size);		
 		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
-		data.append('brand', this.brand.value);
+		data.append('brand', this.state.brand)
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile){
 		    data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);
 		} else {
 			data.append('productImage', this.state.editDonation.productImage); 
 	    }
-        axios.put('/donation/updateDonation', data).then(result => {
+            axios.put('/donation/updateDonation', data).then(result => {
              if(result.data.code === 200){
                this.props.history.push("/donations");
-          }
+           }
         }); 
       }
-  }  
-   conditionsChange = (value) => {	   
+    }
+      
+     conditionsChange = (value) => {	   
          this.setState({conditionValue: value.target.value});
-   } 
+     } 
    
-  componentDidMount() {   
+    componentDidMount() {   
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
-         if(result.data.code === 200){	
-		   console.log('asd',result.data.result)
-           this.setState({ editDonation: result.data.result});           
-           this.productName.value = result.data.result.productName;
-           this.description.value = result.data.result.description;
-           this.author.value = result.data.result.userId?result.data.result.userId._id:''; 
-           this.category.value = result.data.result.productCategory?result.data.result.productCategory._id:'';
-           this.brand.value = result.data.result.brand?result.data.result.brand._id:"";
-           this.size.value = result.data.result.size?result.data.result.size._id:"";
-           this.color.value = result.data.result.color;
-           this.productAge.value = result.data.result.productAge;  
+         if(result.data.code === 200){			   
+            this.setState({ editDonation: result.data.result});           
+            this.productName.value = result.data.result.productName;
+            this.description.value = result.data.result.description;            
+            //~ this.category.value = result.data.result.productCategory?result.data.result.productCategory._id:'';
+            //~ this.brand.value = result.data.result.brand?result.data.result.brand._id:"";
+            //~ this.size.value = result.data.result.size?result.data.result.size._id:"";
+            this.color.value = result.data.result.color;
+            this.productAge.value = result.data.result.productAge; 
+            //console.log('ddddddd',result.data.result);
+                   
         }
       })
        axios.get('/donation/getConstant').then(result => {
@@ -221,7 +225,7 @@ class DonationEdit extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" sm="12">
-            <Card>
+            <Card>           
               <CardHeader>
                 <strong>Donation</strong>
                 <small> Edit</small>
@@ -242,8 +246,8 @@ class DonationEdit extends Component {
                     </Col>
                      <Col xs="4" sm="12">
 					   <FormGroup>						
-						  <Label htmlFor="author">User</Label>									  
-						 <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editDonation.author}/>						
+						<Label htmlFor="author">User</Label>									  
+						 <UserSelectBox defaultSelectedItem={"5b236b4ad73fe224efedae86"} onSelectUser={this.handleUser} value={"5b236b4ad73fe224efedae86"}/>
 					  </FormGroup>
                   </Col>
                      <Col xs="4" sm="12">

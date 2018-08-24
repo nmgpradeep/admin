@@ -25,9 +25,7 @@ class Users extends Component {
     
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
-    }
-  
-     
+    }    
     this.toggle = this.toggle.bind(this);
     this.toggleInfo = this.toggleInfo.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
@@ -38,7 +36,7 @@ class Users extends Component {
   }
   
   loadCommentsFromServer() {
-    axios.get('/user/users/' + this.state.currentPage).then(result => {		
+    axios.get('/user/users/' + this.state.currentPage).then(result => {
       if(result.data.code ===200){
         this.setState({
           users: result.data.result,
@@ -47,15 +45,16 @@ class Users extends Component {
           totalPages: result.data.pages,
           total_count:result.data.total
           });
+           console.log('ussssss',this.state.users); 
         }      
     })
-    .catch((error) => {
-      //console.log('error', error)
+    .catch((error) => {    
        if(error.code === 401) {
          this.props.history.push("/login");
       }
     });
   }
+  
   handlePageClick = (data) => {
       let currentPage = data.selected + 1;
       this.setState({currentPage: currentPage}, () => {

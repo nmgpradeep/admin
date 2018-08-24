@@ -6,7 +6,6 @@ import DropdownTreeSelect from 'react-dropdown-tree-select'
 import 'react-dropdown-tree-select/dist/styles.css'
 
 
-// a select with dynamically created options
 var options = []
 
 class CategorySelectBox extends Component {
@@ -28,11 +27,10 @@ class CategorySelectBox extends Component {
     axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){		  
         this.setState({
-          options: result.data.result, 
-          
+          options: result.data.result,           
         });
       }
-      console.log('asdf',this.state.options);
+      //console.log('mkmkmkmkmk',this.state.options);
     })
    .catch((error) => {
     console.log('error', error)

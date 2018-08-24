@@ -235,11 +235,19 @@ const updateCategory = (req, res) => {
 };
 
 
+<<<<<<< HEAD
 function populateParents(categories) {
      return Category.populate(categories, { path: "parent" }).then(function(categories) {
      return categories.parent ? populateParents(categories.parent) : Promise.all(categories);
   });
 }
+=======
+//~ function populateParents(categories) {
+     //~ return categories.populate(categories, { path: "parent" }).then(function(categories) {
+     //~ return categories.parent ? populateParents(categories.parent) : Promise.fulfill(categories);
+  //~ });
+//~ }
+>>>>>>> 0d52ca5f64420b05cd1b8a3ca500c3a4b09106b3
 
 
 /** Auther	: Rajiv kumar
@@ -255,15 +263,12 @@ const allCategories = (req, res) => {
     // .skip(perPage * page - perPage)
     //.limit(perPage)
     .exec(function(err, categories) {
-	  populateParents(categories).then(function(){	
         if (err) return next(err);
         return res.json({
           code: httpResponseCode.EVERYTHING_IS_OK,
           message: httpResponseMessage.SUCCESSFULLY_DONE,
           result: categories
         }); 
-      });  
-          
     });
    
    

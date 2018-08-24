@@ -155,8 +155,7 @@ class CategoryEdit extends Component {
   }
 
  
-  componentDidMount() {	  
-	  //this.props.reference.value = this.props.value;
+  componentDidMount() {	  	
     axios
       .get("/category/allCategories")
       .then(result => {
@@ -175,11 +174,12 @@ class CategoryEdit extends Component {
         if (error.status === 401) {
           this.props.history.push("/login");
         }
-      });  
+      }); 
+       
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/category/viewCategory/' + this.state.categoryId).then(result => {
-		  console.log("category",result)
+		//console.log("category",result)
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);
           let categoryForm = this.state.categoryForm;
@@ -236,8 +236,7 @@ class CategoryEdit extends Component {
             <Button
               onClick={e => this.submitHandler(e)}
               color="success"
-              className="px-4"
-            >
+              className="px-4">
               Submit
             </Button>
           </Col>
@@ -245,8 +244,7 @@ class CategoryEdit extends Component {
             <Button
               onClick={() => this.cancelHandler()}
               color="primary"
-              className="px-4"
-            >
+              className="px-4">
               Cancel
             </Button>
           </Col>

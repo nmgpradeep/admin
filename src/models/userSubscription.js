@@ -10,15 +10,18 @@ userId:{
     type:String,
     trim:true
 },
+
 subscriptionId:{
-type:String,
-trim: true
+ type:String,
+ trim: true
 },
+
 status:{
  type:String,
  trim:true,
  sparse:true
 }
+
 },
 {
 timestamps:true

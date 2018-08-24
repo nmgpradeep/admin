@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Form, Button, Card, CardBody, CardGroup, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
+import Select from 'react-styled-select'
 
 // a select with dynamically created options
 var options = []
@@ -13,14 +14,17 @@ class SizeSelectBox extends Component {
 	}   
   }
   onChange(e) {
-		var size = e.target.value;	  
-		this.props.onSelectSize(size); 
+	var size = e;	  
+	this.setState({value: e});
+    this.props.onSelectSize(size); 
   }
+  
   componentDidMount(){	
     axios.put('/size/listingsize').then(result => {		
-		console.log('sizesslisting',result);
-      if(result.data.code === 200){		  
-		  options = result.data.result;		
+      if(result.data.code === 200){
+		  this.setState({
+            options: result.data.result,           
+          });			  
       }      
     })
    .catch((error) => {
@@ -30,16 +34,17 @@ class SizeSelectBox extends Component {
       }
     });
   }
-  render() {	  
+  
+  render() {
+	let optionsLists;
+      if(this.state.options){
+        let optionsList = this.state.options;                
+         optionsLists = optionsList.map(option => ({ label: option.size, value: option._id }));          
+     }	
     return (
-      <div className="form-group">        
-       <Input type="select" onChange={this.onChange.bind(this)} innerRef={this.props.reference} className="form-control">
-		<option value="0">Select Size</option>
-        {options.map(option => {
-          return <option value={option._id} key={option.size}>{option.size.toUpperCase()}</option>
-        })}
-	  </Input>
-      </div>
+     <Select options={optionsLists}	value={this.state.value} onChange={this.onChange.bind(this)} innerRef={this.props.reference}
+			classes={{  selectValue: 'my-custom-value',	 selectArrow: 'my-custom-arrow'	}}
+		  />
     )
   }
 }
