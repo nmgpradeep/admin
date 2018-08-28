@@ -6,7 +6,7 @@ const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 const constant = require('../../common/constant')
-
+const multiparty = require('multiparty');
 /*
     *Author : Saurabh Agarwal
     *Date   : July 12, 2018
@@ -122,15 +122,51 @@ const viewSizes = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
-            });
-
+         });
       }
     }
   })
+}
+
+
+//Auther	: KS Date	: August 28, 2018
+//Description : Function to list the available users with pagination
+ const sortingSizes = (req, res) => {
+    var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {	
+    var perPage = constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    var sortObject = {};
+	var stype = data.key[0];
+	var sdir = data.type[0];
+	if(sdir ==1){  var sortingTy = -1; }
+	else var sortingTy = 1;
+	sortObject[stype] = sortingTy;
+    Size.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .sort(sortObject)	
+      .populate({ path: "category", model: "Category"})
+      .exec(function(err, size) {
+          Size.count().exec(function(err, count) {			
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: size ,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  sortType: sortingTy,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
+   });
 }
 
 
@@ -175,9 +211,9 @@ const updateSizes = (req, res) => {
             code: httpResponseMessage.BAD_REQUEST
           });
       }
-          return res.json({
-                code: httpResponseCode.EVERYTHING_IS_OK,
-                message: httpResponseMessage.SUCCESSFULLY_DONE,
+       return res.json({
+           code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
                result: result
               });
     })
@@ -191,5 +227,6 @@ module.exports = {
     updateSizes,
     viewSizes,
     deleteSizes,
-    listingsize
+    listingsize,
+    sortingSizes
 }

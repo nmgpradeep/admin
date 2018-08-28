@@ -5,7 +5,8 @@ const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
-const constant = require('../../common/constant')
+const constant = require('../../common/constant');
+const multiparty = require('multiparty');
 
 /*
     *Author : Saurabh Agarwal
@@ -121,7 +122,7 @@ const viewBrands = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
@@ -182,6 +183,46 @@ const updateBrands = (req, res) => {
   }
 
 
+//Auther	: KS Date	: August 28, 2018
+//Description : Function to list the available users with pagination
+ const sortingBrands = (req, res) => {
+    var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {	
+	console.log(data);
+    var perPage = constant.PER_PAGE_RECORD
+    var page = req.params.page || 1;
+    var sortObject = {};
+	var stype = data.key[0];
+	var sdir = data.type[0];
+	if(sdir ==1){  var sortingTy = -1; }
+	else var sortingTy = 1;
+	sortObject[stype] = sortingTy;
+    Brand.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .sort(sortObject)	
+      .populate({ path: "category", model: "Category"})
+      .exec(function(err, brand) {
+          Brand.count().exec(function(err, count) {
+            if (err) return next(err)
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: brand ,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  sortType: sortingTy,
+                  pages: Math.ceil(count / perPage)
+              });
+            })
+        });
+   });
+}
+
+ 
+
+
 
 module.exports = {
     createBrands,
@@ -189,5 +230,6 @@ module.exports = {
     updateBrands,
     viewBrands,
     deleteBrands,
-    listingbrand
+    listingbrand,
+    sortingBrands
 }

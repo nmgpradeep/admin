@@ -117,8 +117,7 @@ class SizeAdd extends Component {
                       <Input type="number " invalid={this.state.validation.size.valid === false} innerRef={input => (this.size = input)} placeholder="Size" />
 
                       <FormFeedback invalid={this.state.validation.size.valid === false}>{this.state.validation.size.message}</FormFeedback>
-
-                    </FormGroup>
+                     </FormGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup>

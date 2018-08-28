@@ -4,6 +4,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import Size from './Size'
+var FD = require('form-data');
+var fs = require('fs');
 
 
 class Sizes extends Component {
@@ -13,6 +15,7 @@ class Sizes extends Component {
       sizes: [],
       modal: false,
       currentPage: 1,
+      sortType :1,
       PerPage: 5,
       totalPages: 1,
       sizesCount: 0
@@ -39,12 +42,11 @@ class Sizes extends Component {
       console.log(this.state.sizes);
     })
     .catch((error) => {
-    console.log('error', error)
+      console.log('error', error)
       if(error.code === 401) {
         this.props.history.push("/login");
       }
     });
-
   }
 
   handlePageClick = (data) => {
@@ -52,7 +54,32 @@ class Sizes extends Component {
     this.setState({currentPage: currentPage}, () => {
       this.loadCommentsFromServer();
     });
-};
+  };
+
+	sortBy(key) {
+	    const data = new FD()
+        data.append('key', key)
+        data.append('page', this.state.currentPage)
+        data.append('type', this.state.sortType)
+	    axios.post('/size/sortingSizes',data).then(result => {
+		   if(result.data.code ===200){
+				this.setState({
+					  sizes: result.data.result,
+					  sortType: result.data.sortType,
+					  currentPage: result.data.current,
+					  PerPage: result.data.perPage,
+					  totalPages: result.data.pages,
+					  sizesCount:result.data.total
+				  });
+				}      
+			 })
+			.catch((error) => {    
+			   if(error.code === 401) {
+				 this.props.history.push("/login");
+			 }
+		});
+		console.log('ddddd',this.state.sizes); 
+    }
   
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
@@ -94,11 +121,13 @@ class Sizes extends Component {
   }
   render() {
    let sizes;
+   let classValue;
      if(this.state.sizes){
        let sizeList = this.state.sizes;
        sizes = sizeList.map((size,index) => <Size sequenceNo={index} key={size._id} onDeleteSize={this.sizeDeleteHandler.bind(this)} size={size}/>);
      }
-
+         if(this.state.sortType==1){  classValue ="fa fa-sort-asc";}
+		else {   classValue ="fa fa-sort-desc";	}
      let paginationItems =[];
 
      const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
@@ -116,7 +145,8 @@ class Sizes extends Component {
                   <thead>
                   <tr>
                     <th>S.No</th>
-                    <th>Sizes</th>  
+                    <th><Button color="info" onClick={() => this.sortBy('brandName')} className="mr-1 mousePointer">Sizes
+						 <span className ={classValue}></span></Button></th>  
                     <th>Category</th>                
                     
                     <th>Actions</th>
