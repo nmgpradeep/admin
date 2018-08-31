@@ -228,8 +228,6 @@ const login = (req, res) => {
       } else if (result.userType === req.body.userType) {
         result.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
-			 
-			  
 			  
             var now = new Date();
             var unix_time = moment().unix()
@@ -530,8 +528,10 @@ const listUser = (req, res) => {
 
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
-  const users = (req, res) => {
+
+ const users = (req, res) => {
 	 const options = { sort: { firstName: -1 }, limit: 10, skip: 0 }
+
 	var token = getToken(req.headers); 	
 		if (token) {	  		
 		var perPage = constant.PER_PAGE_RECORD
@@ -551,10 +551,13 @@ const listUser = (req, res) => {
 				foreignField: "_id",
 				as: "userFlag"
 			}
-		}
-		//,{ $sort : { firstName : -1} }
+		},
+		 { $sort: { firstName:-1} }
 		
-		])	 
+		])
+		  //User.find({ userType: { $ne: 1 }})
+		  //.sort({createdAt:-1})
+
 		  .skip((perPage * page) - perPage)
 		  .limit(perPage)	
 		  //.sort('-firstName'})
@@ -574,10 +577,70 @@ const listUser = (req, res) => {
 				  });
 				})
 			});
-		} else {
+	} else {
 			  return res.status(403).send({code: 403, message: 'Unauthorized.'});
-		}
-    }
+	}
+}
+
+//Auther	: KS Date	: August 28, 2018
+//Description : Function to list the available users with pagination
+ const sortingUsers = (req, res) => {
+	 var form = new multiparty.Form();
+	   form.parse(req, function(err, data, files) {		
+		var sortObject = {};
+		var stype = data.key[0];
+		var sdir = data.type[0];
+		if(sdir ==1){  var sortingTy = -1; }
+		else var sortingTy = 1;
+		//console.log('ddddddddd',sortByFields);	 
+	    var token = getToken(req.headers); 	
+		if (token) {	  		
+		var perPage = constant.PER_PAGE_RECORD
+		var page = req.params.page || 1;
+		
+		sortObject[stype] = sortingTy;
+		User.aggregate([{
+		  $lookup :{
+				from: 'userSubscription', 
+				localField: '_id',
+				foreignField: 'userId',
+				as: 'subscriptionPlan'
+		   }},
+		  {
+			$lookup: {
+				from: "flagUser",
+				localField: "flagTo",
+				foreignField: "_id",
+				as: "userFlag"
+		 	  }
+		   },
+		   //{ $sort: { sortByFields:sortingTy} }
+		 ])
+		  .sort(sortObject)	
+		  //.sort({sortByFields: type})  
+		  //.skip((perPage * page) - perPage)
+		  .limit(perPage)		 		 
+		  .exec(function(err, users) {
+			  console.log('results',users);
+			  User.count().exec(function(err, count) {
+				if (err) return next(err)
+				  return res.json({
+					  code: httpResponseCode.EVERYTHING_IS_OK,
+					  message: httpResponseMessage.SUCCESSFULLY_DONE,
+					  result: users,
+					  total : count,
+					  current: data.page,
+					  perPage: perPage,
+					  sortType: sortingTy,
+					  pages: Math.ceil(count / perPage)
+				  });
+				})
+			});
+	} else {
+		return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
+  });
+}
 
 
 /** Auther	: Rajiv umar
@@ -665,6 +728,7 @@ const updateUser = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
+
     }else {
 		  if (!result) {
 			res.json({
@@ -694,6 +758,8 @@ const updateUser = (req, res) => {
 				
 		  
 			//console.log('Created-Page',err, result);
+
+   
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -1060,5 +1126,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     updateNewPassword,
-    resdNotification
+    resdNotification,
+    sortingUsers
 }

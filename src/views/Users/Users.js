@@ -3,7 +3,11 @@ import {Link} from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import axios from 'axios';
 import User from './User';
+import Moment from 'moment';
+import { Badge} from 'reactstrap';
 import ReactPaginate from 'react-paginate';
+var FD = require('form-data');
+var fs = require('fs');
 //var passport = require('passport');
 //console.log('passport', passport);/
 //require('../../config/passport')(passport);
@@ -12,23 +16,27 @@ import ReactPaginate from 'react-paginate';
 class Users extends Component {
   constructor(props){
     super(props);
+     const data = [
+		{ name:'', email:'', firstName:''},
+	];
     this.state = {
-      users: [],
-      modal: false,
-      currentPage: 1,
-      PerPage: 5,
-      totalPages: 1,
-      usersCount: 0,
-      offset: 0,     
-      info: false,
+		  users: [],
+		  sortType :1,
+		  modal: false,
+		  currentPage: 1,
+		  PerPage: 5,
+		  totalPages: 1,
+		  usersCount: 0,
+		  offset: 0,     
+		  info: false,
     };
-    
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }    
     this.toggle = this.toggle.bind(this);
     this.toggleInfo = this.toggleInfo.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
+    this.sortBy.bind(this);
   }
   
   componentDidMount() {    
@@ -39,15 +47,20 @@ class Users extends Component {
     axios.get('/user/users/' + this.state.currentPage).then(result => {
       if(result.data.code ===200){
         this.setState({
-          users: result.data.result,
-          currentPage: result.data.current,
-          PerPage: result.data.perPage,
-          totalPages: result.data.pages,
-          total_count:result.data.total
+           users: result.data.result,
+           currentPage: result.data.current,
+           PerPage: result.data.perPage,
+           totalPages: result.data.pages,
+           total_count:result.data.total
           });
-           console.log('ussssss',this.state.users); 
+           result.data.result.foreach(function(user) {
+				this.data.name = user.userName;
+				this.data.email = user.email;
+				this.data.firstName = user.firstName;
+		   });		   
+          console.log('ussssss',this.data,this.state.users); 
         }      
-    })
+     })
     .catch((error) => {    
        if(error.code === 401) {
          this.props.history.push("/login");
@@ -81,6 +94,7 @@ class Users extends Component {
       }
     });
   }
+  
   toggle() {
     this.setState({
       modal: !this.state.modal
@@ -92,6 +106,37 @@ class Users extends Component {
       info: !this.state.info
     });   
   }
+  
+  sortBy(key) {
+	 const data = new FD()
+        data.append('key', key)
+        data.append('page', this.state.currentPage)
+        data.append('type', this.state.sortType)
+	    axios.post('/user/sortingUsers',data).then(result => {
+		   if(result.data.code ===200){
+				this.setState({
+				   users: result.data.result,
+				   sortType: result.data.sortType,
+				   currentPage: result.data.current,
+				   PerPage: result.data.perPage,
+				   totalPages: result.data.pages,
+				   total_count:result.data.total
+				  });
+				   result.data.result.foreach(function(user) {
+						this.data.name = user.userName;
+						this.data.email = user.email;
+						this.data.firstName = user.firstName;
+				   });
+				}      
+			 })
+			.catch((error) => {    
+			   if(error.code === 401) {
+				 this.props.history.push("/login");
+			 }
+		});
+		console.log('ddddd',this.state.users); 
+  }
+   
   
   approveDeleteHandler(){
     this.setState({
@@ -117,13 +162,21 @@ class Users extends Component {
 
   render() {
    let users;
+   let classValue;
+   const FilterableTable = require('react-filterable-table'); 
+   const FieldRenders = require('./User');    
      if(this.state.users){
        let userList = this.state.users;
-       users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />);
+         users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />); 
      }
-     let paginationItems =[];
-
-     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
+     if(this.state.sortType==1){
+		   classValue ="fa fa-sort-asc";
+		}
+		else {
+		   classValue ="fa fa-sort-desc";
+		}
+     	 
+   const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -136,23 +189,30 @@ class Users extends Component {
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
-                  <tr>
-					<th>S.No.</th>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Date registered</th>
-                    <th>Profile Pic</th>
-                    <th>Subscription Plan</th>
-                    <th>Flag</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
+                     <tr>
+                        <th>S.No.</th>
+						<th><Button color="info" onClick={() => this.sortBy('firstName')} className="mr-1 mousePointer">Name
+						 <span className ={classValue}></span>
+						</Button></th>
+						<th><Button color="info" onClick={() => this.sortBy('userName')} className="mr-1 mousePointer ">UserName
+						 <span className ={classValue}></span>
+						</Button></th>
+						<th><Button color="info" onClick={() => this.sortBy('email')} className="mr-1 mousePointer">Email
+						 <span className ={classValue}></span>
+						</Button></th>
+						<th><Button color="info" onClick={() => this.sortBy('createdAt')} className="mr-1 mousePointer">Started At
+						 <span className ={classValue}></span>
+						</Button></th>
+						<th>Profile Pic</th>
+						<th>Flag</th>
+						<th>Status</th>
+						<th>Action</th>
+                     </tr>
                   </thead>
                   <tbody>
-                  {users}
-                  </tbody>
-                </Table>
+                     {users}
+                </tbody>
+               </Table>
                 <nav>
                     <ReactPaginate
                        initialPage={this.state.currentPage-1}
@@ -198,9 +258,7 @@ class Users extends Component {
 			<Button color="secondary" onClick={this.toggleInfo}>Cancel</Button>
 		  </ModalFooter>
 		</Modal>
-		
       </div>
-
     );
   }
 }

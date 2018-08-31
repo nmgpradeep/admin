@@ -8,6 +8,7 @@ const userController= require('../controllers/userController');
 router.post('/signup',userController.signup);
 router.post('/login',userController.login);
 router.get('/users/:page', userController.users);
+router.post('/sortingUsers', userController.sortingUsers);
 router.get('/listUser', userController.listUser);
 router.get('/viewUser/:id',userController.viewUser);
 //router.get('/viewPage/:id',pageController.viewPage);

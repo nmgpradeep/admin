@@ -4,6 +4,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import Brand from './Brand'
+var FD = require('form-data');
+var fs = require('fs');
 
 
 class Brands extends Component {
@@ -14,6 +16,7 @@ class Brands extends Component {
       modal: false,
       currentPage: 1,
       PerPage: 5,
+      sortType :1,
       totalPages: 1,
       brandsCount: 0
     };
@@ -39,7 +42,7 @@ class Brands extends Component {
       console.log(this.state.brands);
     })
     .catch((error) => {
-    console.log('error', error)
+      console.log('error', error)
       if(error.code === 401) {
         this.props.history.push("/login");
       }
@@ -66,11 +69,38 @@ class Brands extends Component {
     });
     this.toggle();
   }
+  
   toggle() {
     this.setState({
       modal: !this.state.modal
     });
   }
+  
+  sortBy(key) {
+	 const data = new FD()
+        data.append('key', key)
+        data.append('page', this.state.currentPage)
+        data.append('type', this.state.sortType)
+	    axios.post('/brand/sortingBrands',data).then(result => {
+		   if(result.data.code ===200){
+				this.setState({
+				    brands: result.data.result,
+				    sortType: result.data.sortType,
+					currentPage: result.data.current,
+					PerPage: result.data.perPage,
+					totalPages: result.data.pages,
+					brandsCount:result.data.total
+				  });
+				}      
+			 })
+			.catch((error) => {    
+			   if(error.code === 401) {
+				 this.props.history.push("/login");
+			 }
+		});
+		console.log('ddddd',this.state.brands); 
+  }
+  
   approveDeleteHandler(){
     this.setState({
       approve: true
@@ -94,10 +124,13 @@ class Brands extends Component {
   }
   render() {
    let brands;
+   let classValue;
      if(this.state.brands){
        let brandList = this.state.brands;
        brands = brandList.map((brand,index) => <Brand sequenceNo={index} key={brand._id} onDeleteBrand={this.brandDeleteHandler.bind(this)} brand={brand}/>);
      }
+      if(this.state.sortType==1){  classValue ="fa fa-sort-asc";}
+		else {   classValue ="fa fa-sort-desc";	}
 
      let paginationItems =[];
 
@@ -116,9 +149,9 @@ class Brands extends Component {
                   <thead>
                   <tr>
                     <th>S.No</th>
-                    <th>Brand Name</th>  
-                    <th>Category</th>                
-                    
+                    <th><Button color="info" onClick={() => this.sortBy('brandName')} className="mr-1 mousePointer">BrandName
+						 <span className ={classValue}></span></Button></th>  
+                    <th>Category</th>
                     <th>Actions</th>
                   </tr>
                   </thead>
