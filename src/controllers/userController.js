@@ -23,6 +23,16 @@ var jwt = require('jsonwebtoken');
 var settings = require('../config/settings'); // get settings file
 //var NodeSession = require('node-session');
 //session = new NodeSession({secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD'});
+
+//Where can search by Postal Address, landmark or IP Address:
+var where = require('node-where');
+
+//Get your ip address, compare ip addresses, validate ip addresses, etc.
+var ip = require('ip');
+
+// Example retrieve IP from request
+var satelize = require('satelize');
+
 var bcrypt = require('bcrypt-nodejs');
 getToken = function (headers) {	
   if (headers && headers.authorization) {
@@ -112,6 +122,27 @@ const signup = (req, res) => {
 				  }		
 				});
 			  ///end file update///	
+			 // get latitude,longitude of user and save into collection
+			  where.is(data.address, function(err, responceData) {
+				  if(err){				
+							return res.json({
+								code: httpResponseCode.BAD_REQUEST,
+								message: err
+							});
+					}
+				  
+				  if (result) {
+						User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
+								if(err){				
+									return res.json({
+										code: httpResponseCode.BAD_REQUEST,
+										message: httpResponseMessage.FILE_UPLOAD_ERROR
+									});
+								}
+					   })
+				  }
+				});
+				
 			    delete result.password
 
 			  	// Generate test SMTP service account from ethereal.email
@@ -500,6 +531,7 @@ const listUser = (req, res) => {
 //Auther	: Rajiv Kumar Date	: June 22, 2018
 //Description : Function to list the available users with pagination
   const users = (req, res) => {
+	 const options = { sort: { firstName: -1 }, limit: 10, skip: 0 }
 	var token = getToken(req.headers); 	
 		if (token) {	  		
 		var perPage = constant.PER_PAGE_RECORD
@@ -519,11 +551,14 @@ const listUser = (req, res) => {
 				foreignField: "_id",
 				as: "userFlag"
 			}
-		}])
-		  //User.find({ userType: { $ne: 1 }})
-		  .sort({createdAt:-1})
+		}
+		//,{ $sort : { firstName : -1} }
+		
+		])	 
 		  .skip((perPage * page) - perPage)
-		  .limit(perPage)		 
+		  .limit(perPage)	
+		  //.sort('-firstName'})
+		  .sort({createdAt:-1})	 
 		  //.populate({ path: "subscriptionPlan", model: "Subscription"})
 		  .exec(function(err, users) {
 			  User.count().exec(function(err, count) {
@@ -623,7 +658,7 @@ const updateUser = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {	 
 	let now = new Date();
-	console.log(data)	
+	//console.log(data)	
     User.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
@@ -631,13 +666,34 @@ const updateUser = (req, res) => {
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
     }else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      } else {
-		   console.log('Created-Page',err, result);
+		  if (!result) {
+			res.json({
+			  message: httpResponseMessage.USER_NOT_FOUND,
+			  code: httpResponseMessage.BAD_REQUEST
+			});
+		  } else {
+		   // get latitude,longitude of user and save into collection
+		     console.log("address",result.address)
+			   where.is(result.address, function(error, responceData) {
+				  if(error){
+					  console.log("Error in where is function",error)
+					  next(error);
+					}else{					
+						  if (result) {
+								User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
+										if(err){				
+											return res.json({
+												code: httpResponseCode.BAD_REQUEST,
+												message: httpResponseMessage.FILE_UPLOAD_ERROR
+											});
+										}
+							   })
+						  }
+					  }
+				});
+				
+		  
+			//console.log('Created-Page',err, result);
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
 				var ext = path.extname(fileName);

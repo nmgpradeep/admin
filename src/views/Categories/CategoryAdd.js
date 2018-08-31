@@ -35,6 +35,7 @@ class CategoryAdd extends Component {
     this.description = React.createRef();
     this.parent = React.createRef();
     this.status = React.createRef();
+    this.tree_data = null;
     this.state = {
       addCategory: {},
       categoryForm: {
@@ -67,7 +68,7 @@ class CategoryAdd extends Component {
           touched: false
         },
         parent: {
-          elementType: "select",
+          elementType: "tree",
           elementConfig: {
             options: []
           },
@@ -112,26 +113,8 @@ class CategoryAdd extends Component {
     this.setState({ categoryForm: updatedCategory });
   };
   handleTreeChange(e, data, inputIdentifier) {
-    const updatedCategory = {
-      ...this.state.categoryForm
-    };
-    const updatedFormElement = {
-      ...updatedCategory[inputIdentifier]
-    };
-    if (updatedFormElement.value != data.selected) {
-      updatedFormElement.value = data.selected;
-      updatedFormElement.valid = this.checkValidity(
-        updatedFormElement.value,
-        updatedFormElement.validation
-      );
-      updatedFormElement.touched = true;
-      updatedCategory[inputIdentifier] = updatedFormElement;
-      this.setState(oldState => {
-        if (oldState.categoryForm[inputIdentifier].value != data.selected)
-          return { categoryForm: updatedCategory };
-        return false;
-      });
-    }
+	  this.tree_data = data.selected[0];
+	  console.log('TREE data', this.tree_data);
   }
   componentDidMount() {
     axios
@@ -160,15 +143,31 @@ class CategoryAdd extends Component {
   }
   submitHandler(e) {
     e.preventDefault();
-    let categoryObj = {};
-    for (let key in this.state.categoryForm) {
-      categoryObj[key] = this.state.categoryForm[key].value;
-    }
-    axios.post("/category/create", categoryObj).then(result => {
-      if (result.data.code == "200") {
-        this.props.history.push("/categories");
-      }
-    });
+    const updatedCategory = {
+      ...this.state.categoryForm
+    };
+    const updatedFormElement = {
+      ...updatedCategory['parent']
+    };
+    updatedFormElement.value = this.tree_data;
+    updatedFormElement.valid = this.checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+    updatedFormElement.touched = true;
+    updatedCategory['parent'] = updatedFormElement;
+    this.setState({ categoryForm: updatedCategory }, function(){
+		let categoryObj = {};
+		for (let key in this.state.categoryForm) {
+		  categoryObj[key] = this.state.categoryForm[key].value;
+		}
+		console.log('FFFFFFF', categoryObj);
+		axios.post("/category/create", categoryObj).then(result => {
+		  if (result.data.code == "200") {
+			this.props.history.push("/categories");
+		  }
+		});
+	});
   }
 
   render() {
@@ -193,9 +192,9 @@ class CategoryAdd extends Component {
                 changed={event =>
                   this.inputChangedHandler(event, formElement.id)
                 }
-                treechanged={(event, data) => {
-                  return this.handleTreeChange(event, data, formElement.id);
-                }}
+                //~ treechanged={(event, data) => {
+                  //~ return this.handleTreeChange(event, data, formElement.id);
+                //~ }}
                 value={formElement.config.value}
               />
             </Col>

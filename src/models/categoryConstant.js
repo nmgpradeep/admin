@@ -1,4 +1,11 @@
 const categoryConstant = {
+   id: {
+    type: Number,
+    index: true,
+    required: true,
+    auto: true,
+    default: 1
+  },
   title: {
     type: String,
     trim: true

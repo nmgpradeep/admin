@@ -157,6 +157,7 @@ class ProductAdd extends Component {
 
   componentDidMount(){
       axios.get('/category/allCategories').then(result => {
+		
         if(result.data.code == '200'){
           this.setState({
             categories: result.data.result,            
@@ -188,7 +189,7 @@ class ProductAdd extends Component {
 	   let optionTemplate;
 	    if(this.state.conditions){
 			let conditionsList = this.state.conditions;
-		    optionTemplate = conditionsList.map(v => (<option value={v.id}>{v.name}</option>));
+		    optionTemplate = conditionsList.map(v => (<option key={v.id} value={v.id}>{v.name}</option>));
        }	
     return (
       <div className="animated fadeIn">

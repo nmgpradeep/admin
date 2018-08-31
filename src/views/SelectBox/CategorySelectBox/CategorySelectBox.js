@@ -11,13 +11,11 @@ var options = []
 class CategorySelectBox extends Component {
   constructor(props) {
     super(props);    
-    this.state = { value: 'Select Category'}; 
-    this.state = {
-			category : ''
-	}   
+    this.state = { value: 'Select Category', category : '', data: []}; 
   }
   
   onChange(e) {
+	  console.log('State Properties', this.state);
 		var category = e;	  
 		//this.props.onSelectCategory(e);  		
         //console.log("USER DATA SET",category)
@@ -27,7 +25,7 @@ class CategorySelectBox extends Component {
     axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){		  
         this.setState({
-          options: result.data.result,           
+          data: result.data.result,           
         });
       }
       //console.log('mkmkmkmkmk',this.state.options);
@@ -47,56 +45,56 @@ class CategorySelectBox extends Component {
           optionsLists = optionsList.map(option => ({ label: option.title, value: option.title }));
        }
 	 
-	const data = {
-	  label: 'Please select',
-	  value :'0',
-	  children: [
-		{
-		  label: 'search me too',
-		  value: 'searchmetoo',
-		  children: [
-			{
-			  label: 'asdf',
-			  value: 'asdfasdf',
-			   children: [
-					{
-					  label: '16',
-					  value: '15',				 
-					},
-					{
-					  label: '266',
-					  value: '156',				 
-					}
-			   ],	
-			}
-		  ]		  
-		},
-		{
-		  label: 'search me too',
-		  value: 'searchmetoo',
-		  children: [
-			{
-			  label: 'asdf',
-			  value: 'asdfasdf',
-			   children: [
-				{
-				  label: '16',
-				  value: '15',				 
-				},
-				{
-				  label: '266',
-				  value: '156',				 
-				}
-			   ],	
-			}
-		  ]		  
-		}
-	  ],
-	} 
+	//~ const data = {
+	  //~ label: 'Please select',
+	  //~ value :'0',
+	  //~ children: [
+		//~ {
+		  //~ label: 'search me too',
+		  //~ value: 'searchmetoo',
+		  //~ children: [
+			//~ {
+			  //~ label: 'asdf',
+			  //~ value: 'asdfasdf',
+			   //~ children: [
+					//~ {
+					  //~ label: '16',
+					  //~ value: '15',				 
+					//~ },
+					//~ {
+					  //~ label: '266',
+					  //~ value: '156',				 
+					//~ }
+			   //~ ],	
+			//~ }
+		  //~ ]		  
+		//~ },
+		//~ {
+		  //~ label: 'search me too',
+		  //~ value: 'searchmetoo',
+		  //~ children: [
+			//~ {
+			  //~ label: 'asdf',
+			  //~ value: 'asdfasdf',
+			   //~ children: [
+				//~ {
+				  //~ label: '16',
+				  //~ value: '15',				 
+				//~ },
+				//~ {
+				  //~ label: '266',
+				  //~ value: '156',				 
+				//~ }
+			   //~ ],	
+			//~ }
+		  //~ ]		  
+		//~ }
+	  //~ ],
+	//~ } 
 	 
 	  	  
     return (
-       <DropdownTreeSelect data={data} placeholderText="Search" />
+       <DropdownTreeSelect data={this.state.data} clearSearchOnChange={true} placeholderText="Search" />
       
     )
   }

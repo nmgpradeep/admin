@@ -123,7 +123,7 @@ class DefaultHeader extends Component {
             </DropdownMenu>
           </AppHeaderDropdown>
           <AppHeaderDropdown direction="down">
-            <DropdownToggle nav>Welcome <strong>{this.state.user.userName} </strong>
+            <DropdownToggle nav>Welcome <strong>{(this.state.user && this.state.user ===null)?this.state.user.userName:''} </strong>
               <img src={'assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@pitchandswitch.com" />
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>

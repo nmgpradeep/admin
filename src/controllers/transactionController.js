@@ -25,7 +25,7 @@ const listTransaction = (req, res) => {
       .sort({createdAt:-1})
       .exec(function(err, transactions) {
 		  console.log("transactions",transactions)
-          Transaction.count().exec(function(err, count) {
+          Transaction.countDocuments().exec(function(err, count) {
             if (err) return next(err)
               return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
@@ -52,7 +52,7 @@ const transactions = (req, res) => {
     .limit(perPage)
     .populate('parent',['title'])
     .exec(function(err, categories) {
-        Transaction.count().exec(function(err, count) {
+        Transaction.countDocuments().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
                 code: httpResponseCode.EVERYTHING_IS_OK,
