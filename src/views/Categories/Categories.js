@@ -33,7 +33,8 @@ class Categories extends Component {
       currentPage: 1,
       PerPage: 1,
       totalPages: 1,
-      productsCount: 0
+      productsCount: 0,
+      message:null
     };
     console.log("THIS OBJ", this);
     if (this.props.match.params.page != undefined) {
@@ -123,7 +124,12 @@ class Categories extends Component {
                   approve: false
                 });
                 this.toggle();
-              }
+              }else{
+				  this.setState({
+                  error: true,
+                  message: result.data.message
+                });
+			  }
             });
         }
       }
@@ -168,6 +174,8 @@ class Categories extends Component {
                   Add Category
                 </Link>
               </CardHeader>
+              {(this.state.message && this.state.message !== null)?<div className="alert alert-danger">{this.state.message}</div>:''
+		}
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
@@ -214,7 +222,9 @@ class Categories extends Component {
           className={this.props.className}
           external={externalCloseBtn}
         >
-         <ModalHeader>Category</ModalHeader>
+         <ModalHeader>Category</ModalHeader>	
+         {(this.state.message && this.state.message !== null)?<div className="alert alert-danger">{this.state.message}</div>:''
+		}
           <ModalBody>Are you sure to delete?</ModalBody>
           <ModalFooter className="center">
             <Button color="primary" onClick={this.approveDeleteHandler}>

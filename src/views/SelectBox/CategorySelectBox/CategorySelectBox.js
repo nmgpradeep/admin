@@ -3,32 +3,39 @@ import { Alert, Form, Button, Card, CardBody, CardGroup, Col, Container, Input, 
 import axios from 'axios';
 import Select from 'react-styled-select'
 import DropdownTreeSelect from 'react-dropdown-tree-select'
-import 'react-dropdown-tree-select/dist/styles.css'
+//import 'react-dropdown-tree-select/dist/styles.css'
+import 'antd/dist/antd.css';
 
-
-var options = []
+import { TreeSelect } from 'antd';
+const TreeNode = TreeSelect.TreeNode;
 
 class CategorySelectBox extends Component {
   constructor(props) {
     super(props);    
-    this.state = { value: 'Select Category', category : '', data: []}; 
+    this.state = { value: 'Select Category', category : '',	data:[]}; 
+    // this.onChange = this.onChange.bind(this) 
   }
-  
-  onChange(e) {
-	  console.log('State Properties', this.state);
-		var category = e;	  
-		//this.props.onSelectCategory(e);  		
-        //console.log("USER DATA SET",category)
+    
+  //~ onChange(currentNode, selectedNodes) {
+		//~ selectedNodes = currentNode;
+		//~ console.log('State Properties', this.state,this.props);	
+		//~ console.log('currentNode', currentNode);	
+		//~ console.log('selectedNodes',selectedNodes);	
+  //~ }
+ 
+  onChange = (value) => {
+    console.log(value);
+    this.setState({value});
+    this.setState({category:value});
   }
-  
   componentDidMount(){
     axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){		  
+		  console.log("allCategories",result.data.result)
         this.setState({
           data: result.data.result,           
         });
       }
-      //console.log('mkmkmkmkmk',this.state.options);
     })
    .catch((error) => {
     console.log('error', error)
@@ -39,64 +46,27 @@ class CategorySelectBox extends Component {
   }
   
   render() {
-     let optionsLists;
-      if(this.state.options){
-        let optionsList = this.state.options;
-          optionsLists = optionsList.map(option => ({ label: option.title, value: option.title }));
-       }
-	 
-	//~ const data = {
-	  //~ label: 'Please select',
-	  //~ value :'0',
-	  //~ children: [
-		//~ {
-		  //~ label: 'search me too',
-		  //~ value: 'searchmetoo',
-		  //~ children: [
-			//~ {
-			  //~ label: 'asdf',
-			  //~ value: 'asdfasdf',
-			   //~ children: [
-					//~ {
-					  //~ label: '16',
-					  //~ value: '15',				 
-					//~ },
-					//~ {
-					  //~ label: '266',
-					  //~ value: '156',				 
-					//~ }
-			   //~ ],	
-			//~ }
-		  //~ ]		  
-		//~ },
-		//~ {
-		  //~ label: 'search me too',
-		  //~ value: 'searchmetoo',
-		  //~ children: [
-			//~ {
-			  //~ label: 'asdf',
-			  //~ value: 'asdfasdf',
-			   //~ children: [
-				//~ {
-				  //~ label: '16',
-				  //~ value: '15',				 
-				//~ },
-				//~ {
-				  //~ label: '266',
-				  //~ value: '156',				 
-				//~ }
-			   //~ ],	
-			//~ }
-		  //~ ]		  
-		//~ }
-	  //~ ],
-	//~ } 
-	 
-	  	  
+     //~ let data;
+      //~ if(this.state.data){
+        //~ //let data = this.state.data;
+       //~ const  data = this.state.data.map(option => ({ label: option.title, value: option.title,children: {...option.children}}));
+       //~ }	  	  
+    //~ return (
+       //~ <DropdownTreeSelect data={this.state.data} clearSearchOnChange={true} onChange={this.onChange} placeholderText="Search" />
+ 
+    //~ )    
     return (
-       <DropdownTreeSelect data={this.state.data} clearSearchOnChange={true} placeholderText="Search" />
-      
-    )
+      <TreeSelect        
+        style={{ width: 300 }}
+        value={this.state.value}
+        dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
+        treeData={this.state.data}
+        placeholder="Please select"
+        treeDefaultExpandAll
+        onChange={this.onChange}
+      />
+    );
+         
   }
 }
 export default CategorySelectBox;

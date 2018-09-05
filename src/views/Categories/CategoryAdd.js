@@ -37,7 +37,9 @@ class CategoryAdd extends Component {
     this.status = React.createRef();
     this.tree_data = null;
     this.state = {
+	
       addCategory: {},
+      message : null,
       categoryForm: {
         title: {
           elementType: "input",
@@ -113,8 +115,10 @@ class CategoryAdd extends Component {
     this.setState({ categoryForm: updatedCategory });
   };
   handleTreeChange(e, data, inputIdentifier) {
-	  this.tree_data = data.selected[0];
-	  console.log('TREE data', this.tree_data);
+	  //this.tree_data = data.selected[0];
+	  if(e.type == 'changed' && data.node != undefined && data.node.data != undefined){
+		this.tree_data = data.node.data._id;
+	  }	  
   }
   componentDidMount() {
     axios
@@ -165,8 +169,11 @@ class CategoryAdd extends Component {
 		axios.post("/category/create", categoryObj).then(result => {
 		  if (result.data.code == "200") {
 			this.props.history.push("/categories");
-		  }
+		  }else{
+			  this.setState({message : result.data.message});
+		 }
 		});
+		setTimeout(() => {this.setState({message : null})}, 10000)
 	});
   }
 
@@ -192,9 +199,9 @@ class CategoryAdd extends Component {
                 changed={event =>
                   this.inputChangedHandler(event, formElement.id)
                 }
-                //~ treechanged={(event, data) => {
-                  //~ return this.handleTreeChange(event, data, formElement.id);
-                //~ }}
+                treechanged={(event, data) => {
+                  return this.handleTreeChange(event, data, formElement.id);
+                }}
                 value={formElement.config.value}
               />
             </Col>
@@ -230,6 +237,8 @@ class CategoryAdd extends Component {
               <CardHeader>
                 <strong>Add Category</strong>
               </CardHeader>
+              {(this.state.message && this.state.message !== null)?<div className="alert alert-danger">{this.state.message}</div>:''
+		}
               <CardBody>{form}</CardBody>
             </Card>
           </Col>

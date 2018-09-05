@@ -18,6 +18,7 @@
     "@coreui/react": "^2.0.1",
     "access-token": "^0.2.2",
     "ajv": "^6.5.1",
+    "antd": "^3.9.1",
     "autosuggest": "0.0.2",
     "axios": "^0.18.0",
     "babel": "^6.23.0",

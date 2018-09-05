@@ -180,21 +180,32 @@ class ProductEdit extends Component {
 
   componentDidMount() {  	 
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
-      //console.log('Results Data',result);
+      console.log('Results Data',result);
       if(result.data.code === 200) {
         this.setState({editProduct: result.data.result});
         this.productName.value = result.data.result.productName;
         this.description.value = result.data.result.description;
-        this.category.value = result.data.result.productCategory._id;
-        this.brand.value = result.data.result.brand._id;
-        this.size.value = result.data.result.size._id;
+        if(result.data.result.productCategory && result.data.result.productCategory.length > 0){
+			this.category.value = result.data.result.productCategory._id;
+		}        
+        if(result.data.result.brand && result.data.result.brand.length > 0){
+			this.brand.value = result.data.result.brand._id;
+		}        
+        if(result.data.result.size && result.data.result.size.length > 0){
+			this.size.value = result.data.result.size._id;
+		}        
+        if(result.data.result.userId && result.data.result.userId.length > 0){
+			this.author.value = result.data.result.userId._id;
+		}        
+        //this.brand.value = result.data.result.brand._id;
+        //this.size.value = result.data.result.size._id;
         this.color.value = result.data.result.color;        
-        this.author.value = result.data.result.userId._id; 
-        this.productAge.value = result.data.result.productAge;        
+       // this.author.value = result.data.result.userId._id; 
+		this.productAge.value = result.data.result.productAge;        
         this.setState({productImages: result.data.result.productImages});
        }      
       })     
-       axios.get('/category/categories').then(result => {
+       axios.get('/category/allCategories').then(result => {
         if(result.data.code === 200){
           this.setState({
             categories: result.data.result,            
@@ -249,7 +260,7 @@ class ProductEdit extends Component {
 			<Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
 			</FormGroup>
 			<FormGroup>
-			<Label htmlFor="category">Category</Label>                 
+			<Label htmlFor="category">Category</Label> <br/>                
 			<CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editProduct.category}/>
 			</FormGroup>
 			<FormGroup>
