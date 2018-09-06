@@ -7,4 +7,6 @@ router.put('/updateProduct',productController.updateProduct)
 router.post('/changeStatus',productController.changeStatus)
 router.get('/products/:page',productController.allProducts)
 router.delete('/deleteProduct/:id',productController.deleteProduct)
+router.get('/switchTodays',productController.switchTodays)
+router.get('/popularItems',productController.popularItems)
 module.exports = router;

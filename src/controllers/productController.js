@@ -1,11 +1,14 @@
 const bodyParser = require('body-parser')
 const Category = require('../models/category')
 const Product = require('../models/product')
+const TradePitchProduct = require('../models/tradePitchProduct')
+const Trade = require('../models/trade')
 const ProductImage = require('../models/productImage')
 const User = require('../models/User')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
+//const moment = require('moment-timezone');
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 const constant  = require('../../common/constant')
@@ -100,7 +103,6 @@ const create = (req, res) => {
 const allProducts = (req, res) => {	
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-
 
     Product.aggregate([{
 	  $lookup :{
@@ -199,28 +201,69 @@ const viewProduct = (req, res) => {
 		.populate('productCategory',['title'])
 		.populate('brand',['brandName'])
 		.populate('size',['size'])
-	
 	    .exec(function(err, result){
-			//console.log('rrrrrr',result);		
 			if (err) {
-			return res.send({
+			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			})
+			 })
 			} else {
 			if (!result) {
 				res.json({
 					message: httpResponseMessage.USER_NOT_FOUND,
 					code: httpResponseMessage.BAD_REQUEST
 				});
-			}else {
+			} else {
 			 return res.json({
 				code: httpResponseCode.EVERYTHING_IS_OK,             
 				result: result
-			});
+			  });
 			}
 		}
 	}); 
+}
+
+
+/** Auther	: KS
+ *  Date	: August 29, 2018
+ *	Description : Function to listing popular items
+**/
+const popularItems = (req,res) => {
+	//console.log('ddddddddddd',todayDate);
+}
+
+/** Auther	: KS
+ *  Date	: August 29, 2018
+ *	Description : Function to listing popular items
+**/
+const switchTodays = (req,res) => {	
+	var toDate = new Date();
+	 Trade.find({createdAt:new Date("2018-07-17T13:16:22.095Z")})	
+	    .populate({ path: "tradePitchProductId", model: "Product"})
+	    .populate({ path: "tradeSwitchProductId", model: "Product"})
+	    .populate({ path: "productCategory", model: "Category"})
+	    .populate({ path: "productImages", model: "Product"})	   
+	    .exec(function(err,result){			
+			console.log('mmmmmm',result);
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,             
+				result: result
+			  });
+			}
+		 }
+	 }); 
 }
 
 
@@ -228,7 +271,6 @@ const viewProduct = (req, res) => {
  *  Date	: June 21, 2018
  *	Description : Function to update the Product details.
  **/
-
 
 const updateProduct = (req, res) => { 
   var form = new multiparty.Form();
@@ -258,25 +300,24 @@ const updateProduct = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
       } else {
-		   console.log('Created-Page',err, result);
-			 if ((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
-				var fileName = files.productImages[0].originalFilename;
-				var ext = path.extname(fileName);
-				var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
-				fs.readFile(files.productImages[0].path, function(err, fileData) {
-				  if (err) {
-					res.send(err);
-					return;
-				  }
-				  fileName = files.productImages[0].originalFilename;
-				  ext = path.extname(fileName);
-				  newfilename = newfilename;
-				  pathNew = constant.product_path + newfilename;
-				  fs.writeFile(pathNew, fileData, function(err) {
-					if (err) {
-					  res.send(err);
-					  return;
-					}
+		 if ((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
+			var fileName = files.productImages[0].originalFilename;
+			var ext = path.extname(fileName);
+			var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
+			fs.readFile(files.productImages[0].path, function(err, fileData) {
+			  if (err) {
+				res.send(err);
+				return;
+			  }
+			  fileName = files.productImages[0].originalFilename;
+			  ext = path.extname(fileName);
+			  newfilename = newfilename;
+			  pathNew = constant.product_path + newfilename;
+			  fs.writeFile(pathNew, fileData, function(err) {
+				if (err) {
+				  res.send(err);
+				  return;
+				}
 				  });
 				}); 			  
 			  Product.update({ _id:data._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
@@ -316,7 +357,6 @@ const updateProduct = (req, res) => {
  *	Description : Function to delete the Product
  **/
 const deleteProduct = (req, res) => {	
-	//console.log('<result>',req.params.id);
 	Product.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
@@ -339,5 +379,7 @@ module.exports = {
   viewProduct,
   updateProduct,
   deleteProduct,
-  changeStatus  
+  changeStatus,
+  popularItems,
+  switchTodays 
 }
