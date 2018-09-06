@@ -130,7 +130,7 @@ class CategoryEdit extends Component {
     for (let key in this.state.categoryForm) {
       categoryObj[key] = this.state.categoryForm[key].value;
     }
-    console.log('categoryObj submitHandler', categoryObj);
+    //console.log('categoryObj submitHandler', categoryObj);
     axios.put("/category/updateCategory", categoryObj).then(result => {
       if (result.data.code == "200") {
         this.props.history.push("/categories");
@@ -146,11 +146,11 @@ class CategoryEdit extends Component {
         if (result.data.code === 200) {
           let oldState = this.state.categoryForm;
           oldState.parent.elementConfig.options = result.data.result.filter((cat)=> (cat._id !== this.state.categoryId));
-          this.setState(
+            this.setState(
             {
               categoryForm: oldState
             }
-          );
+          ); 
         }
       })
       .catch(error => {
@@ -160,17 +160,14 @@ class CategoryEdit extends Component {
         }
       }); 
        
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+    
       axios.get('/category/viewCategory/' + this.state.categoryId).then(result => {
-		//console.log("category",result)
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
           let categoryForm = this.state.categoryForm;
           for (let key in categoryForm) {
 			  if(key === 'parent'){
 				  categoryForm[key].value = result.data.result[key]._id;
-			  }else{
+			  } else {
 				  categoryForm[key].value = result.data.result[key];
 			  }
 		  }
@@ -185,6 +182,9 @@ class CategoryEdit extends Component {
       });
 
   } 
+  
+  
+  
   render() {
     const formElementsArray = [];
     for (let key in this.state.categoryForm) {
@@ -243,9 +243,7 @@ class CategoryEdit extends Component {
               <CardHeader>
                 <strong>Edit Category</strong>
               </CardHeader>
-
               <CardBody>{form}</CardBody>
-
               </Card>
           </Col>
         </Row>

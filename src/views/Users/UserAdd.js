@@ -174,9 +174,11 @@ class UserAdd extends Component {
   handleCity = (city) => {
         this.setState({city: city});
   }
+  
   handleSubscription = (subscriptions) => {
-        this.setState({subscriptions: subscriptions});
+      this.setState({subscriptionPlan: subscriptions});        
   }
+ 
     
   cancelHandler(){
     this.props.history.push("/users");
@@ -249,7 +251,7 @@ class UserAdd extends Component {
         data.append('zipCode', this.zipCode.value),
         data.append('subscriptionPlan', this.state.subscriptionPlan)
         axios.post('/user/signup', data).then(result => {
-          console.log('USER DATA', data)
+          console.log('USERasdasfdasdfasdfasdfasdfasdf', data)
           if(result.data.code === 200){
             this.props.history.push("/users");
           }
@@ -274,8 +276,7 @@ class UserAdd extends Component {
                     <FormGroup>
                       <Label htmlFor="company">First name</Label><span className="required">*</span>
                       <Input type="text" invalid={this.state.validation.firstName.valid === false} innerRef={input => (this.firstName = input)} placeholder="First name" />
-
-                      <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
+                       <FormFeedback invalid={this.state.validation.firstName.valid === false}>{this.state.validation.firstName.message}</FormFeedback>
 
                     </FormGroup>
                     </Col>
