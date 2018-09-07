@@ -85,8 +85,10 @@ class ProductAdd extends Component {
   handleUser = (user) => {
         this.setState({user: user});
   }
+  
    handleCategory = (category) => {
-        this.setState({category: category});
+	   console.log('fadfadfasdf',category);
+     this.setState({category: category});
   }
   handleBrand = (brand) => {
         this.setState({brand: brand});
@@ -146,6 +148,7 @@ class ProductAdd extends Component {
         data.append('condition', this.state.conditionValue);
         data.append('userId', this.state.user)
         data.append('productCategory', this.state.category)
+        //data.append('productCategory', '5b58514792b6833efdc00b7a')
         if(this.state.selectedFile){
 		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
 		} else {
@@ -153,8 +156,9 @@ class ProductAdd extends Component {
 	    }
         console.log("data",data);
            axios.post('/product/create', data).then(result => {
+			   console.log('rrrrrr',result);
             if(result.data.code == 200){
-               //this.props.history.push("/products");
+               this.props.history.push("/products");
             }
         });
       }

@@ -26,73 +26,73 @@ const create = (req, res) => {
   var form = new multiparty.Form();
  
   form.parse(req, function(err, data, files) {
-	   console.log('dddd',data);
-	  //~ 
-	  //~ if (!data.productName) {
-		//~ return res.send({
-		  //~ code: httpResponseCode.BAD_REQUEST,
-		  //~ message: httpResponseMessage.REQUIRED_DATA
-		//~ })
-	  //~ }	  
-	  //~ const flag = validation.validate_all_request(data, ['productName']);
-	    //~ if (flag) {
-		 //~ return res.json(flag);
-	   //~ }
-		  //~ let now = new Date();		
-		  //~ Product.create(data, (err, result) => {
-			 //~ // console.log('RES-Page',err, result);
-			//~ if (err) {
-			  //~ return res.send({
-				//~ errr : err,
-				//~ code: httpResponseCode.BAD_REQUEST,
-				//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			  //~ })
-			//~ } else {
-			  //~ console.log('Created-Page',err, result);
-			 //~ // check file and upload if exist 
-			 //~ if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
-				//~ var fileName = files.productImages[0].originalFilename;
-				//~ var ext = path.extname(fileName);
-				//~ var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
-				//~ fs.readFile(files.productImages[0].path, function(err, fileData) {
-				  //~ if (err) {
-					//~ res.send(err);
-					//~ return;
-				  //~ }
-				  //~ fileName = files.productImages[0].originalFilename;
-				  //~ ext = path.extname(fileName);
-				  //~ newfilename = newfilename;
-				  //~ pathNew = constant.product_path + newfilename;
-				  //~ //return res.json(process.cwd());
-				  //~ fs.writeFile(pathNew, fileData, function(err) {
-					//~ if (err) {
-					  //~ res.send(err);
-					  //~ return;
-					//~ }          
-//~ 
-				  //~ });
-				//~ });
-			  //~ }		
-			  //~ console.log('resultImgas',result);	 
-			  //~ Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
-				//~ if(err){				
-					//~ return res.send({
-						//~ code: httpResponseCode.BAD_REQUEST,
-						//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
-					//~ });
-				//~ } else {				    
-					//~ result.productImages = newfilename;
-					//~ return res.send({
-						//~ code: httpResponseCode.EVERYTHING_IS_OK,
-						//~ message: httpResponseMessage.SUCCESSFULLY_DONE,
-						//~ result: result
-					//~ })
-				  //~ }
-			   //~ })	  
-			  //~ ///end file update///	  
-			//~ }
-		  //~ })
-    });  
+	  if (!data.productName) {
+		return res.send({
+		  code: httpResponseCode.BAD_REQUEST,
+		  message: httpResponseMessage.REQUIRED_DATA
+		})
+	  }	  
+	  const flag = validation.validate_all_request(data, ['productName']);
+	    if (flag) {
+		 return res.json(flag);
+	   }
+		  let now = new Date();		
+		  Product.create(data, (err, result) => {
+			 // console.log('RES-Page',err, result);
+			if (err) {
+			  return res.send({
+				errr : err,
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  })
+			} else {
+			  console.log('Created-Page',err, result);
+			 // check file and upload if exist 
+			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
+				var fileName = files.productImages[0].originalFilename;
+				var ext = path.extname(fileName);
+				var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
+				fs.readFile(files.productImages[0].path, function(err, fileData) {
+				  if (err) {
+					res.send(err);
+					return;
+				  }
+				  fileName = files.productImages[0].originalFilename;
+				  ext = path.extname(fileName);
+				  newfilename = newfilename;
+				  pathNew = constant.product_path + newfilename;
+				  //return res.json(process.cwd());
+				  fs.writeFile(pathNew, fileData, function(err) {
+					if (err) {
+					  res.send(err);
+					  return;
+					}          
+
+				  });
+				});
+			  }		
+			  console.log('resultImgas',result);	 
+			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
+				if(err){				
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {				    
+					result.productImages = newfilename;
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					})
+				  }
+			  })	  
+			  ///end file update///	  
+			}
+		  
+       });
+       
+    })  
 }
   
 
