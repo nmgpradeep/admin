@@ -152,7 +152,7 @@ const searchQuery =  (req, res) => {
             end;
 
         // set time zone
-      //  moment().tz("Europe/Copenhagen").format();
+        //  moment().tz("Europe/Copenhagen").format();
 
         start = data.start[0];
         end = data.end[0];

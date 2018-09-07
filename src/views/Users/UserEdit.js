@@ -5,6 +5,7 @@ import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
 import StateAllSelectBox from '../SelectBox/StateSelectBox/StateAllSelectBox'
 import CitySelectBox from '../SelectBox/CitySelectBox/CitySelectBox'
 import SubscriptionSelectBox from '../SelectBox/SubscriptionSelectBox/SubscriptionSelectBox'
+
 import {
   Badge,
   Button,
@@ -50,8 +51,6 @@ class UserEdit extends Component {
     this.zipCode = React.createRef();
     this.subscriptionPlan = React.createRef();
     this.profilePic = React.createRef();
-     
-   
      
     let userId = this.props.match.params.id;
     this.state = {
@@ -164,6 +163,7 @@ class UserEdit extends Component {
       if(formSubmitFlag){
         const data = new FD()
         data.append('_id', this.props.match.params.id)
+        
         data.append('firstName', this.firstName.value)
         data.append('middleName', this.middleName.value)
         data.append('lastName', this.lastName.value)
@@ -194,7 +194,7 @@ class UserEdit extends Component {
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/user/viewUser/' + this.state.userId).then(result => {
         if(result.data.code == 200){   
-			console.log('mmmmmmmmmasfdadfasdf',result.data.result)      
+		     console.log('mmmmmmmmmasfdadfasdf',result.data.result)      
           this.setState({ editUser: result.data.result});
           this.firstName.value = result.data.result.firstName;
           this.middleName.value = result.data.result.middleName;

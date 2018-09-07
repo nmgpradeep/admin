@@ -146,42 +146,37 @@ class ProductAdd extends Component {
         data.append('condition', this.state.conditionValue);
         data.append('userId', this.state.user)
         data.append('productCategory', this.state.category)
-        
         if(this.state.selectedFile){
 		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
 		} else {
 			data.append('productImages', this.state.editProduct.productImages); 
 	    }
         console.log("data",data);
-        axios.post('/product/create', data).then(result => {
-          if(result.data.code == 200){
-            this.props.history.push("/products");
-          }
+           axios.post('/product/create', data).then(result => {
+            if(result.data.code == 200){
+               //this.props.history.push("/products");
+            }
         });
       }
   }
 
   componentDidMount(){
       axios.get('/category/allCategories').then(result => {
-		
         if(result.data.code == '200'){
           this.setState({
             categories: result.data.result,            
           });
         }
-        //console.log(this.state.categories);
       })
       axios.get('/user/users/1' ).then(result => {	 
       if(result.data.code ===200){
-        this.setState({
+         this.setState({
           users: result.data.result,         
-        });
+         });
         }
-      //console.log(this.state.users);
     })
     axios.get('/donation/getConstant').then(result => {
       this.setState({conditions: result.data.result});
-     // console.log('conditions', result.data.result)
      })
       .catch((error) => {
         if(error.status === 401) {
@@ -268,7 +263,7 @@ class ProductAdd extends Component {
             </Card>
           </Col>
         </Row>
-        </div>
+       </div>
     );
   }
 }
