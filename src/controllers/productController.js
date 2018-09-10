@@ -23,8 +23,7 @@ var gm = require('gm');
  */
 ///function to save new product in the list
 const create = (req, res) => {
-  var form = new multiparty.Form();
- 
+  var form = new multiparty.Form(); 
   form.parse(req, function(err, data, files) {
 	  if (!data.productName) {
 		return res.send({
@@ -143,7 +142,7 @@ const allProducts = (req, res) => {
 		}
 	}])
      .skip((perPage * page) - perPage)
-     .limit(perPage)        
+     .limit(perPage)            
      .sort({createdAt:-1})   
      .exec(function(err, products) {			 
           Product.count().exec(function(err, count) {

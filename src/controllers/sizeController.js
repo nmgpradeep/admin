@@ -175,28 +175,35 @@ const viewSizes = (req, res) => {
  **/
 //Function to update the Sizes
 const updateSizes = (req, res) => { 
-    Size.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+	 var form = new multiparty.Form();
+	  form.parse(req, function(err, data, files) {
+	  console.log('dddddd',data);
+	 
+      Size.findOneAndUpdate({ _id:data._id}, data, { new:true },(err,result) => {
       if(err){
-          return res.send({
-              code: httpResponseCode.BAD_REQUEST,
-              message: httpResponseMessage.INTERNAL_SERVER_ERROR
-            });
-      }else {
-        if (!result) {
-          res.json({
-            message: httpResponseMessage.USER_NOT_FOUND,
-            code: httpResponseMessage.BAD_REQUEST
-          });
-        }else {
-          return res.json({
-                code: httpResponseCode.EVERYTHING_IS_OK,
-                message: httpResponseMessage.SUCCESSFULLY_DONE,
-               result: result
-              });
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+     } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      } else {
+			 return res.json({
+				  code: httpResponseCode.EVERYTHING_IS_OK,
+				  message: httpResponseMessage.SUCCESSFULLY_DONE,
+				 result: result
+               });		    
+          }    
         }
-      }    
-    })
-  }
+      }) 
+   });
+ }
+  	   
+ 
   
   /**
     *Auther	: Saurabh Agarwal

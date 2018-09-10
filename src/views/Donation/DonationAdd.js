@@ -125,7 +125,6 @@ class DonationAdd extends Component {
     this.props.history.push("/donations");
   }
   
-  
   fileChangedHandler = (event) => {
 	this.setState({selectedFile: event.target.files[0]})
   }
@@ -142,6 +141,7 @@ class DonationAdd extends Component {
   handleBrand = (brand) => {
         this.setState({brand: brand});
   }
+  
   handleSize = (size) => {
         this.setState({size: size});
   }
@@ -188,6 +188,7 @@ class DonationAdd extends Component {
 		data.append('productImage','NULL');	
 		data.append('condition', this.state.conditionValue);		
         axios.post('/donation/donate', data).then(result => {
+			console.log('rrrrrrrrrrr',result);
           if(result.data.code === 200){
             this.props.history.push("/donations");
           }

@@ -60,11 +60,11 @@ type:Schema.Types.ObjectId,
 ref: 'City'
 },
 state:{
-type:String,
+type:Schema.Types.ObjectId,
 ref: 'State'
 },
 country:{
-type:String,
+type:Schema.Types.ObjectId,
 ref:'Country'
 },
 zipCode:{

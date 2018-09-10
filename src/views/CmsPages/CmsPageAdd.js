@@ -109,7 +109,6 @@ class CmsPageAdd extends Component {
 		data.append('pageTitle', this.pageTitle.value);
 		data.append('pageHeading', this.pageHeading.value);
 		data.append('description', this.state.text);
-		//data.append('bannerImage', fs.createReadStream(this.bannerImage.files[0]));
 		data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
 		console.log("data",data)
         axios.post('/page/newPage', data).then(result => {

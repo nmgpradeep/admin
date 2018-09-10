@@ -19,7 +19,7 @@ class BrandSelectBox extends Component {
 	var brand = e;	  
 	this.setState({value: e});
 	this.props.onSelectBrand(e); 		
-  }
+  }  
   
   componentDidMount(){	
     axios.put('/brand/listingbrand').then(result => {		
@@ -49,7 +49,7 @@ class BrandSelectBox extends Component {
 			options={optionsLists}
 			onChange={this.onChange.bind(this)} 
 			innerRef={this.props.reference}
-			value={this.state.value}
+			value={this.props.value}
 			classes={{
 			  selectValue: 'my-custom-value',
 			  selectArrow: 'my-custom-arrow'

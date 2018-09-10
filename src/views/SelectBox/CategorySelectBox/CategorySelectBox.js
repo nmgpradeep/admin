@@ -57,19 +57,10 @@ class CategorySelectBox extends Component {
   }
   
   render() {
-     //~ let data;
-      //~ if(this.state.data){
-        //~ //let data = this.state.data;
-       //~ const  data = this.state.data.map(option => ({ label: option.title, value: option.title,children: {...option.children}}));
-       //~ }	  	  
-    //~ return (
-       //~ <DropdownTreeSelect data={this.state.data} clearSearchOnChange={true} onChange={this.onChange} placeholderText="Search" />
- 
-    //~ )    
+      
     return (
       <TreeSelect        
         style={{ width: 300 }}
-        defaultValue={this.props.value}
         value={this.props.value}
         dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
         treeData={this.state.data}

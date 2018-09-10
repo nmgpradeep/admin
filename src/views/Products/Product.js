@@ -10,15 +10,14 @@ Capitalize(str){
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
   render() {
-    return (
-   
+    return (   
       <tr key={this.props.product._id}>		
         <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
         <td>
            <ReadMoreReact text={this.props.product.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} />
         </td>
-        
+        <td>{(this.props.product.user[0])?this.props.product.user[0].firstName:''}</td>        
         <td>{this.props.product.productAge}</td>     
         <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40" alt=""/></td>
         <td>
