@@ -35,10 +35,10 @@ var ip = require('ip');
 var satelize = require('satelize');
 
 var bcrypt = require('bcrypt-nodejs');
-getToken = function (headers) {	
+getToken = function (headers) {
   if (headers && headers.authorization) {
-    var parted = headers.authorization.split(' ');    
-    if (parted.length) {		
+    var parted = headers.authorization.split(' ');
+    if (parted.length) {
       return parted[0];
     } else {
       return null;
@@ -47,7 +47,7 @@ getToken = function (headers) {
     return null;
   }
 };
- 
+
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to create a new user
@@ -55,7 +55,7 @@ getToken = function (headers) {
 const signup = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
-	  console.log('ddddddddddd',data);
+	  //console.log('ddddddddddd',data);
       User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
@@ -66,9 +66,8 @@ const signup = (req, res) => {
       let unix_time = moment().unix()
       let salt = data.user_contact + unix_time
       let accessToken = md5(salt)
-      req.body.accessToken = accessToken      
+      req.body.accessToken = accessToken
       User.create(data, (err, result) => {
-
       if (err) {
           return res.send({
 			errr : err,
@@ -76,14 +75,15 @@ const signup = (req, res) => {
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
         } else {
+			 // check Profile Pic and upload if exist
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 					var fileName = files.profilePic[0].originalFilename;
 					var ext = path.extname(fileName);
 					var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
 					fs.readFile(files.profilePic[0].path, function(err, fileData) {
 					  if (err) {
-						res.send(err);
-						return;
+							res.send(err);
+							return;
 					  }
 					  fileName = files.profilePic[0].originalFilename;
 					  ext = path.extname(fileName);
@@ -93,21 +93,24 @@ const signup = (req, res) => {
 						if (err) {
 						  res.send(err);
 						  return;
-						}          
+						}
 
 					  });
 					});
-					
+
 					User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
-					if(err){				
+					if(err){
 						return res.json({
 							code: httpResponseCode.BAD_REQUEST,
 							message: httpResponseMessage.FILE_UPLOAD_ERROR
 						});
 					}
 				   })
-				} 
-				       
+
+				}
+				
+				//Save data in notification collection to send notification to the admin
+				//console.log("notification_type",constant.notification_type)
 				var notification = new Notification({ notificationTypeId:1,fromUserId:result._id,toUserId:1});
 				notification.save(function (err) {
 				if(err){
@@ -115,9 +118,11 @@ const signup = (req, res) => {
 					  code: httpResponseCode.BAD_REQUEST,
 					  message: httpResponseMessage.NOTIFICATION_ERROR
 					});
-				  }		
+				  }
 				});
-							 
+
+			  ///end file update///
+			 // get latitude,longitude of user and save into collection
 			   // console.log(data.address);
 			    //~ where.is(data.address[0], function(err, responceData) {
 				  //~ if(err){				
@@ -138,6 +143,7 @@ const signup = (req, res) => {
 				   //~ }
 				//~ });
 				
+
 			    delete result.password
 			  	// Generate test SMTP service account from ethereal.email
 				  // Only needed if you don't have a real mail account for testing
@@ -152,7 +158,7 @@ const signup = (req, res) => {
 							pass: constant.SMTP_PASSWORD // generated ethereal password
 						}
 					});
-					
+
 					host=req.get('host');
 					link="http://"+req.get('host')+"/user/verifyEmail/"+result._id;
 					// setup email data with unicode symbols
@@ -173,11 +179,193 @@ const signup = (req, res) => {
 						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));						
 					});
 
-            return res.json({
+					return res.json({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					})
+
+        }
+      }) // End Create user function block
+    }
+  })//end find user by email
+})// end form.parse
+}
+
+/** Auther	: Rajiv Kumar
+ *  Date	: Aug 18, 2018
+ *	Description : Function to store user data signup from front
+ **/
+const userSignup = (req, res) => {
+  var form = new multiparty.Form();
+  form.parse(req, function(err, data, files) {
+  User.findOne({ email: data.email }, (err, result) => {
+    if (result) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.ALL_READY_EXIST_EMAIL
+      })
+    } else {
+      //let now = new Date();
+      let unix_time = moment().unix()
+      let salt = data.user_contact + unix_time
+      let accessToken = md5(salt)
+      req.body.accessToken = accessToken
+      User.create(data, (err, result) => {
+		  console.log('RES-FIND',err, result);
+      if (err) {
+          return res.send({
+			errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+			 // check Profile Pic and upload if exist
+			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
+					var fileName = files.profilePic[0].originalFilename;
+					var ext = path.extname(fileName);
+					var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
+					fs.readFile(files.profilePic[0].path, function(err, fileData) {
+					  if (err) {
+						res.send(err);
+						return;
+					  }
+					  fileName = files.profilePic[0].originalFilename;
+					  ext = path.extname(fileName);
+					  newfilename = newfilename;
+					  pathNew = constant.profileimage_path + newfilename;
+					  //return res.json(process.cwd());
+					  fs.writeFile(pathNew, fileData, function(err) {
+						if (err) {
+						  res.send(err);
+						  return;
+						}
+
+					  });
+					});
+
+					User.update({ _id:result._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
+					if(err){
+						return res.json({
+							code: httpResponseCode.BAD_REQUEST,
+							message: httpResponseMessage.FILE_UPLOAD_ERROR
+						});
+					}
+				   })
+				}
+				//Save data in notification collection to send notification to the admin
+				//console.log("notification_type",constant.notification_type)
+				var notification = new Notification({ notificationTypeId:1,fromUserId:result._id,toUserId:1});
+				notification.save(function (err) {
+				if(err){
+					return res.json({
+					  code: httpResponseCode.BAD_REQUEST,
+					  message: httpResponseMessage.NOTIFICATION_ERROR
+					});
+				  }
+				});
+			  ///end file update///
+			    delete result.password
+
+			  	// Generate test SMTP service account from ethereal.email
+				  // Only needed if you don't have a real mail account for testing
+
+					// create reusable transporter object using the default SMTP transport
+					let transporter = nodemailer.createTransport({
+						host: constant.SMTP_HOST,
+						port: constant.SMTP_PORT,
+						secure: false, // true for 465, false for other ports
+						auth: {
+							user: constant.SMTP_USERNAME, // generated ethereal user
+							pass: constant.SMTP_PASSWORD // generated ethereal password
+						}
+					});
+					host=req.get('host');
+					link=constant.PUBLIC_URL+"verifyUserEmail/"+result._id;
+				   const output =` <table width="100%" cellpadding="0" cellspacing="0" align="center" style="background-color: #efefef;">
+            <tr>
+                <td style="text-align:center">
+                    <table width="600" cellpadding="0" cellspacing="0" align="center"  style="text-align:left">
+                        <tr>
+                            <td>
+                                <img src="%PUBLIC_URL%/emailer-header.png" alt="PitchAndSwitch" style="display:block;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:40px; background-color: #ffffff;">
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="padding:0 0 36px">
+                                            <h3 style="color: #d0a518;font-size: 22px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Hello `+result.userName.toUpperCase()+`,</h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 0 36px">
+                                            <p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Thank you for registering at <b>Pitch and Switch </b>.<br/> Your account is created and must be activated before you can use it.<br/>
+To activate the account click on the following link or copy-paste it in your browesr:</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 0 34px">
+                                            <a href="`+link+`"><img src="%PUBLIC_URL%/reset-button.png" alt="Activate Account" /></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 0 34px">
+                                            <a href="`+link+`">`+link+`</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 0 55px">
+
+                                            <p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Thank you,<br/> Team Pitch and Switch</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0">
+                                            <p style="color: #969696; font-family: Arial; font-size: 13px;font-weight: 400; padding: 0; margin: 0"> If the button above does not work, try copying and pasting the URL into your browser. If you continue to have problems, please feel free to contact us at Pitch and Switch support team.</p>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:30px 0; text-align: center">
+                                <p style="color: #414141;font-size: 14px;font-weight: 400; font-family:Arial">Copyright &copy; 2018, All rights reserved by <a href="#" style="color: #d0a518; text-decoration: none">Pitch and Switch</a></p>
+
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>`;
+					// setup email data with unicode symbols
+					let mailOptions = {
+						from: constant.SMTP_FROM_EMAIL, // sender address
+						to: result.email+',rajiv.kumar@newmediaguru.net', // list of receivers
+						subject: 'Please confirm your Email account ✔', // Subject line
+						text: 'Hello world?', // plain text body
+						html : output
+					};
+					// send mail with defined transport object
+					transporter.sendMail(mailOptions, (error, info) => {
+						if (error) {
+							return console.log(error);
+						}
+						console.log('Message sent: %s', info.messageId);
+						// Preview only available when sending through an Ethereal account
+						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+						// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+					});
+
+          return res.json({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
             result: result
-            })
+          })
 
         }
       })
@@ -185,7 +373,6 @@ const signup = (req, res) => {
   })
 })
 }
-
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to verify user and login
@@ -198,7 +385,7 @@ const login = (req, res) => {
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	}
-	
+
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if(flag) {
@@ -220,7 +407,7 @@ const login = (req, res) => {
       } else if (result.userType === req.body.userType) {
         result.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
-			  
+
             var now = new Date();
             var unix_time = moment().unix()
             var salt = data.user_contact + unix_time
@@ -236,7 +423,7 @@ const login = (req, res) => {
               }, {
                 new: true
               }).lean().exec(function (err, result) {
-				  
+
                 if (err)
                   return res.send({
                     code: httpResponseCode.BAD_REQUEST,
@@ -246,10 +433,10 @@ const login = (req, res) => {
 			// session.startSession(req, res, sessionValue)
 			// req.session.put('user',result);
 			// var value = req.session.get('user');
-			// console.log("SESSION VARIABLE",value);	
-         
+			// console.log("SESSION VARIABLE",value);
+
           // set the use data in to session
-             req.session.user = result; 
+             req.session.user = result;
              console.log("LOgin SESSION ", req.session)
               req.session.reload(function () {
 				req.session.save(function (err) {
@@ -257,9 +444,9 @@ const login = (req, res) => {
 				  res.end('saved')
 				})
 			  })
-			  
-			  
-			  
+
+
+
 			//////////////////// JWT Token   ///////////////////
 			// if user is found and password is right create a token
            var token = jwt.sign(result.toJSON(), settings.secret);
@@ -290,17 +477,17 @@ const login = (req, res) => {
 
   })
 }
-/* 
+/*
   *Auther : Saurabh Agarwal
   *Date   : July 26, 2018
   *Description  : Function to operate Forget Password
 */
-const forgotPassword = (req,res) => { 
+const forgotPassword = (req,res) => {
  const data = req.body;
  const flag = validation.validate_all_request(data, ['email']);
  if (flag) {
 	return res.json(flag);
- } 
+ }
   User.findOne({ email: req.body.email, userType: req.body.userType }, (err,result)=> {
     if (err) {
       return res.send({
@@ -331,7 +518,7 @@ const forgotPassword = (req,res) => {
                         <tr>
                             <td>
                                 <img src="%PUBLIC_URL%/emailer-header.png" alt="PitchAndSwitch" style="display:block;" />
-                            </td>         
+                            </td>
                         </tr>
                         <tr>
                             <td style="padding:40px; background-color: #ffffff;">
@@ -372,12 +559,12 @@ const forgotPassword = (req,res) => {
 
                             </td>
                         </tr>
-                    </table>  
+                    </table>
                 </td>
             </tr>
         </table>`;
-        
-        host=req.get('host');      
+
+        host=req.get('host');
         let mailOptions = {
           from: constant.SMTP_FROM_EMAIL, // sender address
           to: req.body.email, // list of receivers
@@ -385,7 +572,7 @@ const forgotPassword = (req,res) => {
           text: 'Hello world?', // plain text body
           html : output
         };
-		
+
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             return console.log(error);
@@ -430,7 +617,7 @@ const resetPassword = (req,res) => {
         message: httpResponseMessage.SUCCESSFULLY_DONE,
        result: result
       });
-      
+
     }
   })
 }
@@ -461,7 +648,7 @@ const updateNewPassword = (req, res) => {
 				  }, {
 					new: true
 				  }).lean().exec(function (err, result) {
-					  
+
 					if (err){
 					  return res.send({
 						code: httpResponseCode.BAD_REQUEST,
@@ -474,11 +661,11 @@ const updateNewPassword = (req, res) => {
 						  result: result
 						});
 					}
-					  
-				 })    
+
+				 })
 			});
-		});	    
-  
+		});
+
 }
 
 /** Auther	: Rajiv Kumar
@@ -486,9 +673,9 @@ const updateNewPassword = (req, res) => {
  *	Description : Function to list the available user on the plateform
  **/
 const listUser = (req, res) => {
-  var token = getToken(req.headers);  
-  if (token) {	  
-		decoded = jwt.verify(token,settings.secret);	  
+  var token = getToken(req.headers);
+  if (token) {
+		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded.id;
 		console.log("decoded",decoded)
     User.find({}, (err, result) => {
@@ -524,14 +711,14 @@ const listUser = (req, res) => {
  const users = (req, res) => {
 	 const options = { sort: { firstName: -1 }, limit: 10, skip: 0 }
 
-	var token = getToken(req.headers); 	
-		if (token) {	  		
+	var token = getToken(req.headers);
+		if (token) {
 		var perPage = constant.PER_PAGE_RECORD
 		var page = req.params.page || 1;
-		
+
 		User.aggregate([{
 		  $lookup :{
-			from: 'userSubscription', 
+			from: 'userSubscription',
 			localField: '_id',
 			foreignField: 'userId',
 			as: 'subscriptionPlan'
@@ -545,15 +732,15 @@ const listUser = (req, res) => {
 			}
 		},
 		 { $sort: { firstName:-1} }
-		
+
 		])
 		  //User.find({ userType: { $ne: 1 }})
 		  //.sort({createdAt:-1})
 
 		  .skip((perPage * page) - perPage)
-		  .limit(perPage)	
+		  .limit(perPage)
 		  //.sort('-firstName'})
-		  .sort({createdAt:-1})	 
+		  .sort({createdAt:-1})
 		  //.populate({ path: "subscriptionPlan", model: "Subscription"})
 		  .exec(function(err, users) {
 			  User.count().exec(function(err, count) {
@@ -578,22 +765,22 @@ const listUser = (req, res) => {
 //Description : Function to list the available users with pagination
  const sortingUsers = (req, res) => {
 	 var form = new multiparty.Form();
-	   form.parse(req, function(err, data, files) {		
+	   form.parse(req, function(err, data, files) {
 		var sortObject = {};
 		var stype = data.key[0];
 		var sdir = data.type[0];
 		if(sdir ==1){  var sortingTy = -1; }
 		else var sortingTy = 1;
-		//console.log('ddddddddd',sortByFields);	 
-	    var token = getToken(req.headers); 	
-		if (token) {	  		
+		//console.log('ddddddddd',sortByFields);
+	    var token = getToken(req.headers);
+		if (token) {
 		var perPage = constant.PER_PAGE_RECORD
 		var page = req.params.page || 1;
-		
+
 		sortObject[stype] = sortingTy;
 		User.aggregate([{
 		  $lookup :{
-				from: 'userSubscription', 
+				from: 'userSubscription',
 				localField: '_id',
 				foreignField: 'userId',
 				as: 'subscriptionPlan'
@@ -608,12 +795,12 @@ const listUser = (req, res) => {
 		   },
 		   //{ $sort: { sortByFields:sortingTy} }
 		 ])
-		  .sort(sortObject)	
-		  //.sort({sortByFields: type})  
+		  .sort(sortObject)
+		  //.sort({sortByFields: type})
 		  //.skip((perPage * page) - perPage)
-		  .limit(perPage)		 		 
+		  .limit(perPage)
 		  .exec(function(err, users) {
-			  console.log('results',users);
+			 // console.log('results',users);
 			  User.count().exec(function(err, count) {
 				if (err) return next(err)
 				  return res.json({
@@ -672,12 +859,12 @@ const viewUser = (req, res) => {
  *	Description : Function to view the available user details
  **/
 const myProfle = (req, res) => {
-	//User.findOne({_id: userId}).then(function(user){ 
-var token = getToken(req.headers);  
-   if (token) {	  
-		decoded = jwt.verify(token,settings.secret);	  
-		var userId = decoded._id;		
-			User.find({_id:userId})		
+	//User.findOne({_id: userId}).then(function(user){
+var token = getToken(req.headers);
+   if (token) {
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+			User.find({_id:userId})
 			.populate('city')
 			.populate('state')
 			.populate('country')
@@ -714,8 +901,10 @@ var token = getToken(req.headers);
  **/
 const updateUser = (req, res) => {
   var form = new multiparty.Form();
-	form.parse(req, function(err, data, files) {	 
-	let now = new Date();	
+	form.parse(req, function(err, data, files) {
+	let now = new Date();
+	//console.log(data)
+
     User.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
@@ -749,10 +938,8 @@ const updateUser = (req, res) => {
 						//~ }
 						//~ });
 				
-		  
-			//console.log('Created-Page',err, result);
+		  			//console.log('Created-Page',err, result);
 
-   
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -766,42 +953,42 @@ const updateUser = (req, res) => {
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.profileimage_path + newfilename;
-				  
+
 				  fs.writeFile(pathNew, fileData, function(err) {
 					if (err) {
 					  res.send(err);
 					  return;
 					}
 				  });
-				}); 
-			  
+				});
+
 			  User.update({ _id:data._id },  { "$set": { "profilePic": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){				
+				if(err){
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
-				} else {				    
+				} else {
 					result.profilePic = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,
 						result: result
 					});
-				  }				  
-				 
-			   })				    
+				  }
+
+			   })
             }
             else {
 			   return res.json({
 				  code: httpResponseCode.EVERYTHING_IS_OK,
 				  message: httpResponseMessage.SUCCESSFULLY_DONE,
 				 result: result
-               });	 	
+               });
 			}
-         }    
+         }
         }
-      }) 
+      })
   });
 }
 /** Auther	: Karnika sharma
@@ -885,13 +1072,13 @@ const deleteUser = (req, res) => {
  *	Description : Function to getLoggedInUser
  **/
 const getLoggedInUser = (req, res) => {
-	var token = getToken(req.headers); 	
-	if (token) {	
+	var token = getToken(req.headers);
+	if (token) {
 		var totalNotifications  = 0;
-		decoded = jwt.verify(token,settings.secret);	  
+		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded._id;
 		//console.log("decoded",decoded,userId)
-		  User.findOne({_id: userId}).then(function(user){   
+		  User.findOne({_id: userId}).then(function(user){
 			Notification.find({toUserId:1,isRead:0}, function (err, notifications) {
 			if(err){
 				return res.json({
@@ -907,7 +1094,7 @@ const getLoggedInUser = (req, res) => {
 					notifications : notifications,
 					notification_type:constant.notification_type
 				});
-			});		
+			});
        });
   } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
@@ -975,6 +1162,38 @@ const verifyEmail = (req, res) => {
   })
 }
 
+
+
+
+/** Auther	: Rajiv Kumar
+ *  Date	: Aug 20, 2018
+ *	Description : Function to verify user email via web
+ **/
+const verifyUserEmail = (req, res) => {
+  User.update({ _id:req.params.id },  { "$set": { "emailVerified": 1 } }, { new:true }, (err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
+              result: result
+            });
+
+      }
+    }
+  })
+}
+
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to delete the user
@@ -992,6 +1211,7 @@ const mostTrustedUsers = (req, res) => {
              console.log('sssssss',users)
      });
 }
+
 
 /// Log out users
 exports.logout = function(req, res, next) {
@@ -1033,7 +1253,7 @@ exports.logout = function(req, res, next) {
 
     } else {
       req.session.destroy(function(err) {
-        console.log("Session Destroy")
+      //  console.log("Session Destroy")
         return true;
       })
       return res.json({
@@ -1058,20 +1278,20 @@ const dashboardStates = (req, res) => {
 	var totalDonation =0
 	Promise.all([
 	/// Get Total users
-	User.count(),	
+	User.count(),
 	/// Get Total products
-	Product.count(),	
+	Product.count(),
 	/// Get Total donations
 	Donation.count(),
 	/// Get Total trades
-	Trade.count()]).then((values) => {	
+	Trade.count()]).then((values) => {
 	  return res.json({
 		  code: httpResponseCode.EVERYTHING_IS_OK,
 		  message: httpResponseMessage.SUCCESSFULLY_DONE,
-		  users: values[0],                  
+		  users: values[0],
 		  products: values[1],
 		  donations: values[2],
-		  trades: values[3]              
+		  trades: values[3]
 	  });
 	});
 }
@@ -1096,7 +1316,7 @@ const send = (req, res) => {
 			host: constant.SMTP_HOST,
 			port: constant.SMTP_PORT,
 			secure: false, // true for 465, false for other ports
-			auth: {			
+			auth: {
 				user: constant.SMTP_USERNAME, // generated ethereal user
 				pass: constant.SMTP_PASSWORD // generated ethereal password
 			}
@@ -1120,11 +1340,13 @@ const send = (req, res) => {
 
 module.exports = {
 	signup,
+	userSignup,
 	login,
 	listUser,
 	updateUser,
 	viewUser,
 	verifyEmail,
+	verifyUserEmail,
 	changeStatus,
 	deleteUser,
 	users,
@@ -1139,4 +1361,5 @@ module.exports = {
     resdNotification,
     sortingUsers,
     mostTrustedUsers
+
 }

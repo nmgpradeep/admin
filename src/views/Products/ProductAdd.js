@@ -17,7 +17,7 @@ import {
   CardFooter,
   CardHeader,
   Col,
-  Collapse,	
+  Collapse,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
@@ -56,7 +56,7 @@ class ProductAdd extends Component {
        addProduct: {},
        Categories: [],
        Users: [],
-       categoryValue: '',     
+       categoryValue: '',
        validation:{
         productName:{
           rules: {
@@ -70,18 +70,18 @@ class ProductAdd extends Component {
         }
       }
     };
-    this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)   
+    this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
   }
-  
-  
-  categoryhandleContentChange(value) {			
-    this.setState({categoryValue:value })    
+
+
+  categoryhandleContentChange(value) {
+    this.setState({categoryValue:value })
   }
-  
-  fileChangedHandler = (event) => {	
-	  this.setState({selectedFile: event.target.files[0]})	 
+
+  fileChangedHandler = (event) => {
+	  this.setState({selectedFile: event.target.files[0]})
   }
-  
+
   handleUser = (user) => {
         this.setState({user: user});
   }
@@ -100,19 +100,19 @@ class ProductAdd extends Component {
     this.props.history.push("/products");
   }
 
-   componentDidMount() {    
+   componentDidMount() {
        axios.get('/donation/getConstant').then(result => {
-           this.setState({conditions: result.data.result});           
+           this.setState({conditions: result.data.result});
        });
-   } 
-   fileChangedHandler = (event) => {	
-	   this.setState({selectedFile: event.target.files[0]})	   
    }
-     
-   conditionsChange = (value) => {	   
+   fileChangedHandler = (event) => {
+	   this.setState({selectedFile: event.target.files[0]})
+   }
+
+   conditionsChange = (value) => {
        this.setState({conditionValue: value.target.value});
-   } 
-  
+   }
+
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -134,7 +134,7 @@ class ProductAdd extends Component {
         }
         this.setState({ validation: addProduct});
       }
-      
+
       if(formSubmitFlag){
         console.log("state",this.state)
         const data = new FD();
@@ -148,12 +148,10 @@ class ProductAdd extends Component {
         data.append('condition', this.state.conditionValue);
         data.append('userId', this.state.user)
         data.append('productCategory', this.state.category)
-        //data.append('productCategory', '5b58514792b6833efdc00b7a')
+
         if(this.state.selectedFile){
-		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
-		} else {
-			data.append('productImages', this.state.editProduct.productImages); 
-	    }
+		        data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
+      	}
         console.log("data",data);
            axios.post('/product/create', data).then(result => {
 			   console.log('rrrrrr',result);
@@ -166,13 +164,14 @@ class ProductAdd extends Component {
 
   componentDidMount(){
       axios.get('/category/allCategories').then(result => {
+
         if(result.data.code == '200'){
           this.setState({
-            categories: result.data.result,            
+            categories: result.data.result,
           });
         }
       })
-      axios.get('/user/users/1' ).then(result => {	 
+      axios.get('/user/users/1' ).then(result => {
       if(result.data.code ===200){
          this.setState({
           users: result.data.result,         
@@ -195,7 +194,7 @@ class ProductAdd extends Component {
 	    if(this.state.conditions){
 			let conditionsList = this.state.conditions;
 		    optionTemplate = conditionsList.map(v => (<option key={v.id} value={v.id}>{v.name}</option>));
-       }	
+       }
     return (
       <div className="animated fadeIn">
         <Row>
@@ -217,7 +216,7 @@ class ProductAdd extends Component {
                     </Col>
                 </Row>
                 <FormGroup>
-                  <Label htmlFor="description">Description</Label>                  
+                  <Label htmlFor="description">Description</Label>
                     <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
                </FormGroup>
                 <FormGroup>
@@ -225,8 +224,8 @@ class ProductAdd extends Component {
                     <CategorySelectBox onSelectCategory={this.handleCategory}/>
                 </FormGroup>
                  <FormGroup>
-                  <Label htmlFor="user">User</Label>                  
-					<UserSelectBox onSelectUser={this.handleUser}/>                 
+                  <Label htmlFor="user">User</Label>
+					<UserSelectBox onSelectUser={this.handleUser}/>
                 </FormGroup>
                  <FormGroup>
                   <Label htmlFor="size">Size</Label>
@@ -244,7 +243,7 @@ class ProductAdd extends Component {
                     <Label htmlFor="lastname">Conditions</Label>
                       <select id="select" innerRef={input => (this.condition = input)} className="form-control" onChange={this.conditionsChange}>
 						{optionTemplate}
-					  </select> 		                     
+					  </select>
                  </FormGroup>
                 <FormGroup>
                   <Label htmlFor="age">Age Of Item</Label>
@@ -252,7 +251,7 @@ class ProductAdd extends Component {
                 </FormGroup>
                   <FormGroup>
                       <Label htmlFor="lastname">Banner Image</Label>
-                      <Input type="file" multiple="multiple" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
+                      <Input type="file" multiple="multiple" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" />
                     </FormGroup>
                   <Row>
                   <Col xs="6" className="text-right">

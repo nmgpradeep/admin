@@ -48,7 +48,7 @@ class ProductEdit extends Component {
     this.productName = React.createRef();
     this.description =React.createRef();
     this.parent = React.createRef();
-    this.status = React.createRef();  
+    this.status = React.createRef();
     this.color = React.createRef();
     this.productAge = React.createRef();
     this.productImages = React.createRef();
@@ -76,7 +76,7 @@ class ProductEdit extends Component {
           valid: null,
           message: ''
         },
-        
+
       }
     };
     this.categoryhandleContentChange = this.categoryhandleContentChange.bind(this)
@@ -89,7 +89,7 @@ class ProductEdit extends Component {
     handleUser = (user) => {
 	  this.setState({user: user});
     }
-  
+
     handleBrand = (brand) => {
        this.setState({brand: brand});
     }
@@ -97,6 +97,7 @@ class ProductEdit extends Component {
     handleSize = (size) => {
 	  this.setState({size: size});
     }
+<<<<<<< HEAD
 	
     categoryhandleContentChange(value) {			
         this.setState({onDefaultValuesSet:value})    
@@ -107,13 +108,27 @@ class ProductEdit extends Component {
     }
   
     fileChangedHandler = (event) => {	
+=======
+
+
+  categoryhandleContentChange(value) {
+      this.setState({categories:value })
+  }
+
+  cancelHandler(){
+    this.props.history.push("/products");
+  }
+
+   fileChangedHandler = (event) => {
+>>>>>>> a021a839f605c501ea5730fb4abf41ffbfeeaf6c
 	  this.setState({selectedFile: event.target.files[0]})
-    }
-    
-    conditionsChange = (value) => {	 
+	   console.log('ddddddddd',this.state.selectedFile);
+
+   }
+   conditionsChange = (value) => {
         this.setState({conditionValue: value.target.value});
-    }
-  
+   }
+
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -154,8 +169,7 @@ class ProductEdit extends Component {
       }
 
       if(formSubmitFlag){
-		const data = new FD();		
-		console.log('categoryValue',this.state.editProduct.userId._id);
+		const data = new FD();
 		data.append('data', this.state.editProduct);
 		data.append('_id', this.state.editProduct._id);
 		data.append('productName', this.productName.value);
@@ -170,34 +184,37 @@ class ProductEdit extends Component {
 		if(this.state.selectedFile){
 		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
 		} else {
-			data.append('productImages', this.state.editProduct.productImages); 
+			data.append('productImages', this.state.editProduct.productImages);
 	    }
+
 	    axios.put('/product/updateProduct', data).then(result => {
 			console.log('ddd',data);
             if(result.data.code == 200){
                this.props.history.push("/products");
            }
+
         });
-         
-      }  
+
+      }
    }
 
-  componentDidMount() {  	 
+  componentDidMount() {
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
       if(result.data.code === 200) {
         this.setState({editProduct: result.data.result});
         console.log('ffffffffff',result.data.result);
         this.productName.value = result.data.result.productName;
-        this.description.value = result.data.result.description;       
-                
+        this.description.value = result.data.result.description;
+        if(result.data.result.productCategory && result.data.result.productCategory.length > 0){
+			this.category.value = result.data.result.productCategory._id;
+		}
         if(result.data.result.brand && result.data.result.brand.length > 0){
-		   this.brand.value = result.data.result.brand._id;
-		}  else {
-			
-	    }      
+			this.brand.value = result.data.result.brand._id;
+		}
+
         if(result.data.result.size && result.data.result.size.length > 0){
 			this.size.value = result.data.result.size._id;
-		}        
+		}
         if(result.data.result.userId && result.data.result.userId.length > 0){
 			this.author.value = result.data.result.userId._id;
 		}     
@@ -206,13 +223,15 @@ class ProductEdit extends Component {
         this.setState({productImages: result.data.result.productImages});       
        }      
       })     
+
        axios.get('/category/allCategories').then(result => {
         if(result.data.code === 200){
           this.setState({
-            categories: result.data.result,            
+            categories: result.data.result,
           });
-        }        
+        }
       })
+
       axios.get('/user/users/1' ).then(result => {	 
        if(result.data.code ===200){
           this.setState({
@@ -223,7 +242,7 @@ class ProductEdit extends Component {
       })
        axios.get('/donation/getConstant').then(result => {
            this.setState({conditions: result.data.result});
-           
+
        })
       .catch((error) => {
         if(error.status === 401) {
@@ -231,7 +250,7 @@ class ProductEdit extends Component {
         }
       });
   }
-  
+
   render() {
 	 let optionTemplate;
 	   if(this.state.conditions){
@@ -271,6 +290,7 @@ class ProductEdit extends Component {
 			<FormGroup>
 			<Label htmlFor="size">Size</Label>                  
 			<SizeSelectBox onSelectSize={this.handleSize}  reference={(size)=> this.size = size} value={(this.state.editProduct.size)?this.state.editProduct.size._id:''}/>
+
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="color">Color</Label>
@@ -281,18 +301,18 @@ class ProductEdit extends Component {
 			  <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={(this.state.editProduct.brand)?this.state.editProduct.brand._id:''}/>
 			</FormGroup>
 			<FormGroup>
-			<Label htmlFor="brand">Conditions</Label> 
+			<Label htmlFor="brand">Conditions</Label>
 			<select id="select" reference={(condition)=> this.condition = condition} value={this.state.editProduct.condition} className="form-control" onChange={this.conditionsChange}>
 			{optionTemplate}
-			</select> 		  
-			</FormGroup>                
+			</select>
+			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="age">Age Of Item</Label>
 			<Input type="text" innerRef={input => (this.productAge = input)} placeholder="Age" />
 			</FormGroup>
 			<FormGroup>
-			<Label htmlFor="lastname">Product Image</Label>                  	
-			<Input type="file" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Product Image" /> 
+			<Label htmlFor="lastname">Product Image</Label>
+			<Input type="file" innerRef={input => (this.productImages = input)} onChange={this.fileChangedHandler} placeholder="Product Image" />
 			<img src={'assets/uploads/Products/'+this.state.productImages} width="60"/>
 			</FormGroup>
 			<Row>

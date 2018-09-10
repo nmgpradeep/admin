@@ -3,6 +3,7 @@ const locationController = require('../controllers/locationController')
 //country routes
 router.post('/newCountry',locationController.createCountry)
 router.get('/listCountry',locationController.listCountry)
+router.get('/getLocation',locationController.getCountryStateCity)
 router.get('/viewCountry/:id',locationController.viewCountry)
 router.get('/getState/:id',locationController.getState)
 
@@ -22,6 +23,7 @@ router.get('/States/:page', locationController.listStates)
 //City routes
 router.post('/newCity',locationController.createCitys)
 router.get('/listCity',locationController.listCitys)
+router.get('/getCity/:id',locationController.getCity)
 router.get('/listingcities',locationController.listingcities)
 router.get('/viewCity/:id',locationController.viewCitys)
 router.put('/updateCity',locationController.updateCitys)

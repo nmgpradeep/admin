@@ -17,6 +17,25 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs'); //FileSystem for node.js
 var gm = require('gm');
+var settings = require('../config/settings'); // get settings file
+var passport = require('passport');
+require('../config/passport')(passport);
+var jwt = require('jsonwebtoken');
+
+var bcrypt = require('bcrypt-nodejs');
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length) {
+      return parted[0];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
 
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
@@ -30,12 +49,13 @@ const create = (req, res) => {
 		  code: httpResponseCode.BAD_REQUEST,
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
-	  }	  
+	  }
 	  const flag = validation.validate_all_request(data, ['productName']);
-	    if (flag) {
-		 return res.json(flag);
-	   }
-		  let now = new Date();		
+	  if (flag) {
+		return res.json(flag);
+	  }
+		let now = new Date();
+
 		  Product.create(data, (err, result) => {
 			 // console.log('RES-Page',err, result);
 			if (err) {
@@ -46,7 +66,7 @@ const create = (req, res) => {
 			  })
 			} else {
 			  console.log('Created-Page',err, result);
-			 // check file and upload if exist 
+			 // check file and upload if exist
 			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
 				var fileName = files.productImages[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -65,19 +85,19 @@ const create = (req, res) => {
 					if (err) {
 					  res.send(err);
 					  return;
-					}          
+					}
 
 				  });
 				});
-			  }		
-			  console.log('resultImgas',result);	 
+			  }
+			  console.log('resultImgas',result);
 			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){				
+				if(err){
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
-				} else {				    
+				} else {
 					result.productImages = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
@@ -85,28 +105,116 @@ const create = (req, res) => {
 						result: result
 					})
 				  }
+
 			  })	  
 			  ///end file update///	  
 			}
 		  
        });
        
-    })  
-}
-  
+    });
 
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: Sept 7, 2018
+ */
+///function to save new product in the list by fron user
+const addProduct = (req, res) => {
+  var token = getToken(req.headers);
+
+   if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+            var form = new multiparty.Form();
+            form.parse(req, function(err, data, files) {
+          	  //console.log('Multiple', err, fields, files);
+          	  //console.log('FIELD', fields.pageTitle[0]);
+          	  if (!data.productName) {
+          		return res.send({
+          		  code: httpResponseCode.BAD_REQUEST,
+          		  message: httpResponseMessage.REQUIRED_DATA
+          		})
+          	  }
+          	  const flag = validation.validate_all_request(data, ['productName']);
+          	  if (flag) {
+          		return res.json(flag);
+          	  }
+            //  console.log("data",data)
+                data.userId = userId;
+                //console.log("datauserId",data)
+          		  let now = new Date();
+          		  Product.create(data, (err, result) => {
+          			 // console.log('RES-Page',err, result);
+          			if (err) {
+          			  return res.send({
+          				errr : err,
+          				code: httpResponseCode.BAD_REQUEST,
+          				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          			  })
+          			} else {
+          			  //console.log('Created-Page',err, result);
+          			 // check file and upload if exist
+          			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
+          				var fileName = files.productImages[0].originalFilename;
+          				var ext = path.extname(fileName);
+          				var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
+          				fs.readFile(files.productImages[0].path, function(err, fileData) {
+          				  if (err) {
+          					res.send(err);
+          					return;
+          				  }
+          				  fileName = files.productImages[0].originalFilename;
+          				  ext = path.extname(fileName);
+          				  newfilename = newfilename;
+          				  pathNew = constant.product_path + newfilename;
+          				  //return res.json(process.cwd());
+          				  fs.writeFile(pathNew, fileData, function(err) {
+          					if (err) {
+          					  res.send(err);
+          					  return;
+          					}
+
+          				  });
+          				});
+          			  }
+          			  console.log('resultImgas',result);
+          			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
+          				if(err){
+          					return res.send({
+          						code: httpResponseCode.BAD_REQUEST,
+          						message: httpResponseMessage.FILE_UPLOAD_ERROR
+          					});
+          				} else {
+          					result.productImages = newfilename;
+          					return res.send({
+          						code: httpResponseCode.EVERYTHING_IS_OK,
+          						message: httpResponseMessage.SUCCESSFULLY_DONE,
+          						result: result
+          					})
+          				  }
+          			   })
+          			  ///end file update///
+          			}
+          		  })
+              });
+        } else {
+       	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+       	}
+}
 
 /** Auther	: Rajiv kumar
  *  Date	: June 18, 2018
  */
 /// function to list all products
-const allProducts = (req, res) => {	
+const allProducts = (req, res) => {
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
 
     Product.aggregate([{
 	  $lookup :{
-		from: 'productimages', 
+		from: 'productimages',
 		localField: '_id',
 		foreignField: 'productId',
 		as: 'images'
@@ -132,7 +240,7 @@ const allProducts = (req, res) => {
 			foreignField: "_id",
 			as: "size"
 		}
-	
+
 	},{
 		$lookup: {
 			from: "brands",
@@ -142,11 +250,11 @@ const allProducts = (req, res) => {
 		}
 	}])
      .skip((perPage * page) - perPage)
-     .limit(perPage)            
-     .sort({createdAt:-1})   
-     .exec(function(err, products) {			 
+     .limit(perPage)
+     .sort({createdAt:-1})
+     .exec(function(err, products) {
           Product.count().exec(function(err, count) {
-            if (err) return next(err)      
+            if (err) return next(err)
                   return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -194,7 +302,7 @@ const changeStatus = (req, res) => {
  *	Description : Function to view the available product
 **/
 const viewProduct = (req, res) => {
-	const id = req.params.id;	
+	const id = req.params.id;
 	Product.findById({_id:id})
 		.populate('userId')
 		.populate('userId',['firstName','lastName'])
@@ -215,12 +323,12 @@ const viewProduct = (req, res) => {
 				});
 			} else {
 			 return res.json({
-				code: httpResponseCode.EVERYTHING_IS_OK,             
+				code: httpResponseCode.EVERYTHING_IS_OK,
 				result: result
 			  });
 			}
 		}
-	}); 
+	});
 }
 
 
@@ -236,14 +344,14 @@ const popularItems = (req,res) => {
  *  Date	: August 29, 2018
  *	Description : Function to listing popular items
 **/
-const switchTodays = (req,res) => {	
+const switchTodays = (req,res) => {
 	var toDate = new Date();
-	 Trade.find({createdAt:new Date("2018-07-17T13:16:22.095Z")})	
+	 Trade.find({createdAt:new Date("2018-07-17T13:16:22.095Z")})
 	    .populate({ path: "tradePitchProductId", model: "Product"})
 	    .populate({ path: "tradeSwitchProductId", model: "Product"})
 	    .populate({ path: "productCategory", model: "Category"})
-	    .populate({ path: "productImages", model: "Product"})	   
-	    .exec(function(err,result){			
+	    .populate({ path: "productImages", model: "Product"})
+	    .exec(function(err,result){
 			console.log('mmmmmm',result);
 			if (err) {
 			 return res.send({
@@ -258,12 +366,12 @@ const switchTodays = (req,res) => {
 				});
 			} else {
 			 return res.json({
-				code: httpResponseCode.EVERYTHING_IS_OK,             
+				code: httpResponseCode.EVERYTHING_IS_OK,
 				result: result
 			  });
 			}
 		 }
-	 }); 
+	 });
 }
 
 
@@ -272,7 +380,7 @@ const switchTodays = (req,res) => {
  *	Description : Function to update the Product details.
  **/
 
-const updateProduct = (req, res) => { 
+const updateProduct = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
 	  console.log('FIELD',data);
@@ -281,17 +389,18 @@ const updateProduct = (req, res) => {
 		  code: httpResponseCode.BAD_REQUEST,
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
-	  }	  
+	  }
 	  const flag = validation.validate_all_request(data, ['productName']);
 	  if (flag) {
 		return res.json(flag);
 	  }
-	 let now = new Date();	
+	 let now = new Date();
      Product.findOneAndUpdate({ _id:data._id}, data, { new:true },(err,result) => {
      if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+			err:err
 		  });
      } else {
       if (!result) {
@@ -319,34 +428,34 @@ const updateProduct = (req, res) => {
 				  return;
 				}
 				  });
-				}); 			  
+				});
 			  Product.update({ _id:data._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
-				if(err){				
+				if(err){
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
 						message: httpResponseMessage.FILE_UPLOAD_ERROR
 					});
-				} else {				    
+				} else {
 					result.productImages = newfilename;
 					return res.send({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,
 						result: result
 					});
-				  }				  
-				 
-			   })				    
+				  }
+
+			   })
             }
             else {
 			   return res.json({
 				  code: httpResponseCode.EVERYTHING_IS_OK,
 				  message: httpResponseMessage.SUCCESSFULLY_DONE,
 				 result: result
-               });	 	
+               });
 			 }
-           }    
+           }
         }
-      }) 
+      })
    });
 }
 
@@ -356,7 +465,7 @@ const updateProduct = (req, res) => {
  *  Date	: June 21, 2018
  *	Description : Function to delete the Product
  **/
-const deleteProduct = (req, res) => {	
+const deleteProduct = (req, res) => {
 	Product.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
 		return res.json({
@@ -372,7 +481,65 @@ const deleteProduct = (req, res) => {
   })
 }
 
+/** Auther	: Rajiv kumar
+ *  Date	: August 6, 2018
+ *	Description : Function to get myTreasureChest for front-user
+ **/
+const myTreasureChest = (req, res) => {
+	var perPage = constant.PER_PAGE_RECORD;
+	var page = req.params.page || 1;
 
+	 var token = getToken(req.headers);
+
+	  if (token) {
+		      decoded = jwt.verify(token,settings.secret);
+		      var userId = decoded._id;
+
+  	Product.find({userId:userId})
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+  	   .skip((perPage * page) - perPage)
+       .limit(perPage)
+       .sort({createdAt:-1})
+       .exec(function(err, products) {
+        if (err) {
+  			return res.send({
+  			  code: httpResponseCode.BAD_REQUEST,
+  			  message: httpResponseMessage.INTERNAL_SERVER_ERROR
+  			})
+  		  } else {
+  			if (!products) {
+  			  res.json({
+  				message: httpResponseMessage.USER_NOT_FOUND,
+  				code: httpResponseMessage.BAD_REQUEST
+  			  });
+  			}else {
+  			  return res.json({
+  					code: httpResponseCode.EVERYTHING_IS_OK,
+  					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+  				   result: products
+  				  });
+
+  			}
+  		  }
+  		});
+	   } else {
+		 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	   }
+}
+
+/** Auther	: Rajiv kumar
+ *  Date	: Sept 7, 2018
+ *	Description : Function to upload temp image  for front-user
+ **/
+const tepmUpload = (req, res) => {
+//  console.log("req",req.files)
+  			  return res.json({
+  					code: httpResponseCode.EVERYTHING_IS_OK,
+  					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+  				  result: []
+  				  });
+}
 module.exports = {
   create,
   allProducts,
@@ -381,5 +548,8 @@ module.exports = {
   deleteProduct,
   changeStatus,
   popularItems,
-  switchTodays 
+  switchTodays,
+  myTreasureChest,
+  addProduct,
+  tepmUpload
 }
