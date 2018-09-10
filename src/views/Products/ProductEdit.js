@@ -14,7 +14,7 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 import {
   Badge,
   Button,
-  ButtonDropdown,
+  ButtonDropdown, 
   Card,
   CardBody,
   CardFooter,
@@ -91,9 +91,11 @@ class ProductEdit extends Component {
     handleBrand = (brand) => {
        this.brand.current = brand;
     }
+    
     handleSize = (size) => {
 	  this.size.current = size;
     }
+
 
   categoryhandleContentChange(value) {
       this.setState({categories:value })
@@ -157,7 +159,7 @@ class ProductEdit extends Component {
 		data.append('data', this.state.editProduct);
 		data.append('_id', this.state.editProduct._id);
 		data.append('productName', this.productName.value);
-  	data.append('description', this.description.value);
+		data.append('description', this.description.value);
 		data.append('productCategory',this.category.value);
 		data.append('productAge',this.productAge.value);
 		data.append('userId',this.author.value);
@@ -170,11 +172,12 @@ class ProductEdit extends Component {
 		} else {
 			data.append('productImages', this.state.editProduct.productImages);
 	    }
-      console.log("data",data)
-	      axios.put('/product/updateProduct', data).then(result => {
-          if(result.data.code == 200){
-           this.props.history.push("/products");
-          }
+
+	    axios.put('/product/updateProduct', data).then(result => {
+            if(result.data.code == 200){
+               this.props.history.push("/products");
+           }
+
         });
 
       }
@@ -182,9 +185,9 @@ class ProductEdit extends Component {
 
   componentDidMount() {
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
-      console.log('Results Data',result);
       if(result.data.code === 200) {
         this.setState({editProduct: result.data.result});
+       // console.log('ffffffffff',result.data.result);
         this.productName.value = result.data.result.productName;
         this.description.value = result.data.result.description;
         if(result.data.result.productCategory && result.data.result.productCategory.length > 0){
@@ -193,20 +196,20 @@ class ProductEdit extends Component {
         if(result.data.result.brand && result.data.result.brand.length > 0){
 			this.brand.value = result.data.result.brand._id;
 		}
+
         if(result.data.result.size && result.data.result.size.length > 0){
 			this.size.value = result.data.result.size._id;
 		}
         if(result.data.result.userId && result.data.result.userId.length > 0){
 			this.author.value = result.data.result.userId._id;
-		}
-        //this.brand.value = result.data.result.brand._id;
-        //this.size.value = result.data.result.size._id;
-        this.color.value = result.data.result.color;
-       // this.author.value = result.data.result.userId._id;
-		this.productAge.value = result.data.result.productAge;
+		}     
+        this.color.value = result.data.result.color;        
+		this.productAge.value = result.data.result.productAge;        
         this.setState({productImages: result.data.result.productImages});
-       }
-      })
+        //console.log('asdfasdfasdf',this.state.editProduct.category._id);
+       }      
+      })     
+
        axios.get('/category/allCategories').then(result => {
         if(result.data.code === 200){
           this.setState({
@@ -214,11 +217,12 @@ class ProductEdit extends Component {
           });
         }
       })
-      axios.get('/user/users/1' ).then(result => {
-      if(result.data.code ===200){
-        this.setState({
-          users: result.data.result,
-        });
+
+      axios.get('/user/users/1' ).then(result => {	 
+       if(result.data.code ===200){
+          this.setState({
+            users: result.data.result,         
+          });
          }
         console.log(this.state.users);
       })
@@ -254,24 +258,25 @@ class ProductEdit extends Component {
 			<Col xs="4" sm="12">
 			<FormGroup>
 			<Label htmlFor="company">Name</Label>
-			<Input type="text" innerRef={input => (this.productName = input)} placeholder="Product Name" /> </FormGroup>
+			  <Input type="text" innerRef={input => (this.productName = input)} placeholder="Product Name" /> </FormGroup>
 			</Col>
 			</Row>
 			<FormGroup>
 			<Label htmlFor="description">Description</Label>
-			<Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
+			  <Input type="textarea" innerRef = {input => (this.description = input)} placeholder="Description" required/>
 			</FormGroup>
 			<FormGroup>
-			<Label htmlFor="category">Category</Label> <br/>
-			<CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editProduct.category}/>
+			<Label htmlFor="category">Category</Label> <br/> 
+			<CategorySelectBox onSelectCategory={this.handleCategory} value={this.state.editProduct.productCategory?this.state.editProduct.productCategory._id:""}/>
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="user">User</Label>
-			<UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editProduct.author}/>
+			<UserSelectBox onSelectUser={this.handleUser} value='5b63fca6cdd70a1cd0219b0c'/>    
 			</FormGroup>
 			<FormGroup>
-			<Label htmlFor="size">Size</Label>
-			<SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size} value={this.state.editProduct.size}/>
+			<Label htmlFor="size">Size</Label>                  
+			<SizeSelectBox onSelectSize={this.handleSize}  reference={(size)=> this.size = size} value={(this.state.editProduct.size)?this.state.editProduct.size._id:''}/>
+
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="color">Color</Label>

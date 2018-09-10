@@ -42,9 +42,9 @@ class SizeSelectBox extends Component {
          optionsLists = optionsList.map(option => ({ label: option.size, value: option._id }));          
      }	
     return (
-     <Select options={optionsLists}	value={this.state.value} onChange={this.onChange.bind(this)} innerRef={this.props.reference}
+     <Select options={optionsLists}	value={this.props.value} onChange={this.onChange.bind(this)} innerRef={this.props.reference}
 			classes={{  selectValue: 'my-custom-value',	 selectArrow: 'my-custom-arrow'	}}
-		  />
+	/>
     )
   }
 }

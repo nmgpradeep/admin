@@ -11,9 +11,12 @@ const TreeNode = TreeSelect.TreeNode;
 
 class CategorySelectBox extends Component {
   constructor(props) {
-    super(props);    
+    super(props);   
+    console.log("valuevaluevalue",this.props) 
     this.state = { value: 'Select Category', category : '',	data:[]}; 
     // this.onChange = this.onChange.bind(this) 
+   //  this.onDefaultValues(this.props.value) 
+    
   }
     
   //~ onChange(currentNode, selectedNodes) {
@@ -24,10 +27,18 @@ class CategorySelectBox extends Component {
   //~ }
  
   onChange = (value) => {
-    console.log(value);
+    //console.log(value);
     this.setState({value});
+    this.props.onSelectCategory(value); 
     this.setState({category:value});
   }
+  
+  onDefaultValues = (value) => {    
+    //this.setState({category:value});
+    console.log('defaultvalue',value);
+    this.props.onDefaultValuesSet(value); 
+  }
+  
   componentDidMount(){
     axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){		  
@@ -58,7 +69,8 @@ class CategorySelectBox extends Component {
     return (
       <TreeSelect        
         style={{ width: 300 }}
-        value={this.state.value}
+        defaultValue={this.props.value}
+        value={this.props.value}
         dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
         treeData={this.state.data}
         placeholder="Please select"

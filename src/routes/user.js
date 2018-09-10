@@ -22,5 +22,5 @@ router.post('/forgotPassword', userController.forgotPassword);
 router.get('/resetPassword/:id', userController.resetPassword)
 router.post('/updateNewPassword', userController.updateNewPassword);
 router.post('/resdNotification', userController.resdNotification);
-// router.put('/updateAdmin',userController.updateAdmin);
+router.get('/mostTrustedUsers',userController.mostTrustedUsers);
 module.exports = router;

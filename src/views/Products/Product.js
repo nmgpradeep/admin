@@ -20,6 +20,7 @@ Capitalize(str){
         </td>
         <td>{(this.props.product.user && (this.props.product.user.length > 0) )?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
         <td>{this.props.product.productAge}</td>
+
         <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40" alt=""/></td>
         <td>
           <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.product)} color={(this.props.product.productStatus === '1')?'success':'danger'}>

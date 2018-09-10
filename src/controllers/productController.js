@@ -43,9 +43,8 @@ getToken = function (headers) {
 ///function to save new product in the list
 const create = (req, res) => {
   var form = new multiparty.Form();
+ 
   form.parse(req, function(err, data, files) {
-	  //console.log('Multiple', err, fields, files);
-	   //console.log('FIELD', fields.pageTitle[0]);
 	  if (!data.productName) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -56,7 +55,8 @@ const create = (req, res) => {
 	  if (flag) {
 		return res.json(flag);
 	  }
-		  let now = new Date();
+		let now = new Date();
+
 		  Product.create(data, (err, result) => {
 			 // console.log('RES-Page',err, result);
 			if (err) {
@@ -106,11 +106,15 @@ const create = (req, res) => {
 						result: result
 					})
 				  }
-			   })
-			  ///end file update///
+
+			  })	  
+			  ///end file update///	  
 			}
-		  })
+		  
+       });
+       
     });
+
 }
 
 
@@ -276,13 +280,13 @@ const changeStatus = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,

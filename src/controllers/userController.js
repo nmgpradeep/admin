@@ -4,6 +4,7 @@ const Product = require('../models/product')
 const Donation = require('../models/donation')
 const Trade = require('../models/trade')
 const FlagUser = require('../models/flagUser')
+const TrustedUser = require('../models/trustedUser')
 const Notification = require('../models/notification')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
@@ -54,22 +55,19 @@ getToken = function (headers) {
 const signup = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
-  User.findOne({ email: data.email }, (err, result) => {
+	  //console.log('ddddddddddd',data);
+      User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
         message: httpResponseMessage.ALL_READY_EXIST_EMAIL
       })
     } else {
-      //let now = new Date();
       let unix_time = moment().unix()
       let salt = data.user_contact + unix_time
       let accessToken = md5(salt)
       req.body.accessToken = accessToken
       User.create(data, (err, result) => {
-
-		  //console.log('RES-FIND',err, result);
-
       if (err) {
           return res.send({
 			errr : err,
@@ -84,14 +82,13 @@ const signup = (req, res) => {
 					var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
 					fs.readFile(files.profilePic[0].path, function(err, fileData) {
 					  if (err) {
-						res.send(err);
-						return;
+							res.send(err);
+							return;
 					  }
 					  fileName = files.profilePic[0].originalFilename;
 					  ext = path.extname(fileName);
 					  newfilename = newfilename;
 					  pathNew = constant.profileimage_path + newfilename;
-					  //return res.json(process.cwd());
 					  fs.writeFile(pathNew, fileData, function(err) {
 						if (err) {
 						  res.send(err);
@@ -109,7 +106,9 @@ const signup = (req, res) => {
 						});
 					}
 				   })
+
 				}
+				
 				//Save data in notification collection to send notification to the admin
 				//console.log("notification_type",constant.notification_type)
 				var notification = new Notification({ notificationTypeId:1,fromUserId:result._id,toUserId:1});
@@ -121,26 +120,31 @@ const signup = (req, res) => {
 					});
 				  }
 				});
+
 			  ///end file update///
 			 // get latitude,longitude of user and save into collection
-			  where.is(data.address, function(err, responceData) {
-				  if(err){
-					   next(err);
-					}
-				  if (result) {
-						User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
-								if(err){
-									return res.json({
-										code: httpResponseCode.BAD_REQUEST,
-										message: httpResponseMessage.FILE_UPLOAD_ERROR
-									});
-								}
-					   })
-				  }
-				});
+			   // console.log(data.address);
+			    //~ where.is(data.address[0], function(err, responceData) {
+				  //~ if(err){				
+						//~ return res.json({
+							//~ code: httpResponseCode.BAD_REQUEST,
+							//~ message: err
+						//~ });
+					//~ }
+				  //~ if(!err) {
+					//~ User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":      responceData.get('lng') } }, { new:true }, (err,latlog) => {
+						//~ if(err){				
+							//~ return res.json({
+							//~ code: httpResponseCode.BAD_REQUEST,
+							//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
+						  //~ });
+						//~ }
+					  //~ })
+				   //~ }
+				//~ });
+				
 
 			    delete result.password
-
 			  	// Generate test SMTP service account from ethereal.email
 				  // Only needed if you don't have a real mail account for testing
 
@@ -172,22 +176,20 @@ const signup = (req, res) => {
 						}
 						console.log('Message sent: %s', info.messageId);
 						// Preview only available when sending through an Ethereal account
-						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-						// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));						
 					});
 
-            return res.json({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: result
-            })
+					return res.json({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: result
+					})
 
         }
-      })
+      }) // End Create user function block
     }
-  })
-})
+  })//end find user by email
+})// end form.parse
 }
 
 /** Auther	: Rajiv Kumar
@@ -386,8 +388,8 @@ const login = (req, res) => {
 
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
-  if (flag) {
-	  console.log("flag",flag)
+  if(flag) {
+	 console.log("flag",flag)
     return res.json(flag);
   }
   User.findOne({ email: req.body.email, userType: req.body.userType }, (err, result) => {
@@ -899,6 +901,7 @@ const updateUser = (req, res) => {
 	form.parse(req, function(err, data, files) {
 	let now = new Date();
 	//console.log(data)
+
     User.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
     if(err){
 		return res.send({
@@ -913,29 +916,26 @@ const updateUser = (req, res) => {
 			  code: httpResponseMessage.BAD_REQUEST
 			});
 		  } else {
-		   // get latitude,longitude of user and save into collection
-		   //  console.log("address",result.address)
-			   where.is(result.address, function(error, responceData) {
-				  if(error){
-					  console.log("Error in where is function",error)
-					  next(error);
-					}else{
-						  if (result) {
-								User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
-										if(err){
-											return res.json({
-												code: httpResponseCode.BAD_REQUEST,
-												message: httpResponseMessage.FILE_UPLOAD_ERROR
-											});
-										}
-							   })
-						  }
-					  }
-				});
-
-
-			//console.log('Created-Page',err, result);
-
+		   // get latitude,longitude of user and save into collection		     
+			   //~ where.is(result.address, function(error, responceData) {
+				  //~ if(error){
+					  //~ console.log("Error in where is function",error)
+					  //~ next(error);
+						//~ } else {					
+						//~ if (result) {
+							//~ User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
+							//~ if(err){				
+							//~ return res.json({
+							//~ code: httpResponseCode.BAD_REQUEST,
+							//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
+							//~ });
+							//~ }
+							//~ })
+						//~ }
+						//~ }
+						//~ });
+				
+		  			//console.log('Created-Page',err, result);
 
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
@@ -1161,6 +1161,7 @@ const verifyEmail = (req, res) => {
 
 
 
+
 /** Auther	: Rajiv Kumar
  *  Date	: Aug 20, 2018
  *	Description : Function to verify user email via web
@@ -1189,6 +1190,26 @@ const verifyUserEmail = (req, res) => {
     }
   })
 }
+
+/** Auther	: Rajiv Kumar
+ *  Date	: June 18, 2018
+ *	Description : Function to delete the user
+ **/
+const mostTrustedUsers = (req, res) => {	
+	TrustedUser.aggregate([{
+       $group:
+         {
+           _id: { $userId: "$userId"} },
+           totalAmount: { $sum: "$review" },
+           count: { $sum: 1 }         
+	     }
+	])
+     .exec(function(err, users) {			 
+             console.log('sssssss',users)
+     });
+}
+
+
 /// Log out users
 exports.logout = function(req, res, next) {
   var data = req.body;
@@ -1221,7 +1242,6 @@ exports.logout = function(req, res, next) {
   }).lean().exec(function(err, result) {
     if (err) {
       console.log("error", err);
-
       return res.json({
         message: constant.server_error_msg,
         code: constant.server_error_code
@@ -1317,24 +1337,26 @@ const send = (req, res) => {
 
 module.exports = {
 	signup,
-  userSignup,
+	userSignup,
 	login,
 	listUser,
 	updateUser,
 	viewUser,
 	verifyEmail,
-  verifyUserEmail,
+	verifyUserEmail,
 	changeStatus,
 	deleteUser,
 	users,
 	contustUs,
 	send,
 	getLoggedInUser,
-  dashboardStates,
-  myProfle,
-  forgotPassword,
-  resetPassword,
-  updateNewPassword,
-  resdNotification,
-  sortingUsers
+    dashboardStates,
+    myProfle,
+    forgotPassword,
+    resetPassword,
+    updateNewPassword,
+    resdNotification,
+    sortingUsers,
+    mostTrustedUsers
+
 }

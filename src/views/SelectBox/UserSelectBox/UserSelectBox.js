@@ -44,7 +44,7 @@ class UserSelectBox extends Component {
          optionsLists = optionsList.map(option => ({ label: option.userName, value: option._id }));  
      }	
     return (
-     <Select options={optionsLists}	value={this.state.selectedValue} onChange ={this.onChange.bind(this)} innerRef={this.props.reference} classes={{  selectValue: 'my-custom-value', selectArrow: 'my-custom-arrow'	}}
+     <Select options={optionsLists}	value={this.state.selectedValue} onChange ={this.onChange.bind(this)} innerRef={this.props.reference} classes={{  selectValue: 'my-custom-value', selectArrow: 'my-custom-arrow'}}
 		/>
     )
   }

@@ -5,6 +5,7 @@ import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
 import StateAllSelectBox from '../SelectBox/StateSelectBox/StateAllSelectBox'
 import CitySelectBox from '../SelectBox/CitySelectBox/CitySelectBox'
 import SubscriptionSelectBox from '../SelectBox/SubscriptionSelectBox/SubscriptionSelectBox'
+
 import {
   Badge,
   Button,
@@ -50,8 +51,6 @@ class UserEdit extends Component {
     this.zipCode = React.createRef();
     this.subscriptionPlan = React.createRef();
     this.profilePic = React.createRef();
-     
-   
      
     let userId = this.props.match.params.id;
     this.state = {
@@ -164,6 +163,7 @@ class UserEdit extends Component {
       if(formSubmitFlag){
         const data = new FD()
         data.append('_id', this.props.match.params.id)
+        
         data.append('firstName', this.firstName.value)
         data.append('middleName', this.middleName.value)
         data.append('lastName', this.lastName.value)
@@ -173,21 +173,14 @@ class UserEdit extends Component {
         data.append('dob', this.dob.value)
         data.append('address', this.address.value)
         data.append('city', this.city.value)
-        data.append('state',this.state.state)
+        data.append('state',this.state.value)
         data.append('country',this.country.value)
         data.append('zipCode', this.zipCode.value)
         data.append('subscriptionPlan',this.subscriptionPlan.value)
 
         if(this.state.selectedFile){
           data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
-        }
-        // let editUser = this.state.editUser;
-        // editUser.firstName = this.firstName.value;
-        // editUser.middleName = this.middleName.value;
-        // editUser.lastName = this.lastName.value;
-        // editUser.userName = this.userName.value;
-        // editUser.email = this.email.value;
-        console.log('<user id>',data);
+        } 
         axios.post('/user/updateUser', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
@@ -200,7 +193,8 @@ class UserEdit extends Component {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/user/viewUser/' + this.state.userId).then(result => {
-        if(result.data.code == 200){         
+        if(result.data.code == 200){   
+		     console.log('mmmmmmmmmasfdadfasdf',result.data.result)      
           this.setState({ editUser: result.data.result});
           this.firstName.value = result.data.result.firstName;
           this.middleName.value = result.data.result.middleName;
@@ -216,6 +210,7 @@ class UserEdit extends Component {
           this.zipCode.value = result.data.result.zipCode
           this.subscriptionPlan.value = result.data.result.subscriptionPlan
           this.profilePic.value = result.data.result.profilePic
+          
         }
       })
       .catch((error) => {
@@ -298,7 +293,7 @@ class UserEdit extends Component {
               </FormGroup>
               <FormGroup>
                <Label>Subscription Plan</Label>
-               <SubscriptionSelectBox onSelectSubscription = {this.handleSubscription} reference={(subscriptionPlan) => this.subscriptionPlan=subscriptionPlan} value={this.state.editUser.subscriptionPlan}/>
+               <SubscriptionSelectBox onSelectSubscription = {this.handleSubscription} reference={(subscriptionPlan) => this.subscriptionPlan = subscriptionPlan} value={this.state.editUser.subscriptionPlan}/>
               </FormGroup>
 				<FormGroup>
 				 <Label htmlFor="brand">Profile Image</Label>                  
