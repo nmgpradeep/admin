@@ -58,7 +58,7 @@ const createCountry = (req, res) => {
   
 /*
     *Author: Saurabh Agarwal
-    *Date  : July 16, 2017
+    *Date  : July 16, 2018
 */
 //Function to list all country
 const listCountry = (req,res) => {
@@ -82,6 +82,25 @@ const listCountry = (req,res) => {
                   pages: Math.ceil(count / perPage)
               });
             })
+        });
+}
+
+  
+/*
+    *Author: Rajiv Kumar
+    *Date  : Aug 20, 2018
+*/
+//Function to list all country/state/city
+const getCountryStateCity = (req,res) => {  
+	Country.find({})
+      .sort({createdAt:-1})
+      //.populate({path: "author", model :"User"})
+      .exec(function (err, country){
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: country ,
+              });         
         });
 }
 
@@ -373,7 +392,6 @@ const getState = (req, res) => {
     }    
   })
 }
-
 /** Author	: Saurabh Agarwal
  *  Date	: July 17, 2018
  **/
@@ -633,6 +651,37 @@ const Status = (req, res) => {
 }
 
 
+/** Author	:Rajiv Kumar
+ *  Date	: Aug 20, 2018
+ * get city by state
+ **/
+
+const getCity = (req, res) => { 
+  console.log('state IDDDD',req.params);
+  City.find({ stateSelect:req.params.id }, req.body, { new:true },(err,result) => {
+    if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+		  });
+    }else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.SUCCESSFULLY_DONE,
+             result: result
+            });
+      }
+    }    
+  })
+}
+
+
 
 
 module.exports = {
@@ -656,6 +705,8 @@ module.exports = {
   deleteCitys,
   Status,
   getState,
-  listingcities
+  listingcities,
+  getCountryStateCity,
+  getCity
 
 }

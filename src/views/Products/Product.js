@@ -5,21 +5,21 @@ import ReadMoreReact from 'read-more-react';
 // import PropTypes from 'prop-types';
 
 class Product extends Component {
-  
-Capitalize(str){	
+
+Capitalize(str){
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
   render() {
     return (
-   
-      <tr key={this.props.product._id}>		
+
+      <tr key={this.props.product._id}>
         <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
         <td>
            <ReadMoreReact text={this.props.product.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} />
         </td>
-        <td>{(this.props.product.user)?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
-        <td>{this.props.product.productAge}</td>     
+        <td>{(this.props.product.user && (this.props.product.user.length > 0) )?this.props.product.user[0].firstName+' '+this.props.product.user[0].lastName:''}</td>
+        <td>{this.props.product.productAge}</td>
         <td><img src={'assets/uploads/Products/'+this.props.product.productImages} width="40" alt=""/></td>
         <td>
           <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.product)} color={(this.props.product.productStatus === '1')?'success':'danger'}>

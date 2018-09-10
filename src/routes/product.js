@@ -9,4 +9,8 @@ router.get('/products/:page',productController.allProducts)
 router.delete('/deleteProduct/:id',productController.deleteProduct)
 router.get('/switchTodays',productController.switchTodays)
 router.get('/popularItems',productController.popularItems)
+router.get('/myTreasureChest',productController.myTreasureChest)
+router.post('/addProduct',productController.addProduct)
+router.post('/tepmUpload',productController.tepmUpload)
+
 module.exports = router;
