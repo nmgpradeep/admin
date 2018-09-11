@@ -85,7 +85,7 @@ class ProductAdd extends Component {
   handleUser = (user) => {
         this.setState({user: user});
   }
-  
+
    handleCategory = (category) => {
 	   console.log('fadfadfasdf',category);
      this.setState({category: category});
@@ -105,10 +105,7 @@ class ProductAdd extends Component {
            this.setState({conditions: result.data.result});
        });
    }
-   fileChangedHandler = (event) => {
-	   this.setState({selectedFile: event.target.files[0]})
-   }
-
+   
    conditionsChange = (value) => {
        this.setState({conditionValue: value.target.value});
    }
@@ -174,7 +171,7 @@ class ProductAdd extends Component {
       axios.get('/user/users/1' ).then(result => {
       if(result.data.code ===200){
          this.setState({
-          users: result.data.result,         
+          users: result.data.result,
          });
         }
     })

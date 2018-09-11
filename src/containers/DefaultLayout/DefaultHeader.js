@@ -13,23 +13,23 @@ const propTypes = {
 const defaultProps = {};
 class DefaultHeader extends Component {
   constructor(props) {
-    super(props);    
+    super(props);
     this.state = {
 			user:{},
 			notifications:0,
 			notifications:[]
-	}	
+	}
     this.logoutHandler = this.logoutHandler.bind(this);
   }
 
   logoutHandler = (e) => {
-    localStorage.removeItem('jwtToken');    
+    localStorage.removeItem('jwtToken');
     window.location.reload();
     //this.props.history.push('/login');
   };
   changeStatusHandler(notification){
 	notification.isRead = 1;
-	//console.log("changeStatusHandler",notification)   
+	//console.log("changeStatusHandler",notification)
     axios.post('/user/resdNotification',notification).then(result => {
       if(result.data.code === 200){
 		   window.location.reload();
@@ -40,26 +40,26 @@ class DefaultHeader extends Component {
 	axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 	axios.get('/user/getLoggedInUser').then(result => {
 		//console.log("result",result)
-		this.setState({ 
+		this.setState({
 			user:result.data.result,
 			notification_type:result.data.notification_type,
 			notifications :result.data.notifications,
 			totalNotifications:result.data.totalNotifications
-		})			
+		})
 	})
-	
+
   }
- 
+
   Capitalize(str){
 	//return str.charAt(0).toUpperCase() + str.slice(1);
-} 
+}
 
-  render() {	 
+  render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-        
+
     return (
-    
+
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppNavbarBrand
@@ -72,11 +72,11 @@ class DefaultHeader extends Component {
          {/* <NavItem className="px-3">
             <NavLink href="/">Dashboard</NavLink>
           </NavItem>
-          
+
           <NavItem className="px-3">
             <NavLink href="#/users">Users</NavLink>
           </NavItem>*/}
-          
+
           {/* <NavItem className="px-3">
             <NavLink href="#">Settings</NavLink>
           </NavItem> */}
@@ -99,20 +99,20 @@ class DefaultHeader extends Component {
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
 				 <DropdownItem header tag="div" className="text-center"><strong>You have {this.state.totalNotifications} notifications</strong></DropdownItem>
-				  {this.state.notifications.map((notification, i) => { 
+				  {this.state.notifications.map((notification, i) => {
 					   return (<DropdownItem key={i} onClick={this.changeStatusHandler.bind(this,notification)}><i className="icon-user-follow text-success">{' '}{' '}</i>New User Registered<Badge color="info" key={i} style={{right:'1px'}}>{''}{/*this.state.totalNotifications*/}</Badge></DropdownItem>
-					   ) 
+					   )
 					})
 				}
              {/* <DropdownItem><i className="icon-basket-loaded text-primary"></i> New Trade Requested <Badge color="success">42</Badge></DropdownItem>
               <DropdownItem><i className="icon-basket-loaded text-secondary"></i> Trade Rejected<Badge color="danger">42</Badge></DropdownItem>
               <DropdownItem><i className="icon-note"></i> New Message Received {' '}<Badge color="warning">42</Badge></DropdownItem>*/}
-            
-            
-            
-            
+
+
+
+
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
-              
+
               {/* <DropdownItem><i className="fa fa-user" href = "../../views/AdminProfile/Profile.js"></i> Profile</DropdownItem>
               <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
               <DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
@@ -123,7 +123,7 @@ class DefaultHeader extends Component {
             </DropdownMenu>
           </AppHeaderDropdown>
           <AppHeaderDropdown direction="down">
-            <DropdownToggle nav>Welcome <strong>{(this.state.user && this.state.user ===null)?this.state.user.userName:''} </strong>
+            <DropdownToggle nav>Welcome <strong>{(this.state.user && (this.state.user !== null || this.state.user !==''))? this.state.user.userName:''} </strong>
               <img src={'assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@pitchandswitch.com" />
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
