@@ -22,8 +22,7 @@ var gm = require('gm'); //GraphicsMagick for node.js
 const create = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
-	  //console.log('Multiple', err, fields, files);
-	   //console.log('FIELD', fields.pageTitle[0]);
+	  //console.log('dddddddddddddddd',data);	 
 	  if (!data.productName) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -56,8 +55,7 @@ const create = (req, res) => {
 				  fileName = files.productImage[0].originalFilename;
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
-				  pathNew = constant.donationimage_path + newfilename;
-				  //return res.json(process.cwd());
+				  pathNew = constant.donationimage_path + newfilename;				 
 				  fs.writeFile(pathNew, fileData, function(err) {
 					if (err) {
 					  res.send(err);
@@ -66,7 +64,6 @@ const create = (req, res) => {
 				  });
 				});
 			  }		
-			  console.log('resultImgas',result);	 
 			  Donation.update({ _id:result._id },  { "$set": { "productImage": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){				
 					return res.send({
@@ -92,33 +89,65 @@ const create = (req, res) => {
  */
 /// function to list all dinated products
 const donations = (req, res) => {  
-	var perPage = constant.PER_PAGE_RECORD
+     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    Donation.find({})
-      .skip((perPage * page) - perPage)
-      .limit(perPage)
-      .sort({createdAt:-1})
-      .populate('userId')
-      .populate('userId',['firstName','lastName'])
-      .populate('productCategory',['title'])
-	  .populate({ path: "brand", model: "Brand"})  
-	  .populate({ path: "size", model: "Size"})  
-      .exec(function(err, donation) {
-		 //console.log("Donated User",donation[0].userId)
-		 //console.log("Donated productCategory",donation[0].category)		 
+
+    Donation.aggregate([{
+	  $lookup :{
+		from: 'productimages', 
+		localField: '_id',
+		foreignField: 'productId',
+		as: 'images'
+	  }},
+	  
+	  {
+		$lookup: {
+			from: "users",
+			localField: "userId",
+			foreignField: "_id",
+			as: "user"
+		}
+	},{
+		$lookup: {
+			from: "categories",
+			localField: "productCategory",
+			foreignField: "_id",
+			as: "category"
+		}
+	},
+	{
+		$lookup: {
+			from: "sizes",
+			localField: "size",
+			foreignField: "_id",
+			as: "size"
+		}
+	
+	},{
+		$lookup: {
+			from: "brands",
+			localField: "brand",
+			foreignField: "_id",
+			as: "brand"
+		}
+	}])
+     .skip((perPage * page) - perPage)
+     .limit(perPage)            
+     .sort({createdAt:-1}) 
+     .exec(function(err, products) {			 
           Donation.count().exec(function(err, count) {
-            if (err) return next(err)
-              return res.json({
+            if (err) return next(err)      
+                  return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: donation,
+                  result: products,
                   total : count,
                   current: page,
                   perPage: perPage,
                   pages: Math.ceil(count / perPage)
               });
             })
-        });
+       });
 }
 /** Auther	: Rajiv kumar
  *  Date	: June 22, 2018
@@ -164,7 +193,6 @@ const getdonationshippingStatus = (req, res) => {
 **/
 const viewDonation = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<Product>>>>',id);  
 	Donation.findById({_id:id})
 		.populate('userId')
 		.populate('userId',['firstName','lastName'])
@@ -172,26 +200,23 @@ const viewDonation = (req, res) => {
 		.populate({ path: "brand", model: "Brand"})  
 		.populate({ path: "size", model: "Size"})  
 	     .exec(function(err, result){
-			console.log('rrrrrr',result);		
 			if (err) {
-			return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			})
+				return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  })
 			} else {
 			if (!result) {
-			res.json({
-			message: httpResponseMessage.USER_NOT_FOUND,
-			code: httpResponseMessage.BAD_REQUEST
-			});
-			}else {
-			return res.json({
-
-			code: httpResponseCode.EVERYTHING_IS_OK,             
-			result: result
-			});
-
-			}
+				res.json({
+				message: httpResponseMessage.USER_NOT_FOUND,
+				code: httpResponseMessage.BAD_REQUEST
+			  });
+			} else {
+				return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,             
+				result: result
+				});
+			   }
 			}
 		});
 }
@@ -230,13 +255,10 @@ const viewuser = (req, res) => {
 }
 
 
-
-
-
 const updateDonation = (req, res) => { 
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	  console.log('FIELD',data);
+	  //console.log('FIELD',data);
 	  if (!data.productName) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -247,13 +269,14 @@ const updateDonation = (req, res) => {
 	  if (flag) {
 		return res.json(flag);
 	  }
+	  
 	 let now = new Date();	
      Donation.findOneAndUpdate({ _id:data._id}, data, { new:true },(err,result) => {
      if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
-		  });
+		 });
      } else {
       if (!result) {
         res.json({
@@ -261,7 +284,6 @@ const updateDonation = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
       } else {
-		 ///  console.log('Created-Page',err, result);
 			 if ((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
 				var fileName = files.productImage[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -283,7 +305,7 @@ const updateDonation = (req, res) => {
 					}
 				  });
 				}); 
-			  console.log('asdf',newfilename);
+			  //console.log('asdf',newfilename);
 			  Donation.update({ _id:data._id },  { "$set": { "productImage": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){				
 					return res.send({

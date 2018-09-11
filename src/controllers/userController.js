@@ -827,29 +827,32 @@ const listUser = (req, res) => {
  *	Description : Function to view the available user details
  **/
 const viewUser = (req, res) => {
-	const id = req.params.id;
-	User.findOne({_id:id}, (err, result) => {
-    if (err) {
-      return res.send({
-        code: httpResponseCode.BAD_REQUEST,
-        message: httpResponseMessage.INTERNAL_SERVER_ERROR
-      })
-    } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      } else {
-        return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
-        });
-
-      }
-    }
-  })
+   const id = req.params.id;
+	     User.findById({_id:id})
+		.populate('city')
+		.populate('city',['cityName'])
+		.populate('state',['stateName'])
+		.populate('country',['countryName'])  
+	     .exec(function(err, result){
+			if (err) {
+				return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  })
+			} else {
+			if (!result) {
+				res.json({
+				message: httpResponseMessage.USER_NOT_FOUND,
+				code: httpResponseMessage.BAD_REQUEST
+			  });
+			} else {
+				return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,             
+				result: result
+				});
+			   }
+			}
+	   });
 }
 /** Auther	: karnika sharma
  *  Date	: July 6, 2018

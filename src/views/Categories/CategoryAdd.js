@@ -133,7 +133,7 @@ class CategoryAdd extends Component {
             }
           );
         }
-        console.log(this.state.categories);
+        //console.log(this.state.categories);
       })
       .catch(error => {
         console.log("ERROR", error);

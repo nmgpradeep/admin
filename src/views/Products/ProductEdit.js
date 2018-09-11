@@ -53,6 +53,7 @@ class ProductEdit extends Component {
     this.productAge = React.createRef();
     this.productImages = React.createRef();
     this.category = React.createRef();
+    this.user = React.createRef();
     this.author = React.createRef();
     this.condition = React.createRef();
     this.brand = React.createRef();
@@ -82,19 +83,32 @@ class ProductEdit extends Component {
   }
 
     handleCategory = (category) => {
-       this.category.current = category;
+	   this.setState({category: category});
     }
+    
     handleUser = (user) => {
-	  this.author.current = user;
+	  this.setState({user: user});
     }
 
     handleBrand = (brand) => {
-       this.brand.current = brand;
+       this.setState({brand: brand});
     }
     
     handleSize = (size) => {
-	  this.size.current = size;
+	  this.setState({size: size});
     }
+<<<<<<< HEAD
+	
+    categoryhandleContentChange(value) {			
+        this.setState({onDefaultValuesSet:value})    
+    } 
+  
+    cancelHandler(){
+       this.props.history.push("/products");
+    }
+  
+    fileChangedHandler = (event) => {	
+=======
 
 
   categoryhandleContentChange(value) {
@@ -106,6 +120,7 @@ class ProductEdit extends Component {
   }
 
    fileChangedHandler = (event) => {
+>>>>>>> a021a839f605c501ea5730fb4abf41ffbfeeaf6c
 	  this.setState({selectedFile: event.target.files[0]})
 	   console.log('ddddddddd',this.state.selectedFile);
 
@@ -155,18 +170,17 @@ class ProductEdit extends Component {
 
       if(formSubmitFlag){
 		const data = new FD();
-
 		data.append('data', this.state.editProduct);
 		data.append('_id', this.state.editProduct._id);
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
-		data.append('productCategory',this.category.value);
+		data.append('productCategory',(this.state.category)?this.state.category:this.state.editProduct.productCategory._id);
 		data.append('productAge',this.productAge.value);
-		data.append('userId',this.author.value);
-		data.append('size', this.size.value);
+		data.append('userId',(this.state.user)?this.state.user:this.state.editProduct.userId._id);
+		data.append('size', this.state.size?this.state.size:this.state.editProduct.size._id);
 		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
-		data.append('brand', this.brand.value);
+		data.append('brand', (this.state.brand)?this.state.brand:this.state.editProduct.brand._id);
 		if(this.state.selectedFile){
 		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
 		} else {
@@ -174,6 +188,7 @@ class ProductEdit extends Component {
 	    }
 
 	    axios.put('/product/updateProduct', data).then(result => {
+			console.log('ddd',data);
             if(result.data.code == 200){
                this.props.history.push("/products");
            }
@@ -187,7 +202,7 @@ class ProductEdit extends Component {
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
       if(result.data.code === 200) {
         this.setState({editProduct: result.data.result});
-       // console.log('ffffffffff',result.data.result);
+        console.log('ffffffffff',result.data.result);
         this.productName.value = result.data.result.productName;
         this.description.value = result.data.result.description;
         if(result.data.result.productCategory && result.data.result.productCategory.length > 0){
@@ -205,8 +220,7 @@ class ProductEdit extends Component {
 		}     
         this.color.value = result.data.result.color;        
 		this.productAge.value = result.data.result.productAge;        
-        this.setState({productImages: result.data.result.productImages});
-        //console.log('asdfasdfasdf',this.state.editProduct.category._id);
+        this.setState({productImages: result.data.result.productImages});       
        }      
       })     
 
@@ -271,7 +285,7 @@ class ProductEdit extends Component {
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="user">User</Label>
-			<UserSelectBox onSelectUser={this.handleUser} value='5b63fca6cdd70a1cd0219b0c'/>    
+			<UserSelectBox onSelectUser={this.handleUser} value={this.state.editProduct.userId?this.state.editProduct.userId._id:""}/>    
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="size">Size</Label>                  
@@ -284,7 +298,7 @@ class ProductEdit extends Component {
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="brand">Brand</Label>
-			<BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={this.state.editProduct.brand}/>
+			  <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} value={(this.state.editProduct.brand)?this.state.editProduct.brand._id:''}/>
 			</FormGroup>
 			<FormGroup>
 			<Label htmlFor="brand">Conditions</Label>

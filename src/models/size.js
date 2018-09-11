@@ -24,8 +24,8 @@ var SizeSchema = new Schema ({
 });
 
 SizeSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
-    return obj;
-   }
+   var obj = this.toObject();   
+   return obj;
+}
 
 module.exports = mongoose.model('Size', SizeSchema);

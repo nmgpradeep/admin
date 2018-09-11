@@ -128,6 +128,7 @@ const viewTestimonials = (req, res) => {
 //Function to update the testimonial
 const updateTestimonials = (req, res) => { 
   Testimonial.findOneAndUpdate({ _id:req.body._id }, req.body, { new:true },(err,result) => {
+	  console.log('rrr',result);
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,

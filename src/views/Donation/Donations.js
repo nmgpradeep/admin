@@ -29,7 +29,7 @@ class Donations extends Component {
 
   loadCommentsFromServer(){
     axios.get('/donation/donations/' + this.state.currentPage).then(result => {
-	  //console.log('rs',result.data.result);
+	  console.log('rs',result.data.result);
       if(result.data.code === 200){
         this.setState({
           donations: result.data.result,
@@ -63,7 +63,7 @@ class Donations extends Component {
   }
   
   
-  donationDeleteHandler (id){
+  donationDeleteHandler(id){
     this.setState({
       approve: false,
       approveId: id
@@ -125,8 +125,7 @@ class Donations extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Donation Listing
-                
+                <i className="fa fa-align-justify"></i> Donation Listing              
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
@@ -186,7 +185,6 @@ class Donations extends Component {
             <Button color="secondary" onClick={this.toggle}>No</Button>
           </ModalFooter>
         </Modal>
-        
         <Modal isOpen={this.state.info} toggle={this.toggleInfo} className={'modal-info ' + this.props.className}>
 		  <ModalHeader toggle={this.toggleInfo}>User Details</ModalHeader>
 		  <ModalBody>

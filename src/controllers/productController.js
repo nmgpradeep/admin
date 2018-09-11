@@ -42,8 +42,8 @@ getToken = function (headers) {
  */
 ///function to save new product in the list
 const create = (req, res) => {
-  var form = new multiparty.Form();
 
+  var form = new multiparty.Form(); 
   form.parse(req, function(err, data, files) {
 	  if (!data.productName) {
 		return res.send({

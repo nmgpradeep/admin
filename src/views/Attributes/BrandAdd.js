@@ -45,7 +45,7 @@ class BrandAdd extends Component {
 
   handleCategory = (category) => {
      this.setState({category: category});
- }
+  }
  
   cancelHandler(){
     this.props.history.push("/brand");
@@ -67,8 +67,7 @@ class BrandAdd extends Component {
                 addBrand[field].message = addBrand[field].rules[fieldCheck].message;
 
              }
-            break;
-          
+            break;          
         }
       }
       this.setState({ validation: addBrand});
@@ -112,9 +111,8 @@ class BrandAdd extends Component {
                     </Col>
                   </FormGroup>
                   <FormGroup>
-                  <Label htmlFor="category">Category</Label>
-                  <CategorySelectBox onSelectCategory={this.handleCategory}/>
-
+                   <Label htmlFor="category">Category</Label>
+                   <CategorySelectBox onSelectCategory={this.handleCategory}/>
                 </FormGroup>
                 </Form>
               </CardBody>
@@ -128,8 +126,7 @@ class BrandAdd extends Component {
                   </Col>
                 </Row>				
               </CardFooter>
-            </Card>
-        
+            </Card>        
       </div>
     )
   }

@@ -16,28 +16,27 @@ var gm = require('gm');
  *	Description : Function to list the available user on the plateform
  **/
 const listTransaction = (req, res) => {
-  var perPage = constant.PER_PAGE_RECORD
-    var page = req.params.page || 1;
-    Transaction.find({})
+       var perPage = constant.PER_PAGE_RECORD
+       var page = req.params.page || 1;
+       Transaction.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
-      .populate({ path: "userId", model: "User"})    
       .sort({createdAt:-1})
-      .exec(function(err, transactions) {
-		  console.log("transactions",transactions)
-          Transaction.countDocuments().exec(function(err, count) {
+      .populate('parent',['title'])
+      .exec(function (err, country){
+          Transaction.count().exec(function(err, count) {
             if (err) return next(err)
               return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: transactions,
+                  result: country ,
                   total : count,
                   current: page,
                   perPage: perPage,
                   pages: Math.ceil(count / perPage)
               });
-        })
-    });
+            })
+        });
 }
 
 /** Auther	: Rajiv Kumar

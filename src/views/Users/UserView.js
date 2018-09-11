@@ -43,7 +43,7 @@ class UserView extends Component {
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/user/viewUser/' + this.state.userId).then(result => {
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
+          console.log('sssss',result);
           this.setState({ viewUser: result.data.result});
           this.firstName.value = result.data.result.firstName
           this.middleName.value = result.data.result.middleName
@@ -124,15 +124,15 @@ class UserView extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">City</Label>
-                  <Input type="text" value={this.state.viewUser.city} />
+                  <Input type="text" value={(this.state.viewUser.city)?this.state.viewUser.city.cityName:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">State</Label>
-                  <Input type="text" value={this.state.viewUser.state} />
+                  <Input type="text" value={(this.state.viewUser.state)?this.state.viewUser.state.stateName:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">Country</Label>
-                  <Input type="text" value={this.state.viewUser.country} />
+                  <Input type="text" value={(this.state.viewUser.country)?this.state.viewUser.country.countryName:""} />
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="zipCode">Zip Code</Label>

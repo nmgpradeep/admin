@@ -56,9 +56,11 @@ class SizeEdit extends Component {
       }
     };
   }
-  handleCategory = (category) => {
-    this.category.current = category;
+  
+  handleCategory = (category) => {	 
+	  this.setState({category: category});     
   }
+  
   cancelHandler(){
     this.props.history.push("/size");
   }
@@ -87,13 +89,11 @@ class SizeEdit extends Component {
 
       if(formSubmitFlag){
         let data = new FD();
+        data.append('_id', this.state.editSize._id);
         data.append('size', this.size.value)
-        data.append('category', this.category.value)
-        // let editSize = this.state.editSize;
-        // editSize.size = this.size.value;
-        // editSize.category = this.category.value;
-        // console.log("editSize",editSize)
+        data.append('category', this.state.category?this.state.category:this.state.editSize.category)       
         axios.put('/size/updateSize', data).then(result => {
+			console.log('dddddddddd',result)
           if(result.data.code ===200){
             this.props.history.push("/size");
           }
@@ -102,14 +102,10 @@ class SizeEdit extends Component {
   }
 
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/size/viewSize/' + this.state.sizeId).then(result => {
        // console.log(result); 
          if(result.data.code === 200){
-        //   //localStorage.setItem('jwtToken', result.data.result.accessToken);
            this.setState({ editSize: result.data.result});
-          
            this.size.value = result.data.result.size;
            this.category.value = result.data.result.category;
         }

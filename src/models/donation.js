@@ -22,16 +22,16 @@ productCategory:{
  ref: 'Category'
 },
 size:{
- type:String,
- trim: true
+ type: Schema.Types.ObjectId,
+ ref: 'Size'
 },
 color:{
  type:String,
  trim:true,
 },
 brand:{
- type:String,
- trim:true
+ type: Schema.Types.ObjectId,
+ ref: 'Brand'
 },
 productAge:{
  type:String,

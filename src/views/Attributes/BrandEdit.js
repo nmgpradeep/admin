@@ -63,6 +63,7 @@ class BrandEdit extends Component {
             options: []
           },
           value: "",
+         // value :{(this.state.editProduct.brand)?this.state.editProduct.brand._id:''}
           label: "Category",
           validation: {
             required: false
@@ -140,7 +141,7 @@ class BrandEdit extends Component {
 			for (let key in this.state.brandForm) {
 			  brandObj[key] = this.state.brandForm[key].value;
 			}
-        axios.put('/brand/updatebrand', brandObj).then(result => {
+           axios.put('/brand/updatebrand', brandObj).then(result => {
           if(result.data.code ===200){
             this.props.history.push("/brand");
           }
@@ -149,7 +150,6 @@ class BrandEdit extends Component {
   }
 
   componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
        axios.get("/category/allCategories")
       .then(result => {
@@ -172,16 +172,15 @@ class BrandEdit extends Component {
     //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/brand/viewBrand/' + this.state.brandId).then(result => {
-		  console.log("category",result)
         if(result.data.code == '200'){
-          //localStorage.setItem('jwtToken', result.data.result.accessToken);
+          console.log('view dddddddddddd',result.data.result);
           let brandForm = this.state.brandForm;
           for (let key in brandForm) {
-			  if(key === 'category'){
-				  brandForm[key].value = result.data.result[key]._id;
-			  }else{
+			  //~ if(key === 'category'){
+				  //~ brandForm[key].value = result.data.result[key]._id;
+			  //~ }else{
 				  brandForm[key].value = result.data.result[key];
-			  }
+			  //~ }
 		  }
 		  console.log('brandForm', brandForm);
 		  this.setState({brandForm: brandForm});
@@ -195,7 +194,7 @@ class BrandEdit extends Component {
 
   }
   render() {
-	  const formElementsArray = [];
+	const formElementsArray = [];
     for (let key in this.state.brandForm) {
       formElementsArray.push({
         id: key,
@@ -257,7 +256,6 @@ class BrandEdit extends Component {
                 <Link to="/brand" className="btn btn-success btn-sm pull-right">Back</Link>
               </CardHeader>
               <CardBody>
-              
                 <Row>
                    <CardBody>{form}</CardBody>
                 </Row>                

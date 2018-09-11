@@ -107,28 +107,25 @@ class DonationEdit extends Component {
     };
   }
     handleCategory = (category) => {
-       this.category.current = category;
+	   this.setState({category: category});
     }
     
     handleUser = (user) => {
-		this.setState({user: user}); 
-	    //this.author.current = user;
+	   this.setState({user: user});
+    }
+  
+    handleBrand = (brand) => {
+       this.setState({brand: brand});
+    }
+    
+    handleSize = (size) => {
+	  this.setState({size: size});
     }
   
     fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})	  
     }
-   
-    handleBrand = (brand) => {
-       this.brand.current = brand;
-       this.setState({brand: brand});
-    }
-   
-    handleSize = (size) => {
-	  this.size.current = size;
-	  this.setState({size: size});
-    }   
-   
+    
     cancelHandler(){
       this.props.history.push("/donations");
    }
@@ -146,13 +143,7 @@ class DonationEdit extends Component {
         addDonation[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
           switch(fieldCheck){
-            case 'notEmpty':
-              //~ if(lastValidFieldFlag === true && this[field].value.length === 0){
-                  //~ lastValidFieldFlag = false;
-                  //~ formSubmitFlag = false;
-                  //~ addDonation[field].valid = false;
-                  //~ addDonation[field].message = addDonation[field].rules[fieldCheck].message;
-               //~ }
+            case 'notEmpty':              
               break;
           }
         }
@@ -166,13 +157,13 @@ class DonationEdit extends Component {
 		data.append('productName', this.productName.value);
 		data.append('description', this.description.value);
 		//data.append('productCategory',this.category.value);
-		data.append('productCategory','5b584fa7116a023e021c60c9');
+		data.append('productCategory',(this.state.category)?this.state.category:this.state.editDonation.productCategory._id);
 		//data.append('userId',this.author.value);
-		data.append('userId', this.state.user);
-		data.append('size', this.state.size);		
+		data.append('userId',(this.state.user)?this.state.user:this.state.editDonation.userId._id);
+		data.append('size', this.state.size?this.state.size:this.state.editDonation.size._id);		
 		data.append('condition', this.state.conditionValue);
 		data.append('color', this.color.value);
-		data.append('brand', this.state.brand)
+		data.append('brand', (this.state.brand)?this.state.brand:this.state.editDonation.brand._id);
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile){
 		    data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);
@@ -192,8 +183,10 @@ class DonationEdit extends Component {
      } 
    
     componentDidMount() {   
-      axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {   
-         if(result.data.code === 200){			   
+      axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {  
+		  console.log('zzzzzzzzzz',result);	 
+         if(result.data.code === 200){	
+			 	   
             this.setState({ editDonation: result.data.result});           
             this.productName.value = result.data.result.productName;
             this.description.value = result.data.result.description;            
@@ -236,7 +229,7 @@ class DonationEdit extends Component {
                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label >Product Name</Label>
-                      <Input type="text" innerRef={input => (this.productName = input)}  placeholder="Product name" />  </FormGroup>
+                      <Input type="text" innerRef={input => (this.productName = input)}  placeholder="Product name" /></FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                     <FormGroup>
@@ -247,19 +240,19 @@ class DonationEdit extends Component {
                      <Col xs="4" sm="12">
 					   <FormGroup>						
 						<Label htmlFor="author">User</Label>									  
-						 <UserSelectBox defaultSelectedItem={"5b236b4ad73fe224efedae86"} onSelectUser={this.handleUser} value={"5b236b4ad73fe224efedae86"}/>
+						 <UserSelectBox onSelectUser={this.handleUser} value={this.state.editDonation.userId?this.state.editDonation.userId._id:""}/>
 					  </FormGroup>
                   </Col>
                      <Col xs="4" sm="12">
 					   <FormGroup>						
-						  <Label htmlFor="author">Category</Label>									  
-						   <CategorySelectBox onSelectCategory={this.handleCategory} reference={(category)=> this.category = category} value={this.state.editDonation.category}/>	
+						  <Label htmlFor="author">Category</Label><br />									  
+						   <CategorySelectBox onSelectCategory={this.handleCategory}  value={this.state.editDonation.productCategory?this.state.editDonation.productCategory._id:""}/>	
 					  </FormGroup>
                   </Col>
                    <Col xs="4" sm="12">
-						<FormGroup>
+					  <FormGroup>
 						  <Label htmlFor="size">Size</Label>
-						  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size}  value={this.state.editDonation.size}/>
+						  <SizeSelectBox onSelectSize={this.handleSize} reference={(size)=> this.size = size}  value={(this.state.editDonation.size)?this.state.editDonation.size._id:''}/>
 						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -271,7 +264,7 @@ class DonationEdit extends Component {
                     <Col xs="4" sm="12">
 						<FormGroup>
 						  <Label htmlFor="brand">Brand</Label>
-						 <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand} />
+						 <BrandSelectBox onSelectBrand={this.handleBrand} reference={(brand)=> this.brand = brand}  value={(this.state.editDonation.brand)?this.state.editDonation.brand._id:''}/>
 						</FormGroup>
                     </Col>
                     <Col xs="4" sm="12">

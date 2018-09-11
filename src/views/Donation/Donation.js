@@ -77,15 +77,15 @@ class Donation extends Component {
         <td>{this.props.sequenceNo+1}</td>
         <td>{this.props.donation.productName}</td>
         <td><ReadMoreReact text={this.props.donation.description.replace(/<(?:.|\n)*?>/gm, '')} min={1}  ideal={100} max={200} /></td>        
-        <td>{(this.props.donation.productCategory)?this.props.donation.productCategory.title:''}</td>
+        <td>{(this.props.donation.category[0])?this.props.donation.category[0].title:''}</td>
         <td>
-           <Link to='#' className="mousePointer" onClick={this.props.onflagUsers.bind(this, this.props.donation.userId._id)} className="mr-1">
-             {(this.props.donation.userId)? this.props.donation.userId.firstName:''}
+           <Link to='#' className="mousePointer" onClick={this.props.onflagUsers.bind(this, (this.props.donation.user[0])?this.props.donation.user[0]._id:'')} className="mr-1">
+             {(this.props.donation.user[0])?this.props.donation.user[0].firstName:''}
           </Link>
         </td>   
-        <td>{this.props.donation.size?this.props.donation.size.size:""}</td>
+        <td>{this.props.donation.size[0]?this.props.donation.size[0].size:""}</td>
         <td>{this.props.donation.color}</td>
-        <td>{this.props.donation.brand?this.props.donation.brand.brandName:""}</td>
+        <td>{this.props.donation.brand[0]?this.props.donation.brand[0].brandName:""}</td>
         <td>{this.props.donation.productAge}</td>
         <td><img src={'assets/uploads/donationImage/'+this.props.donation.productImage} className="avatar" alt=""/></td>
         <td>
