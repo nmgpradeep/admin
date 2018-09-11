@@ -15,9 +15,9 @@ class DefaultHeader extends Component {
   constructor(props) {
     super(props);    
     this.state = {
-			user:{},
-			notifications:0,
-			notifications:[]
+		user:{},
+		notifications:0,
+		notifications:[]
 	}	
     this.logoutHandler = this.logoutHandler.bind(this);
   }
@@ -27,27 +27,27 @@ class DefaultHeader extends Component {
     window.location.reload();
     //this.props.history.push('/login');
   };
+  
   changeStatusHandler(notification){
-	notification.isRead = 1;
-	//console.log("changeStatusHandler",notification)   
-    axios.post('/user/resdNotification',notification).then(result => {
+	notification.isRead = 1;	  
+     axios.post('/user/resdNotification',notification).then(result => {
       if(result.data.code === 200){
 		   window.location.reload();
       }
     });
   }
+  
   componentDidMount(){
 	axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 	axios.get('/user/getLoggedInUser').then(result => {
-		//console.log("result",result)
 		this.setState({ 
 			user:result.data.result,
 			notification_type:result.data.notification_type,
 			notifications :result.data.notifications,
 			totalNotifications:result.data.totalNotifications
 		})			
+		
 	})
-	
   }
  
   Capitalize(str){
@@ -107,10 +107,6 @@ class DefaultHeader extends Component {
              {/* <DropdownItem><i className="icon-basket-loaded text-primary"></i> New Trade Requested <Badge color="success">42</Badge></DropdownItem>
               <DropdownItem><i className="icon-basket-loaded text-secondary"></i> Trade Rejected<Badge color="danger">42</Badge></DropdownItem>
               <DropdownItem><i className="icon-note"></i> New Message Received {' '}<Badge color="warning">42</Badge></DropdownItem>*/}
-            
-            
-            
-            
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
               
               {/* <DropdownItem><i className="fa fa-user" href = "../../views/AdminProfile/Profile.js"></i> Profile</DropdownItem>

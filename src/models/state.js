@@ -10,8 +10,8 @@ var bcrypt = require('bcrypt-nodejs');
 
 var StateSchema = new Schema({
 country:{ 
- type:Schema.Types.ObjectId,
- ref: 'Country'
+  type:Schema.Types.ObjectId,
+  ref: 'Country'
 },
 stateName:{
     type:String,
@@ -31,4 +31,4 @@ StateSchema.methods.toJSON = function() {
     var obj = this.toObject();   
     return obj;
    }
-module.exports = mongoose.model('State', StateSchema);
+module.exports = mongoose.model('State',StateSchema);

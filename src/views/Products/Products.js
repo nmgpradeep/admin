@@ -21,7 +21,7 @@ class Products extends Component {
       totalPages: 1,
       productsCount: 0
     };
-    console.log('THIS OBJ',this);
+    //console.log('THIS OBJ',this);
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
@@ -58,10 +58,12 @@ class Products extends Component {
         this.loadCommentsFromServer();
       });
   };
+  
   componentDidMount() {    
        this.loadCommentsFromServer();
 
   }
+  
   productDeleteHandler (id){	
     this.setState({
       approve: false,

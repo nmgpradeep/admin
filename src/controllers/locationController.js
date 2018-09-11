@@ -164,7 +164,23 @@ const updateCountry = (req, res) => {
     }    
   })
 }
-
+/** Author	: Saurabh Agarwal
+ *  Date	: July 17, 2018
+ */
+/// function to list all cities
+const listingCity = (req, res) => {  
+	City.find({})
+      .sort({createdAt:-1})
+      .populate('stateSelect',['stateName'])
+      //.populate('userId',['firstName','lastName'])
+      .exec(function (err, country){
+              return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: country ,
+              });         
+        });
+ }
 /** Author	: Saurabh Agarwal
  *  Date	: July 16, 2018
  **/
@@ -707,6 +723,7 @@ module.exports = {
   getState,
   listingcities,
   getCountryStateCity,
-  getCity
+  getCity,
+  listingCity
 
 }

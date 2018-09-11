@@ -1,17 +1,14 @@
 const router = require('express').Router();
 const locationController = require('../controllers/locationController')
-//country routes
 router.post('/newCountry',locationController.createCountry)
 router.get('/listCountry',locationController.listCountry)
 router.get('/getLocation',locationController.getCountryStateCity)
 router.get('/viewCountry/:id',locationController.viewCountry)
 router.get('/getState/:id',locationController.getState)
-
 router.put('/updateCountry',locationController.updateCountry)
 router.delete('/deleteCountry/:id',locationController.deleteCountry)
 router.post('/updateStatus',locationController.updateStatus)
 router.get('/countries/:page', locationController.listCountry)
-//State routes
 router.post('/newState',locationController.createStates)
 router.get('/listingStates',locationController.listingStates)
 router.get('/viewState/:id',locationController.viewStates)
@@ -19,8 +16,6 @@ router.put('/updateState',locationController.updateStates)
 router.delete('/deleteState/:id',locationController.deleteStates)
 router.post('/changeStatus',locationController.changeStatus)
 router.get('/States/:page', locationController.listStates)
-
-//City routes
 router.post('/newCity',locationController.createCitys)
 router.get('/listCity',locationController.listCitys)
 router.get('/getCity/:id',locationController.getCity)
@@ -30,4 +25,5 @@ router.put('/updateCity',locationController.updateCitys)
 router.delete('/deleteCity/:id',locationController.deleteCitys)
 router.post('/status',locationController.Status)
 router.get('/cities/:page', locationController.listCitys)
+router.get('/listingCity', locationController.listingCity)
 module.exports = router;

@@ -332,6 +332,32 @@ const viewProduct = (req, res) => {
 }
 
 
+const activeProducts = (req,res) => {
+	 Product.find({productStatus:'1'})
+	    .populate('productCategory',['title'])
+	    .exec(function(err,result){
+			console.log('ppppppppppppppppppp',result);
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result
+			  });
+			}
+		 }
+	 });
+}
+
 /** Auther	: KS
  *  Date	: August 29, 2018
  *	Description : Function to listing popular items
@@ -551,5 +577,6 @@ module.exports = {
   switchTodays,
   myTreasureChest,
   addProduct,
-  tepmUpload
+  tepmUpload,
+  activeProducts
 }

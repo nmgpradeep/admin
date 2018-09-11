@@ -97,7 +97,7 @@ class ProductEdit extends Component {
     handleSize = (size) => {
 	  this.setState({size: size});
     }
-<<<<<<< HEAD
+
 	
     categoryhandleContentChange(value) {			
         this.setState({onDefaultValuesSet:value})    
@@ -107,24 +107,11 @@ class ProductEdit extends Component {
        this.props.history.push("/products");
     }
   
-    fileChangedHandler = (event) => {	
-=======
-
-
-  categoryhandleContentChange(value) {
-      this.setState({categories:value })
-  }
-
-  cancelHandler(){
-    this.props.history.push("/products");
-  }
-
-   fileChangedHandler = (event) => {
->>>>>>> a021a839f605c501ea5730fb4abf41ffbfeeaf6c
+    fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
 	   console.log('ddddddddd',this.state.selectedFile);
-
    }
+   
    conditionsChange = (value) => {
         this.setState({conditionValue: value.target.value});
    }

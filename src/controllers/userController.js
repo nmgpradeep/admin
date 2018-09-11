@@ -385,7 +385,7 @@ const login = (req, res) => {
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	}
-
+  
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if(flag) {
@@ -430,10 +430,6 @@ const login = (req, res) => {
                     message: httpResponseMessage.INTERNAL_SERVER_ERROR
                   })
                 })
-			// session.startSession(req, res, sessionValue)
-			// req.session.put('user',result);
-			// var value = req.session.get('user');
-			// console.log("SESSION VARIABLE",value);
 
           // set the use data in to session
              req.session.user = result;
@@ -517,41 +513,41 @@ const forgotPassword = (req,res) => {
                     <table width="600" cellpadding="0" cellspacing="0" align="center"  style="text-align:left">
                         <tr>
                             <td>
-                                <img src="%PUBLIC_URL%/emailer-header.png" alt="PitchAndSwitch" style="display:block;" />
+                            <img src="%PUBLIC_URL%/emailer-header.png" alt="PitchAndSwitch" style="display:block;" />
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding:40px; background-color: #ffffff;">
-                                <table width="100%" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                        <td style="padding:0 0 36px">
-                                            <h3 style="color: #d0a518;font-size: 22px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Hello `+result.userName.toUpperCase()+`,</h3>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 36px">
-                                            <p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">A request to reset your Pitch and Switch password has been made. If you did not make this request, simply ignore this email. If you did make this request, please reset your password:</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 34px">
-                                            <a href="`+link+`"><img src="%PUBLIC_URL%/reset-button.png" alt="Reset Password" /></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 55px">
+						<td style="padding:40px; background-color: #ffffff;">
+						<table width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+						<td style="padding:0 0 36px">
+						<h3 style="color: #d0a518;font-size: 22px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Hello `+result.userName.toUpperCase()+`,</h3>
+						</td>
+						</tr>
+						<tr>
+						<td style="padding:0 0 36px">
+						<p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">A request to reset your Pitch and Switch password has been made. If you did not make this request, simply ignore this email. If you did make this request, please reset your password:</p>
+						</td>
+						</tr>
+						<tr>
+						<td style="padding:0 0 34px">
+						<a href="`+link+`"><img src="%PUBLIC_URL%/reset-button.png" alt="Reset Password" /></a>
+						</td>
+						</tr>
+						<tr>
+						<td style="padding:0 0 55px">
 
-                                            <p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Thank you,<br/> Team Pitch and Switch</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0">
-                                            <p style="color: #969696; font-family: Arial; font-size: 13px;font-weight: 400; padding: 0; margin: 0"> If the button above does not work, try copying and pasting the URL into your browser. If you continue to have problems, please feel free to contact us at Pitch and Switch support team.</p>
+						<p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Thank you,<br/> Team Pitch and Switch</p>
+						</td>
+						</tr>
+						<tr>
+						<td style="padding:0">
+						<p style="color: #969696; font-family: Arial; font-size: 13px;font-weight: 400; padding: 0; margin: 0"> If the button above does not work, try copying and pasting the URL into your browser. If you continue to have problems, please feel free to contact us at Pitch and Switch support team.</p>
 
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
+						</td>
+						</tr>
+						</table>
+						</td>
                         </tr>
                         <tr>
                             <td style="padding:30px 0; text-align: center">
@@ -1073,11 +1069,10 @@ const deleteUser = (req, res) => {
  **/
 const getLoggedInUser = (req, res) => {
 	var token = getToken(req.headers);
-	if (token) {
+	if(token){
 		var totalNotifications  = 0;
 		decoded = jwt.verify(token,settings.secret);
-		var userId = decoded._id;
-		//console.log("decoded",decoded,userId)
+		var userId = decoded._id;		
 		  User.findOne({_id: userId}).then(function(user){
 			Notification.find({toUserId:1,isRead:0}, function (err, notifications) {
 			if(err){
@@ -1085,15 +1080,15 @@ const getLoggedInUser = (req, res) => {
 				  message: 'notification Error',
 				  code: httpResponseMessage.BAD_REQUEST
 				});
-			}
-			return res.json({
-					code: httpResponseCode.EVERYTHING_IS_OK,
-					message: httpResponseMessage.SUCCESSFULLY_DONE,
-					result: user,
-					totalNotifications:notifications.length,
-					notifications : notifications,
-					notification_type:constant.notification_type
-				});
+			  }
+			  return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				message: httpResponseMessage.SUCCESSFULLY_DONE,
+				result: user,
+				totalNotifications:notifications.length,
+				notifications : notifications,
+				notification_type:constant.notification_type
+			  });
 			});
        });
   } else {
@@ -1125,8 +1120,7 @@ const resdNotification = (req, res) => {
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
              result: result
-            });
-
+         });
       }
     }
   })

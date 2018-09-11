@@ -12,5 +12,5 @@ router.get('/popularItems',productController.popularItems)
 router.get('/myTreasureChest',productController.myTreasureChest)
 router.post('/addProduct',productController.addProduct)
 router.post('/tepmUpload',productController.tepmUpload)
-
+router.get('/activeProducts',productController.activeProducts)
 module.exports = router;
