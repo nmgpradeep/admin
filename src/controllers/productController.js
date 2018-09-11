@@ -42,6 +42,7 @@ getToken = function (headers) {
  */
 ///function to save new product in the list
 const create = (req, res) => {
+
   var form = new multiparty.Form(); 
   form.parse(req, function(err, data, files) {
 	  if (!data.productName) {
@@ -106,12 +107,12 @@ const create = (req, res) => {
 					})
 				  }
 
-			  })	  
-			  ///end file update///	  
+			  })
+			  ///end file update///
 			}
-		  
+
        });
-       
+
     });
 
 }
@@ -123,13 +124,15 @@ const create = (req, res) => {
 ///function to save new product in the list by fron user
 const addProduct = (req, res) => {
   var token = getToken(req.headers);
-
+console.log("reqdsgfd",req.files)
    if (token) {
          decoded = jwt.verify(token,settings.secret);
          var userId = decoded._id;
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
-          	  //console.log('Multiple', err, fields, files);
+          	 // console.log('postdata', err, data, files);
+             console.log('postdata', files);
+              return;
           	  //console.log('FIELD', fields.pageTitle[0]);
           	  if (!data.productName) {
           		return res.send({
@@ -559,7 +562,7 @@ const myTreasureChest = (req, res) => {
  *	Description : Function to upload temp image  for front-user
  **/
 const tepmUpload = (req, res) => {
-//  console.log("req",req.files)
+//  console.log("req",req.file)
   			  return res.json({
   					code: httpResponseCode.EVERYTHING_IS_OK,
   					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
