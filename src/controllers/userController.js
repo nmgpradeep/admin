@@ -108,7 +108,7 @@ const signup = (req, res) => {
 				   })
 
 				}
-				
+
 				//Save data in notification collection to send notification to the admin
 				//console.log("notification_type",constant.notification_type)
 				var notification = new Notification({ notificationTypeId:1,fromUserId:result._id,toUserId:1});
@@ -125,7 +125,7 @@ const signup = (req, res) => {
 			 // get latitude,longitude of user and save into collection
 			   // console.log(data.address);
 			    //~ where.is(data.address[0], function(err, responceData) {
-				  //~ if(err){				
+				  //~ if(err){
 						//~ return res.json({
 							//~ code: httpResponseCode.BAD_REQUEST,
 							//~ message: err
@@ -133,7 +133,7 @@ const signup = (req, res) => {
 					//~ }
 				  //~ if(!err) {
 					//~ User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":      responceData.get('lng') } }, { new:true }, (err,latlog) => {
-						//~ if(err){				
+						//~ if(err){
 							//~ return res.json({
 							//~ code: httpResponseCode.BAD_REQUEST,
 							//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
@@ -142,7 +142,7 @@ const signup = (req, res) => {
 					  //~ })
 				   //~ }
 				//~ });
-				
+
 
 			    delete result.password
 			  	// Generate test SMTP service account from ethereal.email
@@ -176,7 +176,7 @@ const signup = (req, res) => {
 						}
 						console.log('Message sent: %s', info.messageId);
 						// Preview only available when sending through an Ethereal account
-						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));						
+						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 					});
 
 					return res.json({
@@ -832,7 +832,7 @@ const viewUser = (req, res) => {
 		.populate('city')
 		.populate('city',['cityName'])
 		.populate('state',['stateName'])
-		.populate('country',['countryName'])  
+		.populate('country',['countryName'])
 	     .exec(function(err, result){
 			if (err) {
 				return res.send({
@@ -847,7 +847,7 @@ const viewUser = (req, res) => {
 			  });
 			} else {
 				return res.json({
-				code: httpResponseCode.EVERYTHING_IS_OK,             
+				code: httpResponseCode.EVERYTHING_IS_OK,
 				result: result
 				});
 			   }
@@ -919,15 +919,15 @@ const updateUser = (req, res) => {
 			  code: httpResponseMessage.BAD_REQUEST
 			});
 		  } else {
-		   // get latitude,longitude of user and save into collection		     
+		   // get latitude,longitude of user and save into collection
 			   //~ where.is(result.address, function(error, responceData) {
 				  //~ if(error){
 					  //~ console.log("Error in where is function",error)
 					  //~ next(error);
-						//~ } else {					
+						//~ } else {
 						//~ if (result) {
 							//~ User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
-							//~ if(err){				
+							//~ if(err){
 							//~ return res.json({
 							//~ code: httpResponseCode.BAD_REQUEST,
 							//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
@@ -937,7 +937,7 @@ const updateUser = (req, res) => {
 						//~ }
 						//~ }
 						//~ });
-				
+
 		  			//console.log('Created-Page',err, result);
 
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
@@ -1198,18 +1198,23 @@ const verifyUserEmail = (req, res) => {
  *  Date	: June 18, 2018
  *	Description : Function to delete the user
  **/
-const mostTrustedUsers = (req, res) => {	
-	TrustedUser.aggregate([{
-       $group:
-         {
-           _id: { $userId: "$userId"} },
-           totalAmount: { $sum: "$review" },
-           count: { $sum: 1 }         
-	     }
-	])
-     .exec(function(err, users) {			 
-             console.log('sssssss',users)
-     });
+const mostTrustedUsers = (req, res) => {
+console.log("mostTrustedUsers")
+  TrustedUser.find({},function(err,mstuser){
+     console.log("mstuser",mstuser)
+  })
+  // console.log("user",user);
+	// TrustedUser.aggregate([{
+  //      $group:
+  //        {
+  //          _id: { $userId: "$userId"} },
+  //          totalAmount: { $sum: "$review" },
+  //          count: { $sum: 1 }
+	//      }
+	// ])
+  //    .exec(function(err, users) {
+  //            console.log('sssssss',users)
+  //    });
 }
 
 

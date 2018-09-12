@@ -38,7 +38,7 @@ const create = (req, res) => {
       //~ if (req.body.parent != "") {
         //~ Category.findOne({ _id: req.body.parent }, (err, result) => {
 			//~ console.log("result",result)
-		
+
 			  //~ Category.create(req.body, (err1, result1) => {
 			 //~ //  console.log("RES-CATEGORY", err, result1);
 				//~ if (err1) {
@@ -47,7 +47,7 @@ const create = (req, res) => {
 					//~ code: httpResponseCode.BAD_REQUEST,
 					//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
 				  //~ });
-				//~ }				
+				//~ }
 				//~ else {
 				  //~ if (result !=null && result.children === null) result.children = [];
 				  //~ if (result1 !=null ) result.children.push(result1);
@@ -60,7 +60,7 @@ const create = (req, res) => {
 				  //~ });
 				//}
 			  //~ });
-		  
+
         //~ });
       //~ } else {
        // req.body.parent = null;
@@ -132,7 +132,7 @@ const viewCategory = (req,res) => {
             if(err){
               return res.send({
                 code: httpResponseCode.BAD_REQUEST,
-                message: httpResponseMessage.INTERNAL_SERVER_ERROR 
+                message: httpResponseMessage.INTERNAL_SERVER_ERROR
               });
             } else{
               if(!result){
@@ -266,11 +266,11 @@ const allCategories111 = (req, res) => {
           code: httpResponseCode.EVERYTHING_IS_OK,
           message: httpResponseMessage.SUCCESSFULLY_DONE,
           result: categories
-        }); 
+        });
     });
-   
-   
-  // Bottom to top query 
+
+
+  // Bottom to top query
   //~ Category.
   //~ find({}).
   //~ populate({
@@ -286,7 +286,7 @@ const allCategories111 = (req, res) => {
           //~ code: httpResponseCode.EVERYTHING_IS_OK,
           //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
           //~ result: categories
-        //~ }); 
+        //~ });
     //~ });
 };
 
@@ -295,7 +295,7 @@ const getNestedChildren = (arr, parent) => {
     for(var i in arr) {
         if((arr[i].parent != null ?arr[i].parent.toString():arr[i].parent) == (parent != null ?parent.toString():parent)) {
             var children = getNestedChildren(arr, arr[i]._id)
-            if(children.length) {				
+            if(children.length) {
                 arr[i].children = children
             }
             out.push(arr[i]);
@@ -309,10 +309,10 @@ const getNestedChildren = (arr, parent) => {
  *  Date	: June 18, 2018
  */
 /// function to list all products
-const allCategories = (req, res) => {	
-	// top to bottom query 
+const allCategories = (req, res) => {
+	// top to bottom query
    Category.find({}).sort({parent: 1})
-    .exec(function(err, categories) {	
+    .exec(function(err, categories) {
 		var newCats = [];
 		var index = 0;
 		for(var i in categories) {
@@ -333,12 +333,12 @@ const allCategories = (req, res) => {
 			cat.data = {_id: categories[i]._id};
 			//cat.id = parseInt(index) + 1;
 			index++;
-		
+
 			newCats.push(cat);
 			//~ categories[i]["text"] = categories[i].title;
 			//~ categories[i]["label"] = categories[i].title;
 			//~ categories[i]["value"] = categories[i]._id;
-		}	
+		}
 		//console.log('MMMMMMMMMM', newCats);
 	  categories = getNestedChildren(newCats, null);
 	  if (err) return next(err);
@@ -346,11 +346,11 @@ const allCategories = (req, res) => {
           code: httpResponseCode.EVERYTHING_IS_OK,
           message: httpResponseMessage.SUCCESSFULLY_DONE,
           result: categories
-        });            
+        });
     });
-   
-   
-  // Bottom to top query 
+
+
+  // Bottom to top query
   //~ Category.
   //~ find({}).
   //~ populate({
@@ -362,31 +362,31 @@ const allCategories = (req, res) => {
 					//~ }
 		//~ }
   //~ }).exec(function(err, categories) {
-	 
+
         //~ return res.json({
           //~ code: httpResponseCode.EVERYTHING_IS_OK,
           //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
           //~ result: categories
-        //~ }); 
-     
+        //~ });
+
     //~ });
- 
+
 };
 
 //~ function populateChield(category,allCateg) {
     //~ Category.find({'parent':category._id})
-		//~ .exec(function(err, ccates) {			
+		//~ .exec(function(err, ccates) {
 			//~ //console.log("populateChield",ccates)
 			//~ if(ccates.length !== 0){
 				//~ allCateg.push(ccates);
 				//~ console.log("populateGrandChield",ccates)
 				//~ ccates.forEach(function(cats, index, arr) {
 					//~ populateChield(cats,allCateg);
-				//~ })    
+				//~ })
 			//~ }else{
 				//~ allCateg.push(ccates);
 			//~ }
-		
+
 	//~ });
 	//~ //console.log("allCateg",allCateg)
 	//~ return allCateg
@@ -397,10 +397,10 @@ const allCategories = (req, res) => {
  *  Date	: June 20, 2018
  *	Description : Function to delete the user
  **/
-const deleteCategory = (req, res) => {  
-  Category.find({parent : req.params.id}, function(err,child){	 
-	  if(child.length == 0 || child == null){		
-		  Category.findById(req.params.id, (err, result) => {
+const deleteCategory = (req, res) => {
+  Category.find({parent : req.params.id}, function(err,child){
+	  if(child.length == 0 || child == null){
+		  Category.findOneAndRemove(req.params.id, (err, result) => {
 			if (err) {
 			  return res.json({
 				message: httpResponseMessage.USER_NOT_FOUND,
@@ -420,7 +420,7 @@ const deleteCategory = (req, res) => {
 		  });
 	  }
  })
-  
+
 };
 
 
