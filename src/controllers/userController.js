@@ -1332,6 +1332,40 @@ const send = (req, res) => {
 		});
 }
 
+
+/** Auther	: KS
+ *  Date	: July , 2018
+ *	Description : Function to getLoggedInUser
+ **/
+const frontNotification = (req, res) => {
+	var token = getToken(req.headers); 	
+	if (token) {	
+		var totalNotifications  = 0;
+		decoded = jwt.verify(token,settings.secret);	  
+		var userId = decoded._id;
+		  User.findOne({_id: userId}).then(function(user){   
+			Notification.find({toUserId:userId,isRead:0}, function (err, notifications) {
+			if(err){
+				return res.json({
+				  message: 'notification Error',
+				  code: httpResponseMessage.BAD_REQUEST
+				});
+			}
+			return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					message: httpResponseMessage.SUCCESSFULLY_DONE,
+					result: user,
+					totalNotifications:notifications.length,
+					notifications : notifications,
+					notification_type:constant.notification_type
+				});
+			});		
+       });
+  } else {
+	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
+}
+
 module.exports = {
 	signup,
 	userSignup,
@@ -1354,6 +1388,7 @@ module.exports = {
     updateNewPassword,
     resdNotification,
     sortingUsers,
-    mostTrustedUsers
+    mostTrustedUsers,
+    frontNotification
 
 }

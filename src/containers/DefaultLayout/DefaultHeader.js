@@ -28,13 +28,9 @@ class DefaultHeader extends Component {
     //this.props.history.push('/login');
   };
   
-  changeStatusHandler(notification){
-
-	notification.isRead = 1;	  
-     axios.post('/user/resdNotification',notification).then(result => {
-
+   changeStatusHandler(notification){
 	notification.isRead = 1;
-	//console.log("changeStatusHandler",notification)
+	//console.log("changeStatusHandler",notification)   
     axios.post('/user/resdNotification',notification).then(result => {
       if(result.data.code === 200){
 		   window.location.reload();
@@ -42,24 +38,22 @@ class DefaultHeader extends Component {
     });
   }
   
-  componentDidMount(){
+   componentDidMount(){
 	axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-	   axios.get('/user/getLoggedInUser').then(result => {
+	axios.get('/user/getLoggedInUser').then(result => {
 		this.setState({ 
-		this.setState({
 			user:result.data.result,
 			notification_type:result.data.notification_type,
 			notifications :result.data.notifications,
 			totalNotifications:result.data.totalNotifications
-		  })			
-	     })
-	   })
+		})			
 	})
+	
   }
 
   Capitalize(str){
-	//return str.charAt(0).toUpperCase() + str.slice(1);
-}
+	  //return str.charAt(0).toUpperCase() + str.slice(1);
+   }
 
   render() {
     // eslint-disable-next-line
@@ -106,21 +100,15 @@ class DefaultHeader extends Component {
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
 				 <DropdownItem header tag="div" className="text-center"><strong>You have {this.state.totalNotifications} notifications</strong></DropdownItem>
-				  {this.state.notifications.map((notification, i) => {
+				  { this.state.notifications.map((notification, i) => {
 					   return (<DropdownItem key={i} onClick={this.changeStatusHandler.bind(this,notification)}><i className="icon-user-follow text-success">{' '}{' '}</i>New User Registered<Badge color="info" key={i} style={{right:'1px'}}>{''}{/*this.state.totalNotifications*/}</Badge></DropdownItem>
 					   )
 					})
-				}
+				  }
              {/* <DropdownItem><i className="icon-basket-loaded text-primary"></i> New Trade Requested <Badge color="success">42</Badge></DropdownItem>
               <DropdownItem><i className="icon-basket-loaded text-secondary"></i> Trade Rejected<Badge color="danger">42</Badge></DropdownItem>
               <DropdownItem><i className="icon-note"></i> New Message Received {' '}<Badge color="warning">42</Badge></DropdownItem>*/}
-<<<<<<< HEAD
-=======
 
-
-
-
->>>>>>> aabf5a14b60e77214a9f08bbba6eb94c1b6c263d
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
 
               {/* <DropdownItem><i className="fa fa-user" href = "../../views/AdminProfile/Profile.js"></i> Profile</DropdownItem>
