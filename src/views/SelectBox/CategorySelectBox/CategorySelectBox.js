@@ -11,40 +11,40 @@ const TreeNode = TreeSelect.TreeNode;
 
 class CategorySelectBox extends Component {
   constructor(props) {
-    super(props);   
-    console.log("valuevaluevalue",this.props) 
-    this.state = { value: 'Select Category', category : '',	data:[]}; 
-    // this.onChange = this.onChange.bind(this) 
-   //  this.onDefaultValues(this.props.value) 
-    
+    super(props);
+    console.log("valuevaluevalue",this.props)  
+    this.state = { value: 'Select Category', category : '',	data:[]};
+    // this.onChange = this.onChange.bind(this)
+   //  this.onDefaultValues(this.props.value)
+
   }
-    
+
   //~ onChange(currentNode, selectedNodes) {
 		//~ selectedNodes = currentNode;
-		//~ console.log('State Properties', this.state,this.props);	
-		//~ console.log('currentNode', currentNode);	
-		//~ console.log('selectedNodes',selectedNodes);	
+		//~ console.log('State Properties', this.state,this.props);
+		//~ console.log('currentNode', currentNode);
+		//~ console.log('selectedNodes',selectedNodes);
   //~ }
- 
+
   onChange = (value) => {
     //console.log(value);
     this.setState({value});
-    this.props.onSelectCategory(value); 
+    this.props.onSelectCategory(value);
     this.setState({category:value});
   }
-  
-  onDefaultValues = (value) => {    
+
+  onDefaultValues = (value) => {
     //this.setState({category:value});
     console.log('defaultvalue',value);
-    this.props.onDefaultValuesSet(value); 
+    this.props.onDefaultValuesSet(value);
   }
-  
+
   componentDidMount(){
     axios.get('/category/allCategories').then(result => {
-      if(result.data.code === 200){		  
+      if(result.data.code === 200){
 		  console.log("allCategories",result.data.result)
         this.setState({
-          data: result.data.result,           
+          data: result.data.result,
         });
       }
     })
@@ -55,11 +55,11 @@ class CategorySelectBox extends Component {
       }
     });
   }
-  
+
   render() {
-      
+
     return (
-      <TreeSelect        
+      <TreeSelect
         style={{ width: 300 }}
         value={this.props.value}
         dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
@@ -69,7 +69,7 @@ class CategorySelectBox extends Component {
         onChange={this.onChange}
       />
     );
-         
+
   }
 }
 export default CategorySelectBox;

@@ -42,7 +42,6 @@ getToken = function (headers) {
  */
 ///function to save new product in the list
 const create = (req, res) => {
-
   var form = new multiparty.Form(); 
   form.parse(req, function(err, data, files) {
 	  if (!data.productName) {
@@ -124,15 +123,15 @@ const create = (req, res) => {
 ///function to save new product in the list by fron user
 const addProduct = (req, res) => {
   var token = getToken(req.headers);
-console.log("reqdsgfd",req.files)
+
    if (token) {
          decoded = jwt.verify(token,settings.secret);
          var userId = decoded._id;
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
           	 // console.log('postdata', err, data, files);
-             console.log('postdata', files);
-              return;
+             //console.log('postdata', files);
+             // return;
           	  //console.log('FIELD', fields.pageTitle[0]);
           	  if (!data.productName) {
           		return res.send({

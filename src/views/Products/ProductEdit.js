@@ -98,6 +98,7 @@ class ProductEdit extends Component {
 	  this.setState({size: size});
     }
 
+
 	
     categoryhandleContentChange(value) {			
         this.setState({onDefaultValuesSet:value})    
@@ -105,11 +106,11 @@ class ProductEdit extends Component {
   
     cancelHandler(){
        this.props.history.push("/products");
-    }
-  
+    }  
     fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
 	   console.log('ddddddddd',this.state.selectedFile);
+
    }
    
    conditionsChange = (value) => {
