@@ -26,8 +26,7 @@ const createSizes = (req, res) => {
     if (flag) {
       return res.json(flag);
     }
-    let now = new Date();
-      
+    let now = new Date();      
     Size.create(req.body, (err, result) => {
         console.log('RES-Sizes',err, result);
         if (err) {

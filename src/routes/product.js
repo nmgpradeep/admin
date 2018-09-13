@@ -13,4 +13,5 @@ router.get('/myTreasureChest',productController.myTreasureChest)
 router.post('/addProduct',productController.addProduct)
 router.post('/tepmUpload',productController.tepmUpload)
 router.get('/activeProducts',productController.activeProducts)
+router.get('/searchresult/:id',productController.searchresult)
 module.exports = router;
