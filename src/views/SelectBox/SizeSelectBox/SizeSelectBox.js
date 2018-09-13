@@ -20,7 +20,7 @@ class SizeSelectBox extends Component {
   }
   
   componentDidMount(){	
-    axios.put('/size/listingsize').then(result => {		
+    axios.get('/size/listingsize').then(result => {		
       if(result.data.code === 200){
 		  this.setState({
             options: result.data.result,           

@@ -22,7 +22,7 @@ class BrandSelectBox extends Component {
   }  
   
   componentDidMount(){	
-    axios.put('/brand/listingbrand').then(result => {		
+    axios.get('/brand/listingbrand').then(result => {		
 		console.log('brand listing',result);
          if(result.data.code === 200){	
 		  this.setState({
