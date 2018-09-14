@@ -460,7 +460,7 @@ const updateProduct = (req, res) => {
 				}
 				  });
 				});
-			  Product.update({ _id:data._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
+			    Product.update({ _id:data._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
@@ -510,6 +510,37 @@ const deleteProduct = (req, res) => {
              result: result
       });
   })
+}
+
+/** Auther	: KS
+ *  Date	: september 13, 2018
+ *	Description : Function to search product listing
+ **/
+const searchresult = (req, res) => {
+	const id = req.params.id;
+	Product.find({productCategory:id,productStatus:1})
+	    .populate({ path: "productCategory", model: "Category"})
+	    .exec(function(err,result){
+			console.log('mmmmmm',result);
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result
+			  });
+			}
+		 }
+	 });
 }
 
 /** Auther	: Rajiv kumar
@@ -565,11 +596,11 @@ const myTreasureChest = (req, res) => {
  **/
 const tepmUpload = (req, res) => {
 //  console.log("req",req.file)
-  			  return res.json({
-  					code: httpResponseCode.EVERYTHING_IS_OK,
-  					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
-  				  result: []
-  				  });
+	  return res.json({
+		 code: httpResponseCode.EVERYTHING_IS_OK,
+			message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+		  result: []
+	  });
 }
 module.exports = {
   create,
@@ -583,5 +614,6 @@ module.exports = {
   myTreasureChest,
   addProduct,
   tepmUpload,
-  activeProducts
+  activeProducts,
+  searchresult
 }

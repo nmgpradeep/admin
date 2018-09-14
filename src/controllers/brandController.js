@@ -108,8 +108,7 @@ const listBrands = (req, res) => {
 **/
 //Function to view the Brand details
 const viewBrands = (req, res) => {
-	const id = req.params.id;
-	console.log('<<<<<<<<<<<Brands>>>>',id);  
+	const id = req.params.id;	
 	Brand.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({

@@ -45,12 +45,8 @@ app.use(bodyParser.urlencoded({
 extended: true
 }));
 app.use(bodyParser.json());
-
 app.use(cookieParser());
-
-
 app.use(morgan('dev'));
-
 //Exoress session object
 app.set('trust proxy', 1) // trust first proxy
 var MemoryStore =session.MemoryStore;

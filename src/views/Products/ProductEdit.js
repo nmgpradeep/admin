@@ -189,8 +189,7 @@ class ProductEdit extends Component {
   componentDidMount() {
       axios.get('/product/viewProduct/' + this.state.productId).then(result => {
       if(result.data.code === 200) {
-        this.setState({editProduct: result.data.result});
-        console.log('ffffffffff',result.data.result);
+        this.setState({editProduct: result.data.result});       
         this.productName.value = result.data.result.productName;
         this.description.value = result.data.result.description;
         if(result.data.result.productCategory && result.data.result.productCategory.length > 0){
