@@ -27,28 +27,28 @@ class DefaultHeader extends Component {
     window.location.reload();
     //this.props.history.push('/login');
   };
-  
+
    changeStatusHandler(notification){
 	notification.isRead = 1;
-	//console.log("changeStatusHandler",notification)   
-    axios.post('/user/resdNotification',notification).then(result => {
+	//console.log("changeStatusHandler",notification)
+    axios.post('/user/readNotification',notification).then(result => {
       if(result.data.code === 200){
 		   window.location.reload();
       }
     });
   }
-  
+
    componentDidMount(){
 	axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
 	axios.get('/user/getLoggedInUser').then(result => {
-		this.setState({ 
+		this.setState({
 			user:result.data.result,
 			notification_type:result.data.notification_type,
 			notifications :result.data.notifications,
 			totalNotifications:result.data.totalNotifications
-		})			
+		})
 	})
-	
+
   }
 
   Capitalize(str){

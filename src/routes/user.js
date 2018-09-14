@@ -12,6 +12,8 @@ router.get('/users/:page', userController.users);
 router.post('/sortingUsers', userController.sortingUsers);
 router.get('/listUser', userController.listUser);
 router.get('/viewUser/:id',userController.viewUser);
+router.get('/verifyEmail/:id', userController.verifyEmail);
+router.get('/verifyUserEmail/:id', userController.verifyUserEmail);
 //router.get('/viewPage/:id',pageController.viewPage);
 router.post('/updateUser',userController.updateUser);
 router.post('/changeStatus',userController.changeStatus);
@@ -22,7 +24,7 @@ router.get('/getLoggedInUser',userController.getLoggedInUser);
 router.post('/forgotPassword', userController.forgotPassword);
 router.get('/resetPassword/:id', userController.resetPassword)
 router.post('/updateNewPassword', userController.updateNewPassword);
-router.post('/resdNotification', userController.resdNotification);
+router.post('/readNotification', userController.readNotification);
 router.get('/mostTrustedUsers',userController.mostTrustedUsers);
 router.get('/frontNotification',userController.frontNotification);
 module.exports = router;

@@ -5,13 +5,13 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var OfferTradeSchema = new Schema({
-pitchUserId:{ 
+pitchUserId:{
  type: Schema.Types.ObjectId,
- ref: 'USer'
+ ref: 'User'
 },
 SwitchUserId:{
  type: Schema.Types.ObjectId,
- ref: 'USer'
+ ref: 'User'
 },
 SwitchUserProductId:{
  type: Schema.Types.ObjectId,
@@ -19,13 +19,15 @@ SwitchUserProductId:{
 },
 ditchCount:{
  type:Number,
- trim: true
+ trim: true,
+ default:0
 },
 //
 status:{
  type:String,
  trim:true,
- sparse:true
+ sparse:true,
+ default:0
 }
 },
 {
@@ -33,7 +35,7 @@ timestamps:true
 });
 
 OfferTradeSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
+    var obj = this.toObject();
     return obj;
 }
 

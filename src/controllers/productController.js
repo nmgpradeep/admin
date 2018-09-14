@@ -42,7 +42,7 @@ getToken = function (headers) {
  */
 ///function to save new product in the list
 const create = (req, res) => {
-  var form = new multiparty.Form(); 
+  var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
 	  if (!data.productName) {
 		return res.send({
@@ -374,13 +374,16 @@ const popularItems = (req,res) => {
 **/
 const switchTodays = (req,res) => {
 	var toDate = new Date();
-	 Trade.find({createdAt:new Date("2018-07-17T13:16:22.095Z")})
+  var startDate = moment(toDate).format('YYYY-MM-DD')
+  var endDate = startDate+'T23:59:59.495Z';
+  var startDate = startDate+'T00:00:01.495Z';
+	 Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})
 	    .populate({ path: "tradePitchProductId", model: "Product"})
 	    .populate({ path: "tradeSwitchProductId", model: "Product"})
 	    .populate({ path: "productCategory", model: "Category"})
 	    .populate({ path: "productImages", model: "Product"})
 	    .exec(function(err,result){
-			console.log('mmmmmm',result);
+			console.log('switchTodays',result);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,

@@ -385,7 +385,7 @@ const login = (req, res) => {
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	}
-  
+
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if(flag) {
@@ -1072,7 +1072,7 @@ const getLoggedInUser = (req, res) => {
 	if(token){
 		var totalNotifications  = 0;
 		decoded = jwt.verify(token,settings.secret);
-		var userId = decoded._id;		
+		var userId = decoded._id;
 		  User.findOne({_id: userId}).then(function(user){
 			Notification.find({toUserId:1,isRead:0}, function (err, notifications) {
 			if(err){
@@ -1102,7 +1102,7 @@ const getLoggedInUser = (req, res) => {
  *  Date	: August 3, 2018
  *	Description : Function to change the notification status as Read
  **/
-const resdNotification = (req, res) => {
+const readNotification = (req, res) => {
   Notification.update({ _id:req.body._id },  { "$set": { "isRead": 1 } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -1343,12 +1343,12 @@ const send = (req, res) => {
  *	Description : Function to getLoggedInUser
  **/
 const frontNotification = (req, res) => {
-	var token = getToken(req.headers); 	
-	if (token) {	
+	var token = getToken(req.headers);
+	if (token) {
 		var totalNotifications  = 0;
-		decoded = jwt.verify(token,settings.secret);	  
+		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded._id;
-		  User.findOne({_id: userId}).then(function(user){   
+		  User.findOne({_id: userId}).then(function(user){
 			Notification.find({toUserId:userId,isRead:0}, function (err, notifications) {
 			if(err){
 				return res.json({
@@ -1364,7 +1364,7 @@ const frontNotification = (req, res) => {
 					notifications : notifications,
 					notification_type:constant.notification_type
 				});
-			});		
+			});
        });
   } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
@@ -1391,7 +1391,7 @@ module.exports = {
     forgotPassword,
     resetPassword,
     updateNewPassword,
-    resdNotification,
+    readNotification,
     sortingUsers,
     mostTrustedUsers,
     frontNotification

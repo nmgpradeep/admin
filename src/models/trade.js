@@ -11,43 +11,51 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var TradeSchema = new Schema({
-sellerId:{
+offerTradeId:{
 	type: Schema.Types.ObjectId,
-	ref: 'User'
+	ref: 'OfferTrade'
 },
-receiverId:{
-	type: Schema.Types.ObjectId,
-	ref: 'User'
-},
-sellerProductId:{
-	type: Schema.Types.ObjectId,
-    ref: 'Product'
-},
-receiverProductId:{
+tradePitchProductId:{
 	type: Schema.Types.ObjectId,
 	ref: 'Product'
 },
-Status:{
-  type:String,
-  trim:true,
-  sparse:true,
-  default:0
+tradeSwitchProductId:{
+	type: Schema.Types.ObjectId,
+	ref: 'Product'
 },
-sendReturnStatus:{
+shippingCost:{
+	type: String,
+	trim: true
+},
+
+pitchUserPaymentStatus:{
   type:String,
   trim:true,
   sparse:true,
-  default:0
-}
+  default:0	
+},
+switchUserPaymentStatus:{
+  type:String,
+  trim:true,
+  sparse:true,
+  default:0	
+},
+switchDate:{
+ type: Date, default: Date.now  
+},
+  Status:{
+  type:String,
+  trim:true,
+  sparse:true,
+  default:0 
+ }
 },
 {
-timestamps:true
+  timestamps:true
 });
 
 TradeSchema.methods.toJSON = function() {
     var obj = this.toObject();
-
     return obj;
- }
-
+}
 module.exports = mongoose.model('Trade', TradeSchema);

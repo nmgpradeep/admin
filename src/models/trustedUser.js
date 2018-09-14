@@ -1,19 +1,20 @@
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema;
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
-var TrustedUserSchema = new Schema({
+var TruestedUserSchema = new Schema({	
 submitUserId:{
   type:String,
   trim:true
 },
 userId:{
- type: Schema.Types.ObjectId,
- ref:'User'
+ type:String,
+ trim:true
 },
 tradeId:{
-    type:Schema.Types.ObjectId,
-    ref:'Trade'
+    type:String,
+    trim:true
 },
 review:{
     type:String,
@@ -29,10 +30,9 @@ status:{
 {
  timestamps:true
 });
-
-TrustedUserSchema.methods.toJSON = function() {
+TruestedUserSchema.methods.toJSON = function() {
     var obj = this.toObject();
     delete obj.password;
     return obj;
 }
-module.exports = mongoose.model('TrustedUser', TrustedUserSchema);
+module.exports = mongoose.model('TruestedUser', TruestedUserSchema);

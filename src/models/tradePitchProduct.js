@@ -5,23 +5,12 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var TradePitchProductSchema = new Schema({
-	
-offerTradeId:{ 
+
+offerTradeId:{
  type: Schema.Types.ObjectId,
  ref: 'OfferTrade'
 },
-ProductId1:{
- type:String,
- trim: true
-},
-ProductId2:{
- type:String,
- trim: true
-},
-ProductId3:{
- type:String,
- trim: true
-},
+products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
 status:{
   type:String,
   trim:true,
