@@ -60,7 +60,6 @@ class Products extends Component {
   
   componentDidMount() {    
        this.loadCommentsFromServer();
-
   }
   
   productDeleteHandler (id){	
@@ -185,7 +184,6 @@ class Products extends Component {
           </ModalFooter>
         </Modal>
       </div>
-
     );
   }
 }
