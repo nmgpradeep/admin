@@ -3,6 +3,7 @@ const Category = require('../models/category')
 const Product = require('../models/product')
 const TradePitchProduct = require('../models/tradePitchProduct')
 const Trade = require('../models/trade')
+const OfferTrade = require('../models/offerTrade')
 const ProductImage = require('../models/productImage')
 const User = require('../models/User')
 const httpResponseCode = require('../helpers/httpResponseCode')
@@ -65,7 +66,7 @@ const create = (req, res) => {
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			  })
 			} else {
-			  console.log('Created-Page',err, result);
+			  //console.log('Created-Page',err, result);
 			 // check file and upload if exist
 			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
 				var fileName = files.productImages[0].originalFilename;
@@ -90,7 +91,7 @@ const create = (req, res) => {
 				  });
 				});
 			  }
-			  console.log('resultImgas',result);
+			 // console.log('resultImgas',result);
 			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){
 					return res.send({
@@ -181,7 +182,7 @@ const addProduct = (req, res) => {
           				  });
           				});
           			  }
-          			  console.log('resultImgas',result);
+          			  //console.log('resultImgas',result);
           			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
           				if(err){
           					return res.send({
@@ -338,7 +339,7 @@ const activeProducts = (req,res) => {
 	 Product.find({productStatus:'1'})
 	    .populate('productCategory',['title'])
 	    .exec(function(err,result){
-			console.log('ppppppppppppppppppp',result);
+			//console.log('ppppppppppppppppppp',result);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -374,16 +375,15 @@ const popularItems = (req,res) => {
 **/
 const switchTodays = (req,res) => {
 	var toDate = new Date();
-  var startDate = moment(toDate).format('YYYY-MM-DD')
-  var endDate = startDate+'T23:59:59.495Z';
-  var startDate = startDate+'T00:00:01.495Z';
-	 Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})
-	    .populate({ path: "tradePitchProductId", model: "Product"})
-	    .populate({ path: "tradeSwitchProductId", model: "Product"})
-	    .populate({ path: "productCategory", model: "Category"})
+	var startDate = moment(toDate).format('YYYY-MM-DD')
+	var endDate = startDate+'T23:59:59.495Z';
+	var startDate = startDate+'T00:00:01.495Z';
+	 Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})		
+	    .populate({ path: "tradePitchProductId",populate:{path:"productCategory"}})
+	    .populate({ path: "tradeSwitchProductId", model: "Product",populate:{path:"productCategory"}})
 	    .populate({ path: "productImages", model: "Product"})
-	    .exec(function(err,result){
-			console.log('switchTodays',result);
+	    .populate({ path: "offerTradeId",populate:(["pitchUserId","SwitchUserId"]), model: "offerTrade"})	   
+	    .exec(function(err,result){			
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -521,7 +521,7 @@ const searchresult = (req, res) => {
 	Product.find({productCategory:id,productStatus:1})
 	    .populate({ path: "productCategory", model: "Category"})
 	    .exec(function(err,result){
-			console.log('mmmmmm',result);
+			//console.log('mmmmmm',result);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,

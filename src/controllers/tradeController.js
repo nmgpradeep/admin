@@ -169,16 +169,15 @@ const returnraised = (req, res) => {
 
 /* #################  functions related to offers trade write in this block ################### */
 
+
 /** Auther	: Rajiv kumar
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
 const offerTrade = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   const data = req.body;
       let now = new Date();
-        OfferTrade.create(req.body, (err, result) => {
-		  console.log('RES-Trade',err, result);
+        OfferTrade.create(req.body, (err, result) => {		 
         if (err) {
           return res.send({
 			      errr : err,
@@ -201,13 +200,11 @@ const offerTrade = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const offerTrades = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+const offerTrades = (req, res) => {  
   const data = req.body;
       let now = new Date();
         OfferTrade.find({},(err, result) => {
-		      console.log('RES-Trade',err, result);
-          return res.send({
+	      return res.send({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
             result: result
@@ -216,18 +213,16 @@ const offerTrades = (req, res) => {
 }
 
 
-/* functions related to tradePitchProduct write in this block */
+/*################### functions related to tradePitchProduct write in this block ############ */
 /** Auther	: Rajiv kumar
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const tradePitchProduct = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+const tradePitchProduct = (req, res) => { 
   const data = req.body;
       let now = new Date();
         TradePitchProduct.create(req.body, (err, result) => {
-		  console.log('RES-Trade',err, result);
-        if (err) {
+		 if (err) {
           return res.send({
 			      errr : err,
             code: httpResponseCode.BAD_REQUEST,
@@ -242,9 +237,6 @@ const tradePitchProduct = (req, res) => {
         }
     })
 }
-
-
-
 
 
 module.exports = {
