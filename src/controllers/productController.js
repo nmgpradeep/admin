@@ -378,12 +378,12 @@ const switchTodays = (req,res) => {
 	var startDate = moment(toDate).format('YYYY-MM-DD')
 	var endDate = startDate+'T23:59:59.495Z';
 	var startDate = startDate+'T00:00:01.495Z';
-	 Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})		
+	 Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})
 	    .populate({ path: "tradePitchProductId",populate:{path:"productCategory"}})
 	    .populate({ path: "tradeSwitchProductId", model: "Product",populate:{path:"productCategory"}})
 	    .populate({ path: "productImages", model: "Product"})
-	    .populate({ path: "offerTradeId",populate:(["pitchUserId","SwitchUserId"]), model: "offerTrade"})	   
-	    .exec(function(err,result){			
+	    .populate({ path: "offerTradeId",populate:(["pitchUserId","SwitchUserId"]), model: "offerTrade"})
+	    .exec(function(err,result){
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -591,6 +591,80 @@ const myTreasureChest = (req, res) => {
 }
 
 /** Auther	: Rajiv kumar
+ *  Date	: August 6, 2018
+ *	Description : Function to get myTreasureChest for front-user
+ **/
+const myTreasureChestFilterBy = (req, res) => {
+
+  var sortObject = {};
+  var condObject = {};
+
+  var stype = "productName";
+  var sdir = 1;
+  if(req.body.sortBy != "" || req.body.sortBy !=undefined){
+      if(req.body.sortBy == 1){
+        var stype = "createdAt";
+        var sdir = 1;
+      }else if(req.body.sortBy == 2){
+        var stype = "productName";
+        var sdir = -1;
+      }else if(req.body.sortBy == 3){
+        var stype = "productName";
+        var sdir = 1;
+      }else if(req.body.sortBy == 4){
+        var stype = "createdAt";
+        var sdir = -1;
+      }
+  }
+  sortObject[stype] = sdir;
+  console.log("Request Data",req.body)
+	var perPage = constant.PER_PAGE_RECORD;
+	var page = req.params.page || 1;
+
+	 var token = getToken(req.headers);
+	  if (token) {
+		      decoded = jwt.verify(token,settings.secret);
+		      var userId = decoded._id;
+          condObject["userId"] = userId;
+          if(req.body.category !== ''){
+              condObject["productCategory"] = req.body.category;
+          }
+  	Product.find(condObject)
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+  	   .skip((perPage * page) - perPage)
+       .limit(perPage)
+       .sort(sortObject)
+       .exec(function(err, products) {
+         console.log("products",products)
+        if (err) {
+  			return res.send({
+  			  code: httpResponseCode.BAD_REQUEST,
+  			  message: httpResponseMessage.INTERNAL_SERVER_ERROR
+  			})
+  		  } else {
+  			if (!products) {
+  			  res.json({
+  				message: httpResponseMessage.USER_NOT_FOUND,
+  				code: httpResponseMessage.BAD_REQUEST
+  			  });
+  			}else {
+  			  return res.json({
+  					code: httpResponseCode.EVERYTHING_IS_OK,
+  					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+  				   result: products
+  				  });
+
+  			}
+  		  }
+  		});
+	   } else {
+		 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	   }
+}
+
+
+/** Auther	: Rajiv kumar
  *  Date	: Sept 7, 2018
  *	Description : Function to upload temp image  for front-user
  **/
@@ -615,5 +689,6 @@ module.exports = {
   addProduct,
   tepmUpload,
   activeProducts,
-  searchresult
+  searchresult,
+  myTreasureChestFilterBy
 }

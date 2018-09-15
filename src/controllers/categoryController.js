@@ -125,7 +125,7 @@ const categories = (req, res) => {
  **/
 const viewCategory = (req,res) => {
   const id = req.params.id;
-  console.log("<<<<<<<<<Category<<<<<", id);
+//  console.log("<<<<<<<<<Category<<<<<", id);
   Category.findOne({_id:id})
           .populate({ path: "parent", model: "Category"})
           .exec(function(err, result){
@@ -424,6 +424,40 @@ const deleteCategory = (req, res) => {
 };
 
 
+/** Auther	: Rajiv kumar
+ *  Date	: Sept 15, 2018
+ */
+/// function to simplly get list all category
+const listCategory = (req, res) => {
+  Category.find({})
+    .exec(function(err, categories) {
+        if (err) return next(err);
+        var newCats = [];
+          for(var i in categories) {
+            //var mycat = Object.assign({}, categories[i]);
+            var mycat = Object.assign({}, categories[i]);
+            var cat = mycat._doc;
+            delete cat.products;
+            delete cat.description
+            delete cat.createdAt;
+            delete cat.updatedAt;
+            delete cat.__v;
+            delete cat.cat_id;
+            delete cat.id;
+            delete cat.catParent;
+            cat.label = categories[i].title;
+            cat.value = (categories[i]._id == null )?"0":categories[i]._id.toString();
+            newCats.push(cat);
+          }
+        return res.json({
+          code: httpResponseCode.EVERYTHING_IS_OK,
+          message: httpResponseMessage.SUCCESSFULLY_DONE,
+          result: newCats
+        });
+    });
+  };
+
+
 module.exports = {
   create,
   categories,
@@ -431,5 +465,6 @@ module.exports = {
   updateCategory,
   deleteCategory,
   changeStatus,
-  allCategories
+  allCategories,
+  listCategory
 };

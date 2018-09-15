@@ -11,6 +11,24 @@ const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
 const Notification = require('../models/notification')
+var settings = require('../config/settings'); // get settings file
+var passport = require('passport');
+require('../config/passport')(passport);
+var jwt = require('jsonwebtoken');
+
+var bcrypt = require('bcrypt-nodejs');
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length) {
+      return parted[0];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
 
 
 //Auther: Rajiv Kumar Date	: July 2, 2018
@@ -48,11 +66,11 @@ const Notification = require('../models/notification')
  */
 ///function to save new Trade in the list
 const newTrades = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+//  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   const data = req.body;
       let now = new Date();
         Trade.create(req.body, (err, result) => {
-		  console.log('RES-Trade',err, result);
+		 // console.log('RES-Trade',err, result);
         if (err) {
           return res.send({
 			errr : err,
@@ -76,7 +94,7 @@ const newTrades = (req, res) => {
 //Function to view all Trades
 const viewTrades = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<Trades>>>>',id);
+//	console.log('<<<<<<<<<<<Trades>>>>',id);
 	Trade.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -177,7 +195,7 @@ const returnraised = (req, res) => {
 const offerTrade = (req, res) => {
   const data = req.body;
       let now = new Date();
-        OfferTrade.create(req.body, (err, result) => {		 
+        OfferTrade.create(req.body, (err, result) => {
         if (err) {
           return res.send({
 			      errr : err,
@@ -200,16 +218,61 @@ const offerTrade = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const offerTrades = (req, res) => {  
-  const data = req.body;
-      let now = new Date();
-        OfferTrade.find({},(err, result) => {
-	      return res.send({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: result
+const offerTrades = (req, res) => {
+
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+
+
+  var token = getToken(req.headers);
+
+   if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+
+
+
+
+
+
+  OfferTrade.find({}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort({createdAt:-1})
+    .populate('pitchUserId')
+    .populate('SwitchUserId')
+    .populate('SwitchUserProductId')
+    .exec(function(err, offerTrades) {
+        Trade.count().exec(function(err, count) {
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: offerTrades,
+                currentUser:userId,
+                total : count,
+                current: page,
+                perPage: perPage,
+
+                pages: Math.ceil(count / perPage)
+            });
           })
-    })
+      });
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+  // const data = req.body;
+  //     let now = new Date();
+  //       OfferTrade.find({},(err, result) => {
+	//       return res.send({
+  //           code: httpResponseCode.EVERYTHING_IS_OK,
+  //           message: httpResponseMessage.SUCCESSFULLY_DONE,
+  //           result: result
+  //         })
+  //   })
+
+
 }
 
 
@@ -218,7 +281,7 @@ const offerTrades = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const tradePitchProduct = (req, res) => { 
+const tradePitchProduct = (req, res) => {
   const data = req.body;
       let now = new Date();
         TradePitchProduct.create(req.body, (err, result) => {
