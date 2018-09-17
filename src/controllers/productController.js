@@ -520,8 +520,8 @@ const searchresult = (req, res) => {
 	const id = req.params.id;
 	Product.find({productCategory:id,productStatus:1})
 	    .populate({ path: "productCategory", model: "Category"})
+	    .populate('userId',['firstName','lastName','profilePic'])
 	    .exec(function(err,result){
-			//console.log('mmmmmm',result);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
