@@ -234,5 +234,5 @@ module.exports = {
     viewSizes,
     deleteSizes,
     listingsize,
-    sortingSizes
+    sortingSizes,
 }

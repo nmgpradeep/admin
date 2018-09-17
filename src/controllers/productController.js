@@ -520,7 +520,7 @@ const searchresult = (req, res) => {
 	const id = req.params.id;
 	Product.find({productCategory:id,productStatus:1})
 	    .populate({ path: "productCategory", model: "Category"})
-	    .populate('userId',['firstName','lastName','profilePic'])
+	    //.populate('userId',['firstName','lastName','profilePic'])
 	    .exec(function(err,result){
 			if (err) {
 			 return res.send({

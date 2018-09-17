@@ -373,19 +373,17 @@ const viewStates = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
-        return res.json({
+      } else {
+          return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result
-            });
-
+         });
       }
     }
   })
 }
   
 const getState = (req, res) => { 
-  console.log('country IDDDD',req.params);
   State.find({ country:req.params.id }, req.body, { new:true },(err,result) => {
     if(err){
 		return res.send({
@@ -404,7 +402,7 @@ const getState = (req, res) => {
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
             });
-      }
+        }
     }    
   })
 }
@@ -462,7 +460,7 @@ const deleteStates = (req, res) => {
  **/
 //Function to update the States status.
 const changeStatus = (req, res) => { 
-	console.log("REQ0",req.body)
+console.log("REQ0",req.body)
   State.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -542,7 +540,6 @@ const listCitys = (req, res) => {
       .exec(function (err, city){
           City.count().exec(function(err, count) {
             if (err) return next(err)
-          //  console.log('The author is %s', testimonial[0].author);
               return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -599,13 +596,13 @@ const updateCitys = (req, res) => {
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-    }else {
+    } else {
       if (!result) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -686,7 +683,7 @@ const getCity = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -698,6 +695,29 @@ const getCity = (req, res) => {
 }
 
 
+const activeCities = (req,res) => {
+	 City.find({status:1})
+	    .exec(function(err,result){
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.CITY_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result
+			  });
+			}
+		 }
+	 });
+}
 
 
 module.exports = {
@@ -724,6 +744,7 @@ module.exports = {
   listingcities,
   getCountryStateCity,
   getCity,
-  listingCity
+  listingCity,
+  activeCities
 
 }

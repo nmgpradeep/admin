@@ -99,9 +99,6 @@ const categories = (req, res) => {
   Category.find({})
     .skip((perPage * page) - perPage)
     .limit(perPage)
-    // .populate('sellerId')
-    // .populate('receiverId')
-    // .populate('sellerProductId')
     .populate('parent',['title'])
     .sort({createdAt:-1})
     .exec(function(err, categories) {
@@ -119,13 +116,31 @@ const categories = (req, res) => {
           })
       });
   }
+/** Auther	: KS
+ *  Date	: June 18, 2018
+ */
+/// function to list all category available in  collection
+const categoriesActive = (req, res) => {
+  Category.find({status:1})
+    .populate('parent',['title'])
+    .sort({createdAt:-1})
+    .exec(function(err, categories) {
+        Category.count().exec(function(err, count) {			
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE, 
+                result: categories,             
+            });
+          })
+      });
+  }
 /** Auther	: Rajiv Kumar
  *  Date	: June 20, 2018
  *	Description : Function to view the available user details
  **/
 const viewCategory = (req,res) => {
   const id = req.params.id;
-//  console.log("<<<<<<<<<Category<<<<<", id);
   Category.findOne({_id:id})
           .populate({ path: "parent", model: "Category"})
           .exec(function(err, result){
@@ -331,13 +346,8 @@ const allCategories = (req, res) => {
 			cat.label = categories[i].title;
 			cat.value = (categories[i]._id == null )?"0":categories[i]._id.toString();
 			cat.data = {_id: categories[i]._id};
-			//cat.id = parseInt(index) + 1;
 			index++;
-
 			newCats.push(cat);
-			//~ categories[i]["text"] = categories[i].title;
-			//~ categories[i]["label"] = categories[i].title;
-			//~ categories[i]["value"] = categories[i]._id;
 		}
 		//console.log('MMMMMMMMMM', newCats);
 	  categories = getNestedChildren(newCats, null);
@@ -466,5 +476,6 @@ module.exports = {
   deleteCategory,
   changeStatus,
   allCategories,
-  listCategory
+  listCategory,
+  categoriesActive  
 };

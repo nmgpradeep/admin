@@ -5,10 +5,7 @@ import axios from 'axios';
 import Product from './Product';
 import ReactPaginate from 'react-paginate';
 var FD = require('form-data');
-// var passport = require('passport');
-// console.log('passport', passport);
-// require('../../config/passport')(passport);
-// console.log('newpassport', passport);
+
 
 class Products extends Component {
   constructor(props){
@@ -29,8 +26,7 @@ class Products extends Component {
   }
   
    loadCommentsFromServer() {
-      axios.get('/product/products/'+this.state.currentPage).then(result => {
-		console.log('rs',result.data.result);
+      axios.get('/product/products/'+this.state.currentPage).then(result => {		
         if(result.data.code === 200){
           this.setState({
             products: result.data.result,

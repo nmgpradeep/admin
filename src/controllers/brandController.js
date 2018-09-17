@@ -173,11 +173,11 @@ const updateBrands = (req, res) => {
             code: httpResponseMessage.BAD_REQUEST
           });
       }
-          return res.json({
-                code: httpResponseCode.EVERYTHING_IS_OK,
-                message: httpResponseMessage.SUCCESSFULLY_DONE,
-               result: result
-              });
+		return res.json({
+			code: httpResponseCode.EVERYTHING_IS_OK,
+			message: httpResponseMessage.SUCCESSFULLY_DONE,
+		   result: result
+		  });
     })
   }
 
@@ -218,8 +218,6 @@ const updateBrands = (req, res) => {
         });
    });
 }
-
- 
 
 
 
