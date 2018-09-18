@@ -32,22 +32,22 @@ pitchUserPaymentStatus:{
   type:String,
   trim:true,
   sparse:true,
-  default:0	
+  default:0
 },
 switchUserPaymentStatus:{
   type:String,
   trim:true,
   sparse:true,
-  default:0	
+  default:0
 },
 switchDate:{
- type: Date, default: Date.now  
+ type: Date, default: Date.now
 },
   Status:{
   type:String,
   trim:true,
   sparse:true,
-  default:0 
+  default:0 //1->switch,2->completed,3->return request, 4 ->returned
  }
 },
 {

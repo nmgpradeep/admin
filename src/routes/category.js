@@ -7,4 +7,7 @@ router.get('/categories/:page',categoryController.categories)
 router.put('/updateCategory',categoryController.updateCategory)
 router.post('/changeStatus',categoryController.changeStatus);
 router.delete('/deleteCategory/:id',categoryController.deleteCategory)
+router.get('/categoriesActive',categoryController.categoriesActive)
+//route added for front
+router.get('/listCategory',categoryController.listCategory)
 module.exports = router;

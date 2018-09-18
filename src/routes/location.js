@@ -26,4 +26,5 @@ router.delete('/deleteCity/:id',locationController.deleteCitys)
 router.post('/status',locationController.Status)
 router.get('/cities/:page', locationController.listCitys)
 router.get('/listingCity', locationController.listingCity)
+router.get('/activeCities', locationController.activeCities)
 module.exports = router;

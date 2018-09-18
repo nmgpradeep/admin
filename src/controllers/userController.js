@@ -4,7 +4,7 @@ const Product = require('../models/product')
 const Donation = require('../models/donation')
 const Trade = require('../models/trade')
 const FlagUser = require('../models/flagUser')
-const TrustedUser = require('../models/trustedUser')
+const UserTradeRating = require('../models/userTradeReting')
 const Notification = require('../models/notification')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
@@ -673,8 +673,7 @@ const listUser = (req, res) => {
   if (token) {
 		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded.id;
-		console.log("decoded",decoded)
-    User.find({}, (err, result) => {
+      User.find({}, (err, result) => {
       if (err) {
         return res.send({
           code: httpResponseCode.BAD_REQUEST,
@@ -691,14 +690,40 @@ const listUser = (req, res) => {
                 code: httpResponseCode.EVERYTHING_IS_OK,
                 message: httpResponseMessage.LOGIN_SUCCESSFULLY,
                result: result
-              });
-
+           });
         }
       }
     });
    } else {
      return res.status(403).send({code: 403, message: 'Unauthorized.'});
    }
+}
+/** Auther	: KS
+ *  Date	: September 23, 2018
+ *	Description : Function to list the available user on the plateform
+ **/
+const activeUser = (req, res) => {  	 
+	 User.find({userStatus:1})	    
+	    .exec(function(err,result){			
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result
+			  });
+			}
+		 }
+	 });
 }
 
 //Auther	: Rajiv Kumar Date	: June 22, 2018
@@ -1188,27 +1213,87 @@ const verifyUserEmail = (req, res) => {
   })
 }
 
+
+/** Auther	: Rajiv Kumar
+ *  Date	: Sept 14, 2018
+ *	Description : Function to add rating on user completed trade
+ **/
+const newTradeUserRating = (req, res) => {
+  const data = req.body;
+      let now = new Date();
+        UserTradeRating.create(req.body, (err, result) => {		 
+        if (err) {
+          return res.send({
+			errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+        }
+    })
+}
+
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to delete the user
  **/
 const mostTrustedUsers = (req, res) => {
 console.log("mostTrustedUsers")
-  TrustedUser.find({},function(err,mstuser){
-     console.log("mstuser",mstuser)
-  })
-  // console.log("user",user);
-	// TrustedUser.aggregate([{
-  //      $group:
-  //        {
-  //          _id: { $userId: "$userId"} },
-  //          totalAmount: { $sum: "$review" },
-  //          count: { $sum: 1 }
-	//      }
-	// ])
-  //    .exec(function(err, users) {
-  //            console.log('sssssss',users)
-  //    });
+
+UserTradeRating.aggregate([{
+                            $unwind: '$userId'
+                        }, {
+                            $group: {
+                                _id: '$userId',
+                                totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
+                                 count: { $sum: 1 }
+                            }
+                        }])
+    .exec(function(err, transactions) {
+        // Don't forget your error handling
+        UserTradeRating.populate(transactions, {path: '_id',model:'User'}, function(err, populatedTransactions) {
+           
+            return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: populatedTransactions
+          })
+        });
+    });
+    
+	 //~ UserTradeRating.aggregate([
+	 //~ {
+        //~ $group:
+          //~ {
+            //~ _id: "$userId",                       
+            //~ totalRating: { $avg: { $divide: [ "$review", 10 ] } },
+            //~ count: { $sum: 1 },
+            //~ //entries: { $push: "$$ROOT" }            
+	      //~ }
+	      
+	 //~ }
+	  //~ // Then join
+        //~ { 
+			//~ $lookup: {
+				//~ from: "user",
+				//~ localField: "userId",
+				//~ foriegnField: "_id"            	
+			//~ }
+        //~ }
+	 
+	 //~ ])
+      //~ .exec(function(err, users) {
+          //~ return res.send({
+            //~ code: httpResponseCode.EVERYTHING_IS_OK,
+            //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+            //~ result: users
+          //~ })
+      //~ });
 }
 
 
@@ -1394,6 +1479,8 @@ module.exports = {
     readNotification,
     sortingUsers,
     mostTrustedUsers,
-    frontNotification
+    frontNotification,
+    newTradeUserRating,
+    activeUser
 
 }

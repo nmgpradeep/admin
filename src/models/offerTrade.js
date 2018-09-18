@@ -20,7 +20,7 @@ SwitchUserProductId:{
 ditchCount:{
  type:Number,
  trim: true,
- default:0
+ default:0 // 0->offer/pitch,1->switch,2->cancelled,3->sold out
 },
 //
 status:{

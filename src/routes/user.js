@@ -25,6 +25,9 @@ router.post('/forgotPassword', userController.forgotPassword);
 router.get('/resetPassword/:id', userController.resetPassword)
 router.post('/updateNewPassword', userController.updateNewPassword);
 router.post('/readNotification', userController.readNotification);
-router.get('/mostTrustedUsers',userController.mostTrustedUsers);
 router.get('/frontNotification',userController.frontNotification);
+// User Rating Route 
+router.get('/mostTrustedUsers',userController.mostTrustedUsers);
+router.post('/newTradeUserRating',userController.newTradeUserRating);
+router.get('/activeUser',userController.activeUser);
 module.exports = router;

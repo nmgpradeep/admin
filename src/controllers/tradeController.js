@@ -11,6 +11,24 @@ const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
 const Notification = require('../models/notification')
+var settings = require('../config/settings'); // get settings file
+var passport = require('passport');
+require('../config/passport')(passport);
+var jwt = require('jsonwebtoken');
+
+var bcrypt = require('bcrypt-nodejs');
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length) {
+      return parted[0];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
 
 
 //Auther: Rajiv Kumar Date	: July 2, 2018
@@ -48,11 +66,11 @@ const Notification = require('../models/notification')
  */
 ///function to save new Trade in the list
 const newTrades = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+//  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   const data = req.body;
       let now = new Date();
         Trade.create(req.body, (err, result) => {
-		  console.log('RES-Trade',err, result);
+		 // console.log('RES-Trade',err, result);
         if (err) {
           return res.send({
 			errr : err,
@@ -76,7 +94,7 @@ const newTrades = (req, res) => {
 //Function to view all Trades
 const viewTrades = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<Trades>>>>',id);
+//	console.log('<<<<<<<<<<<Trades>>>>',id);
 	Trade.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -104,7 +122,7 @@ const viewTrades = (req, res) => {
  **/
 //Function to update the Trades status.
 const updateStatus = (req, res) => {
-console.log('dadfasfdasfasf',req.body);
+//console.log('dadfasfdasfasf',req.body);
   Trade.update({ _id:req.body._id },  { "$set": { "Status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 	 return res.send({
@@ -169,16 +187,15 @@ const returnraised = (req, res) => {
 
 /* #################  functions related to offers trade write in this block ################### */
 
+
 /** Auther	: Rajiv kumar
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
 const offerTrade = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   const data = req.body;
       let now = new Date();
         OfferTrade.create(req.body, (err, result) => {
-		  console.log('RES-Trade',err, result);
         if (err) {
           return res.send({
 			      errr : err,
@@ -202,31 +219,65 @@ const offerTrade = (req, res) => {
  */
 ///function to save new offer trade in the offerTrade collections
 const offerTrades = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
-  const data = req.body;
-      let now = new Date();
-        OfferTrade.find({},(err, result) => {
-		      console.log('RES-Trade',err, result);
-          return res.send({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: result
+
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+
+
+  var token = getToken(req.headers);
+
+   if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+  OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort({createdAt:-1})
+    .populate('pitchUserId')
+    .populate('SwitchUserId')
+    .populate('SwitchUserProductId')
+    .exec(function(err, offerTrades) {
+        OfferTrade.count().exec(function(err, count) {
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: offerTrades,
+                currentUser:userId,
+                total : count,
+                current: page,
+                perPage: perPage,
+
+                pages: Math.ceil(count / perPage)
+            });
           })
-    })
+      });
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+  // const data = req.body;
+  //     let now = new Date();
+  //       OfferTrade.find({},(err, result) => {
+	//       return res.send({
+  //           code: httpResponseCode.EVERYTHING_IS_OK,
+  //           message: httpResponseMessage.SUCCESSFULLY_DONE,
+  //           result: result
+  //         })
+  //   })
+
+
 }
 
 
-/* functions related to tradePitchProduct write in this block */
 /** Auther	: Rajiv kumar
- *  Date	: September 13, 2018
+ *  Date	: September 17, 2018
  */
-///function to save new offer trade in the offerTrade collections
-const tradePitchProduct = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+///function to save switch offer trade in the Trade collections
+const switchTrade = (req, res) => {
   const data = req.body;
       let now = new Date();
-        TradePitchProduct.create(req.body, (err, result) => {
-		  console.log('RES-Trade',err, result);
+        Trade.create(req.body, (err, result) => {
         if (err) {
           return res.send({
 			      errr : err,
@@ -245,6 +296,133 @@ const tradePitchProduct = (req, res) => {
 
 
 
+/** Auther	: Rajiv kumar
+ *  Date	: September 17, 2018
+ */
+///function to list the switch details collections
+const switchTrades = (req, res) => {
+
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+  var token = getToken(req.headers);
+   if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+
+   // Trade.aggregate([{
+   //           {
+   //           $graphLookup: {
+   //              from: "offerTrade",
+   //              connectFromField: "offerTradeId",
+   //              connectToField: "_id",
+   //              as: "offerTrades"
+   //           }
+   //        }
+   //
+   // }])
+    Trade.find({'status':1}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort({createdAt:-1})
+    .populate('offerTradeId')
+    .populate('tradePitchProductId')
+    .populate('tradeSwitchProductId')
+    .exec(function(err, switchTrades) {
+        Trade.count().exec(function(err, count) {
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: switchTrades,
+                currentUser:userId,
+                total : count,
+                current: page,
+                perPage: perPage,
+
+                pages: Math.ceil(count / perPage)
+            });
+          })
+      });
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: September 17, 2018
+ */
+///function to list the completed pitch details details collections
+const completedTrades = (req, res) => {
+
+  var perPage = constant.PER_PAGE_RECORD
+  var page = req.params.page || 1;
+
+
+  var token = getToken(req.headers);
+
+   if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+  OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort({createdAt:-1})
+    .populate('pitchUserId')
+    .populate('SwitchUserId')
+    .populate('SwitchUserProductId')
+    .exec(function(err, offerTrades) {
+        OfferTrade.count().exec(function(err, count) {
+          if (err) return next(err)
+            return res.json({
+                code: httpResponseCode.EVERYTHING_IS_OK,
+                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                result: offerTrades,
+                currentUser:userId,
+                total : count,
+                current: page,
+                perPage: perPage,
+
+                pages: Math.ceil(count / perPage)
+            });
+          })
+      });
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
+
+
+
+
+/*################### functions related to tradePitchProduct write in this block ############ */
+/** Auther	: Rajiv kumar
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const tradePitchProduct = (req, res) => {
+  const data = req.body;
+      let now = new Date();
+        TradePitchProduct.create(req.body, (err, result) => {
+		 if (err) {
+          return res.send({
+			      errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+        }
+    })
+}
 
 
 module.exports = {
@@ -255,5 +433,8 @@ module.exports = {
   returnraised,
   offerTrade,
   offerTrades,
-  tradePitchProduct
+  tradePitchProduct,
+  switchTrade,
+  switchTrades,
+  completedTrades
 }
