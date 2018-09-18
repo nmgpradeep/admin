@@ -13,6 +13,9 @@ router.get('/Trades/:page', tradeController.listTrades)
 // Routes related to OfferTrades
 router.post('/offerTrade',tradeController.offerTrade)
 router.get('/offerTrades',tradeController.offerTrades)
+router.post('/switchTrade',tradeController.switchTrade)
+router.get('/switchTrades',tradeController.switchTrades)
+router.get('/completedTrades',tradeController.completedTrades)
 
 
 // Routes related to trade pitch products
