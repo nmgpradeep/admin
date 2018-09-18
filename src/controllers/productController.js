@@ -17,6 +17,7 @@ const multiparty = require('multiparty');
 const http = require('http');
 const path = require('path');
 const fs = require('fs'); //FileSystem for node.js
+const fsExtra = require('fs-extra');
 var gm = require('gm');
 var settings = require('../config/settings'); // get settings file
 var passport = require('passport');
@@ -130,7 +131,18 @@ const addProduct = (req, res) => {
          var userId = decoded._id;
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
-          	 // console.log('postdata', err, data, files);
+          	 console.log('postdata', data);
+          	 if(data.files != ''){
+				 var productImages = JSON.parse(data.files);
+				 console.log('productImages', productImages);
+			 }
+			 //~ for(var i=0;i<productImages.length;i++){
+				 //~ console.log('FILENAME:', productImages[i].filename);
+              //~ fsExtra.move(productImages[i].path, constant.product_path + productImages[i].filename, function(err) {
+                    //~ if (err) return console.error(err)
+                     //~ console.log("file uploaded! ");
+               //~ });
+             //~ }
              //console.log('postdata', files);
              // return;
           	  //console.log('FIELD', fields.pageTitle[0]);
@@ -414,7 +426,7 @@ const switchTodays = (req,res) => {
 const updateProduct = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	  console.log('FIELD',data);
+	  console.log('updateProduct',data);
 	  if (!data.productName) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -669,12 +681,28 @@ const myTreasureChestFilterBy = (req, res) => {
  *	Description : Function to upload temp image  for front-user
  **/
 const tepmUpload = (req, res) => {
-//  console.log("req",req.file)
-	  return res.json({
-		 code: httpResponseCode.EVERYTHING_IS_OK,
-			message: httpResponseMessage.LOGIN_SUCCESSFULLY,
-		  result: []
-	  });
+  var form = new multiparty.Form();
+  form.parse(req, function(err, data, files) {
+	  console.log('Temp Files', files);
+	var uploadedFiles = [];
+	for(var i=0;i<files.file.length;i++){
+		if(files.file[i].size > 0){
+			uploadedFiles.push({
+				filename: files.file[i].originalFilename, 
+				size: files.file[i].size, 
+				path: 'public/assets/uploads/Products/' + files.file[i].originalFilename
+			});
+			fsExtra.move(files.file[i].path, constant.product_path + files.file[i].originalFilename, function(err) {
+				if (err) return console.log(err);				
+			});
+		}
+	}	
+	return res.json({
+	  code: httpResponseCode.EVERYTHING_IS_OK,
+	   message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+	   result: uploadedFiles
+	 });
+  });
 }
 module.exports = {
   create,
