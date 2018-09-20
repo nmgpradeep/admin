@@ -373,12 +373,40 @@ const activeProducts = (req,res) => {
 	 });
 }
 
-/** Auther	: KS
- *  Date	: August 29, 2018
+/** Auther	: Rajiv Kumar
+ *  Date	: September 19, 2018
  *	Description : Function to listing popular items
 **/
 const popularItems = (req,res) => {
-	//console.log('ddddddddddd',todayDate);
+  OfferTrade.aggregate([{
+                              $unwind: '$SwitchUserProductId'
+                          }, {
+                              $group: {
+                                  _id: '$SwitchUserProductId',
+                                //  totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
+                                   count: { $sum: 1 },
+                                  // data: { $push: "$$ROOT" },
+                                   SwitchUserProductId:{$push: "$SwitchUserProductId"},
+                                   SwitchUserId:{$push: "$SwitchUserId"},
+                                   pitchUserId:{$push: "$pitchUserId"},
+                                   ditchCount:{$push: "$ditchCount"}
+                              }
+                          }])
+      .exec(function(err, popularItems) {
+          // Don't forget your error handling
+          // Data populating with nexted model
+            OfferTrade.populate(popularItems, {path: '_id',model:'Product',populate: [{
+                      path: 'productCategory', model: 'Category' },{ path: 'userId', model: 'User', select: 'firstName lastName userName profilePic'
+      }] }, function(err, populatedItem) {
+              //console.log("populatedItem",populatedItem);
+              return res.send({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.SUCCESSFULLY_DONE,
+              result: populatedItem
+            })
+          });
+      });
+
 }
 
 /** Auther	: KS
@@ -688,15 +716,15 @@ const tepmUpload = (req, res) => {
 	for(var i=0;i<files.file.length;i++){
 		if(files.file[i].size > 0){
 			uploadedFiles.push({
-				filename: files.file[i].originalFilename, 
-				size: files.file[i].size, 
+				filename: files.file[i].originalFilename,
+				size: files.file[i].size,
 				path: 'public/assets/uploads/Products/' + files.file[i].originalFilename
 			});
 			fsExtra.move(files.file[i].path, constant.product_path + files.file[i].originalFilename, function(err) {
-				if (err) return console.log(err);				
+				if (err) return console.log(err);
 			});
 		}
-	}	
+	}
 	return res.json({
 	  code: httpResponseCode.EVERYTHING_IS_OK,
 	   message: httpResponseMessage.LOGIN_SUCCESSFULLY,

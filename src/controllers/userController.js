@@ -212,12 +212,12 @@ const userSignup = (req, res) => {
       let accessToken = md5(salt)
       req.body.accessToken = accessToken
       User.create(data, (err, result) => {
-		  console.log('RES-FIND',err, result);
+		//  console.log('RES-FIND',err, result);
       if (err) {
           return res.send({
-			errr : err,
-            code: httpResponseCode.BAD_REQUEST,
-            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			         errr : err,
+               code: httpResponseCode.BAD_REQUEST,
+               message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
         } else {
 			 // check Profile Pic and upload if exist
@@ -702,9 +702,9 @@ const listUser = (req, res) => {
  *  Date	: September 23, 2018
  *	Description : Function to list the available user on the plateform
  **/
-const activeUser = (req, res) => {  	 
-	 User.find({userStatus:1})	    
-	    .exec(function(err,result){			
+const activeUser = (req, res) => {
+	 User.find({userStatus:1})
+	    .exec(function(err,result){
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -1221,7 +1221,7 @@ const verifyUserEmail = (req, res) => {
 const newTradeUserRating = (req, res) => {
   const data = req.body;
       let now = new Date();
-        UserTradeRating.create(req.body, (err, result) => {		 
+        UserTradeRating.create(req.body, (err, result) => {
         if (err) {
           return res.send({
 			errr : err,
@@ -1244,7 +1244,6 @@ const newTradeUserRating = (req, res) => {
  **/
 const mostTrustedUsers = (req, res) => {
 console.log("mostTrustedUsers")
-
 UserTradeRating.aggregate([{
                             $unwind: '$userId'
                         }, {
@@ -1257,7 +1256,6 @@ UserTradeRating.aggregate([{
     .exec(function(err, transactions) {
         // Don't forget your error handling
         UserTradeRating.populate(transactions, {path: '_id',model:'User'}, function(err, populatedTransactions) {
-           
             return res.send({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -1265,27 +1263,27 @@ UserTradeRating.aggregate([{
           })
         });
     });
-    
+
 	 //~ UserTradeRating.aggregate([
 	 //~ {
         //~ $group:
           //~ {
-            //~ _id: "$userId",                       
+            //~ _id: "$userId",
             //~ totalRating: { $avg: { $divide: [ "$review", 10 ] } },
             //~ count: { $sum: 1 },
-            //~ //entries: { $push: "$$ROOT" }            
+            //~ //entries: { $push: "$$ROOT" }
 	      //~ }
-	      
+
 	 //~ }
 	  //~ // Then join
-        //~ { 
+        //~ {
 			//~ $lookup: {
 				//~ from: "user",
 				//~ localField: "userId",
-				//~ foriegnField: "_id"            	
+				//~ foriegnField: "_id"
 			//~ }
         //~ }
-	 
+
 	 //~ ])
       //~ .exec(function(err, users) {
           //~ return res.send({

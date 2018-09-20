@@ -222,14 +222,11 @@ const offerTrades = (req, res) => {
 
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
-
-
   var token = getToken(req.headers);
-
    if (token) {
-         decoded = jwt.verify(token,settings.secret);
-         var userId = decoded._id;
-  OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    decoded = jwt.verify(token,settings.secret);
+    var userId = decoded._id;
+    OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -256,17 +253,6 @@ const offerTrades = (req, res) => {
     } else {
     return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
-  // const data = req.body;
-  //     let now = new Date();
-  //       OfferTrade.find({},(err, result) => {
-	//       return res.send({
-  //           code: httpResponseCode.EVERYTHING_IS_OK,
-  //           message: httpResponseMessage.SUCCESSFULLY_DONE,
-  //           result: result
-  //         })
-  //   })
-
-
 }
 
 
@@ -301,48 +287,71 @@ const switchTrade = (req, res) => {
  */
 ///function to list the switch details collections
 const switchTrades = (req, res) => {
-
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
   var token = getToken(req.headers);
-   if (token) {
+  if (token) {
          decoded = jwt.verify(token,settings.secret);
          var userId = decoded._id;
+      //    Trade.find({'status':'1'}).populate({
+      //     "path": "offerTradeId",
+      //     "match": { $or:[{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }]}
+      // }).exec(function(err,entries) {
+      //   console.log("entries",entries)
+      //
+      //    //Now client side filter un-matched results
+      //    // entries = entries.filter(function(entry) {
+      //    //     return entry.student != null;
+      //    // });
+      //    // Anything not populated by the query condition is now removed
+      // });
 
-   // Trade.aggregate([{
-   //           {
-   //           $graphLookup: {
-   //              from: "offerTrade",
-   //              connectFromField: "offerTradeId",
-   //              connectToField: "_id",
-   //              as: "offerTrades"
-   //           }
-   //        }
-   //
-   // }])
-    Trade.find({'status':1}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
-    .skip((perPage * page) - perPage)
-    .limit(perPage)
-    .sort({createdAt:-1})
-    .populate('offerTradeId')
-    .populate('tradePitchProductId')
-    .populate('tradeSwitchProductId')
-    .exec(function(err, switchTrades) {
-        Trade.count().exec(function(err, count) {
-          if (err) return next(err)
-            return res.json({
-                code: httpResponseCode.EVERYTHING_IS_OK,
-                message: httpResponseMessage.SUCCESSFULLY_DONE,
-                result: switchTrades,
-                currentUser:userId,
-                total : count,
-                current: page,
-                perPage: perPage,
+        var criteria = {}
+              criteria = {'status': 1}
 
-                pages: Math.ceil(count / perPage)
-            });
+          OfferTrade.distinct('_id',criteria).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+          .exec(function(err, switchTradesIds) {
+console.log("switchTradesIds",switchTradesIds)
+            //  if (err) return next(err);
+
+              Trade.find({offerTradeId: {$in: switchTradesIds}}).populate({path:'offerTradeId',model:'offerTrade'}).exec(function(err, articles) {
+                  //if (err)
+                  //    return next(err)
+                  //ok to send the array of mongoose model, will be stringified, each toJSON is called
+                //  return res.json(articles)
+
+                console.log("articles",articles)
+              })
           })
-      });
+
+
+
+
+
+
+    // Trade.find({'status':1}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    // .skip((perPage * page) - perPage)
+    // .limit(perPage)
+    // .sort({createdAt:-1})
+    // .populate('offerTradeId')
+    // .populate('tradePitchProductId')
+    // .populate('tradeSwitchProductId')
+    // .exec(function(err, switchTrades) {
+    //     Trade.count().exec(function(err, count) {
+    //       if (err) return next(err)
+    //         return res.json({
+    //             code: httpResponseCode.EVERYTHING_IS_OK,
+    //             message: httpResponseMessage.SUCCESSFULLY_DONE,
+    //             result: switchTrades,
+    //             currentUser:userId,
+    //             total : count,
+    //             current: page,
+    //             perPage: perPage,
+    //
+    //             pages: Math.ceil(count / perPage)
+    //         });
+    //       })
+    //   });
 
     } else {
     return res.status(403).send({code: 403, message: 'Unauthorized.'});
