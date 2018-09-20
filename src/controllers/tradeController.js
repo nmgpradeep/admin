@@ -293,41 +293,38 @@ const switchTrades = (req, res) => {
   if (token) {
          decoded = jwt.verify(token,settings.secret);
          var userId = decoded._id;
-      //    Trade.find({'status':'1'}).populate({
-      //     "path": "offerTradeId",
-      //     "match": { $or:[{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }]}
-      // }).exec(function(err,entries) {
-      //   console.log("entries",entries)
-      //
-      //    //Now client side filter un-matched results
-      //    // entries = entries.filter(function(entry) {
-      //    //     return entry.student != null;
-      //    // });
-      //    // Anything not populated by the query condition is now removed
-      // });
-
-        var criteria = {}
-              criteria = {'status': 1}
-
+         var criteria = {}
+          criteria = {'status': 1}
           OfferTrade.distinct('_id',criteria).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
           .exec(function(err, switchTradesIds) {
-console.log("switchTradesIds",switchTradesIds)
-            //  if (err) return next(err);
+              if (err) return next(err);
+              Trade.find({offerTradeId: {$in: switchTradesIds},'status': 1}).populate({path:'offerTradeId',model:'offerTrade',populate:[{path:"pitchUserId",model:"User"},{path:"SwitchUserId",model:"User"},{path:"SwitchUserProductId",model:"Product"}]}).exec(function(err, switchedTrades) {
+                  if (err)
+                      return next(err)
+                      //ok to send the array of mongoose model, will be stringified, each toJSON is called
+                      var newSwitchedTrades = [];
+                      for(var i in switchedTrades) {
+                        //var mycat = Object.assign({}, categories[i]);
+                        var mycat = Object.assign({}, switchedTrades[i]);
+                        var cat = mycat._doc;
+                        cat.trackStatus = 0;
+                        cat.messageShow = 0;
+                        newSwitchedTrades.push(cat);
+                      }
 
-              Trade.find({offerTradeId: {$in: switchTradesIds}}).populate({path:'offerTradeId',model:'offerTrade'}).exec(function(err, articles) {
-                  //if (err)
-                  //    return next(err)
-                  //ok to send the array of mongoose model, will be stringified, each toJSON is called
-                //  return res.json(articles)
+                      return res.json({
+                                  code: httpResponseCode.EVERYTHING_IS_OK,
+                                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                                  result: newSwitchedTrades,
+                                  currentUser:userId
+                                  //total : count,
+                                  //current: page,
+                                //  perPage: perPage,
 
-                console.log("articles",articles)
+                                //  pages: Math.ceil(count / perPage)
+                              });
               })
           })
-
-
-
-
-
 
     // Trade.find({'status':1}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     // .skip((perPage * page) - perPage)
@@ -365,17 +362,84 @@ console.log("switchTradesIds",switchTradesIds)
  */
 ///function to list the completed pitch details details collections
 const completedTrades = (req, res) => {
+  var token = getToken(req.headers);
+   if (token) {
+     decoded = jwt.verify(token,settings.secret);
+     var userId = decoded._id;
+     var criteria = {}
+      criteria = {'status': 1}
+      OfferTrade.distinct('_id',criteria).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+      .exec(function(err, switchTradesIds) {
+      //  console.log("switchTradesIds-userId",switchTradesIds,userId)
+          if (err) return next(err);
+          Trade.find({offerTradeId: {$in: switchTradesIds},'status': 2}).populate({path:'offerTradeId',model:'offerTrade',populate:[{path:"pitchUserId",model:"User"},{path:"SwitchUserId",model:"User"},{path:"SwitchUserProductId",model:"Product"}]}).exec(function(err, switchedTrades) {
+              if (err)
+                  return next(err)
+                  //ok to send the array of mongoose model, will be stringified, each toJSON is called
+                  var newCompletedTrades = [];
+                  for(var i in switchedTrades) {
+                    //var mycat = Object.assign({}, categories[i]);
+                    var mycat = Object.assign({}, switchedTrades[i]);
+                    var cat = mycat._doc;
+                    cat.trackStatus = 0;
+                    cat.messageShow = 0;
+                    newCompletedTrades.push(cat);
+                  }
+                  return res.json({
+                              code: httpResponseCode.EVERYTHING_IS_OK,
+                              message: httpResponseMessage.SUCCESSFULLY_DONE,
+                              result: newCompletedTrades,
+                              currentUser:userId
+                          });
+          })
+      })
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: September 20, 2018
+ */
+///function to save new offer trade in the ditchTrades collections
+const ditchTrade = (req, res) => {
+  const data = req.body;
+      let now = new Date();
+        OfferTrade.create(req.body, (err, result) => {
+        if (err) {
+          return res.send({
+			      errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+        }
+    })
+}
+
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: September 20, 2018
+ */
+///function to get all ditched trades from the ditchTrades collections
+const ditchTrades = (req, res) => {
 
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
-
-
   var token = getToken(req.headers);
-
    if (token) {
-         decoded = jwt.verify(token,settings.secret);
-         var userId = decoded._id;
-  OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    decoded = jwt.verify(token,settings.secret);
+    var userId = decoded._id;
+    OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    .where('ditchCount').gt(0).lt(4)
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -445,5 +509,7 @@ module.exports = {
   tradePitchProduct,
   switchTrade,
   switchTrades,
-  completedTrades
+  completedTrades,
+  ditchTrade,
+  ditchTrades
 }
