@@ -58,7 +58,6 @@ const create = (req, res) => {
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.advertisementimage_path + newfilename;
-				  //return res.json(process.cwd());
 				  fs.writeFile(pathNew, fileData, function(err) {
 					if (err) {
 					  res.send(err);
@@ -68,7 +67,7 @@ const create = (req, res) => {
 				  });
 				});
 				Advertisement.update({ _id:result._id },  { "$set": { "image": newfilename } }, { new:true }, (err,fileupdate) => {
-				//	console.log("fileupdate",fileupdate)
+				
 				if(err){				
 					return res.send({
 						code: httpResponseCode.BAD_REQUEST,
@@ -84,7 +83,6 @@ const create = (req, res) => {
 				  }
 			   })	 
 			  }		   
-			  ///end file update///	  
 			}
 		  })
     });  

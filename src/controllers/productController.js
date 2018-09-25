@@ -125,7 +125,6 @@ const create = (req, res) => {
 ///function to save new product in the list by fron user
 const addProduct = (req, res) => {
   var token = getToken(req.headers);
-
    if (token) {
          decoded = jwt.verify(token,settings.secret);
          var userId = decoded._id;
@@ -351,7 +350,6 @@ const activeProducts = (req,res) => {
 	 Product.find({productStatus:'1'})
 	    .populate('productCategory',['title'])
 	    .exec(function(err,result){
-			//console.log('ppppppppppppppppppp',result);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -373,25 +371,38 @@ const activeProducts = (req,res) => {
 	 });
 }
 
+const filterBycategory = (req,res) => {	
+	var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {	
+     const typeData = data.type[0]; 
+     const catIds = data.ids[0];
+     if(catIds.indexOf(",") > -1){
+		 catID = catIds.split(',');
+	 }
+     console.log('caaaaat',catID);
+ });
+}
+
+
 /** Auther	: Rajiv Kumar
  *  Date	: September 19, 2018
  *	Description : Function to listing popular items
 **/
 const popularItems = (req,res) => {
   OfferTrade.aggregate([{
-                              $unwind: '$SwitchUserProductId'
-                          }, {
-                              $group: {
-                                  _id: '$SwitchUserProductId',
-                                //  totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
-                                   count: { $sum: 1 },
-                                  // data: { $push: "$$ROOT" },
-                                   SwitchUserProductId:{$push: "$SwitchUserProductId"},
-                                   SwitchUserId:{$push: "$SwitchUserId"},
-                                   pitchUserId:{$push: "$pitchUserId"},
-                                   ditchCount:{$push: "$ditchCount"}
-                              }
-                          }])
+		  $unwind: '$SwitchUserProductId'
+	  }, {
+		  $group: {
+			  _id: '$SwitchUserProductId',
+			//  totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
+			   count: { $sum: 1 },
+			  // data: { $push: "$$ROOT" },
+			   SwitchUserProductId:{$push: "$SwitchUserProductId"},
+			   SwitchUserId:{$push: "$SwitchUserId"},
+			   pitchUserId:{$push: "$pitchUserId"},
+			   ditchCount:{$push: "$ditchCount"}
+		  }
+	  }])
       .exec(function(err, popularItems) {
           // Don't forget your error handling
           // Data populating with nexted model
@@ -615,7 +626,7 @@ const myTreasureChest = (req, res) => {
   				message: httpResponseMessage.USER_NOT_FOUND,
   				code: httpResponseMessage.BAD_REQUEST
   			  });
-  			}else {
+  			} else {
   			  return res.json({
   					code: httpResponseCode.EVERYTHING_IS_OK,
   					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
@@ -746,5 +757,6 @@ module.exports = {
   tepmUpload,
   activeProducts,
   searchresult,
-  myTreasureChestFilterBy
+  myTreasureChestFilterBy,
+  filterBycategory
 }
