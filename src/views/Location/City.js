@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import { Badge} from 'reactstrap';
 //import Moment from 'moment';
 // import PropTypes from 'prop-types';
-class City extends Component {
-  //~ constructor(props){
-    //~ super(props);
-  //~ }
+class City extends Component { 
   render() {
     //console.log(this.props)
     return (
@@ -16,8 +13,9 @@ class City extends Component {
         <td>{(this.props.city.stateSelect)?this.props.city.stateSelect.stateName:''}</td>
         <td>{this.props.city.cityName}</td>
         <td>
-          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.city)} color={(this.props.city.status == '1')?'danger':'success'}>
-            {(this.props.city.status == '1')?'Inctive':'Active'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.city)} 
+            color={(this.props.city.status == '0')?'danger':'success'}>
+            {(this.props.city.status == '0')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>

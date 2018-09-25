@@ -11,8 +11,7 @@ Capitalize(str){
 }
   render() {
     return (   
-      <tr key={this.props.product._id}>		
-
+      <tr key={this.props.product._id}>	
         <td>{this.props.sequenceNumber}</td>
         <td>{this.props.product.productName}</td>
         <td>

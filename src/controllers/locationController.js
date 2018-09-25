@@ -489,7 +489,7 @@ console.log("REQ0",req.body)
  **/
 ///function to save new City in the list
 const createCitys = (req, res) => {
-  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
+  //console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   if (!req.body.cityName) {
     return res.send({
       code: httpResponseCode.BAD_REQUEST,
@@ -502,7 +502,6 @@ const createCitys = (req, res) => {
     return res.json(flag);
   }
       let now = new Date();
-    
       City.create(req.body, (err, result) => {
 		  console.log('RES-cityName',err, result);
         if (err) {
@@ -549,8 +548,8 @@ const listCitys = (req, res) => {
                   perPage: perPage,
                   pages: Math.ceil(count / perPage)
               });
-            })
-        });
+       })
+   });
 }
 
 
@@ -560,7 +559,6 @@ const listCitys = (req, res) => {
 //Function to view the City details
 const viewCitys = (req, res) => {
 	const id = req.params.id;
-	console.log('<<<<<<<<<<<Citys>>>>',id);  
 	City.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -573,7 +571,7 @@ const viewCitys = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,             
              result: result

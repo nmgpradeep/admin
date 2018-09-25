@@ -19,8 +19,6 @@ router.get('/completedTrades',tradeController.completedTrades)
 router.post('/ditchTrade',tradeController.ditchTrade)
 router.get('/ditchTrades',tradeController.ditchTrades)
 
-
 // Routes related to trade pitch products
 router.post('/tradePitchProduct',tradeController.tradePitchProduct)
-
 module.exports = router;
