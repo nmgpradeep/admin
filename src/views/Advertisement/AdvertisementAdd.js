@@ -115,7 +115,8 @@ class AdvertisementAdd extends Component {
       data.append('description', this.description.value),
       data.append('redirectURL', this.redirectURL.value),
       data.append('status', this.status.value),
-      data.append('image', this.state.selectedFile, this.state.selectedFile.name)
+      //data.append('image', this.state.selectedFile, this.state.selectedFile.name)
+      data.append('image', this.state.selectedFile)
 
       // let addAdv = this.state.addAdv;
       // addAdv.advertisementName = this.advertisementName.value;

@@ -183,7 +183,7 @@ class DonationAdd extends Component {
 		data.append('brand', this.state.brand)
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile)
-		 data.append('productImage', this.state.selectedFile,this.state.selectedFile.name);					
+		 data.append('productImage', this.state.selectedFile);					
 		else
 		data.append('productImage','NULL');	
 		data.append('condition', this.state.conditionValue);		

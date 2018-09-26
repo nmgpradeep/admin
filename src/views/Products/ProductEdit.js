@@ -170,7 +170,8 @@ class ProductEdit extends Component {
 		data.append('color', this.color.value);
 		data.append('brand', (this.state.brand)?this.state.brand:this.state.editProduct.brand._id);
 		if(this.state.selectedFile){
-		    data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
+		    data.append('productImages', this.state.selectedFile);
+		    //data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
 		} else {
 			data.append('productImages', this.state.editProduct.productImages);
 	    }

@@ -121,7 +121,7 @@ class SizeAdd extends Component {
                     </Col>
                   </FormGroup>
                   <FormGroup>
-                  <Label htmlFor="category">Category</Label>
+                  <Label htmlFor="category">Category</Label><br/>
                   <CategorySelectBox onSelectCategory={this.handleCategory}/>
 
                 </FormGroup>

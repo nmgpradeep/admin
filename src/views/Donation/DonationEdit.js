@@ -166,7 +166,8 @@ class DonationEdit extends Component {
 		data.append('brand', (this.state.brand)?this.state.brand:this.state.editDonation.brand._id);
 		data.append('productAge', this.productAge.value);
 		if(this.state.selectedFile){
-		    data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);
+		   // data.append('productImage', this.state.selectedFile, this.state.selectedFile.name);
+		    data.append('productImage', this.state.selectedFile);
 		} else {
 			data.append('productImage', this.state.editDonation.productImage); 
 	    }
