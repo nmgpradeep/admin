@@ -18,8 +18,8 @@ class User extends Component {
         <td><img src={'assets/uploads/ProfilePic/'+ this.props.user.profilePic } className="avatar" alt=""/></td>
         <td><Button color="info" onClick={this.props.onflagUsers.bind(this, this.props.user._id)} className="mr-1">{this.props.user.userFlag.length}</Button></td>
         <td>
-          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.user)} color = {(this.props.user.userStatus === '1')?'danger':'success'}>
-            {(this.props.user.userStatus === '1')?'Inctive':'Active'}
+          <Badge className="mousePointer" onClick={this.props.changeStatus.bind(this, this.props.user)} color = {(this.props.user.userStatus === '0')?'danger':'success'}>
+            {(this.props.user.userStatus === '0')?'Inctive':'Active'}
           </Badge>
         </td>
         <td>

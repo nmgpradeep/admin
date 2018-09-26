@@ -15,5 +15,6 @@ router.post('/tepmUpload',productController.tepmUpload)
 router.get('/activeProducts',productController.activeProducts)
 router.get('/searchresult/:id',productController.searchresult)
 router.post('/filterBy',productController.myTreasureChestFilterBy)
+router.post('/filterBycategory',productController.filterBycategory)
 
 module.exports = router;

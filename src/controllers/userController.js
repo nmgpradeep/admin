@@ -733,7 +733,7 @@ const activeUser = (req, res) => {
 //Description : Function to list the available users with pagination
 
  const users = (req, res) => {
-	 const options = { sort: { firstName: -1 }, limit: 10, skip: 0 }
+	const options = { sort: { firstName: -1 }, limit: 10, skip: 0 }
 
 	var token = getToken(req.headers);
 		if (token) {
@@ -945,26 +945,6 @@ const updateUser = (req, res) => {
 			  code: httpResponseMessage.BAD_REQUEST
 			});
 		  } else {
-		   // get latitude,longitude of user and save into collection
-			   //~ where.is(result.address, function(error, responceData) {
-				  //~ if(error){
-					  //~ console.log("Error in where is function",error)
-					  //~ next(error);
-						//~ } else {
-						//~ if (result) {
-							//~ User.update({ _id:result._id },  { "$set": { "latitude": responceData.get('lat'),"longitude":responceData.get('lng') } }, { new:true }, (err,latlog) => {
-							//~ if(err){
-							//~ return res.json({
-							//~ code: httpResponseCode.BAD_REQUEST,
-							//~ message: httpResponseMessage.FILE_UPLOAD_ERROR
-							//~ });
-							//~ }
-							//~ })
-						//~ }
-						//~ }
-						//~ });
-
-		  			//console.log('Created-Page',err, result);
 
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 				var fileName = files.profilePic[0].originalFilename;
@@ -1073,6 +1053,52 @@ const changeStatus = (req, res) => {
   })
 }
 
+/** Auther	: Rajiv Kumar
+ *  Date	: June 18, 2018
+ *	Description : Function to update the user status.
+ **/
+const searchCity = (req, res) => {
+	var form = new multiparty.Form();
+	  form.parse(req, function(err, data, files) {
+	  const typeData = data.type[0];
+	  const catIds = data.ids[0];
+	  console.log('typeData',typeData);
+	  console.log('catIds',catIds);
+	  if(catIds.indexOf(",") > -1){
+			 catID = catIds.split(',');
+	  } else {
+			 catID = catIds;
+	  }
+	   var typeObject = {};
+	   typeObject[typeData] = catID;
+	   User.find(typeObject, data)
+	  .exec(function(err, result){
+		  console.log('rrrrr',result);
+      if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+			err:err
+		  });
+     } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }
+       else {
+		   return res.json({
+			  code: httpResponseCode.EVERYTHING_IS_OK,
+			  message: httpResponseMessage.SUCCESSFULLY_DONE,
+			 result: result
+		   });
+		 }
+        }
+        console.log('r',result);
+      })
+	})
+}
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to delete the user
@@ -1552,5 +1578,7 @@ module.exports = {
     frontNotification,
     newTradeUserRating,
     activeUser,
-    userTradeStates
+    userTradeStates,
+    searchCity
+
 }

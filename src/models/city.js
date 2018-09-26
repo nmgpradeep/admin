@@ -28,7 +28,7 @@ status:{
 },
 },
 {
-timestamps:true
+ timestamps:true
 });
 
 CitySchema.methods.toJSON = function() {

@@ -86,8 +86,7 @@ class ProductAdd extends Component {
         this.setState({user: user});
   }
 
-   handleCategory = (category) => {
-	   console.log('fadfadfasdf',category);
+  handleCategory = (category) => {	 
      this.setState({category: category});
   }
   handleBrand = (brand) => {
@@ -145,7 +144,6 @@ class ProductAdd extends Component {
         data.append('condition', this.state.conditionValue);
         data.append('userId', this.state.user)
         data.append('productCategory', this.state.category)
-
         if(this.state.selectedFile){
 		        data.append('productImages', this.state.selectedFile);
 		        //data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
