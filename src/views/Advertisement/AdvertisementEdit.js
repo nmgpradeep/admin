@@ -112,7 +112,8 @@ class AdvertisementEdit extends Component {
         data.append('description', this.description.value)
         data.append('redirectURL', this.redirectURL.value)
         if(this.state.selectedFile){
-          data.append('image', this.state.selectedFile, this.state.selectedFile.name)
+          //data.append('image', this.state.selectedFile, this.state.selectedFile.name)
+          data.append('image', this.state.selectedFile)
          } else {
           data.append('image', this.state.editAdv.image);
        }	

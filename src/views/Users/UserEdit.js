@@ -56,6 +56,7 @@ class UserEdit extends Component {
     this.state = {
       editUser: {},
       userId: userId,
+      selectedFile:'',
       validation:{
         firstName:{
           rules: {
@@ -95,13 +96,17 @@ class UserEdit extends Component {
     };
   }
    fileChangedHandler = (event) => {
-	  this.setState({selectedFile: event.target.files[0]})
+	  this.setState({selectedFile: event.target.files[0]}, function(){
+		  console.log('Current state', this.state.selectedFile)
+		});
    }
    handleCountry = (country) => {
      this.setState({country: country});
    }
    handleState = (state) => {
-      this.setState({state: state});
+      this.setState({state: state}, function(){
+		  console.log('Current state', this.state.state)
+		});
    }
    handleCity = (city) => {
       this.setState({city: city});
@@ -161,6 +166,7 @@ class UserEdit extends Component {
       }
 
       if(formSubmitFlag){
+		  console.log('EDIT', this.state.selectedFile);
         const data = new FD()
         data.append('_id', this.props.match.params.id)
         
@@ -179,8 +185,10 @@ class UserEdit extends Component {
         data.append('subscriptionPlan',this.subscriptionPlan.value)
 
         if(this.state.selectedFile){
-          data.append('profilePic', this.state.selectedFile, this.state.selectedFile.name)
+          data.append('profilePic', this.state.selectedFile)
         } 
+        
+        //console.log("DATA",data,this.firstName.value, this.state.selectedFile)
         axios.post('/user/updateUser', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");
@@ -189,13 +197,14 @@ class UserEdit extends Component {
       }
   }
 
-  componentDidMount() {
-    //if(localStorage.getItem('jwtToken') != null)
+  componentWillMount(){
+	  console.log("componentWillMount called")
+	  //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/user/viewUser/' + this.state.userId).then(result => {
         if(result.data.code == 200){   
 		     console.log('mmmmmmmmmasfdadfasdf',result.data.result)      
-          this.setState({ editUser: result.data.result});
+          this.setState({ editUser: result.data.result},function(){console.log("editUser",this.state.editUser.country._id)});
           this.firstName.value = result.data.result.firstName;
           this.middleName.value = result.data.result.middleName;
           this.lastName.value = result.data.result.lastName;
@@ -204,9 +213,9 @@ class UserEdit extends Component {
           this.phoneNumber.value = result.data.result.phoneNumber
           this.dob.value = result.data.result.dob
           this.address.value = result.data.result.address
-          this.city.value = result.data.result.city
-          this.state.value = result.data.result.state
-          this.country.value = result.data.result.country
+          this.city.value = result.data.result.city._id
+          this.state.value = result.data.result.state._id
+          this.country.value = result.data.result.country_.id
           this.zipCode.value = result.data.result.zipCode
           this.subscriptionPlan.value = result.data.result.subscriptionPlan
           this.profilePic.value = result.data.result.profilePic
@@ -218,7 +227,9 @@ class UserEdit extends Component {
           this.props.history.push("/login");
         }
       });
-
+  }
+  componentDidMount() {
+     console.log("componentDidMount called")
   }
   render() {
     return (
@@ -276,16 +287,17 @@ class UserEdit extends Component {
                <Input type='textarea' innerRef={input => (this.address = input)} placeholder='Address'/>
               </FormGroup>
               <FormGroup>
-               <Label>City</Label>
-               <CitySelectBox onSelectCity={this.handleCity} reference={(city)=> this.city=city} value = {this.state.editUser.city}/>
+               <Label>Country</Label>
+               <CountrySelectBox onSelectCountry={this.handleCountry} reference={(country)=> this.country=country} value={(this.state.editUser.country)?this.state.editUser.country._id:''} />
               </FormGroup>
+             
               <FormGroup>
                <Label>State</Label>
-               <StateAllSelectBox onSelectState={this.handleState} reference={(state)=> this.state=state} value = {this.state.editUser.state}/>
+               <StateAllSelectBox onSelectState={this.handleState} reference={(state)=> this.state=state} value = {(this.state.editUser.state)?this.state.editUser.state._id:''}/>
               </FormGroup>
-              <FormGroup>
-               <Label>Country</Label>
-               <CountrySelectBox onSelectCountry={this.handleCountry} reference={(country)=> this.country=country} value={this.state.editUser.country} />
+               <FormGroup>
+               <Label>City</Label>
+               <CitySelectBox onSelectCity={this.handleCity} reference={(city)=> this.city=city} value = {this.state.editUser.city}/>
               </FormGroup>
               <FormGroup>
                <Label>Zip Code</Label>

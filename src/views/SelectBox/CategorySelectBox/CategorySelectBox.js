@@ -39,6 +39,10 @@ class CategorySelectBox extends Component {
     this.props.onDefaultValuesSet(value);
   }
 
+componetWillMount(){
+	console.log("componetWillMount called")
+}
+
   componentDidMount(){
     axios.get('/category/allCategories').then(result => {
       if(result.data.code === 200){

@@ -31,6 +31,9 @@ var auth = require('./routes/auth');
 //mongoose.connect('mongodb://pitchswitch:nmg251@ds155252.mlab.com:55252/pitch-switch-restore');
 mongoose.connect('mongodb://pitchswitch:nmg251@ds251622.mlab.com:51622/pitch-switch');
 //mongoose.connect('mongodb://localhost:27017/pitchAndSwitch', { useNewUrlParser: true });
+
+// demo database url
+//mongoose.connect('mongodb://pitchswitch:nmg251@ds213183.mlab.com:13183/pitch-switch-demo', { useNewUrlParser: true });
 app.set('port', (5000));
 app.use(cors());
 app.get('/',(req,res)=>{

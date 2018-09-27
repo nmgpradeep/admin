@@ -26,7 +26,7 @@ router.get('/resetPassword/:id', userController.resetPassword)
 router.post('/updateNewPassword', userController.updateNewPassword);
 router.post('/readNotification', userController.readNotification);
 router.get('/frontNotification',userController.frontNotification);
-
+router.get('/userTradeStates',userController.userTradeStates);
 router.get('/mostTrustedUsers',userController.mostTrustedUsers);
 router.post('/newTradeUserRating',userController.newTradeUserRating);
 router.get('/activeUser',userController.activeUser);

@@ -145,7 +145,8 @@ class ProductAdd extends Component {
         data.append('userId', this.state.user)
         data.append('productCategory', this.state.category)
         if(this.state.selectedFile){
-		        data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
+		        data.append('productImages', this.state.selectedFile);
+		        //data.append('productImages', this.state.selectedFile, this.state.selectedFile.name);
       	}
         console.log("data",data);
            axios.post('/product/create', data).then(result => {

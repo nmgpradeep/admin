@@ -6,6 +6,9 @@ const Trade = require('../models/trade')
 const FlagUser = require('../models/flagUser')
 const UserTradeRating = require('../models/userTradeReting')
 const Notification = require('../models/notification')
+const UserSubscription = require('../models/userSubscription')
+const Subscription = require('../models/subscription')
+const OfferTrade =  require('../models/offerTrade')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -924,16 +927,18 @@ const updateUser = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
 	let now = new Date();
-	//console.log(data)
+	console.log('USER DATA', data,files)
 
-    User.findOneAndUpdate({ _id:data._id }, data, { new:true },(err,result) => {
+    User.findOneAndUpdate({ _id:data._id }, data,(err,result) => {
     if(err){
+		console.log('ERROR', err);
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
 
     }else {
+		console.log('RESULT', result);
 		  if (!result) {
 			res.json({
 			  message: httpResponseMessage.USER_NOT_FOUND,
@@ -954,7 +959,7 @@ const updateUser = (req, res) => {
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.profileimage_path + newfilename;
-
+					console.log("pathNew",pathNew)
 				  fs.writeFile(pathNew, fileData, function(err) {
 					if (err) {
 					  res.send(err);
@@ -1107,6 +1112,46 @@ const searchCity = (req, res) => {
 			}
 		})
 	}) 
+//~ =======
+	  //~ const typeData = data.type[0];
+	  //~ const catIds = data.ids[0];
+	  //~ console.log('typeData',typeData);
+	  //~ console.log('catIds',catIds);
+	  //~ if(catIds.indexOf(",") > -1){
+			 //~ catID = catIds.split(',');
+	  //~ } else {
+			 //~ catID = catIds;
+	  //~ }
+	   //~ var typeObject = {};
+	   //~ typeObject[typeData] = catID;
+	   //~ User.find(typeObject, data)
+	  //~ .exec(function(err, result){
+		  //~ console.log('rrrrr',result);
+      //~ if(err){
+		//~ return res.send({
+			//~ code: httpResponseCode.BAD_REQUEST,
+			//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+			//~ err:err
+		  //~ });
+     //~ } else {
+      //~ if (!result) {
+        //~ res.json({
+          //~ message: httpResponseMessage.USER_NOT_FOUND,
+          //~ code: httpResponseMessage.BAD_REQUEST
+        //~ });
+      //~ }
+       //~ else {
+		   //~ return res.json({
+			  //~ code: httpResponseCode.EVERYTHING_IS_OK,
+			  //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+			 //~ result: result
+		   //~ });
+		 //~ }
+        //~ }
+        //~ console.log('r',result);
+      //~ })
+	//~ })
+
 }
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
@@ -1472,27 +1517,94 @@ const frontNotification = (req, res) => {
 		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded._id;
 		  User.findOne({_id: userId}).then(function(user){
-			Notification.find({toUserId:userId,isRead:0}, function (err, notifications) {
-			if(err){
-				return res.json({
-				  message: 'notification Error',
-				  code: httpResponseMessage.BAD_REQUEST
-				});
-			}
-			return res.json({
-					code: httpResponseCode.EVERYTHING_IS_OK,
-					message: httpResponseMessage.SUCCESSFULLY_DONE,
-					result: user,
-					totalNotifications:notifications.length,
-					notifications : notifications,
-					notification_type:constant.notification_type
-				});
-			});
+  			Notification.find({toUserId:userId,isRead:0}, function (err, notifications) {
+  			if(err){
+  				return res.json({
+  				  message: 'notification Error',
+  				  code: httpResponseMessage.BAD_REQUEST
+  				});
+  			}
+  			return res.json({
+  					code: httpResponseCode.EVERYTHING_IS_OK,
+  					message: httpResponseMessage.SUCCESSFULLY_DONE,
+  					result: user,
+  					totalNotifications:notifications.length,
+  					notifications : notifications,
+  					notification_type:constant.notification_type
+  				});
+  			});
        });
+
   } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
 }
+
+
+/** Auther	: Rajiv Kumar
+ *  Date	: Sept 26, 2018
+ *	Description : Function to states of user trade
+ **/
+userTradeStates = (req, res) => {
+	var token = getToken(req.headers);
+	if (token) {
+		var totalNotifications  = 0;
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+    //console.log("decoded.subscriptionPlan",decoded.subscriptionPlan)
+    var totalUser = 0
+    var totalProduct = 0
+    var totalTrade = 0
+    var totalDonation =0
+    var totalInventoryAllowed =0
+    var totalTradePermitted = 0
+    Promise.all([
+    /// Get Total users
+    User.findOne({_id: userId}),
+    /// Get Total products
+    Product.find({userId:userId}),
+    /// Get Total donations
+    Notification.find({toUserId:userId,isRead:0}),
+    //function to get user subscriptionPlan and allowed inventory amnd trade.
+  //  UserSubscription.find({_id:decoded.subscriptionPlan}),
+    Subscription.find({_id:decoded.subscriptionPlan}),
+    //get user switch trade
+    OfferTrade.find({pitchUserId:userId})
+  ]
+    ).then((values) => {
+        // Subscription.find({'_id':'5b97c4148de80e556889cc11'}, function (err, subs) {
+        //     console.log("values",subs)
+        // })
+  //  console.log("values",values[3])
+    var subscription = values[3];
+    //console.log("subscription.lenght",subscription,subscription.length)
+    if(subscription.length > 0){
+      totalInventoryAllowed = subscription[0].totalInventoryAllowed
+      totalTradePermitted = subscription[0].totalTradePermitted
+    }
+    var  tradeLeft  = parseInt(totalTradePermitted-values[4].length)
+    var  inventoryLeft = parseInt(totalInventoryAllowed - values[1].length)
+  //  console.log("totalInventoryAllowed totalTradePermitted tradeLeft,inventoryLeft",totalInventoryAllowed, totalTradePermitted,tradeLeft,inventoryLeft,values[3])
+      return res.json({
+        code: httpResponseCode.EVERYTHING_IS_OK,
+        message: httpResponseMessage.SUCCESSFULLY_DONE,
+        result: values[0],
+        totalInvemtory:values[1].length,
+				totalNotifications:values[2].length,
+				notifications:values[2],
+				notification_type:constant.notification_type,
+        totalInventoryAllowed : totalInventoryAllowed,
+        totalTradePermitted : totalTradePermitted,
+        totalTrade : values[4].length,
+        tradeLeft:tradeLeft,
+        inventoryLeft:inventoryLeft
+      });
+    });
+  } else {
+	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
+}
+
 
 module.exports = {
 	signup,
@@ -1520,5 +1632,7 @@ module.exports = {
     frontNotification,
     newTradeUserRating,
     activeUser,
+    userTradeStates,
     searchCity
+
 }

@@ -5,7 +5,7 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var SubscriptionSchema = new Schema({
-subscriptionName:{ 
+subscriptionName:{
  type:String,
  trim:true
 },
@@ -18,11 +18,11 @@ price:{
 	trim: true
 },
 totalTradePermitted:{
-	type:String,
+	type:Number,
 	trim:true,
 },
 totalInventoryAllowed:{
-	type:String,
+	type:Number,
 	trim:true
 },
 timePeriod:{
@@ -32,7 +32,7 @@ timePeriod:{
 unlimited:{
     type:String,
     trim:true,
-    sparse:true    
+    sparse:true
 },
 status:{
    type:String,
@@ -45,7 +45,7 @@ timestamps:true
 });
 
 SubscriptionSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
+    var obj = this.toObject();
     return obj;
    }
 
