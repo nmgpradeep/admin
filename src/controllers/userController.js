@@ -1055,43 +1055,57 @@ const changeStatus = (req, res) => {
 const searchCity = (req, res) => {
 	var form = new multiparty.Form();
 	  form.parse(req, function(err, data, files) {
-	  const typeData = data.type[0]; 
-	  const catIds = data.ids[0];
-	  console.log('typeData',typeData);
-	  console.log('catIds',catIds);
-	  if(catIds.indexOf(",") > -1){
-			 catID = catIds.split(',');
-	  } else {
-			 catID = catIds; 
-	  }
-	   var typeObject = {};	 
-	   typeObject[typeData] = catID;
-	   User.find(typeObject, data)
-	  .exec(function(err, result){
-		  console.log('rrrrr',result);
-      if(err){
-		return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
-			err:err
-		  });
-     } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      } 
-       else {
-		   return res.json({
-			  code: httpResponseCode.EVERYTHING_IS_OK,
-			  message: httpResponseMessage.SUCCESSFULLY_DONE,
-			 result: result
-		   });
-		 }
-        }
-        console.log('r',result);
-      })
+		  const typeData = data.type[0]; 
+		  const catIds = data.ids[0];		  
+		  if(catIds.indexOf(",") > -1){
+			catID = catIds.split(',');
+		  } else {
+			catID = catIds; 
+		  }
+		   var typeObject = {};	 
+		   typeObject[typeData] = catID;
+		   User.distinct('_id',typeObject)
+		  .exec(function(err, userIDs){
+			  if(err){
+				return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+					err:err
+				  });
+			 } else {
+			  if (!userIDs) {
+				res.json({
+				  message: httpResponseMessage.USER_NOT_FOUND,
+				  code: httpResponseMessage.BAD_REQUEST
+				});
+			  } 
+			   else {
+					console.log('result',userIDs);			 
+					  Product.find({userId: {$in: userIDs},'productStatus': 1})
+						.populate('productCategory',['title'])
+						.exec(function(err,resultpro){
+							if (err) {
+							 return res.send({
+								code: httpResponseCode.BAD_REQUEST,
+								message: httpResponseMessage.INTERNAL_SERVER_ERROR
+							 })
+							} else {
+							if (!resultpro) {
+								res.json({
+									message: httpResponseMessage.USER_NOT_FOUND,
+									code: httpResponseMessage.BAD_REQUEST
+								});
+							} else {
+							  return res.json({
+								code: httpResponseCode.EVERYTHING_IS_OK,
+								result: resultpro
+							  });
+							}
+						 }
+					 });
+				   }
+			}
+		})
 	}) 
 }
 /** Auther	: Rajiv Kumar
@@ -1110,7 +1124,7 @@ const deleteUser = (req, res) => {
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
-            });
+       });
   })
 }
 
@@ -1271,14 +1285,14 @@ const newTradeUserRating = (req, res) => {
 const mostTrustedUsers = (req, res) => {
 console.log("mostTrustedUsers")
 UserTradeRating.aggregate([{
-                            $unwind: '$userId'
-                        }, {
-                            $group: {
-                                _id: '$userId',
-                                totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
-                                 count: { $sum: 1 }
-                            }
-                        }])
+           $unwind: '$userId'
+		}, {
+			$group: {
+				_id: '$userId',
+				totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
+				 count: { $sum: 1 }
+			}
+		}])
     .exec(function(err, transactions) {
         // Don't forget your error handling
         UserTradeRating.populate(transactions, {path: '_id',model:'User'}, function(err, populatedTransactions) {

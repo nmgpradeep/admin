@@ -66,7 +66,6 @@ getToken = function (headers) {
  */
 ///function to save new Trade in the list
 const newTrades = (req, res) => {
-//  console.log('<<<<<<<<<<<', JSON.stringify(req.body))
   const data = req.body;
       let now = new Date();
         Trade.create(req.body, (err, result) => {

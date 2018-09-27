@@ -26,9 +26,9 @@ router.get('/resetPassword/:id', userController.resetPassword)
 router.post('/updateNewPassword', userController.updateNewPassword);
 router.post('/readNotification', userController.readNotification);
 router.get('/frontNotification',userController.frontNotification);
-// User Rating Route 
+
 router.get('/mostTrustedUsers',userController.mostTrustedUsers);
 router.post('/newTradeUserRating',userController.newTradeUserRating);
 router.get('/activeUser',userController.activeUser);
-router.get('/searchCity',userController.searchCity);
+router.post('/searchCity',userController.searchCity);
 module.exports = router;

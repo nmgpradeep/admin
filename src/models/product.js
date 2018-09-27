@@ -31,7 +31,7 @@ type:String,
 trim:true,
 },
 brand:{
-	type: Schema.Types.ObjectId,
+  type: Schema.Types.ObjectId,
   ref: 'Brand'
 },
 size:{
@@ -60,8 +60,7 @@ timestamps:true
 ProductSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
-   }
-
+}
 
 ProductSchema.methods.getCategory = function(callback) {
   var product = this;
