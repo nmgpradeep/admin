@@ -6,6 +6,8 @@ const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
 const ProductImage = require('../models/productImage')
 const User = require('../models/User')
+const Size = require('../models/size')
+const Brand = require('../models/brand')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -119,7 +121,7 @@ const create = (req, res) => {
 /** Auther	: Rajiv kumar
  *  Date	: Sept 7, 2018
  */
-///function to save new product in the list by fron user
+///function to save new product in the list by front user
 const addProduct = (req, res) => {
   var token = getToken(req.headers);
    if (token) {
@@ -127,8 +129,7 @@ const addProduct = (req, res) => {
          var userId = decoded._id;
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
-          	 console.log('postdata', data);
-
+          	 console.log('postdata', data);          	
           	  if (!data.productName) {
           		return res.send({
           		  code: httpResponseCode.BAD_REQUEST,
@@ -399,6 +400,9 @@ const filterBycategory = (req,res) => {
 	   typeObject[typeData] = catID;
 	   Product.find(typeObject, data)
 	  .populate('productCategory',['title'])
+	  .populate({path:'userId',model:'User'})
+	  .populate({path:'brand',model:'brandName'})
+	  .populate({path:'size',model:'size'})
 	  .exec(function(err, result){
       if(err){
 		return res.send({
@@ -610,7 +614,7 @@ const searchresult = (req, res) => {
 	const id = req.params.id;
 	Product.find({productCategory:id,productStatus:1})
 	    .populate({ path: "productCategory", model: "Category"})
-	    //.populate('userId',['firstName','lastName','profilePic'])
+	    .populate({path:"userId",model:"User"})
 	    .exec(function(err,result){
 			if (err) {
 			 return res.send({
@@ -633,6 +637,40 @@ const searchresult = (req, res) => {
 	 });
 }
 
+/** Auther	: KS
+ *  Date	: september 13, 2018
+ *	Description : Function to search product listing
+ **/
+const productDetails = (req, res) => {
+	const id = req.params.id;
+	Product.findById({_id:id})		
+	    .populate({ path: "productCategory", model: "Category"})
+	    //~ .populate("brand",model:"brandName"})
+	    .populate({path:"userId",model:"User"})
+	    .populate({path:'size',model:'Size'})
+	    .populate({path:'brand',model:'Brand'})
+	    .exec(function(err,result){
+			console.log('result',result);
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result
+			  });
+			}
+		 }
+	 });
+}
 /** Auther	: Rajiv kumar
  *  Date	: August 6, 2018
  *	Description : Function to get myTreasureChest for front-user
@@ -640,12 +678,10 @@ const searchresult = (req, res) => {
 const myTreasureChest = (req, res) => {
 	var perPage = constant.PER_PAGE_RECORD;
 	var page = req.params.page || 1;
-
 	 var token = getToken(req.headers);
-
 	  if (token) {
-		      decoded = jwt.verify(token,settings.secret);
-		      var userId = decoded._id;
+	  decoded = jwt.verify(token,settings.secret);
+	  var userId = decoded._id;
 
   	Product.find({userId:userId})
       .populate({ path: "productCategory", model: "Category"})
@@ -677,7 +713,7 @@ const myTreasureChest = (req, res) => {
   		});
 	   } else {
 		 return res.status(403).send({code: 403, message: 'Unauthorized.'});
-	   }
+	}
 }
 
 /** Auther	: Rajiv kumar
@@ -797,5 +833,6 @@ module.exports = {
   activeProducts,
   searchresult,
   myTreasureChestFilterBy,
-  filterBycategory
+  filterBycategory,
+  productDetails
 }
