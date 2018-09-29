@@ -8,7 +8,6 @@ import axios from 'axios';
 import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
 var FD = require('form-data');
 var fs = require('fs');
-
 class Donation extends Component {
   constructor(props){
     super(props);
@@ -23,6 +22,10 @@ class Donation extends Component {
       modal: !this.state.modal
     });
   }
+  
+	componentWillMount(){
+		console.log('componentWillMount from donation')
+	}
   
   componentDidMount() {
 	   axios.get('/donation/getdonationStatus').then(result => {

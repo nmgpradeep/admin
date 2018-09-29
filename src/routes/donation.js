@@ -12,4 +12,7 @@ router.delete('/deleteDonation/:id',donationController.deleteDonation)
 router.post('/updateStatus',donationController.updateStatus)
 router.get('/donations/:page',donationController.donations)
 
+// Router for front users
+router.get('/donatedProducts',donationController.donatedProducts)
+
 module.exports = router;

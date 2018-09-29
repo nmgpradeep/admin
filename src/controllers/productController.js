@@ -128,11 +128,7 @@ const addProduct = (req, res) => {
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
           	 console.log('postdata', data);
-          	 if(data.files != ''){
-				 var productImages = JSON.parse(data.files);
-				 console.log('productImages', productImages);
-			 }
-			
+
           	  if (!data.productName) {
           		return res.send({
           		  code: httpResponseCode.BAD_REQUEST,
@@ -143,7 +139,7 @@ const addProduct = (req, res) => {
           	  if (flag) {
           		return res.json(flag);
           	  }
-           
+
                 data.userId = userId;
                 //console.log("datauserId",data)
           		  let now = new Date();
@@ -156,6 +152,34 @@ const addProduct = (req, res) => {
           				message: httpResponseMessage.INTERNAL_SERVER_ERROR
           			  })
           			} else {
+						var uploadedFiles = [];
+						 if(data.files != ''){
+							 var productImages = JSON.parse(data.files);
+							// console.log('productImages', productImages);
+
+								for(var i=0;i<productImages.length;i++){
+									console.log("productImages",productImages[i].filename);
+									uploadedFiles.push({
+										productId:result._id,
+										imageName: productImages['filename'],
+										imageStatus: 1,
+										imageURL: constant.product_path.productImages['filename']
+									});
+								}
+
+								try {
+									ProductImage.insertMany(uploadedFiles);
+								} catch (e) {
+									res.send(e);return;
+								}
+								//~ ProductImage.create(uploadedFiles, function (err, jellybean, snickers) {
+									 //~ if (err) {
+											//~ res.send(err);
+										//~ return;
+									//~ }
+								//~ });
+							  Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true })
+						 }
           			  //console.log('Created-Page',err, result);
           			 // check file and upload if exist
           			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
@@ -359,19 +383,19 @@ const activeProducts = (req,res) => {
 	 });
 }
 
-const filterBycategory = (req,res) => { 
+const filterBycategory = (req,res) => {
 	  var form = new multiparty.Form();
 	  form.parse(req, function(err, data, files) {
-	  const typeData = data.type[0]; 
+	  const typeData = data.type[0];
 	  const catIds = data.ids[0];
 	  console.log('typeData',typeData);
 	  console.log('catIds',catIds);
 	  if(catIds.indexOf(",") > -1){
 			 catID = catIds.split(',');
 	  } else {
-			 catID = catIds; 
+			 catID = catIds;
 	  }
-	   var typeObject = {};	 
+	   var typeObject = {};
 	   typeObject[typeData] = catID;
 	   Product.find(typeObject, data)
 	  .populate('productCategory',['title'])
@@ -388,7 +412,7 @@ const filterBycategory = (req,res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      } 
+      }
        else {
 		   return res.json({
 			  code: httpResponseCode.EVERYTHING_IS_OK,
@@ -399,7 +423,7 @@ const filterBycategory = (req,res) => {
         }
         console.log('r',result);
       })
-	}) 
+	})
 }
 
 
@@ -412,15 +436,15 @@ const popularItems = (req,res) => {
 		  $unwind: '$SwitchUserProductId'
 	  }, {
 		  $group: {
-			  _id: '$SwitchUserProductId',			
-			   count: { $sum: 1 },			  
+			  _id: '$SwitchUserProductId',
+			   count: { $sum: 1 },
 			   SwitchUserProductId:{$push: "$SwitchUserProductId"},
 			   SwitchUserId:{$push: "$SwitchUserId"},
 			   pitchUserId:{$push: "$pitchUserId"},
 			   ditchCount:{$push: "$ditchCount"}
 		  }
 	  }])
-      .exec(function(err, popularItems) { 
+      .exec(function(err, popularItems) {
             OfferTrade.populate(popularItems, {path: '_id',model:'Product',populate: [{
                       path: 'productCategory', model: 'Category' },{ path: 'userId', model: 'User', select: 'firstName lastName userName profilePic'
       }] }, function(err, populatedItem) {
