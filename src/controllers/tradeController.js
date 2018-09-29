@@ -216,7 +216,7 @@ const offerTrade = (req, res) => {
 /** Auther	: Rajiv kumar
  *  Date	: September 13, 2018
  */
-///function to save new offer trade in the offerTrade collections
+///function to list offer trade in the offerTrade collections
 const offerTrades = (req, res) => {
 
   var perPage = constant.PER_PAGE_RECORD
@@ -252,6 +252,59 @@ const offerTrades = (req, res) => {
     } else {
     return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: September 29, 2018
+ */
+///function to cancel self offer trade by user offerTrade collections
+const cancelOfferTrade = (req, res) => {
+  const data = req.body;
+      let now = new Date();
+        OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"3"} }, { new:true }, (err,result) => {
+        if (err) {
+          return res.send({
+			      errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+        }
+    })
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: September 29, 2018
+ */
+///function to ditch requested offer trade collections
+const ditchOfferTrade = (req, res) => {
+  //console.log("ditchOfferTrade req.body",req.body)
+  const data = req.body;
+      let now = new Date();
+      OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"2","ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
+        console.log("responce",err,result)
+        if (err) {
+          console.log("responce",err,result)
+          return res.send({
+			      errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+        }
+    })
 }
 
 
@@ -437,7 +490,7 @@ const ditchTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .where('ditchCount').gt(0).lt(4)
     .skip((perPage * page) - perPage)
     .limit(perPage)
@@ -510,5 +563,7 @@ module.exports = {
   switchTrades,
   completedTrades,
   ditchTrade,
-  ditchTrades
+  ditchTrades,
+  cancelOfferTrade,
+  ditchOfferTrade
 }

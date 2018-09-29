@@ -20,9 +20,9 @@ SwitchUserProductId:{
 ditchCount:{
  type:Number,
  trim: true,
- default:0 // 0->offer/pitch,1->switch,2->cancelled,3->sold out,4->blocked
+ default:0 // 0->offer/pitch,1->switch,2->ditch,3->cancelled,4->sold out,5->blocked
 },
-//
+//// 0->offer/pitch,1->switch,2->ditch,3->cancelled,4->sold out,5->blocked
 status:{
  type:String,
  trim:true,
