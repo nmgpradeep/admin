@@ -27,22 +27,22 @@ class Users extends Component {
 		  PerPage: 5,
 		  totalPages: 1,
 		  usersCount: 0,
-		  offset: 0,     
+		  offset: 0,
 		  info: false,
     };
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
-    }    
+    }
     this.toggle = this.toggle.bind(this);
     this.toggleInfo = this.toggleInfo.bind(this);
     this.approveDeleteHandler = this.approveDeleteHandler.bind(this);
     this.sortBy.bind(this);
   }
-  
-  componentDidMount() {    
+
+  componentDidMount() {
       this.loadCommentsFromServer();
   }
-  
+
   loadCommentsFromServer() {
     axios.get('/user/users/' + this.state.currentPage).then(result => {
       if(result.data.code ===200){
@@ -57,24 +57,24 @@ class Users extends Component {
 				this.data.name = user.userName;
 				this.data.email = user.email;
 				this.data.firstName = user.firstName;
-		   });		   
-          console.log('ussssss',this.data,this.state.users); 
-        }      
+		   });
+          console.log('ussssss',this.data,this.state.users);
+        }
      })
-    .catch((error) => {    
+    .catch((error) => {
        if(error.code === 401) {
          this.props.history.push("/login");
       }
     });
   }
-  
+
   handlePageClick = (data) => {
       let currentPage = data.selected + 1;
       this.setState({currentPage: currentPage}, () => {
         this.loadCommentsFromServer();
       });
   };
- 
+
   userDeleteHandler (id){
     this.setState({
       approve: false,
@@ -94,19 +94,19 @@ class Users extends Component {
       }
     });
   }
-  
+
   toggle() {
     this.setState({
       modal: !this.state.modal
     });
   }
-  
+
   toggleInfo (){
      this.setState({
       info: !this.state.info
-    });   
+    });
   }
-  
+
   sortBy(key) {
 	 const data = new FD()
         data.append('key', key)
@@ -127,17 +127,17 @@ class Users extends Component {
 						this.data.email = user.email;
 						this.data.firstName = user.firstName;
 				   });
-				}      
+				}
 			 })
-			.catch((error) => {    
+			.catch((error) => {
 			   if(error.code === 401) {
 				 this.props.history.push("/login");
 			 }
 		});
-		console.log('ddddd',this.state.users); 
+		console.log('ddddd',this.state.users);
   }
-   
-  
+
+
   approveDeleteHandler(){
     this.setState({
       approve: true
@@ -163,11 +163,11 @@ class Users extends Component {
   render() {
    let users;
    let classValue;
-   const FilterableTable = require('react-filterable-table'); 
-   const FieldRenders = require('./User');    
+   const FilterableTable = require('react-filterable-table');
+   const FieldRenders = require('./User');
      if(this.state.users){
        let userList = this.state.users;
-         users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />); 
+         users = userList.map((user,index) => <User key={user._id} onDeleteUser={this.userDeleteHandler.bind(this)} onflagUsers={this.toggleInfo.bind(this)} changeStatus={(user) => this.changeStatusHandler(user)} user={user} sequenceNumber={index} />);
      }
      if(this.state.sortType==1){
 		   classValue ="fa fa-sort-asc";
@@ -175,7 +175,7 @@ class Users extends Component {
 		else {
 		   classValue ="fa fa-sort-desc";
 		}
-     	 
+
    const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
       <div className="animated fadeIn">
@@ -248,13 +248,13 @@ class Users extends Component {
             <Button color="secondary" onClick={this.toggle}>No</Button>
           </ModalFooter>
         </Modal>
-                
+
         <Modal isOpen={this.state.info} toggle={this.toggleInfo} className={'modal-info ' + this.props.className}>
 		  <ModalHeader toggle={this.toggleInfo}>User Flagged</ModalHeader>
 		  <ModalBody>
 			No Flag User Available!!!
 		  </ModalBody>
-		  <ModalFooter>		
+		  <ModalFooter>
 			<Button color="secondary" onClick={this.toggleInfo}>Cancel</Button>
 		  </ModalFooter>
 		</Modal>
