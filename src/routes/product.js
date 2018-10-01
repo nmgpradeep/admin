@@ -17,5 +17,6 @@ router.get('/searchresult/:id',productController.searchresult)
 router.post('/filterBy',productController.myTreasureChestFilterBy)
 router.post('/filterBycategory',productController.filterBycategory)
 router.get('/productDetails/:id',productController.productDetails)
+router.get('/productImages/:id',productController.productDetails)
 
 module.exports = router;

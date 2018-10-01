@@ -621,12 +621,39 @@ const productDetails = (req, res) => {
 	const id = req.params.id;
 	Product.findById({_id:id})		
 	    .populate({ path: "productCategory", model: "Category"})
-	    //~ .populate("brand",model:"brandName"})
 	    .populate({path:"userId",model:"User"})
 	    .populate({path:'size',model:'Size'})
 	    .populate({path:'brand',model:'Brand'})
 	    .exec(function(err,result){
-			console.log('result',result);
+			//console.log('result',result);
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result
+			  });
+			}
+		 }
+	 });
+}
+/** Auther	: KS
+ *  Date	: september 13, 2018
+ *	Description : Function to search product listing
+ **/
+const productImages = (req, res) => {
+	const id = req.params.id;
+	  ProductImage.find({productId:id})		
+	    .exec(function(err,result){			
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -810,5 +837,6 @@ module.exports = {
   searchresult,
   myTreasureChestFilterBy,
   filterBycategory,
-  productDetails
+  productDetails,
+  productImages
 }
