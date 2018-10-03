@@ -25,7 +25,7 @@ var settings = require('../config/settings'); // get settings file
 var passport = require('passport');
 require('../config/passport')(passport);
 var jwt = require('jsonwebtoken');
-
+var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 getToken = function (headers) {
   if (headers && headers.authorization) {
@@ -598,10 +598,10 @@ const deleteProduct = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
     }
-	return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.SUCCESSFULLY_DONE,
-             result: result
+	  return res.json({
+		  code: httpResponseCode.EVERYTHING_IS_OK,
+		  message: httpResponseMessage.SUCCESSFULLY_DONE,
+		 result: result
       });
   })
 }
@@ -613,7 +613,7 @@ const deleteProduct = (req, res) => {
 const searchresult = (req, res) => {
 	const id = req.params.id;
 	Product.find({productCategory:id,productStatus:1})
-	    .populate({ path: "productCategory", model: "Category"})
+	    .populate({path: "productCategory", model: "Category"})
 	    .populate({path:"userId",model:"User"})
 	    .exec(function(err,result){
 			if (err) {
@@ -649,7 +649,7 @@ const productDetails = (req, res) => {
 	    .populate({path:'size',model:'Size'})
 	    .populate({path:'brand',model:'Brand'})
 	    .exec(function(err,result){
-			//console.log('result',result);
+			console.log('result',result);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -675,9 +675,10 @@ const productDetails = (req, res) => {
  *	Description : Function to search product listing
  **/
 const productImages = (req, res) => {
-	const id = req.params.id;
-	  ProductImage.find({productId:id})		
-	    .exec(function(err,result){			
+	const id =  mongoose.mongo.ObjectId(req.params.id);
+	   ProductImage.find({productId:id})	
+	    .exec(function(err,result){	
+			///console.log('result',result,id,req.params.id);		
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -709,8 +710,7 @@ const myTreasureChest = (req, res) => {
 	  if (token) {
 	  decoded = jwt.verify(token,settings.secret);
 	  var userId = decoded._id;
-
-  	Product.find({userId:userId})
+  	   Product.find({userId:userId})
       .populate({ path: "productCategory", model: "Category"})
       .populate({ path: "userId", model: "User"})
   	   .skip((perPage * page) - perPage)
@@ -733,7 +733,7 @@ const myTreasureChest = (req, res) => {
   					code: httpResponseCode.EVERYTHING_IS_OK,
   					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
   				   result: products
-  				  });
+  				});
 
   			}
   		  }
@@ -742,29 +742,64 @@ const myTreasureChest = (req, res) => {
 		 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
 }
+/** Auther	: KS
+ *  Date	: August 6, 2018
+ *	Description : Function to get myTreasureChest for front-user
+ **/
+const relatedCategoryProduct = (req, res) => {
+	const id = req.params.id;
+  	  Product.findById({_id:id})
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+       .exec(function(err, products) {
+		   const categoryID = products.productCategory._id;
+		   //console.log('categoryID',categoryID)
+		    Product.find({productCategory:categoryID})
+		    .populate({ path: "productCategory", model: "Category"})
+            .populate({ path: "userId", model: "User"})
+            .exec(function(err,items){
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!items) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: items
+			  });
+			}
+		 }
+	   });
+  	});
+}
 
 /** Auther	: Rajiv kumar
  *  Date	: August 6, 2018
  *	Description : Function to get myTreasureChest for front-user
  **/
 const myTreasureChestFilterBy = (req, res) => {
-
   var sortObject = {};
   var condObject = {};
-
   var stype = "productName";
   var sdir = 1;
   if(req.body.sortBy != "" || req.body.sortBy !=undefined){
       if(req.body.sortBy == 1){
         var stype = "createdAt";
         var sdir = 1;
-      }else if(req.body.sortBy == 2){
+      } else if(req.body.sortBy == 2){
         var stype = "productName";
         var sdir = -1;
-      }else if(req.body.sortBy == 3){
+      } else if(req.body.sortBy == 3){
         var stype = "productName";
         var sdir = 1;
-      }else if(req.body.sortBy == 4){
+      } else if(req.body.sortBy == 4){
         var stype = "createdAt";
         var sdir = -1;
       }
@@ -776,20 +811,20 @@ const myTreasureChestFilterBy = (req, res) => {
 
 	 var token = getToken(req.headers);
 	  if (token) {
-		      decoded = jwt.verify(token,settings.secret);
-		      var userId = decoded._id;
-          condObject["userId"] = userId;
-          if(req.body.category !== ''){
-              condObject["productCategory"] = req.body.category;
-          }
-  	Product.find(condObject)
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+        condObject["userId"] = userId;
+      if(req.body.category !== ''){
+          condObject["productCategory"] = req.body.category;
+      }
+      
+       Product.find(condObject)
       .populate({ path: "productCategory", model: "Category"})
       .populate({ path: "userId", model: "User"})
   	   .skip((perPage * page) - perPage)
        .limit(perPage)
        .sort(sortObject)
        .exec(function(err, products) {
-         console.log("products",products)
         if (err) {
   			return res.send({
   			  code: httpResponseCode.BAD_REQUEST,
@@ -801,14 +836,13 @@ const myTreasureChestFilterBy = (req, res) => {
   				message: httpResponseMessage.USER_NOT_FOUND,
   				code: httpResponseMessage.BAD_REQUEST
   			  });
-  			}else {
+  			}  else {
   			  return res.json({
   					code: httpResponseCode.EVERYTHING_IS_OK,
   					message: httpResponseMessage.LOGIN_SUCCESSFULLY,
   				   result: products
   				 });
-
-  			}
+  			  }
   		  }
   		});
 	   } else {
@@ -824,7 +858,6 @@ const myTreasureChestFilterBy = (req, res) => {
 const tepmUpload = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
-	  console.log('Temp Files', files);
 	var uploadedFiles = [];
 	for(var i=0;i<files.file.length;i++){
 		if(files.file[i].size > 0){
@@ -845,6 +878,7 @@ const tepmUpload = (req, res) => {
 	 });
   });
 }
+
 module.exports = {
   create,
   allProducts,
@@ -862,5 +896,6 @@ module.exports = {
   myTreasureChestFilterBy,
   filterBycategory,
   productDetails,
-  productImages
+  productImages,
+  relatedCategoryProduct
 }
