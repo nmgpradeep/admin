@@ -549,6 +549,29 @@ const tradePitchProduct = (req, res) => {
     })
 }
 
+/** Auther	: Rajiv kumar
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const offerTradeProduct = (req, res) => {
+        TradePitchProduct.find({offerTradeId:req.params.id})
+        .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         .exec(function(err, offerTradeProduct) {        
+		 if (err) {
+          return res.send({
+			      errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: offerTradeProduct
+          })
+        }
+    })
+}
 
 module.exports = {
   listTrades,
@@ -565,5 +588,6 @@ module.exports = {
   ditchTrade,
   ditchTrades,
   cancelOfferTrade,
-  ditchOfferTrade
+  ditchOfferTrade,
+  offerTradeProduct
 }

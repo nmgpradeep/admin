@@ -19,4 +19,9 @@ router.post('/filterBycategory',productController.filterBycategory)
 router.get('/productDetails/:id',productController.productDetails)
 router.get('/productImages/:id',productController.productDetails)
 
+/*Routes related to user wishlist functionality added on 03 October 2018 */
+router.get('/wishlist',productController.wishList)
+router.post('/addToWishList',productController.addToWishList)
+router.delete('/clearWishlist',productController.clearWishlist)
+
 module.exports = router;
