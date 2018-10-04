@@ -650,25 +650,50 @@ const productDetails = (req, res) => {
 	    .populate({path:'size',model:'Size'})
 	    .populate({path:'brand',model:'Brand'})
 	    .exec(function(err,result){
-			console.log('result',result);
-			if (err) {
-			 return res.send({
-				code: httpResponseCode.BAD_REQUEST,
-				message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			 })
-			} else {
-			if (!result) {
-				res.json({
-					message: httpResponseMessage.USER_NOT_FOUND,
-					code: httpResponseMessage.BAD_REQUEST
-				});
-			} else {
-			 return res.json({
-				code: httpResponseCode.EVERYTHING_IS_OK,
-				result: result
-			  });
-			}
-		 }
+  			if (err) {
+  			 return res.send({
+  				code: httpResponseCode.BAD_REQUEST,
+  				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+  			 })
+  			} else {
+    			if (!result) {
+
+
+    				res.json({
+    					message: httpResponseMessage.USER_NOT_FOUND,
+    					code: httpResponseMessage.BAD_REQUEST
+    				});
+
+  			} else {
+               var token = getToken(req.headers);
+               if (token) {
+               decoded = jwt.verify(token,settings.secret);
+               var userId = decoded._id;
+              Promise.all([
+              /// Get Total wishList
+              WishList.find({userId: userId,productId:id}),
+              /// Get Total tradePitchProduct
+              OfferTrade.find({pitchUserId:userId,SwitchUserProductId:id})
+              ]).then((values) => {
+                //console.log("values",values)
+                return res.json({
+                 code: httpResponseCode.EVERYTHING_IS_OK,
+                 result: result,
+                 pitchProduct:(values[1].length > 0)?true:false,
+                 wishListProduct:(values[0].length > 0)?true:false
+                 });
+               })
+          }else{
+            return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,
+             result: result,
+             pitchProduct:false,
+             wishListProduct:false
+             });
+
+          }
+  		 }
+     }
 	 });
 }
 /** Auther	: KS
@@ -677,9 +702,9 @@ const productDetails = (req, res) => {
  **/
 const productImages = (req, res) => {
 	const id =  mongoose.mongo.ObjectId(req.params.id);
-	   ProductImage.find({productId:id})	
-	    .exec(function(err,result){	
-			///console.log('result',result,id,req.params.id);		
+	   ProductImage.find({productId:id})
+	    .exec(function(err,result){
+			///console.log('result',result,id,req.params.id);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -818,7 +843,7 @@ const myTreasureChestFilterBy = (req, res) => {
       if(req.body.category !== ''){
           condObject["productCategory"] = req.body.category;
       }
-      
+
        Product.find(condObject)
       .populate({ path: "productCategory", model: "Category"})
       .populate({ path: "userId", model: "User"})

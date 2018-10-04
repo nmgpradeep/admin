@@ -49,7 +49,7 @@ profilePic:{
 type:String,
 trim:true,
 sparse:true,
-default:0 
+default:0
 },
 address:{
 type:String,
@@ -72,8 +72,8 @@ type:String,
 trim:true
 },
 subscriptionPlan:{
-type:String,
-trim:true
+type:Schema.Types.ObjectId,
+ref:'Subscription'
 },
 accessToken:{
  type:String,
@@ -95,23 +95,23 @@ userStatus:{
 },
 latitude: {
  type: String,
- trim: true 
+ trim: true
 },
 longitude: {
  type: String,
- trim: true 
-}, 
+ trim: true
+},
 emailVerified:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
-}, 
+ default:0
+},
 emailNotification:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
+ default:0
 }
 },
 {
