@@ -31,8 +31,7 @@ class CountrySelectBox extends Component {
       }
       
     })
-    .catch((error) => {
-    console.log('error', error)
+    .catch((error) => {    
       if(error.code === 401) {
         this.props.history.push("/login");
       }
@@ -40,7 +39,8 @@ class CountrySelectBox extends Component {
   }
   render() {	  
     return (
-      <div className="form-group">      {this.props.countryId}  
+      <div className="form-group"> 
+      {this.props.countryId}  
        <Input type="select" 
 		onChange={(e) => this.props.onSelectCountry(e.target.value)}
 		innerRef={this.props.reference} className="form-control">

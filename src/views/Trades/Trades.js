@@ -17,7 +17,7 @@ class Trades extends Component {
       totalPages: 1,
       tradesCount: 0
     };
-    //console.log('THIS OBJ', this);
+   
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }

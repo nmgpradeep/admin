@@ -18,6 +18,8 @@ router.post('/filterBy',productController.myTreasureChestFilterBy)
 router.post('/filterBycategory',productController.filterBycategory)
 router.get('/productDetails/:id',productController.productDetails)
 router.get('/productImages/:id',productController.productDetails)
+router.get('/relatedCategoryProduct/:id',productController.relatedCategoryProduct)
+
 
 /*Routes related to user wishlist functionality added on 03 October 2018 */
 router.get('/wishlist',productController.wishList)
