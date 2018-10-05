@@ -30,5 +30,6 @@ module.exports = {
     LISTED_SUCCESSFULLY:'Item Listed Successfully',
     ITEM_NOT_FOUND:'Item not found' ,
     FILE_UPLOAD_ERROR :'Error in file uploading' ,
-    PASSWORD_CHANGE_SUCCESSFULLY : 'Password Changed Successfully! Please Login'
+    PASSWORD_CHANGE_SUCCESSFULLY : 'Password Changed Successfully! Please Login',
+    INACTIVE_USER:'Account is not active or suspended, Please contact administrator to activate the account.'
 }

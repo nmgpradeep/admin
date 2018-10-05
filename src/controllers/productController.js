@@ -450,6 +450,7 @@ const popularItems = (req,res) => {
 		  }
 	  }])
       .exec(function(err, popularItems) {
+        //console.log("popularItems",popularItems.length)
             OfferTrade.populate(popularItems, {path: '_id',model:'Product',populate: [{
                       path: 'productCategory', model: 'Category' },{ path: 'userId', model: 'User', select: 'firstName lastName userName profilePic'
       }] }, function(err, populatedItem) {
