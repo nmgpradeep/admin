@@ -395,7 +395,7 @@ const login = (req, res) => {
 	 console.log("flag",flag)
     return res.json(flag);
   }
-  User.findOne({ email: req.body.email, userType: req.body.userType }, (err, result) => {
+  User.findOne({ email: req.body.email, userType: req.body.userType}, (err, result) => {
     if (err) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
@@ -408,6 +408,16 @@ const login = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
       } else if (result.userType === req.body.userType) {
+
+          if(result.userStatus === '0'){
+            return res.json({
+              message: httpResponseMessage.INACTIVE_USER,
+              code: httpResponseCode.FORBIDDEN,
+            });
+            return;
+          }
+
+
         result.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
 
@@ -434,15 +444,17 @@ const login = (req, res) => {
                   })
                 })
 
+
+
           // set the use data in to session
              req.session.user = result;
              console.log("LOgin SESSION ", req.session)
               req.session.reload(function () {
-				req.session.save(function (err) {
-				  if (err) return res.end(err.message)
-				  res.end('saved')
-				})
-			  })
+				            req.session.save(function (err) {
+        				      if (err) return res.end(err.message)
+        				            res.end('saved')
+        				      })
+			       })
 
 
 
@@ -1570,13 +1582,11 @@ userTradeStates = (req, res) => {
     OfferTrade.find({pitchUserId:userId})
   ]
     ).then((values) => {
-<<<<<<< HEAD
-=======
+
         // Subscription.find({'_id':'5b97c4148de80e556889cc11'}, function (err, subs) {
         //     console.log("values",subs)
         // })
   // console.log("values",values[3])
->>>>>>> 3e540c758fda3174788f5817cba15f94eb3a68f3
     var subscription = values[3];
     //console.log("subscription.lenght",subscription,subscription.length)
     if(subscription.length > 0){
