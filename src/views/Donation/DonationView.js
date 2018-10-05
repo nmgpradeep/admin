@@ -24,9 +24,9 @@ class DonationView extends Component {
       donationId: this.props.match.params.id
     };
   }
-  cancelHandler(){
-    this.props.history.push("/donations");
-  }
+   cancelHandler(){
+     this.props.history.push("/donations");
+   }
    
   componentDidMount() {
        axios.get('/donation/getConstant').then(result => {
@@ -34,17 +34,13 @@ class DonationView extends Component {
        });
       axios.get('/donation/viewDonation/' + this.state.donationId).then(result => {
         if(result.data.code === 200){
-		  console.log('asdf', result.data.result);
           this.setState({ viewDonation: result.data.result});
-          
           this.productName.value = result.data.result.productName;
           this.description.value = result.data.result.description;
-          
           this.productCategory.value = result.data.result.productCategory.title;
           this.color.value = result.data.result.color;
           this.userId.value = result.data.result.userId.firstName;           
           this.condition.value = result.data.result.condition;    
-          
           this.productAge.value = result.data.result.productAge; 
           this.productImage.value = result.data.result.productImage;
         }
@@ -79,7 +75,6 @@ class DonationView extends Component {
                 <Row>
                   <Col xs="4" sm="12">
                     <FormGroup>
-                   
                       <Label htmlFor="company">Product name</Label>
                       <Input type="text" innerRef={input => (this.productName= input)} />
                     </FormGroup>
