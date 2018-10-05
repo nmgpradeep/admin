@@ -1060,14 +1060,14 @@ const changeStatus = (req, res) => {
 const searchCity = (req, res) => {
 	var form = new multiparty.Form();
 	  form.parse(req, function(err, data, files) {
-		  const typeData = data.type[0]; 
-		  const catIds = data.ids[0];		  
+		  const typeData = data.type[0];
+		  const catIds = data.ids[0];
 		  if(catIds.indexOf(",") > -1){
 			catID = catIds.split(',');
 		  } else {
-			catID = catIds; 
+			catID = catIds;
 		  }
-		   var typeObject = {};	 
+		   var typeObject = {};
 		   typeObject[typeData] = catID;
 		   User.distinct('_id',typeObject)
 		  .exec(function(err, userIDs){
@@ -1083,9 +1083,9 @@ const searchCity = (req, res) => {
 				  message: httpResponseMessage.USER_NOT_FOUND,
 				  code: httpResponseMessage.BAD_REQUEST
 				});
-			  } 
+			  }
 			   else {
-					console.log('result',userIDs);			 
+					console.log('result',userIDs);
 					  Product.find({userId: {$in: userIDs},'productStatus': 1})
 						.populate('productCategory',['title'])
 						.exec(function(err,resultpro){
@@ -1111,7 +1111,7 @@ const searchCity = (req, res) => {
 				   }
 			}
 		})
-	}) 
+	})
 //~ =======
 	  //~ const typeData = data.type[0];
 	  //~ const catIds = data.ids[0];
@@ -1254,13 +1254,12 @@ const verifyEmail = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
-             result: result
-            });
-
+           code: httpResponseCode.EVERYTHING_IS_OK,
+           message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
+           result: result
+        });
       }
     }
   })
@@ -1551,7 +1550,7 @@ userTradeStates = (req, res) => {
 		var totalNotifications  = 0;
 		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded._id;
-    //console.log("decoded.subscriptionPlan",decoded.subscriptionPlan)
+  //  console.log("decoded.subscriptionPlan",decoded)
     var totalUser = 0
     var totalProduct = 0
     var totalTrade = 0
@@ -1571,6 +1570,13 @@ userTradeStates = (req, res) => {
     OfferTrade.find({pitchUserId:userId})
   ]
     ).then((values) => {
+<<<<<<< HEAD
+=======
+        // Subscription.find({'_id':'5b97c4148de80e556889cc11'}, function (err, subs) {
+        //     console.log("values",subs)
+        // })
+  // console.log("values",values[3])
+>>>>>>> 3e540c758fda3174788f5817cba15f94eb3a68f3
     var subscription = values[3];
     //console.log("subscription.lenght",subscription,subscription.length)
     if(subscription.length > 0){

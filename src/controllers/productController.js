@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
 const Category = require('../models/category')
 const Product = require('../models/product')
+const WishList = require('../models/wishList')
 const TradePitchProduct = require('../models/tradePitchProduct')
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
@@ -129,7 +130,7 @@ const addProduct = (req, res) => {
          var userId = decoded._id;
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
-          	 console.log('postdata', data);          	
+          	 console.log('postdata', data);
           	  if (!data.productName) {
           		return res.send({
           		  code: httpResponseCode.BAD_REQUEST,
@@ -643,31 +644,56 @@ const searchresult = (req, res) => {
  **/
 const productDetails = (req, res) => {
 	const id = req.params.id;
-	Product.findById({_id:id})		
+	Product.findById({_id:id})
 	    .populate({ path: "productCategory", model: "Category"})
 	    .populate({path:"userId",model:"User"})
 	    .populate({path:'size',model:'Size'})
 	    .populate({path:'brand',model:'Brand'})
 	    .exec(function(err,result){
-			console.log('result',result);
-			if (err) {
-			 return res.send({
-				code: httpResponseCode.BAD_REQUEST,
-				message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			 })
-			} else {
-			if (!result) {
-				res.json({
-					message: httpResponseMessage.USER_NOT_FOUND,
-					code: httpResponseMessage.BAD_REQUEST
-				});
-			} else {
-			 return res.json({
-				code: httpResponseCode.EVERYTHING_IS_OK,
-				result: result
-			  });
-			}
-		 }
+  			if (err) {
+  			 return res.send({
+  				code: httpResponseCode.BAD_REQUEST,
+  				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+  			 })
+  			} else {
+    			if (!result) {
+
+
+    				res.json({
+    					message: httpResponseMessage.USER_NOT_FOUND,
+    					code: httpResponseMessage.BAD_REQUEST
+    				});
+
+  			} else {
+               var token = getToken(req.headers);
+               if (token) {
+               decoded = jwt.verify(token,settings.secret);
+               var userId = decoded._id;
+              Promise.all([
+              /// Get Total wishList
+              WishList.find({userId: userId,productId:id}),
+              /// Get Total tradePitchProduct
+              OfferTrade.find({pitchUserId:userId,SwitchUserProductId:id})
+              ]).then((values) => {
+                //console.log("values",values)
+                return res.json({
+                 code: httpResponseCode.EVERYTHING_IS_OK,
+                 result: result,
+                 pitchProduct:(values[1].length > 0)?true:false,
+                 wishListProduct:(values[0].length > 0)?true:false
+                 });
+               })
+          }else{
+            return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,
+             result: result,
+             pitchProduct:false,
+             wishListProduct:false
+             });
+
+          }
+  		 }
+     }
 	 });
 }
 /** Auther	: KS
@@ -676,9 +702,9 @@ const productDetails = (req, res) => {
  **/
 const productImages = (req, res) => {
 	const id =  mongoose.mongo.ObjectId(req.params.id);
-	   ProductImage.find({productId:id})	
-	    .exec(function(err,result){	
-			///console.log('result',result,id,req.params.id);		
+	   ProductImage.find({productId:id})
+	    .exec(function(err,result){
+			///console.log('result',result,id,req.params.id);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -817,7 +843,7 @@ const myTreasureChestFilterBy = (req, res) => {
       if(req.body.category !== ''){
           condObject["productCategory"] = req.body.category;
       }
-      
+
        Product.find(condObject)
       .populate({ path: "productCategory", model: "Category"})
       .populate({ path: "userId", model: "User"})
@@ -879,6 +905,102 @@ const tepmUpload = (req, res) => {
   });
 }
 
+/* #################################### Functions related to wishList functionality ############*/
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 03, 2018
+ *	Description : Function to add product into user wishlist
+ **/
+const addToWishList = (req, res) => {
+  console.log("addToWishList",req.body)
+    var token = getToken(req.headers);
+    if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+         req.body.userId = userId
+        WishList.create(req.body, (err,result) => {
+            if(err){
+        		return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+        	return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result
+              });
+          })
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 03, 2018
+ *	Description : Function to list user wishlist
+ **/
+const wishList = (req, res) => {
+    var token = getToken(req.headers);
+    if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+        WishList.find({})
+           .populate('userId')
+           .populate('userId',['firstName','lastName','userName','pro'])
+           .populate({path:'productId',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+           .exec(function(err, result){
+            if(err){
+        		return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+        	return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result
+              });
+          })
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 03, 2018
+ *	Description : Function to clear the Product from user wishlist
+ **/
+const clearWishlist = (req, res) => {
+    var token = getToken(req.headers);
+    if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+         WishList.deleteMany({ userId : userId }, (err,result) => {
+            if(err){
+        		return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+        	return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result
+              });
+          })
+
+    } else {
+    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
+
 module.exports = {
   create,
   allProducts,
@@ -897,5 +1019,9 @@ module.exports = {
   filterBycategory,
   productDetails,
   productImages,
+  wishList,
+  addToWishList,
+  clearWishlist,
   relatedCategoryProduct
+
 }
