@@ -121,7 +121,7 @@ const categories = (req, res) => {
  */
 /// function to list all category available in  collection
 const categoriesActive = (req, res) => {
-  Category.find({status:1})
+  Category.find({status:1,parent:null})
     .populate('parent',['title'])
     .sort({createdAt:-1})
     .exec(function(err, categories) {

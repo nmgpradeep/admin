@@ -1570,13 +1570,11 @@ userTradeStates = (req, res) => {
     OfferTrade.find({pitchUserId:userId})
   ]
     ).then((values) => {
-<<<<<<< HEAD
-=======
+
         // Subscription.find({'_id':'5b97c4148de80e556889cc11'}, function (err, subs) {
         //     console.log("values",subs)
         // })
   // console.log("values",values[3])
->>>>>>> 3e540c758fda3174788f5817cba15f94eb3a68f3
     var subscription = values[3];
     //console.log("subscription.lenght",subscription,subscription.length)
     if(subscription.length > 0){

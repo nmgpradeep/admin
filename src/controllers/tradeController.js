@@ -2,7 +2,6 @@
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
 const TradePitchProduct = require('../models/tradePitchProduct')
-
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -93,7 +92,6 @@ const newTrades = (req, res) => {
 //Function to view all Trades
 const viewTrades = (req, res) => {
 	const id = req.params.id;
-//	console.log('<<<<<<<<<<<Trades>>>>',id);
 	Trade.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -290,7 +288,7 @@ const ditchOfferTrade = (req, res) => {
         if (err) {
           console.log("responce",err,result)
           return res.send({
-			      errr : err,
+			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
@@ -563,6 +561,8 @@ const offerTradeProduct = (req, res) => {
         }
     })
 }
+
+
 module.exports = {
   listTrades,
   newTrades,
