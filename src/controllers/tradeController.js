@@ -18,7 +18,7 @@ var jwt = require('jsonwebtoken');
 
 var bcrypt = require('bcrypt-nodejs');
 getToken = function (headers) {
-  if (headers && headers.authorization) {
+  if(headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
     if (parted.length) {
       return parted[0];
@@ -121,7 +121,6 @@ const viewTrades = (req, res) => {
  **/
 //Function to update the Trades status.
 const updateStatus = (req, res) => {
-//console.log('dadfasfdasfasf',req.body);
   Trade.update({ _id:req.body._id },  { "$set": { "Status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 	 return res.send({
@@ -218,7 +217,6 @@ const offerTrade = (req, res) => {
  */
 ///function to list offer trade in the offerTrade collections
 const offerTrades = (req, res) => {
-
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
   var token = getToken(req.headers);
@@ -243,7 +241,6 @@ const offerTrades = (req, res) => {
                 total : count,
                 current: page,
                 perPage: perPage,
-
                 pages: Math.ceil(count / perPage)
             });
           })
@@ -438,11 +435,11 @@ const completedTrades = (req, res) => {
                     newCompletedTrades.push(cat);
                   }
                   return res.json({
-                              code: httpResponseCode.EVERYTHING_IS_OK,
-                              message: httpResponseMessage.SUCCESSFULLY_DONE,
-                              result: newCompletedTrades,
-                              currentUser:userId
-                          });
+                       code: httpResponseCode.EVERYTHING_IS_OK,
+                       message: httpResponseMessage.SUCCESSFULLY_DONE,
+                       result: newCompletedTrades,
+                       currentUser:userId
+                  });
           })
       })
 
@@ -462,7 +459,7 @@ const ditchTrade = (req, res) => {
         OfferTrade.create(req.body, (err, result) => {
         if (err) {
           return res.send({
-			      errr : err,
+			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
@@ -483,7 +480,6 @@ const ditchTrade = (req, res) => {
  */
 ///function to get all ditched trades from the ditchTrades collections
 const ditchTrades = (req, res) => {
-
   var perPage = constant.PER_PAGE_RECORD
   var page = req.params.page || 1;
   var token = getToken(req.headers);
@@ -499,6 +495,7 @@ const ditchTrades = (req, res) => {
     .populate('SwitchUserId')
     .populate('SwitchUserProductId')
     .exec(function(err, offerTrades) {
+		console.log('offerTrades',offerTrades)		
         OfferTrade.count().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
@@ -509,7 +506,6 @@ const ditchTrades = (req, res) => {
                 total : count,
                 current: page,
                 perPage: perPage,
-
                 pages: Math.ceil(count / perPage)
             });
           })
@@ -519,10 +515,6 @@ const ditchTrades = (req, res) => {
     return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
-
-
-
-
 
 /*################### functions related to tradePitchProduct write in this block ############ */
 /** Auther	: Rajiv kumar
@@ -548,7 +540,6 @@ const tradePitchProduct = (req, res) => {
         }
     })
 }
-
 /** Auther	: Rajiv kumar
  *  Date	: September 13, 2018
  */
@@ -572,7 +563,6 @@ const offerTradeProduct = (req, res) => {
         }
     })
 }
-
 module.exports = {
   listTrades,
   newTrades,

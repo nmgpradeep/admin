@@ -1254,13 +1254,12 @@ const verifyEmail = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
-              code: httpResponseCode.EVERYTHING_IS_OK,
-              message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
-             result: result
-            });
-
+           code: httpResponseCode.EVERYTHING_IS_OK,
+           message: httpResponseMessage.EMAIL_VERIFY_SUCCESSFULLY,
+           result: result
+        });
       }
     }
   })
@@ -1559,7 +1558,6 @@ userTradeStates = (req, res) => {
     var totalInventoryAllowed =0
     var totalTradePermitted = 0
     Promise.all([
-    /// Get Total users
     User.findOne({_id: userId}),
     /// Get Total products
     Product.find({userId:userId}),
@@ -1572,27 +1570,30 @@ userTradeStates = (req, res) => {
     OfferTrade.find({pitchUserId:userId})
   ]
     ).then((values) => {
+<<<<<<< HEAD
+=======
         // Subscription.find({'_id':'5b97c4148de80e556889cc11'}, function (err, subs) {
         //     console.log("values",subs)
         // })
   // console.log("values",values[3])
+>>>>>>> 3e540c758fda3174788f5817cba15f94eb3a68f3
     var subscription = values[3];
     //console.log("subscription.lenght",subscription,subscription.length)
     if(subscription.length > 0){
       totalInventoryAllowed = subscription[0].totalInventoryAllowed
       totalTradePermitted = subscription[0].totalTradePermitted
     }
-    var  tradeLeft  = parseInt(totalTradePermitted-values[4].length)
-    var  inventoryLeft = parseInt(totalInventoryAllowed - values[1].length)
+    var tradeLeft  = parseInt(totalTradePermitted-values[4].length)
+    var inventoryLeft = parseInt(totalInventoryAllowed - values[1].length)
   //  console.log("totalInventoryAllowed totalTradePermitted tradeLeft,inventoryLeft",totalInventoryAllowed, totalTradePermitted,tradeLeft,inventoryLeft,values[3])
       return res.json({
         code: httpResponseCode.EVERYTHING_IS_OK,
         message: httpResponseMessage.SUCCESSFULLY_DONE,
         result: values[0],
         totalInvemtory:values[1].length,
-				totalNotifications:values[2].length,
-				notifications:values[2],
-				notification_type:constant.notification_type,
+		totalNotifications:values[2].length,
+		notifications:values[2],
+		notification_type:constant.notification_type,
         totalInventoryAllowed : totalInventoryAllowed,
         totalTradePermitted : totalTradePermitted,
         totalTrade : values[4].length,
