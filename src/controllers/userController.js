@@ -408,8 +408,16 @@ const login = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
       } else if (result.userType === req.body.userType) {
+        if(result.emailVerified === '0'  && result.userType === 0){
+          return res.json({
+            message: httpResponseMessage.USER_EMAIL_NOT_VERIFIED,
+            code: httpResponseCode.FORBIDDEN,
+          });
+          return;
+        }
 
-          if(result.userStatus === '0'){
+
+          if(result.userStatus === '0' && result.userType === 0){
             return res.json({
               message: httpResponseMessage.INACTIVE_USER,
               code: httpResponseCode.FORBIDDEN,

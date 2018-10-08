@@ -75,6 +75,11 @@ subscriptionPlan:{
 type:Schema.Types.ObjectId,
 ref:'Subscription'
 },
+subscriptionStatus:{
+  type:String,
+  trim:true,
+  default:0
+},
 accessToken:{
  type:String,
  trim:true

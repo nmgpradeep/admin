@@ -15,11 +15,11 @@ subscriptionId:{
  type:String,
  trim: true
 },
-
 status:{
  type:String,
  trim:true,
- sparse:true
+ sparse:true,
+ default:0
 }
 
 },
@@ -28,7 +28,7 @@ timestamps:true
 });
 
 UserSubscriptionSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
+    var obj = this.toObject();
     return obj;
 }
 
