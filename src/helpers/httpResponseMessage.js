@@ -18,9 +18,9 @@ module.exports = {
     EMAIL_IS_REQ :'Email is required.',
     NAME_IS_REQ : 'Name is required.',
     INVALID_USER_PASSWORD:'Email or password is incorrect',
-    USER_NOT_FOUND:'User not found',    
+    USER_NOT_FOUND:'User not found',
     DATA_MODIFIED_SUCCESSFULLY:'Data has been modified successfully',
-    LOGIN_SUCCESSFULLY:'Login Successfully',    
+    LOGIN_SUCCESSFULLY:'Login Successfully',
     EMAIL_VERIFY_SUCCESSFULLY: 'Email Verified Successfully, Please login',
     CHANGE_STATUS_SUCCESSFULLY:'Status updated Successfully',
     ALL_READY_EXIST_CATEGORYNAME:'This categoryName is Already exist',
@@ -31,5 +31,6 @@ module.exports = {
     ITEM_NOT_FOUND:'Item not found' ,
     FILE_UPLOAD_ERROR :'Error in file uploading' ,
     PASSWORD_CHANGE_SUCCESSFULLY : 'Password Changed Successfully! Please Login',
-    INACTIVE_USER:'Account is not active or suspended, Please contact administrator to activate the account.'
+    INACTIVE_USER:'Account is not active or suspended, Please contact administrator to activate the account.',
+    USER_EMAIL_NOT_VERIFIED:'Your account is not verified, Please verify your email to access your account.'
 }

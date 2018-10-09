@@ -36,8 +36,8 @@ unlimited:{
 },
 status:{
    type:String,
-   trim:true,
-   sparse:true
+   trim:true,  
+   default:1
 }
 },
 {

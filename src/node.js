@@ -61,11 +61,11 @@ app.use(session({
   store: new MemoryStore(),
   saveUninitialized: false,
   cookie: { secure: true },
-  cookie: { 
+  cookie: {
 		maxAge: 1200000 ,
-		expires: new Date(Date.now() + 1200000)	  
+		expires: new Date(Date.now() + 1200000)
 	  }
-  
+
 }))
 
 app.use((req, res, next) => {
