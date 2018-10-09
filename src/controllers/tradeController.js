@@ -14,7 +14,7 @@ var settings = require('../config/settings'); // get settings file
 var passport = require('passport');
 require('../config/passport')(passport);
 var jwt = require('jsonwebtoken');
-
+var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 getToken = function (headers) {
   if(headers && headers.authorization) {
@@ -284,9 +284,9 @@ const ditchOfferTrade = (req, res) => {
   const data = req.body;
       let now = new Date();
       OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"2","ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
-        console.log("responce",err,result)
+        //console.log("responce",err,result)
         if (err) {
-          console.log("responce",err,result)
+          //console.log("responce",err,result)
           return res.send({
 			errr : err,
             code: httpResponseCode.BAD_REQUEST,
@@ -525,7 +525,7 @@ const tradePitchProduct = (req, res) => {
         TradePitchProduct.create(req.body, (err, result) => {
 		 if (err) {
           return res.send({
-			      errr : err,
+			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
@@ -543,9 +543,12 @@ const tradePitchProduct = (req, res) => {
  */
 ///function to save new offer trade in the offerTrade collections
 const offerTradeProduct = (req, res) => {
-        TradePitchProduct.find({offerTradeId:req.params.id})
+	const id =  mongoose.mongo.ObjectId(req.params.id);
+	   TradePitchProduct.find({})
+        //TradePitchProduct.find({offerTradeId:req.params.id})
         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
          .exec(function(err, offerTradeProduct) {        
+			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
 		 if (err) {
           return res.send({
 			      errr : err,
@@ -560,6 +563,44 @@ const offerTradeProduct = (req, res) => {
           })
         }
     })
+}
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const tradingProduct = (req, res) => {
+	//const id =  mongoose.mongo.ObjectId(req.params.id);
+        TradePitchProduct.find({offerTradeId:'5b9f7f43aa484626b9e504e6'})
+        //.populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+        //.populate('offerTradeId')
+         .exec(function(err, offerTradeProduct) {        
+			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
+		 if (err) {
+          return res.send({
+			      errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: offerTradeProduct
+          })
+        }
+    })
+}
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const getAllProduct = (req, res) => {
+	var token = getToken(req.headers);
+     if(token) {
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+		p
+	 }
 }
 
 
@@ -579,5 +620,7 @@ module.exports = {
   ditchTrades,
   cancelOfferTrade,
   ditchOfferTrade,
-  offerTradeProduct
+  offerTradeProduct,
+  tradingProduct,
+  getAllProduct
 }
