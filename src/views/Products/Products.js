@@ -112,7 +112,7 @@ class Products extends Component {
    let products;
      if(this.state.products){
        let productList = this.state.products;
-       products = productList.map((product,index) => <Product key={product._id} onDeleteProduct={this.productDeleteHandler.bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}   product={product} sequenceNumber={index+1}/>);
+        products = productList.map((product,index) => <Product key={product._id} onDeleteProduct={this.productDeleteHandler.   bind(this)} changeStatus={(product) => this.changeStatusHandler(product)}  product={product} sequenceNumber={index+1}/>);
       }
       
      let paginationItems =[];
