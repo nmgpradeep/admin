@@ -55,7 +55,7 @@ const create = (req, res) => {
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	  }
-	  const flag = validation.validate_all_request(data, ['productName']);
+	  const flasg = validation.validate_all_request(data, ['productName']);
 	  if (flag) {
 		return res.json(flag);
 	  }
@@ -94,8 +94,7 @@ const create = (req, res) => {
 
 				  });
 				});
-			  }
-			 // console.log('resultImgas',result);
+			  }			
 			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){
 					return res.send({
@@ -658,25 +657,19 @@ const productDetails = (req, res) => {
   			 })
   			} else {
     			if (!result) {
-
-
-    				res.json({
-    					message: httpResponseMessage.USER_NOT_FOUND,
-    					code: httpResponseMessage.BAD_REQUEST
-    				});
-
+    			res.json({
+    			  message: httpResponseMessage.USER_NOT_FOUND,
+    			  code: httpResponseMessage.BAD_REQUEST
+    			});
   			} else {
                var token = getToken(req.headers);
                if (token) {
                decoded = jwt.verify(token,settings.secret);
                var userId = decoded._id;
-              Promise.all([
-              /// Get Total wishList
-              WishList.find({userId: userId,productId:id}),
-              /// Get Total tradePitchProduct
-              OfferTrade.find({pitchUserId:userId,SwitchUserProductId:id})
+               Promise.all([
+                WishList.find({userId: userId,productId:id}),
+                OfferTrade.find({pitchUserId:userId,SwitchUserProductId:id})
               ]).then((values) => {
-                //console.log("values",values)
                 return res.json({
                  code: httpResponseCode.EVERYTHING_IS_OK,
                  result: result,
@@ -684,17 +677,16 @@ const productDetails = (req, res) => {
                  wishListProduct:(values[0].length > 0)?true:false
                  });
                })
-          }else{
+          } else {
             return res.json({
              code: httpResponseCode.EVERYTHING_IS_OK,
              result: result,
              pitchProduct:false,
              wishListProduct:false
              });
-
           }
-  		 }
-     }
+  		}
+      }
 	 });
 }
 /** Auther	: KS

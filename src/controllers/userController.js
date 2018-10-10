@@ -1218,12 +1218,12 @@ const getLoggedInUser = (req, res) => {
 				totalNotifications:notifications.length,
 				notifications : notifications,
 				notification_type:constant.notification_type
-			  });
-			});
-       });
+		    });
+	     });
+     });
   } else {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
-	}
+  }
 }
 
 

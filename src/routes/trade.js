@@ -20,6 +20,7 @@ router.get('/completedTrades',tradeController.completedTrades)
 router.post('/ditchTrade',tradeController.ditchTrade)
 router.post('/ditchOfferTrade',tradeController.ditchOfferTrade)
 router.get('/ditchTrades',tradeController.ditchTrades)
+router.get('/tradingProduct/:id',tradeController.tradingProduct)
 
 // Routes related to trade pitch products
 router.post('/tradePitchProduct',tradeController.tradePitchProduct)
