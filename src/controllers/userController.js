@@ -13,6 +13,7 @@ const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const constant = require("../../common/constant");
+const commonFunction = require("../../common/commonFunction");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
@@ -1401,7 +1402,46 @@ const dashboardStates = (req, res) => {
 	});
 }
 
+// User helf or contact us email
+/** Auther	: Rajiv Kumar
+ *  Date	: July 6, 2018
+ *	Description : Function to send the email of user from contact us page
+ **/
+ const contustUs = (req, res) => {
+   // setup email data with unicode symbols
+     commonFunction.readHTMLFile('src/views/emailTemplate/contactUsEmail.html', function(err, html) {
+       var template = handlebars.compile(html);
+       var replacements = {
+            name:req.body.name,
+            email:req.body.email,
+            description:(req.body.description)?req.body.description:''
+       };
+       var htmlToSend = template(replacements);
+       let mailOptions = {
+         from: req.body.email, // sender address
+         to: constant.SMTP_FROM_EMAIL+',rajiv.kumar@newmediaguru.net', // list of receivers
+         subject: 'ContactUs ✔', // Subject line
+         html : htmlToSend
+       };
+       commonFunction.transporter.sendMail(mailOptions, function (error, response) {
+           if (error) {
+             return res.json({
+                 code: httpResponseCode.INTERNAL_SERVER_ERROR,
+                 message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+                 error:error
+                 });
+           }else{
+             return res.json({
+                 code: httpResponseCode.EVERYTHING_IS_OK,
+                 message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+                 });
+           }
+       });
+   })
 
+  }
+
+/*
 //contactus form
 const contustUs = (req, res) => {
 	console.log('COntact us form');
@@ -1442,7 +1482,7 @@ const send = (req, res) => {
 			res.render('contactus',{msg:'Email has been send'})
 		});
 }
-
+*/
 
 /** Auther	: KS
  *  Date	: July , 2018
@@ -1557,7 +1597,7 @@ module.exports = {
 	deleteUser,
 	users,
 	contustUs,
-	send,
+	//send,
 	getLoggedInUser,
   dashboardStates,
   myProfle,
