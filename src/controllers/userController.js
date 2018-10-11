@@ -4,7 +4,7 @@ const Product = require('../models/product')
 const Donation = require('../models/donation')
 const Trade = require('../models/trade')
 const FlagUser = require('../models/flagUser')
-const UserTradeRating = require('../models/userTradeReting')
+const UserTradeRating = require('../models/userTradeRating')
 const Notification = require('../models/notification')
 const UserSubscription = require('../models/userSubscription')
 const Subscription = require('../models/subscription')
@@ -16,6 +16,7 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
+const handlebars = require('handlebars');
 const multiparty = require('multiparty');
 const http = require('http');
 const path = require('path');
@@ -50,7 +51,28 @@ getToken = function (headers) {
     return null;
   }
 };
+var readHTMLFile = function(path, callback) {
+    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+        if (err) {
+            throw err;
+            callback(err);
+        }
+        else {
+            callback(null, html);
+        }
+    });
+};
 
+// create reusable transporter object using the default SMTP transport
+var transporter = nodemailer.createTransport({
+	host: constant.SMTP_HOST,
+	port: constant.SMTP_PORT,
+	secure: false, // true for 465, false for other ports
+	auth: {
+		user: constant.SMTP_USERNAME, // generated ethereal user
+		pass: constant.SMTP_PASSWORD // generated ethereal password
+	}
+});
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
  *	Description : Function to create a new user
@@ -73,7 +95,7 @@ const signup = (req, res) => {
       User.create(data, (err, result) => {
       if (err) {
           return res.send({
-			errr : err,
+			      errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
@@ -150,38 +172,34 @@ const signup = (req, res) => {
 			    delete result.password
 			  	// Generate test SMTP service account from ethereal.email
 				  // Only needed if you don't have a real mail account for testing
-
-					// create reusable transporter object using the default SMTP transport
-					let transporter = nodemailer.createTransport({
-						host: constant.SMTP_HOST,
-						port: constant.SMTP_PORT,
-						secure: false, // true for 465, false for other ports
-						auth: {
-							user: constant.SMTP_USERNAME, // generated ethereal user
-							pass: constant.SMTP_PASSWORD // generated ethereal password
-						}
-					});
-
 					host=req.get('host');
 					link="http://"+req.get('host')+"/user/verifyEmail/"+result._id;
 					// setup email data with unicode symbols
-					let mailOptions = {
-						from: constant.SMTP_FROM_EMAIL, // sender address
-						to: 'rajiv.kumar.newmediaguru@gmail.com, rajiv.kumar@newmediaguru.net', // list of receivers
-						subject: 'Please confirm your Email account ✔', // Subject line
-						text: 'Hello world?', // plain text body
-						html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-					};
-					// send mail with defined transport object
-					transporter.sendMail(mailOptions, (error, info) => {
-						if (error) {
-							return console.log(error);
-						}
-						console.log('Message sent: %s', info.messageId);
-						// Preview only available when sending through an Ethereal account
-						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-					});
 
+          readHTMLFile('src/views/emailTemplate/emailWithPDF.html', function(err, html) {
+              var template = handlebars.compile(html);
+              var replacements = {
+                   link:link,
+                   userName:result.userName.toUpperCase()
+              };
+              var htmlToSend = template(replacements);
+              let mailOptions = {
+                from: constant.SMTP_FROM_EMAIL, // sender address
+                to: result.email+',rajiv.kumar@newmediaguru.net', // list of receivers
+                subject: 'Please confirm your Email account ✔', // Subject line
+                text: 'Hello world?', // plain text body
+                html : htmlToSend
+              };
+              transporter.sendMail(mailOptions, function (error, response) {
+                  if (error) {
+                      console.log(error);
+                  }else{
+                    console.log('Message sent: %s', info.messageId);
+        						// Preview only available when sending through an Ethereal account
+        						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+                  }
+              });
+          })
 					return res.json({
 						code: httpResponseCode.EVERYTHING_IS_OK,
 						message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -273,76 +291,17 @@ const userSignup = (req, res) => {
 			  	// Generate test SMTP service account from ethereal.email
 				  // Only needed if you don't have a real mail account for testing
 
-					// create reusable transporter object using the default SMTP transport
-					let transporter = nodemailer.createTransport({
-						host: constant.SMTP_HOST,
-						port: constant.SMTP_PORT,
-						secure: false, // true for 465, false for other ports
-						auth: {
-							user: constant.SMTP_USERNAME, // generated ethereal user
-							pass: constant.SMTP_PASSWORD // generated ethereal password
-						}
-					});
 					host=req.get('host');
 					link=constant.PUBLIC_URL+"verifyUserEmail/"+result._id;
-				   const output =` <table width="100%" cellpadding="0" cellspacing="0" align="center" style="background-color: #efefef;">
-            <tr>
-                <td style="text-align:center">
-                    <table width="600" cellpadding="0" cellspacing="0" align="center"  style="text-align:left">
-                        <tr>
-                            <td>
-                                <img src="%PUBLIC_URL%/emailer-header.png" alt="PitchAndSwitch" style="display:block;" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:40px; background-color: #ffffff;">
-                                <table width="100%" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                        <td style="padding:0 0 36px">
-                                            <h3 style="color: #d0a518;font-size: 22px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Hello `+result.userName.toUpperCase()+`,</h3>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 36px">
-                                            <p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Thank you for registering at <b>Pitch and Switch </b>.<br/> Your account is created and must be activated before you can use it.<br/>
-To activate the account click on the following link or copy-paste it in your browesr:</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 34px">
-                                            <a href="`+link+`"><img src="%PUBLIC_URL%/reset-button.png" alt="Activate Account" /></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 34px">
-                                            <a href="`+link+`">`+link+`</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0 0 55px">
+        readHTMLFile('src/views/emailTemplate/emailWithPDF.html', function(err, html) {
+            var template = handlebars.compile(html);
+            var replacements = {
+                 link:link,
+                 userName:result.userName.toUpperCase()
+            };
+            var htmlToSend = template(replacements);
 
-                                            <p style="color: #414141;font-size: 18px;font-weight: 400; font-family: Arial; margin: 0; padding:0">Thank you,<br/> Team Pitch and Switch</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:0">
-                                            <p style="color: #969696; font-family: Arial; font-size: 13px;font-weight: 400; padding: 0; margin: 0"> If the button above does not work, try copying and pasting the URL into your browser. If you continue to have problems, please feel free to contact us at Pitch and Switch support team.</p>
 
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:30px 0; text-align: center">
-                                <p style="color: #414141;font-size: 14px;font-weight: 400; font-family:Arial">Copyright &copy; 2018, All rights reserved by <a href="#" style="color: #d0a518; text-decoration: none">Pitch and Switch</a></p>
-
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>`;
 					// setup email data with unicode symbols
 					let mailOptions = {
 						from: constant.SMTP_FROM_EMAIL, // sender address
@@ -363,7 +322,7 @@ To activate the account click on the following link or copy-paste it in your bro
 						// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 					});
-
+        });
           return res.json({
             code: httpResponseCode.EVERYTHING_IS_OK,
             message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -1132,46 +1091,6 @@ const searchCity = (req, res) => {
 			}
 		})
 	})
-//~ =======
-	  //~ const typeData = data.type[0];
-	  //~ const catIds = data.ids[0];
-	  //~ console.log('typeData',typeData);
-	  //~ console.log('catIds',catIds);
-	  //~ if(catIds.indexOf(",") > -1){
-			 //~ catID = catIds.split(',');
-	  //~ } else {
-			 //~ catID = catIds;
-	  //~ }
-	   //~ var typeObject = {};
-	   //~ typeObject[typeData] = catID;
-	   //~ User.find(typeObject, data)
-	  //~ .exec(function(err, result){
-		  //~ console.log('rrrrr',result);
-      //~ if(err){
-		//~ return res.send({
-			//~ code: httpResponseCode.BAD_REQUEST,
-			//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR,
-			//~ err:err
-		  //~ });
-     //~ } else {
-      //~ if (!result) {
-        //~ res.json({
-          //~ message: httpResponseMessage.USER_NOT_FOUND,
-          //~ code: httpResponseMessage.BAD_REQUEST
-        //~ });
-      //~ }
-       //~ else {
-		   //~ return res.json({
-			  //~ code: httpResponseCode.EVERYTHING_IS_OK,
-			  //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
-			 //~ result: result
-		   //~ });
-		 //~ }
-        //~ }
-        //~ console.log('r',result);
-      //~ })
-	//~ })
-
 }
 /** Auther	: Rajiv Kumar
  *  Date	: June 18, 2018
@@ -1640,18 +1559,18 @@ module.exports = {
 	contustUs,
 	send,
 	getLoggedInUser,
-    dashboardStates,
-    myProfle,
-    forgotPassword,
-    resetPassword,
-    updateNewPassword,
-    readNotification,
-    sortingUsers,
-    mostTrustedUsers,
-    frontNotification,
-    newTradeUserRating,
-    activeUser,
-    userTradeStates,
-    searchCity
+  dashboardStates,
+  myProfle,
+  forgotPassword,
+  resetPassword,
+  updateNewPassword,
+  readNotification,
+  sortingUsers,
+  mostTrustedUsers,
+  frontNotification,
+  newTradeUserRating,
+  activeUser,
+  userTradeStates,
+  searchCity
 
 }

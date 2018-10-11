@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
-var UserTradeRetingSchema = new Schema({	
+var UserTradeRatingSchema = new Schema({
 submitUserId:{
   type:Schema.Types.ObjectId,
   trim:'User'
@@ -30,19 +30,18 @@ status:{
 {
  timestamps:true
 });
-
 // Getter
-UserTradeRetingSchema.path('review').get(function(num) {
+UserTradeRatingSchema.path('review').get(function(num) {
   return (num / 10).toFixed(2);
 });
 
 // Setter
-UserTradeRetingSchema.path('review').set(function(num) {
+UserTradeRatingSchema.path('review').set(function(num) {
   return num * 10;
 });
 
-UserTradeRetingSchema.methods.toJSON = function() {
+UserTradeRatingSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
 }
-module.exports = mongoose.model('UserTradeRating', UserTradeRetingSchema);
+module.exports = mongoose.model('UserTradeRating', UserTradeRatingSchema);

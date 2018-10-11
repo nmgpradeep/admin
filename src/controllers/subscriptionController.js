@@ -7,8 +7,10 @@ const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
 const constant = require('../../common/constant')
+const commonFunction = require("../../common/commonFunction");
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
+const handlebars = require('handlebars');
 const app = require("express")();
 const keyPublishable = constant.StripeKeyPublic;
 const keySecret = constant.StripeKeySecret;
@@ -316,13 +318,11 @@ const changeStatus = (req,res) => {
 	})
 }
 
-
 /** Auther	: Rajiv kumar
  *  Date	: June 22, 2018
  */
 ///function to save new Addon plan in the list
 const newAddon = (req, res) => {
-  console.log('<<<<<<<<<<< Addon', JSON.stringify(req.body))
   if (!req.body.packageName) {
     return res.send({
       code: httpResponseCode.BAD_REQUEST,
@@ -542,7 +542,7 @@ const saveUserSubscriptionPlan = (req, res) => {
  *	Description : Function to pay subscription plan on stripe
  **/
 const payOnStripe = (req, res) => {
-  console.log("payOnStripe", req.body)
+  //console.log("payOnStripe", req.body)
   stripe.customers.create({
       email: req.body.userEmail,
       source: {
@@ -553,20 +553,26 @@ const payOnStripe = (req, res) => {
         cvc: req.body.cardCVV
       }
     }).then(function(customer) {
-      console.log("customer",customer)
+      //console.log("customer",customer)
       return stripe.charges.create({
         amount: req.body.amount*100,
         currency: 'usd',
         customer: customer.id
       });
     }).then(function(charge) {
-      console.log("charge",charge)
+    //  console.log("charge",charge)
     // New charge created on a new customer
-    User.updateMany({ _id:req.body.userId },  { "$set": { "subscriptionPlan": req.body.subscriptionId,"subscriptionStatus":1} });
+    User.updateMany({ _id:req.body.userId },  { "$set": { "subscriptionPlan": req.body.subscriptionId,"subscriptionStatus":"1"} }).then(function(user){
+      //console.log("user",user)
+    });
     let data = {}
       data.subscriptionId =req.body.subscriptionId
       data.userId = req.body.userId
       data.status = 1
+      data.transactionId = charge.id
+      data.transactionStatus = (charge.status === 'succeeded')?1:0
+      data.transactionResponceMessage = charge.status
+      data.transactionAmount = (charge.amount/100)
       UserSubscription.create(data, (err, responceData) => {
         if(err){
           return res.send({
@@ -574,7 +580,31 @@ const payOnStripe = (req, res) => {
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           });
         }else{
-            console.log("responceData",responceData)
+            //console.log("responceData",responceData)
+    					// setup email data with unicode symbols
+                commonFunction.readHTMLFile('src/views/emailTemplate/userSubscriptionConfirmationEmail.html', function(err, html) {
+                  var template = handlebars.compile(html);
+                  var replacements = {
+                       trnxId:charge.id,
+                       userName:(req.body.userName)?req.body.userName.toUpperCase():'Subscriber'
+                  };
+                  var htmlToSend = template(replacements);
+                  let mailOptions = {
+                    from: constant.SMTP_FROM_EMAIL, // sender address
+                    to: req.body.userEmail+',rajiv.kumar@newmediaguru.net', // list of receivers
+                    subject: 'Payment success ✔', // Subject line
+                    html : htmlToSend
+                  };
+                  commonFunction.transporter.sendMail(mailOptions, function (error, response) {
+                      if (error) {
+                          console.log(error);
+                      }else{
+                        console.log('Message sent: %s', info.messageId);
+            						// Preview only available when sending through an Ethereal account
+            						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+                      }
+                  });
+              })
             return res.json({
                 code: httpResponseCode.EVERYTHING_IS_OK,
                 message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,

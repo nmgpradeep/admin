@@ -7,13 +7,35 @@ var bcrypt = require('bcrypt-nodejs');
 var UserSubscriptionSchema = new Schema({
 
 userId:{
-    type:String,
-    trim:true
+     type: Schema.Types.ObjectId,
+     ref: 'User'
 },
 
 subscriptionId:{
+  type: Schema.Types.ObjectId,
+  ref: 'Subscription'
+},
+transactionId:{
  type:String,
  trim: true
+},
+transactionStatus:{
+ type:String,
+ trim: true,
+ default:0
+},
+transactionResponceMessage:{
+ type:String,
+ trim: true,
+ default:null
+},
+transactionAmount:{
+ type:String,
+ trim: true,
+ default:0
+},
+transactionDate:{
+	type: Date, default: Date.now 
 },
 status:{
  type:String,
