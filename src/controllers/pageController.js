@@ -12,6 +12,15 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs'); //FileSystem for node.js
 var gm = require('gm'); //GraphicsMagick for node.js
+const getFirstWord = (str) => {
+    for (var i=0;i<str.length;i++)
+      {
+        var words = str[i].split(" ")
+        return words[0]
+      }
+    }
+
+
 /** Auther	: Rajiv kumar
  *  Date	: June 25, 2018
  **/
@@ -21,20 +30,21 @@ const create = (req, res) => {
   form.parse(req, function(err, data, files) {
 	  //console.log('Multiple', err, fields, files);
 	   //console.log('FIELD', fields.pageTitle[0]);
-  
+
 	  if (!data.pageTitle) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
-	  }	  
+	  }
 	  const flag = validation.validate_all_request(data, ['pageTitle']);
 	  if (flag) {
 		return res.json(flag);
 	  }
-		  let now = new Date();		
+		  let now = new Date();
+      data.slug = getFirstWord(data.pageTitle)
 		  Page.create(data, (err, result) => {
-			  console.log('RES-Page',err, result);
+			 // console.log('RES-Page',err, result);
 			if (err) {
 			  return res.send({
 				errr : err,
@@ -42,8 +52,8 @@ const create = (req, res) => {
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			  })
 			} else {
-			  console.log('Created-Page',err, result);
-			 // check file and upload if exist 
+			  //console.log('Created-Page',err, result);
+			 // check file and upload if exist
 			 if ((files.bannerImage) && files.bannerImage.length > 0 && files.bannerImage != '') {
 				var fileName = files.bannerImage[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -65,7 +75,7 @@ const create = (req, res) => {
 										code: httpResponseCode.BAD_REQUEST,
 										message: httpResponseMessage.FILE_UPLOAD_ERROR
 									});
-								} else {					
+								} else {
 									return res.json({
 										code: httpResponseCode.EVERYTHING_IS_OK,
 										message: httpResponseMessage.SUCCESSFULLY_DONE,
@@ -75,14 +85,20 @@ const create = (req, res) => {
 							   })
 
 							 });
-				  
-				
-			    ///end file update///	  
+
+
+			    ///end file update///
 				});
-			  }
+			  }else{
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+          }
 			}
 		  })
-		  
+
  });
 }
 
@@ -90,7 +106,7 @@ const create = (req, res) => {
  *  Date	: June 25, 2018
  */
 /// function to list all advertisemet
-const pages = (req, res) => { 
+const pages = (req, res) => {
 	var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     Page.find({})
@@ -120,7 +136,7 @@ const pages = (req, res) => {
 **/
 const viewPage = (req, res) => {
 	const id = req.params.id;
-	//console.log('<<<<<<<<<<<cmsPage>>>>',id);  
+	//console.log('<<<<<<<<<<<cmsPage>>>>',id);
 	Page.findById({_id:id}, (err, result) => {
     if (err) {
       return res.send({
@@ -135,7 +151,7 @@ const viewPage = (req, res) => {
         });
       }else {
         return res.json({
-             code: httpResponseCode.EVERYTHING_IS_OK,             
+             code: httpResponseCode.EVERYTHING_IS_OK,
              result: result
             });
       }
@@ -148,7 +164,7 @@ const viewPage = (req, res) => {
  *  Date	: June 25, 2018
  *	Description : Function to update the advertisemet
  **/
-const updatePage = (req, res) => { 
+const updatePage = (req, res) => {
 	//const id = req.params.id;
      //Page.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true },(err,result) => {
        var form = new multiparty.Form();
@@ -218,7 +234,7 @@ const updatePage = (req, res) => {
          code: httpResponseCode.EVERYTHING_IS_OK,
          message: httpResponseMessage.SUCCESSFULLY_DONE,
         result: result
-              });	 	
+              });
      }
     }
     }
@@ -230,7 +246,7 @@ const updatePage = (req, res) => {
  *  Date	: June 25, 2018
  *	Description : Function to delete the advertisemet
  **/
-const deletePage = (req, res) => {	
+const deletePage = (req, res) => {
 	console.log("DELETE",req.params.id)
 	Page.findByIdAndRemove(req.params.id, (err,result) => {
     if(err){
@@ -254,7 +270,7 @@ const deletePage = (req, res) => {
  **/
 
 const updateStatus = (req, res) => {
-	
+
   Page.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -278,11 +294,43 @@ const updateStatus = (req, res) => {
   })
 }
 
+
+/** Auther	: Rajiv Kumar
+ *  Date	: October 11, 2018
+ *	Description : Function to get the page on basic of slug.
+ **/
+
+const getPage = (req, res) => {
+  const slug = req.params.slug;
+	console.log('<<<<<<<<<<<cmsPage>>>>',req.params);
+	Page.find({slug:slug}, (err, result) => {
+    if (err) {
+      return res.send({
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+      })
+    } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }else {
+        return res.json({
+             code: httpResponseCode.EVERYTHING_IS_OK,
+             result: result
+            });
+      }
+    }
+  })
+}
+
 module.exports = {
   create,
   pages,
   viewPage,
   updatePage,
   deletePage,
-  updateStatus 
+  updateStatus,
+  getPage
 }

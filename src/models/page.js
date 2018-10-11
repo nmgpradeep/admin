@@ -5,12 +5,12 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var PageSchema = new Schema({
-pageTitle:{ 
+pageTitle:{
  type:String,
  trim:true,
  unique: true
 },
-pageHeading:{ 
+pageHeading:{
  type:String,
  trim:true
 },
@@ -22,11 +22,16 @@ bannerImage:{
 type:String,
 trim: true
 },
+slug:{
+type:String,
+trim: true,
+lowercase: true
+},
 status:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
+ default:0
 }
 },
 {
@@ -34,7 +39,7 @@ timestamps:true
 });
 
 PageSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
+    var obj = this.toObject();
     return obj;
    }
 

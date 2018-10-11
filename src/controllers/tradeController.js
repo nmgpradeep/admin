@@ -494,7 +494,7 @@ const ditchTrades = (req, res) => {
     .populate('SwitchUserId')
     .populate('SwitchUserProductId')
     .exec(function(err, offerTrades) {
-		console.log('offerTrades',offerTrades)		
+		console.log('offerTrades',offerTrades)
         OfferTrade.count().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
@@ -547,7 +547,7 @@ const offerTradeProduct = (req, res) => {
 	   TradePitchProduct.find({})
         //TradePitchProduct.find({offerTradeId:req.params.id})
         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
-         .exec(function(err, offerTradeProduct) {        
+         .exec(function(err, offerTradeProduct) {
 			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
 		 if (err) {
           return res.send({
@@ -573,19 +573,19 @@ const tradingProduct = (req, res) => {
         TradePitchProduct.find({offerTradeId:'5b9f7f43aa484626b9e504e6'})
         //.populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
         //.populate('offerTradeId')
-         .exec(function(err, offerTradeProduct) {  
+         .exec(function(err, offerTradeProduct) {
 			  Product.count().exec(function(err, count) {
             if (err) return next(err)
                   return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: products,
+                  result: offerTradeProduct,
                   total : count,
                   current: page,
                   perPage: perPage,
                   pages: Math.ceil(count / perPage)
               });
-            })      
+            })
 			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
 				 if (err) {
 				  return res.send({

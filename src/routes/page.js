@@ -6,5 +6,7 @@ router.get('/viewPage/:id',pageController.viewPage)
 router.put('/updatePage',pageController.updatePage)
 router.delete('/deletePage/:id',pageController.deletePage)
 router.post('/updateStatus',pageController.updateStatus)
+router.get('/getPage/:slug?',pageController.getPage)
+
 
 module.exports = router;

@@ -39,10 +39,10 @@ class CmsPageEdit extends Component {
     super(props);
     this.pageTitle = React.createRef();
     this.pageHeading = React.createRef();
-    this.description = React.createRef();  
-    this.bannerImage = React.createRef();    
+    this.description = React.createRef();
+    this.bannerImage = React.createRef();
     let pageId = this.props.match.params.id;
-    
+
     this.state = {
       editPage: {},
       pageId: pageId,
@@ -72,22 +72,22 @@ class CmsPageEdit extends Component {
       }
     };
     this.handleContentChange = this.handleContentChange.bind(this)
-    
-  }  
- 
+
+  }
+
   fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
   }
 
-  handleContentChange(value) {	  
+  handleContentChange(value) {
      this.setState({ text: value })
-    
+
   }
-    
+
   cancelHandler(){
     this.props.history.push("/pages");
   }
-   
+
    submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -109,9 +109,9 @@ class CmsPageEdit extends Component {
         }
         this.setState({ validation: editPage});
       }
-      
+
       if(formSubmitFlag){
-        const data = new FD();		
+        const data = new FD();
 		console.log('FORM DATA START', this.pageTitle.value);
 		data.append('_id', this.state.pageId)
 		data.append('pageTitle', this.pageTitle.value);
@@ -121,10 +121,11 @@ class CmsPageEdit extends Component {
 		//console.log("this.description.value",this.description.value)
 		//console.log("this.description.value", this.state.text)
 		if(this.state.selectedFile){
-		  data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
+		  //data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
+      data.append('bannerImage', this.state.selectedFile)
 		 } else {
 		  data.append('bannerImage', this.state.editPage.bannerImage);
-	   }	
+	   }
         // let editPage = this.state.editPage;
         // editPage.pageTitle = this.pageTitle.value;
         // editPage.pageHeading = this.pageHeading.value;
@@ -138,20 +139,20 @@ class CmsPageEdit extends Component {
       }
     }
 
-   componentDidMount() {   
-      axios.get('/page/viewPage/' + this.state.pageId).then(result => {			  
-        if(result.data.code === 200){			
+   componentDidMount() {
+      axios.get('/page/viewPage/' + this.state.pageId).then(result => {
+        if(result.data.code === 200){
           console.log('page details', result.data.result)
 		   this.setState({ editPage: result.data.result});
 			this.pageTitle.value = result.data.result.pageTitle;
-			this.pageHeading.value = result.data.result.pageHeading;          
+			this.pageHeading.value = result.data.result.pageHeading;
 			this.setState({ bannerImage: result.data.result.bannerImage});
 			this.setState({ text: result.data.result.description});
           //~ this.setState((oldState) => ({ text: 'TYETTTETETETET' }), function(){
-			//~ alert(this.state.text);  
-		  //~ })  		
+			//~ alert(this.state.text);
+		  //~ })
         }
-       
+
       })
       .catch((error) => {
         if(error.status === 401) {
@@ -159,7 +160,7 @@ class CmsPageEdit extends Component {
         }
       });
   }
-  
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -177,7 +178,7 @@ class CmsPageEdit extends Component {
                     <FormGroup>
                       <Label htmlFor="company">Page Title</Label>
                       <Input type="text" innerRef={input => (this.pageTitle = input)}  placeholder="Page Title" />
-                     
+
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
@@ -186,23 +187,23 @@ class CmsPageEdit extends Component {
                       <Input type="text" innerRef={input => (this.pageHeading = input)}  placeholder="Page Heading" />
                     </FormGroup>
                     </Col>
-                    <Col xs="4" sm="12">					
+                    <Col xs="4" sm="12">
                       {/* <FormGroup>
                       <Label htmlFor="lastname">Banner Image</Label>
                       <Input type="file" innerRef={input => (this.bannerImage = input)} placeholder="Banner Image" />
                     </FormGroup> */}
                     <FormGroup>
-						 <Label htmlFor="brand">Banner Image</Label>                  
-						  <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 	
+						 <Label htmlFor="brand">Banner Image</Label>
+						  <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" />
 						  <img src={'assets/uploads/cmsPageImage/'+this.state.editPage.bannerImage} width="60"/>
 					   </FormGroup>
-                    
+
                   </Col>
                 </Row>
                 <FormGroup>
                   <Label htmlFor="content">Contents</Label>
                     <ReactQuill defaultValue={this.state.editorHtml} innerRef={input => (this.description = input)}   value={this.state.text || ''} onChange={this.handleContentChange}/>
-                </FormGroup> 
+                </FormGroup>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>

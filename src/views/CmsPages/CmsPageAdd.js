@@ -38,8 +38,8 @@ class CmsPageAdd extends Component {
     this.pageTitle = React.createRef();
     this.pageHeading = React.createRef();
     this.description = React.createRef();
-    this.bannerImage = React.createRef();	
-    
+    this.bannerImage = React.createRef();
+
     this.state = {
       newPage: {},
       text: '',
@@ -70,10 +70,10 @@ class CmsPageAdd extends Component {
      this.handleContentChange = this.handleContentChange.bind(this)
       this.fileChangedHandler = this.fileChangedHandler.bind(this)
   }
-  handleContentChange(value) {	  
+  handleContentChange(value) {
     this.setState({ text: value })
   }
-  
+
   fileChangedHandler = (event) => {
 	  this.setState({selectedFile: event.target.files[0]})
   }
@@ -97,19 +97,19 @@ class CmsPageAdd extends Component {
                   newPage[field].valid = false;
                   newPage[field].message = newPage[field].rules[fieldCheck].message;
                }
-              break;           
+              break;
           }
         }
         this.setState({ validation: newPage});
       }
       if(formSubmitFlag){
 		console.log("state",this.state)
-		const data = new FD();		
+		const data = new FD();
 		console.log('FORM DATA START', this.pageTitle.value);
 		data.append('pageTitle', this.pageTitle.value);
 		data.append('pageHeading', this.pageHeading.value);
 		data.append('description', this.state.text);
-		data.append('bannerImage', this.state.selectedFile, this.state.selectedFile.name)
+		data.append('bannerImage', this.state.selectedFile)
 		console.log("data",data)
         axios.post('/page/newPage', data).then(result => {
 			console.log('resultImages ',result);
@@ -155,13 +155,13 @@ class CmsPageAdd extends Component {
                    onChange={this.handleContentChange} />
                     </FormGroup>
                   </Col>
-                   <Col xs="4" sm="12">					
+                   <Col xs="4" sm="12">
                     <FormGroup>
                       <Label htmlFor="bannerImage">Banner Image</Label>
-                      <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" /> 						  
+                      <Input type="file" innerRef={input => (this.bannerImage = input)} onChange={this.fileChangedHandler} placeholder="Banner Image" />
                     </FormGroup>
                   </Col>
-                </Row>              
+                </Row>
                 <Row>
                   <Col xs="6" className="text-right">
                     <Button onClick={(e)=>this.submitHandler(e)} color="success" className="px-4">Submit</Button>
