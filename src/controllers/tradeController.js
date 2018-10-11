@@ -1,6 +1,7 @@
 //const bodyParser = require('body-parser')
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
+const Product = require('../models/product')
 const TradePitchProduct = require('../models/tradePitchProduct')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
@@ -508,9 +509,8 @@ const ditchTrades = (req, res) => {
             });
           })
       });
-
     } else {
-    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+      return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
 
@@ -573,22 +573,34 @@ const tradingProduct = (req, res) => {
         TradePitchProduct.find({offerTradeId:'5b9f7f43aa484626b9e504e6'})
         //.populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
         //.populate('offerTradeId')
-         .exec(function(err, offerTradeProduct) {        
+         .exec(function(err, offerTradeProduct) {  
+			  Product.count().exec(function(err, count) {
+            if (err) return next(err)
+                  return res.json({
+                  code: httpResponseCode.EVERYTHING_IS_OK,
+                  message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  result: products,
+                  total : count,
+                  current: page,
+                  perPage: perPage,
+                  pages: Math.ceil(count / perPage)
+              });
+            })      
 			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
-		 if (err) {
-          return res.send({
-			      errr : err,
-            code: httpResponseCode.BAD_REQUEST,
-            message: httpResponseMessage.INTERNAL_SERVER_ERROR
-          })
-        } else {
-          return res.send({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: offerTradeProduct
-          })
-        }
-    })
+				 if (err) {
+				  return res.send({
+						  errr : err,
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+				  })
+				} else {
+				  return res.send({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					message: httpResponseMessage.SUCCESSFULLY_DONE,
+					result: offerTradeProduct
+				  })
+				}
+        })
 }
 /** Auther	: KS
  *  Date	: September 13, 2018
@@ -599,7 +611,32 @@ const getAllProduct = (req, res) => {
      if(token) {
 		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded._id;
-		p
+		Product.find({userId:userId})
+		.populate('userId')
+		.populate('userId',['firstName','lastName'])
+		.populate('productCategory',['title'])
+		.populate('brand',['brandName'])
+		.populate('size',['size'])
+	    .exec(function(err, productData){
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!productData) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: productData
+			  });
+			}
+		  }
+	    });
 	 }
 }
 
