@@ -22,8 +22,7 @@ class Category extends Component {
           <Badge
 			className="mousePointer"
             onClick={this.props.changeStatus.bind(this, this.props.category)}
-            color={this.props.category.status === "1" ? "success" : "danger"}
-          >
+            color={this.props.category.status === "1" ? "success" : "danger"} >
             {this.props.category.status === "1" ? "Active" : "Inctive"}
           </Badge>
         </td>

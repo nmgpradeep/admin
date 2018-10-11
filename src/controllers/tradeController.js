@@ -579,17 +579,13 @@ const tradingProduct = (req, res) => {
                   return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  result: offerTradeProduct,
-                  total : count,
-                  current: page,
-                  perPage: perPage,
-                  pages: Math.ceil(count / perPage)
+                  result: offerTradeProduct
               });
             })
 			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
 				 if (err) {
 				  return res.send({
-						  errr : err,
+					errr : err,
 					code: httpResponseCode.BAD_REQUEST,
 					message: httpResponseMessage.INTERNAL_SERVER_ERROR
 				  })
@@ -599,7 +595,7 @@ const tradingProduct = (req, res) => {
 					message: httpResponseMessage.SUCCESSFULLY_DONE,
 					result: offerTradeProduct
 				  })
-				}
+			}
         })
 }
 /** Auther	: KS
@@ -639,6 +635,44 @@ const getAllProduct = (req, res) => {
 	    });
 	 }
 }
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const getProductByCategory = (req, res) => {
+	const id = req.params.id;
+	var token = getToken(req.headers);
+     //~ if(token) {
+		//~ decoded = jwt.verify(token,settings.secret);
+		//~ var userId = decoded._id;
+		//~ Product.find({productCategory:id,userId:userId})
+		//~ .populate('userId')
+		//~ .populate('userId',['firstName','lastName'])
+		//~ .populate('productCategory',['title'])
+		//~ .populate('brand',['brandName'])
+		//~ .populate('size',['size'])
+	    //~ .exec(function(err,productData){
+			//~ if (err) {
+			 //~ return res.send({
+				//~ code: httpResponseCode.BAD_REQUEST,
+				//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 //~ })
+			//~ } else {
+			//~ if (!productData) {
+				//~ res.json({
+					//~ message: httpResponseMessage.USER_NOT_FOUND,
+					//~ code: httpResponseMessage.BAD_REQUEST
+				//~ });
+			//~ } else {
+			 //~ return res.json({
+				//~ code: httpResponseCode.EVERYTHING_IS_OK,
+				//~ result: productData
+			  //~ });
+			//~ }
+		  //~ }
+	    //~ });
+	 //~ }
+}
 
 
 module.exports = {
@@ -659,5 +693,6 @@ module.exports = {
   ditchOfferTrade,
   offerTradeProduct,
   tradingProduct,
-  getAllProduct
+  getAllProduct,
+  getProductByCategory
 }

@@ -9,7 +9,6 @@ router.get('/viewTrade/:id',tradeController.viewTrades)
 router.post('/updateStatus',tradeController.updateStatus)
 router.get('/Trades/:page', tradeController.listTrades)
 
-
 // Routes related to OfferTrades
 router.post('/offerTrade',tradeController.offerTrade)
 router.get('/offerTrades',tradeController.offerTrades)
@@ -26,6 +25,6 @@ router.get('/tradingProduct/:id',tradeController.tradingProduct)
 router.post('/tradePitchProduct',tradeController.tradePitchProduct)
 router.get('/offerTradeProduct/:id',tradeController.offerTradeProduct)
 router.get('/getAllProduct',tradeController.getAllProduct)
-
+router.get('/getProductByCategory/:id',tradeController.getProductByCategory)
 
 module.exports = router;
