@@ -31,5 +31,6 @@ router.get('/mostTrustedUsers',userController.mostTrustedUsers);
 router.post('/newTradeUserRating',userController.newTradeUserRating);
 router.get('/activeUser',userController.activeUser);
 router.post('/searchCity',userController.searchCity);
+router.post('/contustUs',userController.contustUs);
 
 module.exports = router;
