@@ -94,7 +94,7 @@ const create = (req, res) => {
 
 				  });
 				});
-			  }			
+			  }
 			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
 				if(err){
 					return res.send({
@@ -156,15 +156,14 @@ const addProduct = (req, res) => {
 						var uploadedFiles = [];
 						 if(data.files != ''){
 							 var productImages = JSON.parse(data.files);
-							// console.log('productImages', productImages);
-
+							//console.log('productImages', productImages,productImages['filename']);
 								for(var i=0;i<productImages.length;i++){
 									console.log("productImages",productImages[i].filename);
 									uploadedFiles.push({
 										productId:result._id,
-										imageName: productImages['filename'],
+										imageName: productImages[i].filename,
 										imageStatus: 1,
-										imageURL: constant.product_path.productImages['filename']
+										imageURL: constant.product_path+productImages[i].filename
 									});
 								}
 
@@ -179,7 +178,9 @@ const addProduct = (req, res) => {
 										//~ return;
 									//~ }
 								//~ });
-							  Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true })
+							  Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
+                  console.log("pimage",pimage)
+                })
 						 }
           			  //console.log('Created-Page',err, result);
           			 // check file and upload if exist
@@ -885,8 +886,8 @@ const tepmUpload = (req, res) => {
 				size: files.file[i].size,
 				path: 'public/assets/uploads/Products/' + files.file[i].originalFilename
 			});
-			fsExtra.move(files.file[i].path, constant.product_path + files.file[i].originalFilename, function(err) {
-				if (err) return console.log(err);
+			fsExtra.move(files.file[i].path, constant.product_path + files.file[i].originalFilename, function(err,uploaded) {
+				//if (err) return console.log(err);
 			});
 		}
 	}

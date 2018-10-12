@@ -71,10 +71,10 @@ zipCode:{
 type:String,
 trim:true
 },
-subscriptionPlan:{
+subscriptionPlan: null || {
 type:Schema.Types.ObjectId,
 ref:'Subscription'
-},
+}, 
 subscriptionStatus:{
   type:String,
   trim:true,

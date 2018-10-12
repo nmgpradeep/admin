@@ -505,7 +505,7 @@ const updateStatus = (req, res) => {
  **/
 const saveUserSubscriptionPlan = (req, res) => {
   console.log("req",req.body)
-  User.update({ _id:req.body.userId },  { "$set": { "subscriptionPlan": req.body.userStatus,"subscriptionStatus":1} }, { new:true }, (err,result) => {
+  User.update({ _id:req.body.userId },  { "$set": { "subscriptionPlan": req.body.subscriptionId,"subscriptionStatus":1} }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,

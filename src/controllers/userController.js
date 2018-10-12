@@ -309,7 +309,7 @@ const userSignup = (req, res) => {
 						to: result.email+',rajiv.kumar@newmediaguru.net', // list of receivers
 						subject: 'Please confirm your Email account ✔', // Subject line
 						text: 'Hello world?', // plain text body
-						html : output
+						html : htmlToSend
 					};
 					// send mail with defined transport object
 					transporter.sendMail(mailOptions, (error, info) => {
@@ -368,7 +368,7 @@ const login = (req, res) => {
           code: httpResponseMessage.BAD_REQUEST
         });
       } else if (result.userType === req.body.userType) {
-        if(result.emailVerified === '0'  && result.userType === 0){
+        if(result.emailVerified === '0'  && result.userType === '0'){
           return res.json({
             message: httpResponseMessage.USER_EMAIL_NOT_VERIFIED,
             code: httpResponseCode.FORBIDDEN,
@@ -1555,22 +1555,22 @@ userTradeStates = (req, res) => {
         // })
   // console.log("values",values[3])
     var subscription = values[3];
-    //console.log("subscription.lenght",subscription,subscription.length)
+    console.log("subscription.lenght",subscription,subscription.length,decoded.subscriptionPlan)
     if(subscription.length > 0){
       totalInventoryAllowed = subscription[0].totalInventoryAllowed
       totalTradePermitted = subscription[0].totalTradePermitted
     }
     var tradeLeft  = parseInt(totalTradePermitted-values[4].length)
     var inventoryLeft = parseInt(totalInventoryAllowed - values[1].length)
-  //  console.log("totalInventoryAllowed totalTradePermitted tradeLeft,inventoryLeft",totalInventoryAllowed, totalTradePermitted,tradeLeft,inventoryLeft,values[3])
+    //console.log("totalInventoryAllowed totalTradePermitted tradeLeft,inventoryLeft",totalInventoryAllowed, totalTradePermitted,tradeLeft,inventoryLeft,values[3])
       return res.json({
         code: httpResponseCode.EVERYTHING_IS_OK,
         message: httpResponseMessage.SUCCESSFULLY_DONE,
         result: values[0],
         totalInvemtory:values[1].length,
-		totalNotifications:values[2].length,
-		notifications:values[2],
-		notification_type:constant.notification_type,
+		    totalNotifications:values[2].length,
+		    notifications:values[2],
+		    notification_type:constant.notification_type,
         totalInventoryAllowed : totalInventoryAllowed,
         totalTradePermitted : totalTradePermitted,
         totalTrade : values[4].length,
