@@ -642,36 +642,39 @@ const getAllProduct = (req, res) => {
 const getProductByCategory = (req, res) => {
 	const id = req.params.id;
 	var token = getToken(req.headers);
-     //~ if(token) {
-		//~ decoded = jwt.verify(token,settings.secret);
-		//~ var userId = decoded._id;
-		//~ Product.find({productCategory:id,userId:userId})
-		//~ .populate('userId')
-		//~ .populate('userId',['firstName','lastName'])
-		//~ .populate('productCategory',['title'])
-		//~ .populate('brand',['brandName'])
-		//~ .populate('size',['size'])
-	    //~ .exec(function(err,productData){
-			//~ if (err) {
-			 //~ return res.send({
-				//~ code: httpResponseCode.BAD_REQUEST,
-				//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			 //~ })
-			//~ } else {
-			//~ if (!productData) {
-				//~ res.json({
-					//~ message: httpResponseMessage.USER_NOT_FOUND,
-					//~ code: httpResponseMessage.BAD_REQUEST
-				//~ });
-			//~ } else {
-			 //~ return res.json({
-				//~ code: httpResponseCode.EVERYTHING_IS_OK,
-				//~ result: productData
-			  //~ });
-			//~ }
-		  //~ }
-	    //~ });
-	 //~ }
+	console.log(token);
+	
+     if(token) {
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+		Product.find({productCategory:id,userId:userId})
+		.populate('userId')
+		.populate('userId',['firstName','lastName'])
+		.populate('productCategory',['title'])
+		.populate('brand',['brandName'])
+		.populate('size',['size'])
+	    .exec(function(err,productData){
+			console.log('productData',productData)
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!productData) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: productData
+			  });
+			}
+		  }
+	    });
+	 }
 }
 
 
