@@ -16,12 +16,11 @@ class UserSelectBox extends Component {
   
   onChange(e){
 	 if(e){
-		console.log('e',e);
+	    console.log('e',e);
 	   this.setState({selectedValue: e});
 	   this.props.onSelectUser(e);  
       }
   }
-  
   
   
   componentDidMount(){

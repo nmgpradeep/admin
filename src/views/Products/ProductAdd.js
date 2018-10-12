@@ -150,8 +150,7 @@ class ProductAdd extends Component {
       	}
         console.log("data",data);
            axios.post('/product/create', data).then(result => {
-			   console.log('rrrrrr',result);
-            if(result.data.code == 200){
+			  if(result.data.code == 200){
                this.props.history.push("/products");
             }
         });
