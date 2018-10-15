@@ -642,8 +642,6 @@ const getAllProduct = (req, res) => {
 const getProductByCategory = (req, res) => {
 	const id = req.params.id;
 	var token = getToken(req.headers);
-	console.log(token);
-	
      if(token) {
 		decoded = jwt.verify(token,settings.secret);
 		var userId = decoded._id;
@@ -654,7 +652,7 @@ const getProductByCategory = (req, res) => {
 		.populate('brand',['brandName'])
 		.populate('size',['size'])
 	    .exec(function(err,productData){
-			console.log('productData',productData)
+			//console.log('productData',productData)
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -675,6 +673,29 @@ const getProductByCategory = (req, res) => {
 		  }
 	    });
 	 }
+}
+/** Auther	: KS
+ *  Date	: July 2, 2018
+ */
+
+const submitPitchProduct = (req, res) => {
+  const data = req.body;
+      let now = new Date();
+        Trade.create(req.body, (err, result) => {
+        if (err) {
+          return res.send({
+			errr : err,
+            code: httpResponseCode.BAD_REQUEST,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          })
+        } else {
+          return res.send({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            result: result
+          })
+        }
+    })
 }
 
 
@@ -697,5 +718,6 @@ module.exports = {
   offerTradeProduct,
   tradingProduct,
   getAllProduct,
-  getProductByCategory
+  getProductByCategory,
+  submitPitchProduct
 }
