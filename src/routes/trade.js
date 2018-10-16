@@ -21,7 +21,7 @@ router.post('/ditchOfferTrade',tradeController.ditchOfferTrade)
 router.get('/ditchTrades',tradeController.ditchTrades)
 router.get('/tradingProduct/:id',tradeController.tradingProduct)
 
-// Routes related to trade pitch products
+//Routes related to trade pitch products
 router.post('/tradePitchProduct',tradeController.tradePitchProduct)
 router.get('/offerTradeProduct/:id',tradeController.offerTradeProduct)
 router.get('/getAllProduct',tradeController.getAllProduct)

@@ -81,7 +81,7 @@ const listingbrand = (req, res) => {
 const listBrands = (req, res) => { 
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
-    Brand.find({})
+     Brand.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
       .sort({createdAt:-1})
@@ -186,8 +186,7 @@ const updateBrands = (req, res) => {
 //Description : Function to list the available users with pagination
  const sortingBrands = (req, res) => {
     var form = new multiparty.Form();
-	form.parse(req, function(err, data, files) {	
-	console.log(data);
+	form.parse(req, function(err, data, files) {		
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
     var sortObject = {};

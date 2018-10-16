@@ -55,14 +55,13 @@ const create = (req, res) => {
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	  }
-	  const flasg = validation.validate_all_request(data, ['productName']);
+	  
+	  const flasg = validation.validate_all_request(data,['productName']);
 	  if (flag) {
 		return res.json(flag);
 	  }
 		let now = new Date();
-
-		  Product.create(data, (err, result) => {
-			 // console.log('RES-Page',err, result);
+		    Product.create(data, (err, result) => {
 			if (err) {
 			  return res.send({
 				errr : err,
@@ -70,8 +69,6 @@ const create = (req, res) => {
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			  })
 			} else {
-			  //console.log('Created-Page',err, result);
-			 // check file and upload if exist
 			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
 				var fileName = files.productImages[0].originalFilename;
 				var ext = path.extname(fileName);
@@ -140,12 +137,9 @@ const addProduct = (req, res) => {
           	  if (flag) {
           		return res.json(flag);
           	  }
-
                 data.userId = userId;
-                //console.log("datauserId",data)
-          		  let now = new Date();
-          		  Product.create(data, (err, result) => {
-          			 // console.log('RES-Page',err, result);
+              	  let now = new Date();
+          		  Product.create(data, (err, result) => {          			 
           			if (err) {
           			  return res.send({
           				errr : err,
@@ -166,7 +160,6 @@ const addProduct = (req, res) => {
 										imageURL: constant.product_path+productImages[i].filename
 									});
 								}
-
 								try {
 									ProductImage.insertMany(uploadedFiles);
 								} catch (e) {
@@ -179,8 +172,8 @@ const addProduct = (req, res) => {
 									//~ }
 								//~ });
 							  Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
-                  console.log("pimage",pimage)
-                })
+                                 console.log("pimage",pimage)
+                               })
 						 }
           			  //console.log('Created-Page',err, result);
           			 // check file and upload if exist
