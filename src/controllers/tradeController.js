@@ -496,7 +496,7 @@ const ditchTrades = (req, res) => {
     .populate('SwitchUserId')
     .populate('SwitchUserProductId')
     .exec(function(err, offerTrades) {
-		console.log('offerTrades',offerTrades)
+	//	console.log('offerTrades',offerTrades)
         OfferTrade.count().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
@@ -550,7 +550,7 @@ const offerTradeProduct = (req, res) => {
         //TradePitchProduct.find({offerTradeId:req.params.id})
         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
          .exec(function(err, offerTradeProduct) {
-			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
+			// console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
 		 if (err) {
           return res.send({
 			      errr : err,
@@ -609,6 +609,7 @@ const tradingProduct = (req, res) => {
 					//~ result: offerTradeProduct
 				//~ })
 			//~ }
+
         })
 }
 /** Auther	: KS
@@ -664,7 +665,7 @@ const getProductByCategory = (req, res) => {
 		.populate('productCategory',['title'])
 		.populate('brand',['brandName'])
 		.populate('size',['size'])
-	    .exec(function(err,productData){			
+	    .exec(function(err,productData){
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -690,10 +691,10 @@ const getProductByCategory = (req, res) => {
  *  Date	: July 2, 2018
  */
 
-const submitPitchProduct = (req, res) => {	
+const submitPitchProduct = (req, res) => {
 	var form = new multiparty.Form();
 	  form.parse(req, function(err, data, files) {
-		const sentences = data;		
+		const sentences = data;
 		var token = getToken(req.headers);
 		const dataTrade = {};
 		if(token){
@@ -702,7 +703,7 @@ const submitPitchProduct = (req, res) => {
 		}
 		Product.findById({_id:data.switchProId})
 		  .exec(function(err,result){
-			 
+
 				dataTrade.ditchCount = 0;
 				dataTrade.status = 0;
 				dataTrade.pitchUserId = userId;
@@ -723,7 +724,7 @@ const submitPitchProduct = (req, res) => {
 						result: offerResult
 					});
 				 })
-			 
+
 
 		 });
 	});
