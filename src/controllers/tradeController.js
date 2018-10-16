@@ -689,14 +689,12 @@ const submitPitchProduct = (req, res) => {
 		   var userId = decoded._id;
 		}
 		Product.findById({_id:data.switchProId})
-		  .exec(function(err,result){
-			 
+		  .exec(function(err,result){			 
 				dataTrade.ditchCount = 0;
 				dataTrade.status = 0;
 				dataTrade.pitchUserId = userId;
 				dataTrade.SwitchUserId = result.userId
-				dataTrade.SwitchUserProductId = data.switchProId;
-				//console.log('dataTrade',dataTrade);
+				dataTrade.SwitchUserProductId = data.switchProId;				
 				OfferTrade.create(dataTrade, (err,offerResult) => {
 					console.log('offerResult',offerResult);
 					if(err){
@@ -711,9 +709,7 @@ const submitPitchProduct = (req, res) => {
 						result: offerResult
 					});
 				 })
-			 
-
-		 });
+		   });
 	});
 }
 

@@ -519,7 +519,7 @@ const switchTodays = (req,res) => {
 const updateProduct = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	  console.log('updateProduct',data);
+	  //console.log('updateProduct',data);
 	  if (!data.productName) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -623,7 +623,7 @@ const deleteProduct = (req, res) => {
  **/
 const searchresult = (req, res) => {
 	const id = req.params.id;
-	Product.find({productCategory:id,productStatus:1})
+	  Product.find({productCategory:id,productStatus:1})
 	    .populate({path: "productCategory", model: "Category"})
 	    .populate({path:"userId",model:"User"})
 	    .exec(function(err,result){
@@ -654,7 +654,7 @@ const searchresult = (req, res) => {
  **/
 const productDetails = (req, res) => {
 	const id = req.params.id;
-	Product.findById({_id:id})
+	   Product.findById({_id:id})
 	    .populate({ path: "productCategory", model: "Category"})
 	    .populate({path:"userId",model:"User"})
 	    .populate({path:'size',model:'Size'})
@@ -672,32 +672,33 @@ const productDetails = (req, res) => {
     			  code: httpResponseMessage.BAD_REQUEST
     			});
   			} else {
-               var token = getToken(req.headers);
-               if (token) {
-               decoded = jwt.verify(token,settings.secret);
-               var userId = decoded._id;
-               Promise.all([
-                WishList.find({userId: userId,productId:id}),
-                OfferTrade.find({pitchUserId:userId,SwitchUserProductId:id})
-              ]).then((values) => {
-                return res.json({
-                 code: httpResponseCode.EVERYTHING_IS_OK,
-                 result: result,
-                 pitchProduct:(values[1].length > 0)?true:false,
-                 wishListProduct:(values[0].length > 0)?true:false
-                 });
-               })
-          } else {
-            return res.json({
-             code: httpResponseCode.EVERYTHING_IS_OK,
-             result: result,
-             pitchProduct:false,
-             wishListProduct:false
-             });
-          }
-  		}
-      }
-	 });
+				   var token = getToken(req.headers);
+				   if(token.length>10) {
+				     console.log('token',token.length);
+					   decoded = jwt.verify(token,settings.secret);
+					   var userId = decoded._id;
+					   Promise.all([
+						WishList.find({userId: userId,productId:id}),
+						OfferTrade.find({pitchUserId:userId,SwitchUserProductId:id})
+					  ]).then((values) => {
+						return res.json({
+						 code: httpResponseCode.EVERYTHING_IS_OK,
+						 result: result,
+						 pitchProduct:(values[1].length > 0)?true:false,
+						 wishListProduct:(values[0].length > 0)?true:false
+						 });
+					   })
+			  } else {
+				return res.json({
+				 code: httpResponseCode.EVERYTHING_IS_OK,
+				 result: result,
+				 pitchProduct:false,
+				 wishListProduct:false
+				 });
+			  }
+  		  }
+        }
+   });
 }
 /** Auther	: KS
  *  Date	: september 13, 2018
@@ -707,14 +708,13 @@ const productImages = (req, res) => {
 	const id =  mongoose.mongo.ObjectId(req.params.id);
 	   ProductImage.find({productId:id})
 	    .exec(function(err,result){
-			///console.log('result',result,id,req.params.id);
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
 				message: httpResponseMessage.INTERNAL_SERVER_ERROR
 			 })
 			} else {
-			if (!result) {
+			if(!result) {
 				res.json({
 					message: httpResponseMessage.USER_NOT_FOUND,
 					code: httpResponseMessage.BAD_REQUEST
@@ -888,7 +888,7 @@ const tepmUpload = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
 	var uploadedFiles = [];
-  var uiidv1 = uuidv1()
+    var uiidv1 = uuidv1()
 	for(var i=0;i<files.file.length;i++){
 		if(files.file[i].size > 0){
 			uploadedFiles.push({
@@ -904,7 +904,7 @@ const tepmUpload = (req, res) => {
         // });
 			});
 		}
-	}
+	} 
 	return res.json({
 	  code: httpResponseCode.EVERYTHING_IS_OK,
 	   message: httpResponseMessage.LOGIN_SUCCESSFULLY,
