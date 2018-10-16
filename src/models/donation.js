@@ -5,7 +5,7 @@ global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
 var DonationSchema = new Schema({
-productName:{ 
+productName:{
  type:String,
  trim:true
 },
@@ -13,10 +13,10 @@ description:{
  type:String,
  trim:true
 },
-userId:{
- type: Schema.Types.ObjectId,
- ref: 'User'
-},
+// userId:{
+//  type: Schema.Types.ObjectId,
+//  ref: 'User'
+// },
 productCategory:{
  type: Schema.Types.ObjectId,
  ref: 'Category'
@@ -43,7 +43,7 @@ productStatus:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
+ default:0
 },
 
 //0 => Picked up , 1 =>Shipped , 2 => Delivered
@@ -52,14 +52,14 @@ shippingStatus:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
+ default:0
 },
 
 productImage:{
  type:String,
  trim:true,
  sparse:true,
- default:0   
+ default:0
 },
 
 condition:{
@@ -79,25 +79,27 @@ pickupAddress:[{
         type:String,
         trim:true
        },
+       city:{
+       type:Schema.Types.ObjectId,
+       ref: 'City'
+       },
+       state:{
+       type:Schema.Types.ObjectId,
+       ref: 'State'
+       },
        country:{
-         type:String,
+       type:Schema.Types.ObjectId,
+       ref:'Country'
+       },
+       address1:{
+        type:String,
          trim:true
        },
-       location:{
-        type:String,
-        trim:true
-
-       },
-       house:{
-        type:String,
-         trim:true 
+       address2:{
+         type:String,
+         trim:true
        },
        landmark:{
-         type:String,
-         trim:true
-
-       },
-       type:{
          type:String,
          trim:true
 
@@ -106,10 +108,6 @@ pickupAddress:[{
          type:String,
          trim:true
 
-       },
-       town:{
-         type:String,
-         trim:true
        }
     }]
 },
@@ -118,7 +116,7 @@ timestamps:true
 });
 
 DonationSchema.methods.toJSON = function() {
-    var obj = this.toObject();   
+    var obj = this.toObject();
     return obj;
    }
 

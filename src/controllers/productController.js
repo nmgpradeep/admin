@@ -28,6 +28,10 @@ require('../config/passport')(passport);
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
+const uuidv1 = require('uuid/v1'); // package  to get unique string or number
+
+
+
 getToken = function (headers) {
   if (headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
@@ -126,7 +130,7 @@ const addProduct = (req, res) => {
          var userId = decoded._id;
             var form = new multiparty.Form();
             form.parse(req, function(err, data, files) {
-          	 console.log('postdata', data);
+          	// console.log('postdata', data);
           	  if (!data.productName) {
           		return res.send({
           		  code: httpResponseCode.BAD_REQUEST,
@@ -152,7 +156,17 @@ const addProduct = (req, res) => {
 							 var productImages = JSON.parse(data.files);
 							//console.log('productImages', productImages,productImages['filename']);
 								for(var i=0;i<productImages.length;i++){
-									console.log("productImages",productImages[i].filename);
+                  var uidv1 = uuidv1()
+								//	console.log("productImages",productImages[i].filename);
+                  fsExtra.move(constant.tepmUpload_path+productImages[i].filename, constant.product_path + productImages[i].filename).then(uploadedfile =>{
+                    fs.rename(constant.product_path + productImages[i].filename,constant.product_path     +uidv1+productImages[i].filename)
+                    .then(renameFile =>{
+                            fs.remove(constant.product_path + productImages[i], err => {
+                              if (err) return console.error(err)
+                              console.log('success!')
+                            });
+                      })
+                  });
 									uploadedFiles.push({
 										productId:result._id,
 										imageName: productImages[i].filename,
@@ -172,8 +186,10 @@ const addProduct = (req, res) => {
 									//~ }
 								//~ });
 							  Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
+
                                  console.log("pimage",pimage)
                                })
+
 						 }
           			  //console.log('Created-Page',err, result);
           			 // check file and upload if exist
@@ -872,15 +888,20 @@ const tepmUpload = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
 	var uploadedFiles = [];
+  var uiidv1 = uuidv1()
 	for(var i=0;i<files.file.length;i++){
 		if(files.file[i].size > 0){
 			uploadedFiles.push({
 				filename: files.file[i].originalFilename,
 				size: files.file[i].size,
-				path: 'public/assets/uploads/Products/' + files.file[i].originalFilename
+				path: 'public/assets/uploads/tepmUpload/' + files.file[i].originalFilename
 			});
-			fsExtra.move(files.file[i].path, constant.product_path + files.file[i].originalFilename, function(err,uploaded) {
+			fsExtra.move(files.file[i].path, constant.tepmUpload_path + files.file[i].originalFilename, function(err,uploaded) {
 				//if (err) return console.log(err);
+        // fs.rename(constant.product_path + files.file[i].originalFilename,constant.product_path +uiidv1+files.file[i].originalFilename, function (err) {
+        //   if (err) throw err;
+        //     console.log('File Renamed.');
+        // });
 			});
 		}
 	}

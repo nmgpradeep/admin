@@ -92,6 +92,7 @@
     "simple-line-icons": "^2.4.1",
     "stripe": "^6.12.1",
     "striptags": "^3.1.1",
+    "uuid": "^3.3.2",
     "validator": "^10.3.0"
   },
   "devDependencies": {

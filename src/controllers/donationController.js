@@ -499,6 +499,83 @@ const donatedProducts = (req, res) => {
        });
 }
 
+/** Auther	: Rajiv kumar
+ *  Date	: October 15, 2018
+ */
+/// function to save the donation item in tha database;
+const donateProduct = (req, res) => {
+  var form = new multiparty.Form();
+  form.parse(req, function(err, data, files) {
+    //console.log('dddddddddddddddd',data);
+    if (!data.productName) {
+    return res.send({
+      code: httpResponseCode.BAD_REQUEST,
+      message: httpResponseMessage.REQUIRED_DATA
+    })
+    }
+    const flag = validation.validate_all_request(data, ['productName']);
+    if (flag) {
+    return res.json(flag);
+    }
+      let now = new Date();
+      Donation.create(data, (err, result) => {
+      if (err) {
+        return res.send({
+        errr : err,
+        code: httpResponseCode.BAD_REQUEST,
+        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+        })
+      } else {
+       // console.log('Created-Page',err, result);
+       if((files.productImage) && files.productImage.length > 0 && files.productImage != '') {
+        var fileName = files.productImage[0].originalFilename;
+        var ext = path.extname(fileName);
+        var newfilename = files.productImage[0].fieldName + '-' + Date.now() + ext;
+        fs.readFile(files.productImage[0].path, function(err, fileData) {
+          if (err) {
+          res.send(err);
+          return;
+          }
+          fileName = files.productImage[0].originalFilename;
+          ext = path.extname(fileName);
+          newfilename = newfilename;
+          pathNew = constant.donationimage_path + newfilename;
+          if (!fs.existsSync(constant.donationimage_path,777)){
+              fs.mkdirSync(constant.donationimage_path);
+          }
+          fs.writeFile(pathNew, fileData, function(err) {
+          if (err) {
+            res.send(err);
+            return;
+          }
+          });
+          // update the uploaded file name in database
+          Donation.update({ _id:result._id },  { "$set": { "productImage": newfilename } }, { new:true }, (err,fileupdate) => {
+          if(err){
+            return res.send({
+              code: httpResponseCode.BAD_REQUEST,
+              message: httpResponseMessage.FILE_UPLOAD_ERROR
+            });
+          } else {
+            result.productImage = newfilename;
+            return res.send({
+              code: httpResponseCode.EVERYTHING_IS_OK,
+              message: httpResponseMessage.SUCCESSFULLY_DONE,
+              result: result
+            })
+            }
+           })
+          ///end file update///
+
+        });
+        }
+
+      }
+      })
+    });
+}
+
+
 
 module.exports = {
   create,
@@ -511,5 +588,6 @@ module.exports = {
   getdonationStatus,
   getdonationshippingStatus,
   viewuser,
-  donatedProducts
+  donatedProducts,
+  donateProduct
 }

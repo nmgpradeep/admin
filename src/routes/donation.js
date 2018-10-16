@@ -14,5 +14,6 @@ router.get('/donations/:page',donationController.donations)
 
 // Router for front users
 router.get('/donatedProducts',donationController.donatedProducts)
+router.post('/donateProduct',donationController.donateProduct)
 
 module.exports = router;
