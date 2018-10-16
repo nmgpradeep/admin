@@ -71,7 +71,7 @@ pickupAddress:[{
        type:String,
        trim:true
       },
-      phone:{
+      contactNumber:{
         type:String,
         trim:true
       },
@@ -79,15 +79,15 @@ pickupAddress:[{
         type:String,
         trim:true
        },
-       city:{
+       city: null || {
        type:Schema.Types.ObjectId,
        ref: 'City'
        },
-       state:{
+       state: null || {
        type:Schema.Types.ObjectId,
        ref: 'State'
        },
-       country:{
+       country: null || {
        type:Schema.Types.ObjectId,
        ref:'Country'
        },

@@ -108,8 +108,8 @@ const signup = (req, res) => {
 					var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
 					fs.readFile(files.profilePic[0].path, function(err, fileData) {
 					  if (err) {
-							res.send(err);
-							return;
+							//console.log("err readFile",err)
+							//return;
 					  }
 					  fileName = files.profilePic[0].originalFilename;
 					  ext = path.extname(fileName);
@@ -117,8 +117,9 @@ const signup = (req, res) => {
 					  pathNew = constant.profileimage_path + newfilename;
 					  fs.writeFile(pathNew, fileData, function(err) {
 						if (err) {
-						  res.send(err);
-						  return;
+						 // res.send(err);
+						  //return;
+						  console.log("err writeFile",err)
 						}
 
 					  });
@@ -197,7 +198,7 @@ const signup = (req, res) => {
                   }else{
                     console.log('Message sent: %s', info.messageId);
         						// Preview only available when sending through an Ethereal account
-        						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        						//console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
                   }
               });
           })
@@ -318,7 +319,7 @@ const userSignup = (req, res) => {
 						}
 						console.log('Message sent: %s', info.messageId);
 						// Preview only available when sending through an Ethereal account
-						console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+					//	console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
 						// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 						// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
@@ -341,7 +342,7 @@ const userSignup = (req, res) => {
  *	Description : Function to verify user and login
  **/
 const login = (req, res) => {
-	console.log("login",req.body);
+	//console.log("login",req.body);
     if (!req.body.email && !req.body.password) {
 		return res.json({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -352,7 +353,7 @@ const login = (req, res) => {
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if(flag) {
-	 console.log("flag",flag)
+	// console.log("flag",flag)
     return res.json(flag);
   }
   User.findOne({ email: req.body.email, userType: req.body.userType}, (err, result) => {
@@ -416,7 +417,7 @@ const login = (req, res) => {
 
           // set the use data in to session
              req.session.user = result;
-             console.log("LOgin SESSION ", req.session)
+            // console.log("LOgin SESSION ", req.session)
               req.session.reload(function () {
 				            req.session.save(function (err) {
         				      if (err) return res.end(err.message)
@@ -907,18 +908,18 @@ const updateUser = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
 	let now = new Date();
-	console.log('USER DATA', data,files)
+	//console.log('USER DATA', data,files)
 
     User.findOneAndUpdate({ _id:data._id }, data,(err,result) => {
     if(err){
-		console.log('ERROR', err);
+	//	console.log('ERROR', err);
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
 
     }else {
-		console.log('RESULT', result);
+	//	console.log('RESULT', result);
 		  if (!result) {
 			res.json({
 			  message: httpResponseMessage.USER_NOT_FOUND,
@@ -932,18 +933,20 @@ const updateUser = (req, res) => {
 				var newfilename = files.profilePic[0].fieldName + '-' + Date.now() + ext;
 				fs.readFile(files.profilePic[0].path, function(err, fileData) {
 				  if (err) {
-					res.send(err);
-					return;
+					//res.send(err);
+					//return;
+					console.log("readFile err",err)
 				  }
 				  fileName = files.profilePic[0].originalFilename;
 				  ext = path.extname(fileName);
 				  newfilename = newfilename;
 				  pathNew = constant.profileimage_path + newfilename;
-					console.log("pathNew",pathNew)
+					//console.log("pathNew",pathNew)
 				  fs.writeFile(pathNew, fileData, function(err) {
 					if (err) {
-					  res.send(err);
-					  return;
+					  //~ res.send(err);
+					  //~ return;
+					  console.log("writeFile err",err)
 					}
 				  });
 				});
@@ -1065,7 +1068,7 @@ const searchCity = (req, res) => {
 				});
 			  }
 			   else {
-					console.log('result',userIDs);
+					//console.log('result',userIDs);
 					  Product.find({userId: {$in: userIDs},'productStatus': 1})
 						.populate('productCategory',['title'])
 						.exec(function(err,resultpro){
@@ -1267,7 +1270,7 @@ const newTradeUserRating = (req, res) => {
  *	Description : Function to delete the user
  **/
 const mostTrustedUsers = (req, res) => {
-console.log("mostTrustedUsers")
+//console.log("mostTrustedUsers")
 UserTradeRating.aggregate([{
            $unwind: '$userId'
 		}, {
@@ -1350,7 +1353,7 @@ exports.logout = function(req, res, next) {
     new: true
   }).lean().exec(function(err, result) {
     if (err) {
-      console.log("error", err);
+      //console.log("error", err);
       return res.json({
         message: constant.server_error_msg,
         code: constant.server_error_code
@@ -1555,7 +1558,7 @@ userTradeStates = (req, res) => {
         // })
   // console.log("values",values[3])
     var subscription = values[3];
-    console.log("subscription.lenght",subscription,subscription.length,decoded.subscriptionPlan)
+    //console.log("subscription.lenght",subscription,subscription.length,decoded.subscriptionPlan)
     if(subscription.length > 0){
       totalInventoryAllowed = subscription[0].totalInventoryAllowed
       totalTradePermitted = subscription[0].totalTradePermitted
@@ -1582,7 +1585,6 @@ userTradeStates = (req, res) => {
 	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
 	}
 }
-
 
 module.exports = {
 	signup,

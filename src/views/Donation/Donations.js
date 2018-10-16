@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import Donation from './Donation'
 import ReactPaginate from 'react-paginate';
-
+var FD = require('form-data');
 
 class Donations extends Component {
   constructor(props){
@@ -18,7 +18,7 @@ class Donations extends Component {
       donationsCount: 0,
       info: false,
     };
-    
+
     if(this.props.match.params.page != undefined){
       this.setState({currentPage: this.props.match.params.page});
     }
@@ -38,9 +38,9 @@ class Donations extends Component {
           totalPages: result.data.pages,
           donationsCount:result.data.total
         });
-      }      
+      }
     })
-    .catch((error) => {    
+    .catch((error) => {
       if(error.code === 401) {
         this.props.history.push("/login");
       }
@@ -57,36 +57,36 @@ class Donations extends Component {
 
   componentDidMount() {
 	   axios.get('/donation/getConstant').then(result => {
-           this.setState({conditionsConstant: result.data.result});           
+           this.setState({conditionsConstant: result.data.result});
        });
       this.loadCommentsFromServer();
   }
-  
-  
+
+
   donationDeleteHandler(id){
     this.setState({
       approve: false,
       approveId: id
     });
     this.toggle();
-  } 
- 
-  
+  }
+
+
    toggle() {
     this.setState({
       modal: !this.state.modal
     });
   }
-  
+
   toggleInfo (id){
-	 this.setState({ info: !this.state.info  });  
+	 this.setState({ info: !this.state.info  });
 	 axios.get('/donation/viewuser/' + id).then(result => {
         if(result.data.code === 200){
-        this.setState({userData: result.data.result});        
-      }      
+        this.setState({userData: result.data.result});
+      }
     })
   }
-  
+
   approveDeleteHandler(){
     this.setState({
       approve: true
@@ -108,32 +108,51 @@ class Donations extends Component {
       }
     });
   }
+  shippingStatus = (e, objId) => {
+     const updateData = new FD();
+     var objectValue = e.target.value;
+     updateData.append('_id',objId);
+     updateData.append('value', objectValue);
+     updateData.append('field','shippingStatus');
+        axios.post('/donation/updateStatus',updateData).then(result => {
+         if(result.data.code === 200){
+              var objIndex = this.state.donations.findIndex((donation)=>{
+                return objId === donation._id;
+              });
+              const donations = [...this.state.donations];
+              donations[objIndex].shippingStatus = objectValue;
+              this.setState({
+                donations: donations
+              });
+            }
+      });
+  }
   render() {
    let donations;
      if(this.state.donations){
        let donationList = this.state.donations;
-       donations = donationList.map((donation,index) => <Donation sequenceNo={index} key={donation._id} onDeleteDonation={this.donationDeleteHandler.bind(this)}  onflagUsers={this.toggleInfo.bind(this)} changeStatus={(donation) => this.changeStatusHandler(donation)}   donation={donation}/>);
+       donations = donationList.map((donation,index) => <Donation sequenceNo={index} key={donation._id} changeShippingStatus={this.shippingStatus} onDeleteDonation={this.donationDeleteHandler.bind(this)}  onflagUsers={this.toggleInfo.bind(this)} changeStatus={(donation) => this.changeStatusHandler(donation)}   donation={donation}/>);
      }
-     
+
 
     let paginationItems =[];
     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
     return (
-    
+
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Donation Listing              
+                <i className="fa fa-align-justify"></i> Donation Listing
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
                     <th>S.No</th>
-                    <th>Product Name</th>  
-                    <th>Description</th>                
+                    <th>Product Name</th>
+                    <th>Description</th>
                     <th>Category</th>
                     <th>User</th>
                     <th>Size</th>
@@ -194,7 +213,7 @@ class Donations extends Component {
 			<tr><td>phoneNumber : {this.state.userData?this.state.userData.phoneNumber:""}</td></tr>
 			<tr><td>address : {this.state.userData?this.state.userData.address:""}</td></tr>
 		  </ModalBody>
-		  <ModalFooter>		
+		  <ModalFooter>
 			<Button color="secondary" onClick={this.toggleInfo}>Cancel</Button>
 		  </ModalFooter>
 		</Modal>
