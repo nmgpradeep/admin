@@ -142,7 +142,7 @@ const addProduct = (req, res) => {
           	  }
           	  const flag = validation.validate_all_request(data, ['productName']);
           	  if (flag) {
-          		return res.json(flag);
+          		    return res.json(flag);
           	  }
                 data.userId = userId;
                 //console.log("datauserId",data)
@@ -402,8 +402,8 @@ const filterBycategory = (req,res) => {
 	  form.parse(req, function(err, data, files) {
 	  const typeData = data.type[0];
 	  const catIds = data.ids[0];
-	  console.log('typeData',typeData);
-	  console.log('catIds',catIds);
+	 // console.log('typeData',typeData);
+	//  console.log('catIds',catIds);
 	  if(catIds.indexOf(",") > -1){
 			 catID = catIds.split(',');
 	  } else {
@@ -438,7 +438,7 @@ const filterBycategory = (req,res) => {
 		   });
 		 }
         }
-        console.log('r',result);
+        //console.log('r',result);
       })
 	})
 }
@@ -522,7 +522,7 @@ const switchTodays = (req,res) => {
 const updateProduct = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	  console.log('updateProduct',data);
+	 // console.log('updateProduct',data);
 	  if (!data.productName) {
 		return res.send({
 		  code: httpResponseCode.BAD_REQUEST,
@@ -837,7 +837,7 @@ const myTreasureChestFilterBy = (req, res) => {
       }
   }
   sortObject[stype] = sdir;
-  console.log("Request Data",req.body)
+  //console.log("Request Data",req.body)
 	var perPage = constant.PER_PAGE_RECORD;
 	var page = req.params.page || 1;
 
@@ -924,7 +924,7 @@ const tepmUpload = (req, res) => {
  *	Description : Function to add product into user wishlist
  **/
 const addToWishList = (req, res) => {
-  console.log("addToWishList",req.body)
+//  console.log("addToWishList",req.body)
     var token = getToken(req.headers);
     if (token) {
          decoded = jwt.verify(token,settings.secret);

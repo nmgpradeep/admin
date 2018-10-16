@@ -51,7 +51,7 @@ class UserEdit extends Component {
     this.zipCode = React.createRef();
     this.subscriptionPlan = React.createRef();
     this.profilePic = React.createRef();
-     
+
     let userId = this.props.match.params.id;
     this.state = {
       editUser: {},
@@ -169,7 +169,7 @@ class UserEdit extends Component {
 		  console.log('EDIT', this.state.selectedFile);
         const data = new FD()
         data.append('_id', this.props.match.params.id)
-        
+
         data.append('firstName', this.firstName.value)
         data.append('middleName', this.middleName.value)
         data.append('lastName', this.lastName.value)
@@ -186,8 +186,8 @@ class UserEdit extends Component {
 
         if(this.state.selectedFile){
           data.append('profilePic', this.state.selectedFile)
-        } 
-        
+        }
+
         //console.log("DATA",data,this.firstName.value, this.state.selectedFile)
         axios.post('/user/updateUser', data).then(result => {
           if(result.data.code == '200'){
@@ -202,9 +202,10 @@ class UserEdit extends Component {
 	  //if(localStorage.getItem('jwtToken') != null)
       //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/user/viewUser/' + this.state.userId).then(result => {
-        if(result.data.code == 200){   
-		     console.log('mmmmmmmmmasfdadfasdf',result.data.result)      
-          this.setState({ editUser: result.data.result},function(){console.log("editUser",this.state.editUser.country._id)});
+        if(result.data.code == 200){
+          this.setState({ editUser: result.data.result},function(){
+          //  console.log("editUser",this.state.editUser.country._id)
+          });
           this.firstName.value = result.data.result.firstName;
           this.middleName.value = result.data.result.middleName;
           this.lastName.value = result.data.result.lastName;
@@ -219,7 +220,7 @@ class UserEdit extends Component {
           this.zipCode.value = result.data.result.zipCode
           this.subscriptionPlan.value = result.data.result.subscriptionPlan
           this.profilePic.value = result.data.result.profilePic
-          
+
         }
       })
       .catch((error) => {
@@ -252,7 +253,7 @@ class UserEdit extends Component {
                     </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
-                    <FormGroup>                      
+                    <FormGroup>
                       <Label htmlFor="middlename">Middle name</Label>
                       <Input type="text" innerRef={input => (this.middleName = input)} placeholder="Middle name" />
                     </FormGroup>
@@ -280,7 +281,7 @@ class UserEdit extends Component {
               </FormGroup>
               <FormGroup>
                <Label>DOB</Label>
-               <Input type='date' innerRef={input => (this.dob = input)} placeholder='DOB' width="20%"/>
+               <Input type='date' innerRef={input => (this.dob = input)} placeholder='DOB' width="20%" value = {(this.state.editUser)?this.state.editUser.dob:''}/>
               </FormGroup>
               <FormGroup>
                <Label>ADDRESS</Label>
@@ -290,7 +291,7 @@ class UserEdit extends Component {
                <Label>Country</Label>
                <CountrySelectBox onSelectCountry={this.handleCountry} reference={(country)=> this.country=country} value={(this.state.editUser.country)?this.state.editUser.country._id:''} />
               </FormGroup>
-             
+
               <FormGroup>
                <Label>State</Label>
                <StateAllSelectBox onSelectState={this.handleState} reference={(state)=> this.state=state} value = {(this.state.editUser.state)?this.state.editUser.state._id:''}/>
@@ -301,15 +302,15 @@ class UserEdit extends Component {
               </FormGroup>
               <FormGroup>
                <Label>Zip Code</Label>
-               <Input type='text' innerRef={input => (this.zipCode = input)} placeholder='Contact Number'/>
+               <Input type='text' innerRef={input => (this.zipCode = input)} placeholder='ZipCode' value={(this.state.editUser)?this.state.editUser.zipCode:''}/>
               </FormGroup>
               <FormGroup>
                <Label>Subscription Plan</Label>
                <SubscriptionSelectBox onSelectSubscription = {this.handleSubscription} reference={(subscriptionPlan) => this.subscriptionPlan = subscriptionPlan} value={this.state.editUser.subscriptionPlan}/>
               </FormGroup>
 				<FormGroup>
-				 <Label htmlFor="brand">Profile Image</Label>                  
-				  <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" /> 	
+				 <Label htmlFor="brand">Profile Image</Label>
+				  <Input type="file" innerRef={input => (this.profilePic = input)} onChange={this.fileChangedHandler} placeholder="Advertisement Image" />
 				  <img src={'assets/uploads/ProfilePic/'+this.state.editUser.profilePic} width="60"/>
 				</FormGroup>
                 <Row>
