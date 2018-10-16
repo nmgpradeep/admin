@@ -143,18 +143,18 @@ const updateBrands = (req, res) => {
               code: httpResponseCode.BAD_REQUEST,
               message: httpResponseMessage.INTERNAL_SERVER_ERROR
             });
-      }else {
+      } else {
         if (!result) {
           res.json({
             message: httpResponseMessage.USER_NOT_FOUND,
             code: httpResponseMessage.BAD_REQUEST
           });
-        }else {
+        } else {
           return res.json({
                 code: httpResponseCode.EVERYTHING_IS_OK,
                 message: httpResponseMessage.SUCCESSFULLY_DONE,
                result: result
-              });
+            });
         }
       }    
     })
