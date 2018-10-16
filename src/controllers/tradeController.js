@@ -17,6 +17,10 @@ require('../config/passport')(passport);
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
+const multiparty = require('multiparty');
+
+
+
 getToken = function (headers) {
   if(headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
@@ -583,6 +587,28 @@ const tradingProduct = (req, res) => {
     					result: offerTradeProduct
     				  })
     			}
+
+			  //~ Product.count().exec(function(err, count) {
+               //~ if (err) return next(err)
+                  //~ return res.json({
+                  //~ code: httpResponseCode.EVERYTHING_IS_OK,
+                  //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+                  //~ result: offerTradeProduct
+              //~ });
+            //~ })
+			//~ if (err) {
+			  //~ return res.send({
+				//~ errr : err,
+				//~ code: httpResponseCode.BAD_REQUEST,
+				//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			  //~ })
+			 //~ } else {
+				//~ return res.send({
+					//~ code: httpResponseCode.EVERYTHING_IS_OK,
+					//~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+					//~ result: offerTradeProduct
+				//~ })
+			//~ }
         })
 }
 /** Auther	: KS
@@ -638,8 +664,7 @@ const getProductByCategory = (req, res) => {
 		.populate('productCategory',['title'])
 		.populate('brand',['brandName'])
 		.populate('size',['size'])
-	    .exec(function(err,productData){
-			//console.log('productData',productData)
+	    .exec(function(err,productData){			
 			if (err) {
 			 return res.send({
 				code: httpResponseCode.BAD_REQUEST,
@@ -665,24 +690,43 @@ const getProductByCategory = (req, res) => {
  *  Date	: July 2, 2018
  */
 
-const submitPitchProduct = (req, res) => {
-  const data = req.body;
-      let now = new Date();
-        Trade.create(req.body, (err, result) => {
-        if (err) {
-          return res.send({
-			errr : err,
-            code: httpResponseCode.BAD_REQUEST,
-            message: httpResponseMessage.INTERNAL_SERVER_ERROR
-          })
-        } else {
-          return res.send({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.SUCCESSFULLY_DONE,
-            result: result
-          })
-        }
-    })
+const submitPitchProduct = (req, res) => {	
+	var form = new multiparty.Form();
+	  form.parse(req, function(err, data, files) {
+		const sentences = data;		
+		var token = getToken(req.headers);
+		const dataTrade = {};
+		if(token){
+		   decoded = jwt.verify(token,settings.secret);
+		   var userId = decoded._id;
+		}
+		Product.findById({_id:data.switchProId})
+		  .exec(function(err,result){
+			 
+				dataTrade.ditchCount = 0;
+				dataTrade.status = 0;
+				dataTrade.pitchUserId = userId;
+				dataTrade.SwitchUserId = result.userId
+				dataTrade.SwitchUserProductId = data.switchProId;
+				//console.log('dataTrade',dataTrade);
+				OfferTrade.create(dataTrade, (err,offerResult) => {
+					console.log('offerResult',offerResult);
+					if(err){
+						return res.json({
+						  message: httpResponseMessage.USER_NOT_FOUND,
+						  code: httpResponseMessage.BAD_REQUEST
+						});
+					}
+					return res.json({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: offerResult
+					});
+				 })
+			 
+
+		 });
+	});
 }
 
 
