@@ -423,9 +423,9 @@ const completedTrades = (req, res) => {
       OfferTrade.distinct('_id',criteria).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
       .exec(function(err, switchTradesIds) {
       //  console.log("switchTradesIds-userId",switchTradesIds,userId)
-          if (err) return next(err);
+          if(err) return next(err);
           Trade.find({offerTradeId: {$in: switchTradesIds},'status': 2}).populate({path:'offerTradeId',model:'offerTrade',populate:[{path:"pitchUserId",model:"User"},{path:"SwitchUserId",model:"User"},{path:"SwitchUserProductId",model:"Product"}]}).exec(function(err, switchedTrades) {
-              if (err)
+              if(err)
                   return next(err)
                   //ok to send the array of mongoose model, will be stringified, each toJSON is called
                   var newCompletedTrades = [];
@@ -443,11 +443,11 @@ const completedTrades = (req, res) => {
                        result: newCompletedTrades,
                        currentUser:userId
                   });
-          })
-      })
+            })
+       })
 
     } else {
-    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+      return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
 
@@ -550,7 +550,7 @@ const offerTradeProduct = (req, res) => {
         //TradePitchProduct.find({offerTradeId:req.params.id})
         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
          .exec(function(err, offerTradeProduct) {
-			 console.log('mmmmmmmmmmmmmmmmm',offerTradeProduct);
+			
 		 if (err) {
           return res.send({
 			      errr : err,
@@ -688,7 +688,7 @@ const getProductByCategory = (req, res) => {
 }
 /** Auther	: KS
  *  Date	: July 2, 2018
- */
+ */ 
 
 const submitPitchProduct = (req, res) => {	
 	var form = new multiparty.Form();
