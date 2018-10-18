@@ -285,7 +285,7 @@ const ditchOfferTrade = (req, res) => {
   //console.log("ditchOfferTrade req.body",req.body)
   const data = req.body;
       let now = new Date();
-      OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"2","ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
+       OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"2","ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
         //console.log("responce",err,result)
         if (err) {
           //console.log("responce",err,result)
@@ -362,16 +362,16 @@ const switchTrades = (req, res) => {
                       }
 
                       return res.json({
-                                  code: httpResponseCode.EVERYTHING_IS_OK,
-                                  message: httpResponseMessage.SUCCESSFULLY_DONE,
-                                  result: newSwitchedTrades,
-                                  currentUser:userId
+                                 code: httpResponseCode.EVERYTHING_IS_OK,
+                                 message: httpResponseMessage.SUCCESSFULLY_DONE,
+                                 result: newSwitchedTrades,
+                                 currentUser:userId
                                   //total : count,
                                   //current: page,
                                 //  perPage: perPage,
 
                                 //  pages: Math.ceil(count / perPage)
-                              });
+                     });
               })
           })
 
@@ -518,7 +518,7 @@ const ditchTrades = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const tradePitchProduct = (req, res) => {
+const tradePitchProducts = (req, res) => {
   const data = req.body;
       let now = new Date();
         TradePitchProduct.create(req.body, (err, result) => {
@@ -693,31 +693,39 @@ const submitPitchProduct = (req, res) => {
 		const sentences = data;
 		var token = getToken(req.headers);
 		const dataTrade = {};
+		const pitchTradepro = {};
 		if(token){
 		   decoded = jwt.verify(token,settings.secret);
 		   var userId = decoded._id;
 		}
 		Product.findById({_id:data.switchProId})
-		  .exec(function(err,result){			 
-
+		  .exec(function(err,result){
 				dataTrade.ditchCount = 0;
 				dataTrade.status = 0;
 				dataTrade.pitchUserId = userId;
 				dataTrade.SwitchUserId = result.userId
 				dataTrade.SwitchUserProductId = data.switchProId;				
 				OfferTrade.create(dataTrade, (err,offerResult) => {
-					console.log('offerResult',offerResult);
-					if(err){
-						return res.json({
-						  message: httpResponseMessage.USER_NOT_FOUND,
-						  code: httpResponseMessage.BAD_REQUEST
-						});
-					}
-					return res.json({
-						code: httpResponseCode.EVERYTHING_IS_OK,
-						message: httpResponseMessage.SUCCESSFULLY_DONE,
-						result: offerResult
-					});
+				     pitchTradepro.offerTradeId = offerResult._id;
+					 pitchTradepro.status = 0;
+					 var proIDS = data.productIDS;
+					 var myArray = proIDS[0].split(',');
+					 pitchTradepro.products = myArray;
+					 console.log('pitchTradepro',myArray);
+				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
+						console.log('pitchResult',err);
+							if(err){
+								return res.json({
+								  message: httpResponseMessage.USER_NOT_FOUND,
+								  code: httpResponseMessage.BAD_REQUEST
+								});
+							}
+							return res.json({
+								code: httpResponseCode.EVERYTHING_IS_OK,
+								message: httpResponseMessage.SUCCESSFULLY_DONE,
+								result: offerResult
+							});
+					})
 				 })
 
 		   });
@@ -734,7 +742,7 @@ module.exports = {
   returnraised,
   offerTrade,
   offerTrades,
-  tradePitchProduct,
+  tradePitchProducts,
   switchTrade,
   switchTrades,
   completedTrades,

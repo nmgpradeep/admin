@@ -25,5 +25,5 @@ router.get('/relatedCategoryProduct/:id',productController.relatedCategoryProduc
 router.get('/wishlist',productController.wishList)
 router.post('/addToWishList',productController.addToWishList)
 router.delete('/clearWishlist',productController.clearWishlist)
-
+router.post('/checkExists',productController.checkExists)
 module.exports = router;

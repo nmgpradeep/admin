@@ -516,6 +516,38 @@ const switchTodays = (req,res) => {
  *  Date	: June 21, 2018
  *	Description : Function to update the Product details.
  **/
+ const checkExists = (req,res) => {
+	var form = new multiparty.Form();
+      form.parse(req, function(err, data, files) {
+		 const dataTrade = {};
+		  var pitchUserID = data.pitchUserID;
+		  var productId = data.productId;
+		  console.log('pitchUserID',productId);
+		    //Product.find({productCategory:id,userId:userId})
+			//OfferTrade.find({pitchUserID:pitchUserID})
+			OfferTrade.find({pitchUserId:pitchUserID,SwitchUserProductId:productId})
+			.exec(function(err,result){		
+				if(err){
+					return res.json({
+					  message: httpResponseMessage.USER_NOT_FOUND,
+					  code: httpResponseMessage.BAD_REQUEST
+					});
+				}
+				return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					message: httpResponseMessage.SUCCESSFULLY_DONE,
+					result: result
+				});
+			 })
+	   });
+}
+
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: June 21, 2018
+ *	Description : Function to update the Product details.
+ **/
 
 const updateProduct = (req, res) => {
   var form = new multiparty.Form();
@@ -639,7 +671,7 @@ const searchresult = (req, res) => {
 					code: httpResponseMessage.BAD_REQUEST
 				});
 			} else {
-			 return res.json({
+			  return res.json({
 				code: httpResponseCode.EVERYTHING_IS_OK,
 				result: result
 			  });
@@ -720,7 +752,7 @@ const productImages = (req, res) => {
 					code: httpResponseMessage.BAD_REQUEST
 				});
 			} else {
-			 return res.json({
+			   return res.json({
 				code: httpResponseCode.EVERYTHING_IS_OK,
 				result: result
 			  });
@@ -978,7 +1010,7 @@ const wishList = (req, res) => {
           })
 
     } else {
-    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
 
@@ -1006,7 +1038,7 @@ const clearWishlist = (req, res) => {
           })
 
     } else {
-    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+      return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
 
@@ -1032,6 +1064,6 @@ module.exports = {
   wishList,
   addToWishList,
   clearWishlist,
-  relatedCategoryProduct
-
+  relatedCategoryProduct,
+  checkExists
 }

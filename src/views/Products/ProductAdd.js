@@ -159,7 +159,6 @@ class ProductAdd extends Component {
 
   componentDidMount(){
       axios.get('/category/allCategories').then(result => {
-
         if(result.data.code == '200'){
           this.setState({
             categories: result.data.result,
