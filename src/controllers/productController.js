@@ -446,6 +446,7 @@ const filterBycategory = (req,res) => {
  *	Description : Function to listing popular items
 **/
 const popularItems = (req,res) => {
+	//console.log()
   OfferTrade.aggregate([{
 		  $unwind: '$SwitchUserProductId'
 	  }, {
@@ -780,31 +781,33 @@ const relatedCategoryProduct = (req, res) => {
       .populate({ path: "productCategory", model: "Category"})
       .populate({ path: "userId", model: "User"})
        .exec(function(err, products) {
-		   const categoryID = products.productCategory._id;
-		   //console.log('categoryID',categoryID)
-		    Product.find({productCategory:categoryID})
-		    .populate({ path: "productCategory", model: "Category"})
-            .populate({ path: "userId", model: "User"})
-            .exec(function(err,items){
-			if (err) {
-			 return res.send({
-				code: httpResponseCode.BAD_REQUEST,
-				message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			 })
-			} else {
-			if (!items) {
-				res.json({
-					message: httpResponseMessage.USER_NOT_FOUND,
-					code: httpResponseMessage.BAD_REQUEST
-				});
-			} else {
-			 return res.json({
-				code: httpResponseCode.EVERYTHING_IS_OK,
-				result: items
-			  });
-			}
-		 }
-	   });
+		   if(products.productCategory){
+			   const categoryID = products.productCategory._id;
+			   //console.log('categoryID',categoryID)
+				Product.find({productCategory:categoryID})
+				.populate({ path: "productCategory", model: "Category"})
+				.populate({ path: "userId", model: "User"})
+				.exec(function(err,items){
+				if (err) {
+				 return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+				 })
+				} else {
+				if (!items) {
+					res.json({
+						message: httpResponseMessage.USER_NOT_FOUND,
+						code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+				 return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: items
+				  });
+				}
+				 }
+			 });
+	     }
   	});
 }
 

@@ -33,7 +33,7 @@ var auth = require('./routes/auth');
 mongoose.connect('mongodb://localhost:27017/pitch-and-switch');
 
 // demo database url
-//mongoose.connect('mongodb://pitchswitch:nmg251@ds213183.mlab.com:13183/pitch-switch-demo', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/pitch-and-switch');
 app.set('port', (5000));
 app.use(cors());
 app.get('/',(req,res)=>{

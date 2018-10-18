@@ -342,14 +342,13 @@ const userSignup = (req, res) => {
  *	Description : Function to verify user and login
  **/
 const login = (req, res) => {
-	//console.log("login",req.body);
+	console.log("login",req.body);
     if (!req.body.email && !req.body.password) {
 		return res.json({
 		  code: httpResponseCode.BAD_REQUEST,
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	}
-
   const data = req.body;
   const flag = validation.validate_all_request(data, ['email', 'password', 'userType']);
   if(flag) {
@@ -357,6 +356,7 @@ const login = (req, res) => {
     return res.json(flag);
   }
   User.findOne({ email: req.body.email, userType: req.body.userType}, (err, result) => {
+	  console.log('result',result);
     if (err) {
       return res.send({
         code: httpResponseCode.BAD_REQUEST,
