@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {
   Button,
   Card,
-  CardBody,
-  CardFooter,
+  CardBody,  
   CardHeader,
   Col,
   FormGroup,

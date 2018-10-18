@@ -4,29 +4,17 @@ import axios from 'axios'
 import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import ProductSelectBox from '../SelectBox/ProductSelectBox/ProductSelectBox'
 import {
-  Badge,
+  
   Button,
-  ButtonDropdown,
+  
   Card,
   CardBody,
   CardFooter,
   CardHeader,
   Col,
-  Collapse,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
   Form,
   FormGroup,
-  FormText,
-  FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Label,
-  Row,
+  Label
 } from 'reactstrap';
 class TradeAdd extends Component {
 
@@ -98,7 +86,7 @@ class TradeAdd extends Component {
     e.preventDefault()
     let formSubmitFlag = true;
     for (let field in this.state.validation) {
-      let lastValidFieldFlag = true;
+     // let lastValidFieldFlag = true;
       let addTrade = this.state.validation;
       addTrade[field].valid = null;
       for(let fieldCheck in this.state.validation[field].rules){

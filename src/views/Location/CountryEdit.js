@@ -18,8 +18,7 @@ class CountryEdit extends Component {
     super(props);
     this.countryName = React.createRef();
     this.countryCode = React.createRef();
-    this.status = React.createRef();
-        
+    this.status = React.createRef();        
     let countryId = this.props.match.params.id;
     this.state = {
       editCountry: {},
@@ -76,7 +75,9 @@ class CountryEdit extends Component {
                   addCountry[field].message = addCountry[field].rules[fieldCheck].message;
 
                }
-              break;
+				break;
+		   default:
+				break
           }
         }
         this.setState({ validation: addCountry});

@@ -3,28 +3,14 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import UserSelectBox from '../SelectBox/UserSelectBox/UserSelectBox'
 import ReactStars from 'react-stars'
-import {
-  Badge,
+import {  
   Button,
-  ButtonDropdown,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Col,
-  Collapse,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
-  Form,
   FormGroup,
-  FormText,
-  FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
+  Input, 
   Label,
   Row,
 } from 'reactstrap';
@@ -94,7 +80,7 @@ class TestimonialEdit extends Component {
       console.log('in submit', this);
       let formSubmitFlag = true;
       for(let field in this.state.validation) {
-        let lastValidFieldFlag = true;
+      //  let lastValidFieldFlag = true;
         let addTestimonial = this.state.validation;
         addTestimonial[field].valid = null;
         for(let fieldCheck in this.state.validation[field].rules){
@@ -107,6 +93,8 @@ class TestimonialEdit extends Component {
                   //~ addTestimonial[field].message = addTestimonial[field].rules[fieldCheck].message;
                //~ }
               break;
+            default:
+				break
           }
         }
         this.setState({ validation: addTestimonial});

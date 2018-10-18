@@ -2,28 +2,15 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import CountrySelectBox from '../SelectBox/CountrySelectBox/CountrySelectBox'
-import {
-  Badge,
-  Button,
-  ButtonDropdown,
+import { 
+  Button, 
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Col,
-  Collapse,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
-  Form,
-  FormGroup,
-  FormText,
-  FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
+  Col,  
+  FormGroup,  
+  Input, 
   Label,
   Row,
 } from 'reactstrap';
