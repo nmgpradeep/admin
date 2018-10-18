@@ -2,33 +2,20 @@ import React,{ Component }from 'react'
 import {Link} from 'react-router-dom';
 import axios from 'axios'
 import CategorySelectBox from '../SelectBox/CategorySelectBox/CategorySelectBox'
-import {
-  Badge,
-  Button,
-  ButtonDropdown,
+import { 
+  Button, 
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Col,
-  Collapse,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
+  Col, 
   Form,
-  FormGroup,
-  FormText,
+  FormGroup, 
   FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
+  Input, 
   Label,
   Row,
 } from 'reactstrap';
-var FD = require('form-data');
-var fs = require('fs');
 
 class SizeAdd extends Component {
 

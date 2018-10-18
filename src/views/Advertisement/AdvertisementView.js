@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {
   Button,
   Card,
-  CardBody,
-  CardFooter,
+  CardBody,  
   CardHeader,
   Col,
   FormGroup,
@@ -26,7 +25,7 @@ class AdvertisementView extends Component {
   }
   componentDidMount() {
     //if(localStorage.getItem('jwtToken') != null)
-      //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
+    //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
       axios.get('/advertisement/viewAds/' + this.state.advId).then(result => {
         if(result.data.code == '200'){
           //localStorage.setItem('jwtToken', result.data.result.accessToken);

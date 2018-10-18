@@ -59,7 +59,7 @@ const create = (req, res) => {
 		  message: httpResponseMessage.REQUIRED_DATA
 		})
 	  }
-	  
+
 	  const flasg = validation.validate_all_request(data,['productName']);
 	  if (flag) {
 		return res.json(flag);
@@ -143,7 +143,7 @@ const addProduct = (req, res) => {
           	  }
                 data.userId = userId;
               	  let now = new Date();
-          		  Product.create(data, (err, result) => {          			 
+          		  Product.create(data, (err, result) => {
           			if (err) {
           			  return res.send({
           				errr : err,
@@ -903,7 +903,7 @@ const tepmUpload = (req, res) => {
         // });
 			});
 		}
-	} 
+	}
 	return res.json({
 	  code: httpResponseCode.EVERYTHING_IS_OK,
 	   message: httpResponseMessage.LOGIN_SUCCESSFULLY,
@@ -958,9 +958,10 @@ const wishList = (req, res) => {
          var userId = decoded._id;
         WishList.find({})
            .populate('userId')
-           .populate('userId',['firstName','lastName','userName','pro'])
+           .populate('userId',['firstName','lastName','userName','profilePic'])
            .populate({path:'productId',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
            .exec(function(err, result){
+             console.log("result",result)
             if(err){
         		return res.json({
                   message: httpResponseMessage.USER_NOT_FOUND,
