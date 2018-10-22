@@ -1,31 +1,33 @@
 const validator = require('validator');
+const EmailValidator = require("email-validator");
 const httpResponseCode=require('../helpers/httpResponseCode')
 const httpResponseMessage=require('../helpers/httpResponseMessage')
 const validate_request = {
     validate_all_request: function (request_body, require_parameter) {
-        for (var require_key in require_parameter) { 
+        for (var require_key in require_parameter) {
             switch (require_parameter[require_key]) {
                 case 'email':
                     if (!request_body['email']) {
-						 return ({ code: 403, message: "Email-id is required"});
+						             return ({ code: 403, message: "Email-id is required"});
                         //return [403, "Email-id is required"];
                     }
-                    else {                                    
-                        if(!validator.isEmail(request_body['email'])){
-							return ({ code: httpResponseCode.FORBIDDEN, message: httpResponseMessage.CORRECT_EMAIL});
-                           // return [httpResponseCode.BAD_REQUEST,httpResponseMessage.CORRECT_EMAIL];
+                    else {
+                    //  console.log("Resp",validator.isEmail(request_body['email']))
+                        if(!EmailValidator.validate(request_body['email'])){
+							              return ({ code: httpResponseCode.FORBIDDEN, message: httpResponseMessage.CORRECT_EMAIL});
+                              // return [httpResponseCode.BAD_REQUEST,httpResponseMessage.CORRECT_EMAIL];
                         }
                      //   return true
                     }
                     break;
                 case 'phoneNumber':
                     if (!request_body['phoneNumber']) {
-                       return ({ code: httpResponseCode.FORBIDDEN, message:"Phone number is required"});                        
+                       return ({ code: httpResponseCode.FORBIDDEN, message:"Phone number is required"});
                     }
                     break;
                 case 'password':
                     if (!request_body['password']) {
-                       return ({ code: httpResponseCode.FORBIDDEN, message:"password is required"});                        
+                       return ({ code: httpResponseCode.FORBIDDEN, message:"password is required"});
                     }
                     break;
                 case 'name':
@@ -55,7 +57,7 @@ const validate_request = {
                     break;
                 case 'socialId':
                     if (!request_body['socialId']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"socialId is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"socialId is required"});
                     }
                     break;
                 case 'cardNumber':
@@ -70,7 +72,7 @@ const validate_request = {
                     break;
                 case 'userType':
                     if (!request_body['userType']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"userType is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"userType is required"});
                     }
                     break;
                 case 'latitude':
@@ -98,7 +100,7 @@ const validate_request = {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"Cvv is required"});
                     }
                     break;
-                    
+
                 case 'cardExpiry':
                     if (!request_body['cardExpiry']) {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"card Expiry is required"});
@@ -112,9 +114,9 @@ const validate_request = {
                 case 'userId':
                     if (!request_body['userId']) {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"User Id is required"});
-                     
+
                     }
-                    break;                
+                    break;
                 case 'productId':
                     if (!request_body['productId']) {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"Product Id is required"});
@@ -122,9 +124,9 @@ const validate_request = {
                     break;
                 case 'addressId':
                     if (!request_body['addressId']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Address  Id is required"});                      
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Address  Id is required"});
                     }
-                    break;                   
+                    break;
                 case 'country_code':
                     if (!request_body['country_code']) {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"country code is required"});
@@ -162,7 +164,7 @@ const validate_request = {
                     break;
                 case 'vehicle_id':
                     if (!request_body['vehicle_id']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Please select a Vehicle"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Please select a Vehicle"});
                     }
                     break;
                 case 'type':
@@ -170,13 +172,13 @@ const validate_request = {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"Type is required"});
                     }
                     break;
-              
+
                 case 'location':
                     if (!request_body['location']) {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"Location is required"});
                     }
                     break;
-              
+
                 case 'oldPassword':
                     if (!request_body['oldPassword']) {
 						return ({ code: httpResponseCode.FORBIDDEN, message:"Please enter old password"});
@@ -189,42 +191,42 @@ const validate_request = {
                     break;
                 case 'key':
                     if (!request_body['key']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"key is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"key is required"});
                     }
                     break;
                 case 'seq':
                     if (!request_body['seq']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Sequence is required"});                      
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Sequence is required"});
                     }
                     break;
                 case 'answer':
                     if (!request_body['answer']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Answer is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Answer is required"});
                     }
                     break;
                 case 'categoryName':
                     if (!request_body['categoryName']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"categoryName is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"categoryName is required"});
                     }
                     break;
                 case 'productCategory':
                     if (!request_body['productCategory']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"productCategory is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"productCategory is required"});
                     }
                     break;
                 case 'subscriptionName':
                     if (!request_body['subscriptionName']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Subscription Name is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Subscription Name is required"});
                     }
                     break;
                 case 'packageName':
                     if (!request_body['packageName']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Package Name is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Package Name is required"});
                     }
                     break;
                 case 'advertisementName':
                     if (!request_body['advertisementName']) {
-						return ({ code: httpResponseCode.FORBIDDEN, message:"Advertisement Name is required"});                        
+						return ({ code: httpResponseCode.FORBIDDEN, message:"Advertisement Name is required"});
                     }
                     break;
             }

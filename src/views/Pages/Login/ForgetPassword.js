@@ -17,8 +17,7 @@ class ForgetPassword extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-
-    console.log('REFS', this.email.value);
+    //console.log('REFS', this.email.value);
     const email = this.email.value;
 
     axios.post('/user/forgotPassword', { email: email, userType: '1'})
@@ -60,8 +59,8 @@ class ForgetPassword extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <h2>Forget Password</h2>
-                    <p className="text-muted">Enter the registered mail id</p>
+                    <h2>Forgot Password</h2>
+                    <p className="text-muted">Enter the registered Email id</p>
                     <Form onSubmit={this.onSubmit}>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">

@@ -484,7 +484,8 @@ const switchTodays = (req,res) => {
 	var startDate = moment(toDate).format('YYYY-MM-DD')
 	var endDate = startDate+'T23:59:59.495Z';
 	var startDate = startDate+'T00:00:01.495Z';
-	 Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})
+	 //Trade.find({ switchDate: { '$gte':startDate, '$lte': endDate }})
+    Trade.find({})
 	    .populate({ path: "tradePitchProductId",populate:{path:"productCategory"}})
 	    .populate({ path: "tradeSwitchProductId", model: "Product",populate:{path:"productCategory"}})
 	    .populate({ path: "productImages", model: "Product"})
@@ -526,7 +527,7 @@ const switchTodays = (req,res) => {
 		    //Product.find({productCategory:id,userId:userId})
 			//OfferTrade.find({pitchUserID:pitchUserID})
 			OfferTrade.find({pitchUserId:pitchUserID,SwitchUserProductId:productId})
-			.exec(function(err,result){		
+			.exec(function(err,result){
 				if(err){
 					return res.json({
 					  message: httpResponseMessage.USER_NOT_FOUND,

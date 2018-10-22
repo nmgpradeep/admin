@@ -464,6 +464,7 @@ const login = (req, res) => {
 */
 const forgotPassword = (req,res) => {
  const data = req.body;
+ //console.log("req.body",req.body)
  const flag = validation.validate_all_request(data, ['email']);
  if (flag) {
 	return res.json(flag);
