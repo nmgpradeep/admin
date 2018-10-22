@@ -11,7 +11,7 @@ module.exports = {
     SUCCESSFULLY_DONE:'Your operation is done successfully.',
     ALL_READY_EXIST_EMAIL:'This email is Already exist.',
     ALL_READY_EXIST_MOBILE:'This phone is Already exist.',
-    CORRECT_EMAIL:'Please valid correct Email.',
+    CORRECT_EMAIL:'Please enter valid Email.',
     CORRECT_MOBILE:'Please send correct Mobile Number.',
     CORRECT_PASSWORD:'Please send correct Password.',
     EMAIL_IS_REQ :'Email is required.',
