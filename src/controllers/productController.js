@@ -60,7 +60,7 @@ const create = (req, res) => {
 		})
 	  }
 
-	  const flasg = validation.validate_all_request(data,['productName']);
+	  const flag = validation.validate_all_request(data,['productName']);
 	  if (flag) {
 		return res.json(flag);
 	  }
@@ -342,7 +342,7 @@ const viewProduct = (req, res) => {
 	const id = req.params.id;
 	Product.findById({_id:id})
 		.populate('userId')
-		.populate('userId',['firstName','lastName'])
+		.populate('userId',['firstName','lastName','profilePic'])
 		.populate('productCategory',['title'])
 		.populate('brand',['brandName'])
 		.populate('size',['size'])

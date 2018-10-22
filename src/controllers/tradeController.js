@@ -1,4 +1,3 @@
-//const bodyParser = require('body-parser')
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
 const Product = require('../models/product')
@@ -493,7 +492,7 @@ const ditchTrades = (req, res) => {
     .populate('SwitchUserId')
     .populate('SwitchUserProductId')
     .exec(function(err, offerTrades) {
-	//	console.log('offerTrades',offerTrades)
+	  console.log('offerTrades',offerTrades)
         OfferTrade.count().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
@@ -567,47 +566,37 @@ const offerTradeProduct = (req, res) => {
  */
 ///function to save new offer trade in the offerTrade collections
 const tradingProduct = (req, res) => {
-	//const id =  mongoose.mongo.ObjectId(req.params.id);
-        TradePitchProduct.find({})
-         .exec(function(err, offerTradeProduct) {
-    			 if (err) {
-    				  return res.send({
-    					errr : err,
-    					code: httpResponseCode.BAD_REQUEST,
-    					message: httpResponseMessage.INTERNAL_SERVER_ERROR
-    				  })
-    				} else {
-    				  return res.send({
-    					code: httpResponseCode.EVERYTHING_IS_OK,
-    					message: httpResponseMessage.SUCCESSFULLY_DONE,
-    					result: offerTradeProduct
-    				  })
-    			}
-
-			  //~ Product.count().exec(function(err, count) {
-               //~ if (err) return next(err)
-                  //~ return res.json({
-                  //~ code: httpResponseCode.EVERYTHING_IS_OK,
-                  //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
-                  //~ result: offerTradeProduct
-              //~ });
-            //~ })
-			//~ if (err) {
-			  //~ return res.send({
-				//~ errr : err,
-				//~ code: httpResponseCode.BAD_REQUEST,
-				//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
-			  //~ })
-			 //~ } else {
-				//~ return res.send({
-					//~ code: httpResponseCode.EVERYTHING_IS_OK,
-					//~ message: httpResponseMessage.SUCCESSFULLY_DONE,
-					//~ result: offerTradeProduct
-				//~ })
-			//~ }
-
-        })
+	const id =  mongoose.mongo.ObjectId(req.params.id);
+	 var result = [];
+        TradePitchProduct.findOne({offerTradeId:id})
+         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         .sort({_id:-1})
+         .limit(1)
+         .exec(function(err, result){
+		     if (err) {
+					return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					})
+				} else {
+				if (!result) {
+					res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+					return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: result
+					});
+				}
+			}	  		  
+       })
 }
+
+
+
+
 /** Auther	: KS
  *  Date	: September 13, 2018
  */
@@ -615,34 +604,34 @@ const tradingProduct = (req, res) => {
 const getAllProduct = (req, res) => {
 	var token = getToken(req.headers);
      if(token) {
-		     decoded = jwt.verify(token,settings.secret);
-		         var userId = decoded._id;
-		         Product.find({userId:userId})
-        		.populate('userId')
-        		.populate('userId',['firstName','lastName'])
-        		.populate('productCategory',['title'])
-        		.populate('brand',['brandName'])
-        		.populate('size',['size'])
-	           .exec(function(err, productData){
-        		 if (err) {
-              			 return res.send({
-              				code: httpResponseCode.BAD_REQUEST,
-              				message: httpResponseMessage.INTERNAL_SERVER_ERROR
-              			 })
-        			} else {
-            			if (!productData) {
-                				res.json({
-                					message: httpResponseMessage.USER_NOT_FOUND,
-                					code: httpResponseMessage.BAD_REQUEST
-                				});
-              			} else {
-                			 return res.json({
-                				code: httpResponseCode.EVERYTHING_IS_OK,
-                				result: productData
-                			  });
-              			}
-        		  }
-	    });
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+		Product.find({userId:userId,productStatus:1})
+		.populate('userId')
+		.populate('userId',['firstName','lastName'])
+		.populate('productCategory',['title'])
+		.populate('brand',['brandName'])
+		.populate('size',['size'])
+		.exec(function(err, productData){
+		if (err) {
+			return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			})
+		} else {
+			if (!productData) {
+			res.json({
+				message: httpResponseMessage.USER_NOT_FOUND,
+				code: httpResponseMessage.BAD_REQUEST
+			});
+			} else {
+				return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: productData
+				});
+			}
+		}
+		});
 	 }
 }
 /** Auther	: KS
