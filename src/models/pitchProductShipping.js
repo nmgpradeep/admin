@@ -22,9 +22,9 @@ comments:{
 },
 
 status:{
-	  type:String,
-	  trim:true,
-	  sparse:true
+  type:String,
+  trim:true,
+  sparse:true
  }
 },
 {
