@@ -7,22 +7,25 @@ import { If, Then, ElseIf, Else } from 'react-if-elseif-else-render';
 
 // import PropTypes from 'prop-types';
 class Trade extends Component {
-	
+	constructor(props){
+		super(props)
+	console.log("this.props",this.props)
+}
   render() {
     return (
       <tr key={this.props.trade._id}>
         <td>{this.props.sequenceNo + 1} </td>
-        <td>{(this.props.trade.sellerId)?this.props.trade.sellerId.firstName:''}</td>
-        <td>{(this.props.trade.sellerProductId)?this.props.trade.sellerProductId.productName:''}</td>
-        <td>{(this.props.trade.receiverId)?this.props.trade.receiverId.firstName:''}</td>
-        <td>{(this.props.trade.receiverProductId)?this.props.trade.receiverProductId.productName:''}</td>
+        <td>{(this.props.trade.offerTradeId && this.props.trade.offerTradeId.pitchUserId)?this.props.trade.offerTradeId.pitchUserId.firstName:''}</td>
+        <td>{(this.props.trade.offerTradeId && this.props.trade.tradePitchProductId)?this.props.trade.tradePitchProductId.productName:''}</td>
+        <td>{(this.props.trade.offerTradeId && this.props.trade.offerTradeId.SwitchUserId)?this.props.trade.offerTradeId.SwitchUserId.firstName:''}</td>
+        <td>{(this.props.trade.offerTradeId && this.props.trade.tradeSwitchProductId)?this.props.trade.tradeSwitchProductId.productName:''}</td>
         <td>{ Moment(this.props.trade.createdAt).format('d MMM YYYY')} </td>
         <td>
-          <Badge color={(this.props.trade.Status == '1')?'success':'danger'}>
-              <If condition={this.props.trade.Status == '0'}>
+          <Badge color={(this.props.trade.status == '1')?'success':'danger'}>
+              <If condition={this.props.trade.status == '1'}>
 				<Then>Switch
 				</Then>
-				<ElseIf condition={this.props.trade.Status === '1'}>
+				<ElseIf condition={this.props.trade.status === '2'}>
 				  Completed
 				  </ElseIf>
 				<Else>

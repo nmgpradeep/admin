@@ -8,6 +8,7 @@ router.post('/returnraised',tradeController.returnraised)
 router.get('/viewTrade/:id',tradeController.viewTrades)
 router.post('/updateStatus',tradeController.updateStatus)
 router.get('/Trades/:page', tradeController.listTrades)
+router.get('/switchedTrades/:page', tradeController.switchedTrades)
 
 // Routes related to OfferTrades
 router.post('/offerTrade',tradeController.offerTrade)

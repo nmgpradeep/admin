@@ -25,8 +25,7 @@ class Trades extends Component {
   }
 
   loadCommentsFromServer(){
-    axios.get('/trade/Trades/' + this.state.currentPage).then(result => {
-	console.log('asdfasdfasdasd',result);
+    axios.get('/trade/switchedTrades/' + this.state.currentPage).then(result => {	
       if(result.data.code === 200){
         this.setState({
           trades: result.data.result,

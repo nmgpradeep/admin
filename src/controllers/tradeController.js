@@ -31,8 +31,6 @@ getToken = function (headers) {
   }
 };
 
-
-
   const listTrades = (req, res) => {
     var perPage = constant.PER_PAGE_RECORD
     var page = req.params.page || 1;
@@ -365,11 +363,10 @@ const switchTrades = (req, res) => {
                                  message: httpResponseMessage.SUCCESSFULLY_DONE,
                                  result: newSwitchedTrades,
                                  currentUser:userId
-                                  //total : count,
-                                  //current: page,
-                                //  perPage: perPage,
-
-                                //  pages: Math.ceil(count / perPage)
+									//total : count,
+									//current: page,
+									//perPage: perPage,
+									//pages: Math.ceil(count / perPage)
                      });
               })
           })
@@ -723,6 +720,48 @@ const submitPitchProduct = (req, res) => {
 }
 
 
+/** Auther	: Rajiv Kumar
+ *  Date	: October 23, 2018
+ *	Description : Function to wsitch offer trade
+**/
+const switchedTrades = (req,res) => {
+		var perPage = constant.PER_PAGE_RECORD
+		var page = req.params.page || 1;
+		Trade.find({})
+	    .populate({ path: "tradePitchProductId",populate:{path:"productCategory"}})
+	    .populate({ path: "tradeSwitchProductId", model: "Product",populate:{path:"productCategory"}})
+	    .populate({ path: "productImages", model: "Product"})
+	    .populate({ path: "offerTradeId",populate:(["pitchUserId","SwitchUserId"]), model: "offerTrade"})
+	    .skip((perPage * page) - perPage)
+		.limit(perPage)
+		.sort({createdAt:-1})
+	    .exec(function(err,result){
+			if (err) {
+			 return res.send({
+				code: httpResponseCode.BAD_REQUEST,
+				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+			 })
+			} else {
+			if (!result) {
+				res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+				});
+			} else {
+			 return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				result: result,
+				currentUser:'0',
+                total : 10,
+                current: page,
+                perPage: perPage,
+                pages: Math.ceil(10 / perPage)
+			  });
+			}
+		 }
+	 });
+}
+
 module.exports = {
   listTrades,
   newTrades,
@@ -743,5 +782,6 @@ module.exports = {
   tradingProduct,
   getAllProduct,
   getProductByCategory,
-  submitPitchProduct
+  submitPitchProduct,
+  switchedTrades
 }
