@@ -28,5 +28,6 @@ router.get('/offerTradeProduct/:id',tradeController.offerTradeProduct)
 router.get('/getAllProduct',tradeController.getAllProduct)
 router.get('/getProductByCategory/:id',tradeController.getProductByCategory)
 router.post('/submitPitchProduct/',tradeController.submitPitchProduct)
+router.post('/submitTradeProduct/',tradeController.submitTradeProduct)
 
 module.exports = router;

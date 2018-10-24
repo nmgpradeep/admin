@@ -27,7 +27,6 @@ shippingCost:{
 	type: String,
 	trim: true
 },
-
 pitchUserPaymentStatus:{
   type:String,
   trim:true,
@@ -40,10 +39,12 @@ switchUserPaymentStatus:{
   sparse:true,
   default:0
 },
+
 switchDate:{
- type: Date, default: Date.now
+  type: Date, default: Date.now
 },
-  status:{
+
+status:{
   type:String,
   trim:true,
   sparse:true,
