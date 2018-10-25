@@ -796,6 +796,6 @@ module.exports = {
   getAllProduct,
   getProductByCategory,
   submitPitchProduct,
-  switchedTrades
+  switchedTrades,
   submitTradeProduct
 }
