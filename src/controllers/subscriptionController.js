@@ -504,7 +504,7 @@ const updateStatus = (req, res) => {
  *	Description : Function to update the user status.
  **/
 const saveUserSubscriptionPlan = (req, res) => {
-  console.log("req",req.body)
+//  console.log("saveUserSubscriptionPlan",req.body)
   User.update({ _id:req.body.userId },  { "$set": { "subscriptionPlan": req.body.subscriptionId,"subscriptionStatus":1} }, { new:true }, (err,result) => {
     if(err){
 		return res.send({
@@ -512,9 +512,9 @@ const saveUserSubscriptionPlan = (req, res) => {
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
     }else {
-        console.log("result user",result)
+      //  console.log("result user",result)
       let data = {}
-        data.subscriptionId =req.body.subscription
+        data.subscriptionId =req.body.subscriptionId
         data.userId = req.body.userId
         data.status = 1
         UserSubscription.create(data, (err, responceData) => {
@@ -524,7 +524,7 @@ const saveUserSubscriptionPlan = (req, res) => {
               message: httpResponseMessage.INTERNAL_SERVER_ERROR
             });
           }else{
-              console.log("responceData",responceData)
+              //console.log("responceData",responceData)
               return res.json({
                   code: httpResponseCode.EVERYTHING_IS_OK,
                   message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,

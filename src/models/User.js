@@ -51,7 +51,15 @@ trim:true,
 sparse:true,
 default:0
 },
+profileMessage:{
+type:String,
+trim:true
+},
 address:{
+type:String,
+trim:true
+},
+address2:{
 type:String,
 trim:true
 },
@@ -74,7 +82,7 @@ trim:true
 subscriptionPlan: null || {
 type:Schema.Types.ObjectId,
 ref:'Subscription'
-}, 
+},
 subscriptionStatus:{
   type:String,
   trim:true,

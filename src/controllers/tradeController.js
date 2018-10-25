@@ -514,8 +514,8 @@ const tradePitchProducts = (req, res) => {
 ///function to save new offer trade in the offerTrade collections
 const offerTradeProduct = (req, res) => {
 	const id =  mongoose.mongo.ObjectId(req.params.id);
-	   TradePitchProduct.find({})
-        //TradePitchProduct.find({offerTradeId:req.params.id})
+	  // TradePitchProduct.find({})
+      TradePitchProduct.find({offerTradeId:req.params.id})
         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
          .exec(function(err, offerTradeProduct) {
 		 if (err) {
@@ -562,7 +562,7 @@ const tradingProduct = (req, res) => {
 					result: result
 					});
 				}
-			}	  		  
+			}
     })
 }
 
@@ -646,7 +646,7 @@ const getProductByCategory = (req, res) => {
 }
 /** Auther	: KS
  *  Date	: July 2, 2018
- */ 
+ */
 
 const submitPitchProduct = (req, res) => {
 	var form = new multiparty.Form();
@@ -665,7 +665,7 @@ const submitPitchProduct = (req, res) => {
 				dataTrade.status = 0;
 				dataTrade.pitchUserId = userId;
 				dataTrade.SwitchUserId = result.userId
-				dataTrade.SwitchUserProductId = data.switchProId;				
+				dataTrade.SwitchUserProductId = data.switchProId;
 				OfferTrade.create(dataTrade, (err,offerResult) => {
 				     pitchTradepro.offerTradeId = offerResult._id;
 					 pitchTradepro.status = 0;
@@ -696,17 +696,17 @@ const submitPitchProduct = (req, res) => {
 
 /** Auther	: KS
  *  Date	: July 2, 2018
- */ 
+ */
 
 const submitTradeProduct = (req, res) => {
 	var form = new multiparty.Form();
-	  form.parse(req, function(err, data, files) {	
+	  form.parse(req, function(err, data, files) {
 		const dataTrade = {};
 		dataTrade.offerTradeId = data.offerTradeId;
 		dataTrade.tradePitchProductId = data.tradePitchProductId;
 		dataTrade.tradeSwitchProductId = data.tradeSwitchProductId;
 		dataTrade.switchDate = data.switchDate;
-		dataTrade.status = 1;	
+		dataTrade.status = 1;
 		Trade.create(dataTrade, (err,offerResult) => {
 		if(err){
 			return res.json({
@@ -727,7 +727,7 @@ const submitTradeProduct = (req, res) => {
 						result: statusUpdate
 				  });
 			   }
-		    }) 
+		    })
 		})
 	});
 }
@@ -796,6 +796,6 @@ module.exports = {
   getAllProduct,
   getProductByCategory,
   submitPitchProduct,
-  switchedTrades
+  switchedTrades,
   submitTradeProduct
 }
