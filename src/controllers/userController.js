@@ -1587,6 +1587,45 @@ userTradeStates = (req, res) => {
 	}
 }
 
+
+/** Auther	: Rajiv Kumar
+ *  Date	: Sept 26, 2018
+ *	Description : Function to get the user subscription plans and addOn's
+ **/
+userSubscription = (req, res) => {
+	var token = getToken(req.headers);
+	if (token) {
+		var totalNotifications  = 0;
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+    //console.log("decoded.subscriptionPlan",decoded)
+    UserSubscription.find({userId:userId})
+    .populate({path:'subscriptionId',model:'Subscription'})
+    .populate({path:'userId',model:'User'})
+    .limit(1)
+    .sort({createdAt:-1})
+    .exec(function(error,uSubscription){
+        if(error){
+          return res.json({
+            code: httpResponseCode.INTERNAL_SERVER_ERROR,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+            error:error
+          });
+        }else{
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            userSubacriptions: uSubscription
+          });
+        }
+    })
+  } else {
+	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
+}
+
+
+
 module.exports = {
 	signup,
 	userSignup,
@@ -1614,6 +1653,7 @@ module.exports = {
   newTradeUserRating,
   activeUser,
   userTradeStates,
-  searchCity
+  searchCity,
+  userSubscription
 
 }
