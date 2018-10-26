@@ -1,6 +1,7 @@
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
 const Product = require('../models/product')
+const TradeReturn = require('../models/tradeReturn')
 const TradePitchProduct = require('../models/tradePitchProduct')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
@@ -10,6 +11,7 @@ const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
 const Notification = require('../models/notification')
+const UserTradeRating = require('../models/userTradeRating')
 var settings = require('../config/settings'); // get settings file
 var passport = require('passport');
 require('../config/passport')(passport);
@@ -244,7 +246,7 @@ const offerTrades = (req, res) => {
       });
 
     } else {
-    return res.status(403).send({code: 403, message: 'Unauthorized.'});
+      return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
 
@@ -359,14 +361,10 @@ const switchTrades = (req, res) => {
                       }
 
                       return res.json({
-                                 code: httpResponseCode.EVERYTHING_IS_OK,
-                                 message: httpResponseMessage.SUCCESSFULLY_DONE,
-                                 result: newSwitchedTrades,
-                                 currentUser:userId
-									//total : count,
-									//current: page,
-									//perPage: perPage,
-									//pages: Math.ceil(count / perPage)
+						 code: httpResponseCode.EVERYTHING_IS_OK,
+						 message: httpResponseMessage.SUCCESSFULLY_DONE,
+						 result: newSwitchedTrades,
+						 currentUser:userId
                      });
               })
           })
@@ -413,7 +411,6 @@ const completedTrades = (req, res) => {
                   });
             })
        })
-
     } else {
       return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
@@ -673,8 +670,7 @@ const submitPitchProduct = (req, res) => {
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
 					 console.log('pitchTradepro',myArray);
-				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
-						//console.log('pitchResult',err);
+				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {						
 							if(err){
 								return res.json({
 								  message: httpResponseMessage.USER_NOT_FOUND,
@@ -738,8 +734,8 @@ const submitTradeProduct = (req, res) => {
  *	Description : Function to wsitch offer trade
 **/
 const switchedTrades = (req,res) => {
-		var perPage = constant.PER_PAGE_RECORD
-		var page = req.params.page || 1;
+	var perPage = constant.PER_PAGE_RECORD
+	var page = req.params.page || 1;
 		Trade.find({})
 	    .populate({ path: "tradePitchProductId",populate:{path:"productCategory"}})
 	    .populate({ path: "tradeSwitchProductId", model: "Product",populate:{path:"productCategory"}})
@@ -812,57 +808,60 @@ const pitchedProductList = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const submitReview = (req, res) => {
-  console.log('req.body',req.body)
-	   //~
-      //~ Testimonial.create(req.body, (err, result) => {
-		  //~ console.log('RES-title',err, result);
-        //~ if (err) {
-          //~ return res.send({
-			//~ errr : err,
-            //~ code: httpResponseCode.BAD_REQUEST,
-            //~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
-          //~ })
-        //~ } else {
-         //~
-          //~ return res.send({
-            //~ code: httpResponseCode.EVERYTHING_IS_OK,
-            //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
-            //~ result: result
-          //~ })
-//~
-        //~ }
-      //~ })
-    //~
-	//~
+const submitReview = (req, res) => { 
+   var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {
+	     UserTradeRating.create(data, (err, result) => {	        
+			 if (err) {
+					return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					})
+				} else {
+				if (!result) {
+					res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+					return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: result
+					});
+				  }
+			  }             
+          })
+     })
+}
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const returnTrade = (req, res) => { 
+   var form = new multiparty.Form();
+	form.parse(req, function(err, data, files) {		
+		TradeReturn.create(data, (err, result) => {	   		
+			if (err) {
+					return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					})
+				} else {
+				if (!result) {
+					res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+					return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: result
+					});
+				 }
+			  }             
+          })
+     })
 
-  //~ const id =  mongoose.mongo.ObjectId(req.params.id);
-	 //~ var result = [];
-        //~ TradePitchProduct.findOne({offerTradeId:id})
-         //~ .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
-         //~ .sort({_id:-1})
-         //~ .limit(1)
-         //~ .exec(function(err, result){
-			 //~ console.log('result',result);
-		     //~ if (err) {
-					//~ return res.send({
-					//~ code: httpResponseCode.BAD_REQUEST,
-					//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
-					//~ })
-				//~ } else {
-				//~ if (!result) {
-					//~ res.json({
-					//~ message: httpResponseMessage.USER_NOT_FOUND,
-					//~ code: httpResponseMessage.BAD_REQUEST
-					//~ });
-				//~ } else {
-					//~ return res.json({
-					//~ code: httpResponseCode.EVERYTHING_IS_OK,
-					//~ result: result
-					//~ });
-				//~ }
-			//~ }
-    //~ })
 }
 
 
@@ -892,5 +891,6 @@ module.exports = {
   switchedTrades,
   submitTradeProduct,
   pitchedProductList,
-  submitReview
+  submitReview,
+  returnTrade
 }

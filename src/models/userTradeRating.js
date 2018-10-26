@@ -1,8 +1,10 @@
 var mongoose = require('mongoose');
+var SchemaTypes = mongoose.Schema.Types;
 
 var Schema = mongoose.Schema;
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
+
 var UserTradeRatingSchema = new Schema({
 submitUserId:{
   type:Schema.Types.ObjectId,
@@ -21,8 +23,8 @@ comment:{
   defult:null	
 },
 review:{
-    type:Number,
-    trim:true
+    type:String,
+    defult:null
 },
 status:{
   type:String,
@@ -34,12 +36,9 @@ status:{
 {
  timestamps:true
 });
-// Getter
 UserTradeRatingSchema.path('review').get(function(num) {
   return (num / 10).toFixed(2);
 });
-
-// Setter
 UserTradeRatingSchema.path('review').set(function(num) {
   return num * 10;
 });

@@ -258,7 +258,7 @@ class ProductAdd extends Component {
               </CardBody>
             </Card>
           </Col>
-        </Row>
+        </Row>	
        </div>
     );
   }
