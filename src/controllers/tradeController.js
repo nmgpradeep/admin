@@ -891,5 +891,6 @@ module.exports = {
   submitPitchProduct,
   switchedTrades,
   submitTradeProduct,
-  pitchedProductList
+  pitchedProductList,
+  submitReview
 }

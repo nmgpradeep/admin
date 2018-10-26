@@ -19,7 +19,7 @@ tradeId:{
 comment:{
   type:String,
   defult:null	
-}
+},
 review:{
     type:Number,
     trim:true
