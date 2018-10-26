@@ -179,13 +179,7 @@ const addProduct = (req, res) => {
 								} catch (e) {
 									res.send(e);return;
 								}
-								//~ ProductImage.create(uploadedFiles, function (err, jellybean, snickers) {
-									 //~ if (err) {
-											//~ res.send(err);
-										//~ return;
-									//~ }
-								//~ });
-							  Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
+								 Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
 
                                  console.log("pimage",pimage)
                                })

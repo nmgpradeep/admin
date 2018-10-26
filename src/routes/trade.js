@@ -30,6 +30,7 @@ router.get('/getProductByCategory/:id',tradeController.getProductByCategory)
 router.post('/submitPitchProduct/',tradeController.submitPitchProduct)
 router.post('/submitTradeProduct/',tradeController.submitTradeProduct)
 router.get('/pitchedProductList/:id',tradeController.pitchedProductList)
-router.post('/submitReview/:id',tradeController.submitReview)
+router.post('/submitReview/',tradeController.submitReview)
+router.post('/returnTrade/',tradeController.returnTrade)
 
 module.exports = router;

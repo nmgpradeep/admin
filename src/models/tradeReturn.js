@@ -1,7 +1,7 @@
 /*
-	*Trade Model
-	*Author	: Saurabh Agarwal
-	*Date	: July 17, 2018
+	*TradeReturn Model
+	*Author	: karnika sharma
+	*Date	: October, 2018
 */
 'use strict';
 var mongoose = require('mongoose');
@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
-var TradeReturn = new Schema({
+var TradeReturnSchema = new Schema({
 TradeId:{
 	type: Schema.Types.ObjectId,
     ref: 'Trade'
@@ -19,7 +19,7 @@ UserId:{
 	ref: 'User'
 },
 ReturnOption:{
-	type: Number,
+	type: String,
 	ref: 0
 },
 Description:{
@@ -27,7 +27,6 @@ Description:{
   trim: true,
   default:null
 },
-
 ProposedSolution:{
   type:String,
   trim:true,
@@ -53,16 +52,13 @@ status:{
   sparse:true,
   default:0 
 }
-createdOn:{
-  type: Date, default: Date.now
-},
 },
 {
-  timestamps:true
+timestamps:true
 });
 
 TradeReturnSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
-}
+ }
 module.exports = mongoose.model('TradeReturn', TradeReturnSchema);
