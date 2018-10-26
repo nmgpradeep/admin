@@ -5,6 +5,7 @@ const Donation = require('../models/donation')
 const Trade = require('../models/trade')
 const FlagUser = require('../models/flagUser')
 const UserTradeRating = require('../models/userTradeRating')
+const WishList = require('../models/wishList')
 const Notification = require('../models/notification')
 const UserSubscription = require('../models/userSubscription')
 const Subscription = require('../models/subscription')
@@ -1625,6 +1626,45 @@ userSubscription = (req, res) => {
 }
 
 
+/** Auther	: Rajiv Kumar
+ *  Date	: October 25, 2018
+ *	Description : Function to get the user getUserWishListProducts
+ **/
+getUserWishListProducts = (req, res) => {
+  var token = getToken(req.headers);
+    var arrOfVals = [];
+  if (token) {
+       decoded = jwt.verify(token,settings.secret);
+       var userId = decoded._id;
+        WishList.find({})
+          .where('userId').equals(userId)
+          .select({ productId: 1})
+          .exec(function(err, result){
+            if(err){
+            return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+            if (result.length > 0) {
+               result.forEach(function(countElement){
+                 console.log("countElement",countElement)
+                  arrOfVals.push(countElement.productId );
+               });
+             }            
+          return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result,
+                     wishlistProducts:arrOfVals
+              });
+          })
+
+    } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
 
 module.exports = {
 	signup,
@@ -1654,6 +1694,7 @@ module.exports = {
   activeUser,
   userTradeStates,
   searchCity,
-  userSubscription
+  userSubscription,
+  getUserWishListProducts
 
 }
