@@ -220,7 +220,7 @@ const offerTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({'status':0}).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -813,8 +813,8 @@ const pitchedProductList = (req, res) => {
  */
 ///function to save new offer trade in the offerTrade collections
 const submitReview = (req, res) => {
-  console.log('req.body',req.body)	
-	   //~ 
+  console.log('req.body',req.body)
+	   //~
       //~ Testimonial.create(req.body, (err, result) => {
 		  //~ console.log('RES-title',err, result);
         //~ if (err) {
@@ -824,18 +824,18 @@ const submitReview = (req, res) => {
             //~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
           //~ })
         //~ } else {
-         //~ 
+         //~
           //~ return res.send({
             //~ code: httpResponseCode.EVERYTHING_IS_OK,
             //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
             //~ result: result
           //~ })
-//~ 
+//~
         //~ }
       //~ })
-    //~ 
-	//~ 
-	
+    //~
+	//~
+
   //~ const id =  mongoose.mongo.ObjectId(req.params.id);
 	 //~ var result = [];
         //~ TradePitchProduct.findOne({offerTradeId:id})

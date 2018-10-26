@@ -1647,11 +1647,10 @@ getUserWishListProducts = (req, res) => {
                 });
             }
             if (result.length > 0) {
-               result.forEach(function(countElement){
-                 console.log("countElement",countElement)
+               result.forEach(function(countElement){                
                   arrOfVals.push(countElement.productId );
                });
-             }            
+             }
           return res.json({
                       code: httpResponseCode.EVERYTHING_IS_OK,
                       message: httpResponseMessage.SUCCESSFULLY_DONE,
