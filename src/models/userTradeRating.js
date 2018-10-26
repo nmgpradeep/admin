@@ -16,6 +16,10 @@ tradeId:{
     type:Schema.Types.ObjectId,
     ref:'Trade'
 },
+comment:{
+  type:String,
+  defult:null	
+}
 review:{
     type:Number,
     trim:true

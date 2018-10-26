@@ -706,7 +706,7 @@ const submitTradeProduct = (req, res) => {
 		dataTrade.tradePitchProductId = data.tradePitchProductId;
 		dataTrade.tradeSwitchProductId = data.tradeSwitchProductId;
 		dataTrade.switchDate = data.switchDate;
-		dataTrade.status = 1;
+		dataTrade.status = 2;
 		Trade.create(dataTrade, (err,offerResult) => {
 		if(err){
 			return res.json({
@@ -775,6 +775,99 @@ const switchedTrades = (req,res) => {
 	 });
 }
 
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const pitchedProductList = (req, res) => {
+  const id =  mongoose.mongo.ObjectId(req.params.id);
+	 var result = [];
+        TradePitchProduct.findOne({offerTradeId:id})
+         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         .sort({_id:-1})
+         .limit(1)
+         .exec(function(err, result){
+			 console.log('result',result);
+		     if (err) {
+					return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					})
+				} else {
+				if (!result) {
+					res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+					return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: result
+					});
+				}
+			}
+    })
+}
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save new offer trade in the offerTrade collections
+const submitReview = (req, res) => {
+  console.log('req.body',req.body)	
+	   //~ 
+      //~ Testimonial.create(req.body, (err, result) => {
+		  //~ console.log('RES-title',err, result);
+        //~ if (err) {
+          //~ return res.send({
+			//~ errr : err,
+            //~ code: httpResponseCode.BAD_REQUEST,
+            //~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          //~ })
+        //~ } else {
+         //~ 
+          //~ return res.send({
+            //~ code: httpResponseCode.EVERYTHING_IS_OK,
+            //~ message: httpResponseMessage.SUCCESSFULLY_DONE,
+            //~ result: result
+          //~ })
+//~ 
+        //~ }
+      //~ })
+    //~ 
+	//~ 
+	
+  //~ const id =  mongoose.mongo.ObjectId(req.params.id);
+	 //~ var result = [];
+        //~ TradePitchProduct.findOne({offerTradeId:id})
+         //~ .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         //~ .sort({_id:-1})
+         //~ .limit(1)
+         //~ .exec(function(err, result){
+			 //~ console.log('result',result);
+		     //~ if (err) {
+					//~ return res.send({
+					//~ code: httpResponseCode.BAD_REQUEST,
+					//~ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					//~ })
+				//~ } else {
+				//~ if (!result) {
+					//~ res.json({
+					//~ message: httpResponseMessage.USER_NOT_FOUND,
+					//~ code: httpResponseMessage.BAD_REQUEST
+					//~ });
+				//~ } else {
+					//~ return res.json({
+					//~ code: httpResponseCode.EVERYTHING_IS_OK,
+					//~ result: result
+					//~ });
+				//~ }
+			//~ }
+    //~ })
+}
+
+
+
+
 module.exports = {
   listTrades,
   newTrades,
@@ -797,5 +890,6 @@ module.exports = {
   getProductByCategory,
   submitPitchProduct,
   switchedTrades,
-  submitTradeProduct
+  submitTradeProduct,
+  pitchedProductList
 }

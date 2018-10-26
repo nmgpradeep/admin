@@ -5,58 +5,64 @@
 */
 'use strict';
 var mongoose = require('mongoose');
-
 var Schema = mongoose.Schema;
 global.Promise = mongoose.Promise;
 var bcrypt = require('bcrypt-nodejs');
 
-var TradeSchema = new Schema({
-offerTradeId:{
+var TradeReturn = new Schema({
+TradeId:{
 	type: Schema.Types.ObjectId,
-	ref: 'OfferTrade'
+    ref: 'Trade'
 },
-tradePitchProductId:{
+UserId:{
 	type: Schema.Types.ObjectId,
-	ref: 'Product'
+	ref: 'User'
 },
-tradeSwitchProductId:{
-	type: Schema.Types.ObjectId,
-	ref: 'Product'
+ReturnOption:{
+	type: Number,
+	ref: 0
 },
-shippingCost:{
-	type: String,
-	trim: true
-},
-pitchUserPaymentStatus:{
+Description:{
   type:String,
-  trim:true,
-  sparse:true,
-  default:0
-},
-switchUserPaymentStatus:{
-  type:String,
-  trim:true,
-  sparse:true,
-  default:0
+  trim: true,
+  default:null
 },
 
-switchDate:{
+ProposedSolution:{
+  type:String,
+  trim:true,
+  sparse:true,
+  default:0
+},
+ResolvedMessages:{
+  type:String,
+  trim:true,
+  sparse:true,
+  default:0
+},
+ResolvedBy:{
+  type:String,
+  default:null
+},
+ResolvedDate:{
   type: Date, default: Date.now
 },
-
 status:{
   type:String,
   trim:true,
   sparse:true,
-   default:0 //1->switch,2->completed,3->return request,4->returned
- }
+  default:0 
+}
+createdOn:{
+  type: Date, default: Date.now
+},
 },
 {
   timestamps:true
 });
 
-TradeSchema.methods.toJSON = function() {
+TradeReturnSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
 }
-module.exports = mongoose.model('Trade', TradeSchema);
+module.exports = mongoose.model('TradeReturn', TradeReturnSchema);
