@@ -23,8 +23,9 @@ comment:{
   defult:null	
 },
 review:{
-    type:String,
-    defult:null
+    type:Number,
+    trim:true,
+    defult:0
 },
 status:{
   type:String,

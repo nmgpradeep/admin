@@ -222,7 +222,7 @@ const offerTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({ditchCount:0}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -670,7 +670,7 @@ const submitPitchProduct = (req, res) => {
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
 					 console.log('pitchTradepro',myArray);
-				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {						
+				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
 							if(err){
 								return res.json({
 								  message: httpResponseMessage.USER_NOT_FOUND,
@@ -808,10 +808,10 @@ const pitchedProductList = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const submitReview = (req, res) => { 
+const submitReview = (req, res) => {
    var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	     UserTradeRating.create(data, (err, result) => {	        
+	     UserTradeRating.create(data, (err, result) => {
 			 if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
@@ -829,7 +829,7 @@ const submitReview = (req, res) => {
 					result: result
 					});
 				  }
-			  }             
+			  }
           })
      })
 }
@@ -837,10 +837,10 @@ const submitReview = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const returnTrade = (req, res) => { 
+const returnTrade = (req, res) => {
    var form = new multiparty.Form();
-	form.parse(req, function(err, data, files) {		
-		TradeReturn.create(data, (err, result) => {	   		
+	form.parse(req, function(err, data, files) {
+		TradeReturn.create(data, (err, result) => {
 			if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
@@ -858,7 +858,7 @@ const returnTrade = (req, res) => {
 					result: result
 					});
 				 }
-			  }             
+			  }
           })
      })
 
