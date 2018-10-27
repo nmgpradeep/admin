@@ -1,6 +1,7 @@
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
 const Product = require('../models/product')
+const User = require('../models/User')
 const TradeReturn = require('../models/tradeReturn')
 const TradePitchProduct = require('../models/tradePitchProduct')
 const httpResponseCode = require('../helpers/httpResponseCode')
@@ -833,10 +834,11 @@ const submitReview = (req, res) => {
           })
      })
 }
+
 /** Auther	: KS
  *  Date	: September 13, 2018
  */
-///function to save new offer trade in the offerTrade collections
+///function to save return trade feedback from user side.
 const returnTrade = (req, res) => { 
    var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {		
@@ -862,6 +864,41 @@ const returnTrade = (req, res) => {
           })
      })
 }
+
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save return trade feedback from user side.
+const switchedProduct = (req, res) => { 
+ const id =  mongoose.mongo.ObjectId(req.params.id);
+	 //var result = [];
+        Trade.findOne({_id:id})
+        .populate({path:'tradePitchProductId',model:'Product',populate:[{path:"userId",model:"User"}]})
+        //.populate({path:'userId',model:'User'})
+         .exec(function(err, tradeProresult){
+			 console.log('rrrrllllllllllllllllllllllllll',tradeProresult)
+		     if (err) {
+					return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					})
+				} else {
+				if (!tradeProresult) {
+					res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+					return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: tradeProresult
+					});
+				}
+			}
+    })
+}
+
+
 
 
 
@@ -891,5 +928,6 @@ module.exports = {
   submitTradeProduct,
   pitchedProductList,
   submitReview,
-  returnTrade
+  returnTrade,
+  switchedProduct
 }
