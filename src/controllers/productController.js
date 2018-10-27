@@ -393,8 +393,6 @@ const filterBycategory = (req,res) => {
 	  form.parse(req, function(err, data, files) {
 	  const typeData = data.type[0];
 	  const catIds = data.ids[0];
-	 // console.log('typeData',typeData);
-	//  console.log('catIds',catIds);
 	  if(catIds.indexOf(",") > -1){
 			 catID = catIds.split(',');
 	  } else {
@@ -910,6 +908,124 @@ const myTreasureChestFilterBy = (req, res) => {
 
 
 /** Auther	: Rajiv kumar
+ *  Date	: October 26, 2018
+ *	Description : Function to get tradeMatch for front-user
+ **/
+const tradeMatch = (req, res) => {
+  var perPage = constant.PER_PAGE_RECORD;
+  var page = req.params.page || 1;
+   var token = getToken(req.headers);
+    if (token) {
+    decoded = jwt.verify(token,settings.secret);
+    var userId = decoded._id;
+       Product.find({ userId: { $ne: userId }})
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+      .populate('brand',['brandName'])
+  		.populate('size',['size'])
+       .skip((perPage * page) - perPage)
+       .limit(perPage)
+       .sort({createdAt:-1})
+       .exec(function(err, products) {
+        if (err) {
+        return res.send({
+          code: httpResponseCode.BAD_REQUEST,
+          message: httpResponseMessage.INTERNAL_SERVER_ERROR
+        })
+        } else {
+        if (!products) {
+          res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+          });
+        }  else {
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+             result: products
+           });
+          }
+        }
+      });
+     } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+     }
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 26, 2018
+ *	Description : Function to get tradeMatchFilterBy for front-user
+ **/
+const tradeMatchFilterBy = (req, res) => {
+  var sortObject = {};
+  var condObject = {};
+  var stype = "productName";
+  var sdir = 1;
+  if(req.body.sortBy != "" || req.body.sortBy !=undefined){
+      if(req.body.sortBy == 1){
+        var stype = "createdAt";
+        var sdir = 1;
+      } else if(req.body.sortBy == 2){
+        var stype = "productName";
+        var sdir = -1;
+      } else if(req.body.sortBy == 3){
+        var stype = "productName";
+        var sdir = 1;
+      } else if(req.body.sortBy == 4){
+        var stype = "createdAt";
+        var sdir = -1;
+      }
+  }
+  sortObject[stype] = sdir;
+  //console.log("Request Data",req.body)
+  var perPage = constant.PER_PAGE_RECORD;
+  var page = req.params.page || 1;
+
+   var token = getToken(req.headers);
+    if (token) {
+    decoded = jwt.verify(token,settings.secret);
+    var userId = decoded._id;
+    //    condObject["userId"] = userId;
+      if(req.body.category !== ''){
+          condObject["productCategory"] = req.body.category;
+      }
+
+       Product.find(condObject)
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+       .skip((perPage * page) - perPage)
+       .limit(perPage)
+       .sort(sortObject)
+       .exec(function(err, products) {
+        if (err) {
+        return res.send({
+          code: httpResponseCode.BAD_REQUEST,
+          message: httpResponseMessage.INTERNAL_SERVER_ERROR
+        })
+        } else {
+        if (!products) {
+          res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+          });
+        }  else {
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+             result: products
+           });
+          }
+        }
+      });
+     } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+     }
+}
+
+
+
+/** Auther	: Rajiv kumar
  *  Date	: Sept 7, 2018
  *	Description : Function to upload temp image  for front-user
  **/
@@ -973,6 +1089,44 @@ const addToWishList = (req, res) => {
     } else {
     return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 03, 2018
+ *	Description : Function to add product into user wishlist
+ **/
+const removeFromWishList = (req, res) => {
+  var token = getToken(req.headers);
+  if (token) {
+       decoded = jwt.verify(token,settings.secret);
+       var userId = decoded._id;
+       try {
+          WishList.deleteMany( { userId:req.body.userId, productId: req.body.productId}, (err,result) => {
+            if(err){
+            return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+          return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result
+              });
+          })
+          // db.orders.( { "_id" : ObjectId("563237a41a4d68582c2509da") } );
+        } catch (e) {
+          return res.json({
+                message: httpResponseMessage.ITEM_NOT_FOUND,
+                code: httpResponseMessage.NOT_FOUND,
+                error : e
+              });
+        }
+
+  } else {
+      return res.status(403).send({code: 403, message: 'Unauthorized.'});
+  }
 }
 
 
@@ -1061,5 +1215,8 @@ module.exports = {
   addToWishList,
   clearWishlist,
   relatedCategoryProduct,
-  checkExists
+  checkExists,
+  removeFromWishList,
+  tradeMatch,
+  tradeMatchFilterBy
 }
