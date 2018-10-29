@@ -10,8 +10,9 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
-const Notification = require('../models/notification')
-const UserTradeRating = require('../models/userTradeRating')
+const Notification = require('../models/notification');
+const UserTradeRating = require('../models/userTradeRating');
+
 var settings = require('../config/settings'); // get settings file
 var passport = require('passport');
 require('../config/passport')(passport);
@@ -461,7 +462,7 @@ const ditchTrades = (req, res) => {
     .populate('SwitchUserId')
     .populate('SwitchUserProductId')
     .exec(function(err, offerTrades) {
-	  console.log('offerTrades',offerTrades)
+	  //console.log('offerTrades',offerTrades)
         OfferTrade.count().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
@@ -669,8 +670,8 @@ const submitPitchProduct = (req, res) => {
 					 var proIDS = data.productIDS;
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
-					 console.log('pitchTradepro',myArray);
-				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {						
+					 //console.log('pitchTradepro',myArray);
+				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
 							if(err){
 								return res.json({
 								  message: httpResponseMessage.USER_NOT_FOUND,
@@ -783,7 +784,7 @@ const pitchedProductList = (req, res) => {
          .sort({_id:-1})
          .limit(1)
          .exec(function(err, result){
-			 console.log('result',result);
+			        //console.log('result',result);
 		     if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
@@ -808,10 +809,10 @@ const pitchedProductList = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const submitReview = (req, res) => { 
+const submitReview = (req, res) => {
    var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
-	     UserTradeRating.create(data, (err, result) => {	        
+	     UserTradeRating.create(data, (err, result) => {
 			 if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
@@ -829,7 +830,7 @@ const submitReview = (req, res) => {
 					result: result
 					});
 				  }
-			  }             
+			  }
           })
      })
 }
@@ -837,10 +838,10 @@ const submitReview = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save new offer trade in the offerTrade collections
-const returnTrade = (req, res) => { 
+const returnTrade = (req, res) => {
    var form = new multiparty.Form();
-	form.parse(req, function(err, data, files) {		
-		TradeReturn.create(data, (err, result) => {	   		
+	form.parse(req, function(err, data, files) {
+		TradeReturn.create(data, (err, result) => {
 			if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
@@ -858,13 +859,10 @@ const returnTrade = (req, res) => {
 					result: result
 					});
 				 }
-			  }             
+			  }
           })
-     })
-
+     });
 }
-
-
 
 
 module.exports = {
