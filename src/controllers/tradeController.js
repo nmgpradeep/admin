@@ -1,6 +1,7 @@
 const Trade = require('../models/trade')
 const OfferTrade = require('../models/offerTrade')
 const Product = require('../models/product')
+const User = require('../models/User')
 const TradeReturn = require('../models/tradeReturn')
 const TradePitchProduct = require('../models/tradePitchProduct')
 const httpResponseCode = require('../helpers/httpResponseCode')
@@ -223,7 +224,7 @@ const offerTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({ditchCount:0}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -670,7 +671,6 @@ const submitPitchProduct = (req, res) => {
 					 var proIDS = data.productIDS;
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
-					 //console.log('pitchTradepro',myArray);
 				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
 							if(err){
 								return res.json({
@@ -834,9 +834,11 @@ const submitReview = (req, res) => {
           })
      })
 }
+
 /** Auther	: KS
  *  Date	: September 13, 2018
  */
+
 ///function to save new offer trade in the offerTrade collections
 const returnTrade = (req, res) => {
    var form = new multiparty.Form();
@@ -864,6 +866,41 @@ const returnTrade = (req, res) => {
      });
 }
 
+/** Auther	: KS
+ *  Date	: September 13, 2018
+ */
+///function to save return trade feedback from user side.
+const switchedProduct = (req, res) => {
+ const id =  mongoose.mongo.ObjectId(req.params.id);
+	 //var result = [];
+        Trade.findOne({_id:id})
+        .populate({path:'tradePitchProductId',model:'Product',populate:[{path:"userId",model:"User"}]})
+        //.populate({path:'userId',model:'User'})
+         .exec(function(err, tradeProresult){
+			 //console.log('rrrrllllllllllllllllllllllllll',tradeProresult)
+		     if (err) {
+					return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+					})
+				} else {
+				if (!tradeProresult) {
+					res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+					});
+				} else {
+					return res.json({
+					code: httpResponseCode.EVERYTHING_IS_OK,
+					result: tradeProresult
+					});
+				}
+			}
+    })
+}
+
+
+
 
 module.exports = {
   listTrades,
@@ -890,5 +927,6 @@ module.exports = {
   submitTradeProduct,
   pitchedProductList,
   submitReview,
-  returnTrade
+  returnTrade,
+  switchedProduct
 }

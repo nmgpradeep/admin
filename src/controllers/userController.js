@@ -81,7 +81,7 @@ var transporter = nodemailer.createTransport({
  **/
 const signup = (req, res) => {
   var form = new multiparty.Form();
-  form.parse(req, function(err, data, files) {	  
+  form.parse(req, function(err, data, files) {
       User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
@@ -100,7 +100,7 @@ const signup = (req, res) => {
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
-        } else {			 
+        } else {
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 					var fileName = files.profilePic[0].originalFilename;
 					var ext = path.extname(fileName);
@@ -1270,7 +1270,7 @@ const newTradeUserRating = (req, res) => {
  *	Description : Function to delete the user
  **/
 const mostTrustedUsers = (req, res) => {
-//console.log("mostTrustedUsers")
+console.log("mostTrustedUsers")
 UserTradeRating.aggregate([{
            $unwind: '$userId'
 		}, {
@@ -1279,9 +1279,10 @@ UserTradeRating.aggregate([{
 				totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
 				 count: { $sum: 1 }
 			}
-		}])
+		}])  
     .exec(function(err, transactions) {
         // Don't forget your error handling
+        console.log("transactions",transactions)
         UserTradeRating.populate(transactions, {path: '_id',model:'User'}, function(err, populatedTransactions) {
             return res.send({
             code: httpResponseCode.EVERYTHING_IS_OK,
@@ -1645,7 +1646,7 @@ getUserWishListProducts = (req, res) => {
                 });
             }
             if (result.length > 0) {
-               result.forEach(function(countElement){                
+               result.forEach(function(countElement){
                   arrOfVals.push(countElement.productId );
                });
              }
