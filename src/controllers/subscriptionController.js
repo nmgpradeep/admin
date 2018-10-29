@@ -3,6 +3,7 @@ const Subscription = require('../models/subscription')
 const UserSubscription = require('../models/userSubscription')
 const User = require('../models/User')
 const Addon = require('../models/addon')
+const Transaction = require('../models/transaction')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
@@ -580,8 +581,20 @@ const payOnStripe = (req, res) => {
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           });
         }else{
-            //console.log("responceData",responceData)
-    					// setup email data with unicode symbols
+			
+			let TransactionData = {};
+				TransactionData.transactionId = charge.id
+				TransactionData.transactionType = 'Subscription'
+				TransactionData.userId = req.body.userId
+				TransactionData.paymentId = charge.id
+				TransactionData.transactionAmount = (charge.amount/100)
+				TransactionData.status = (charge.status === 'succeeded')?1:0
+				TransactionData.transactionDate = new Date();
+				Transaction.create(TransactionData, (err, transactionResp) => {
+					console.log("transactionResp",transactionResp)
+				});					
+				// console.log("responceData",responceData)
+    			// setup email data with unicode symbols
                 commonFunction.readHTMLFile('src/views/emailTemplate/userSubscriptionConfirmationEmail.html', function(err, html) {
                   var template = handlebars.compile(html);
                   var replacements = {

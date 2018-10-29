@@ -116,12 +116,13 @@ const viewTrades = (req, res) => {
   })
 }
 
-/** Author	: Saurabh Agarwal
+/** Author	: Rajiv Kumar
  *  Date	: July 17, 2018
  **/
 //Function to update the Trades status.
 const updateStatus = (req, res) => {
-  Trade.update({ _id:req.body._id },  { "$set": { "Status": req.body.status } }, { new:true }, (err,result) => {
+	
+  Trade.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 	 return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -142,6 +143,47 @@ const updateStatus = (req, res) => {
       }
     }
   })
+}
+/** Author	: Rajiv Kumar
+ *  Date	: July 17, 2018
+ **/
+//Function to update the Trades updateShippingStatus.
+const updateShippingStatus = (req, res) => {	
+ var form = new multiparty.Form();
+   form.parse(req, function(err, data, files) {
+	   //console.log('fields value',data.field,data.value)
+	   if(data.field[0] =='shippingStatus' && data.value[0] =="4"){
+		   Trade.update({ _id:data._id },  { "$set": { "status": 2 } }, { new:true }, (err,result) => {
+			  console.log("trad status updated")
+		  })
+	   }
+	   var update={};
+		update[data.field[0]]=data.value[0];
+		//console.log("update",update)
+        Trade.update({ _id:data._id },  { "$set": update}, { new:true }, (err,result) => {
+			if(err){
+				return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+				  });
+			} else {			 
+  
+				 if (!result) {
+					res.json({
+					  message: httpResponseMessage.USER_NOT_FOUND,
+					  code: httpResponseMessage.BAD_REQUEST
+					});
+			  } else {
+				return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+				result: result
+				});
+			 }
+		   }
+	    })
+    });
+  
 }
 
 
@@ -898,6 +940,7 @@ const switchedProduct = (req, res) => {
     })
 }
 
+
 /** Auther	: KS
  *  Date	: July 2, 2018
  */
@@ -936,6 +979,21 @@ const submitPitchAgain = (req, res) => {
 	});
 }
 
+/** Auther	: Rajiv kumar
+ *  Date	: Oct 28, 2018
+ */
+/// function to list all status
+const tradeStatus = (req, res) => {
+	resultAdd = constant.tradeStatus;
+	return res.json({
+		code: httpResponseCode.EVERYTHING_IS_OK,
+		message: httpResponseMessage.SUCCESSFULLY_DONE,
+		result: resultAdd
+	});
+}
+
+
+
 
 
 
@@ -968,4 +1026,6 @@ module.exports = {
   returnTrade,
   switchedProduct,
   submitPitchAgain
+  tradeStatus,
+  updateShippingStatus
 }

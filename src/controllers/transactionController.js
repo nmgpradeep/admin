@@ -22,7 +22,8 @@ const listTransaction = (req, res) => {
       .skip((perPage * page) - perPage)
       .limit(perPage)
       .sort({createdAt:-1})
-      .populate('parent',['title'])
+      //.populate('parent',['title'])
+      .populate({path:'userId',model:'User'})
       .exec(function (err, country){
           Transaction.count().exec(function(err, count) {
             if (err) return next(err)
