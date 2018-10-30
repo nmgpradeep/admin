@@ -991,13 +991,6 @@ const tradeStatus = (req, res) => {
 		result: resultAdd
 	});
 }
-
-
-
-
-
-
-
 module.exports = {
   listTrades,
   newTrades,
@@ -1025,7 +1018,7 @@ module.exports = {
   submitReview,
   returnTrade,
   switchedProduct,
-  submitPitchAgain
+  submitPitchAgain,
   tradeStatus,
   updateShippingStatus
 }
