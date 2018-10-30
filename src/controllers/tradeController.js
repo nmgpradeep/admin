@@ -495,8 +495,9 @@ const ditchTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({'status': {$ne : "0"}}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .where('ditchCount').gt(0).lt(4)
+   
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -560,7 +561,7 @@ const offerTradeProduct = (req, res) => {
          .exec(function(err, offerTradeProduct) {
 		 if (err) {
           return res.send({
-			      errr : err,
+			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
@@ -712,9 +713,9 @@ const submitPitchProduct = (req, res) => {
 					 var proIDS = data.productIDS;
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
-					 console.log('pitchTradepro',myArray);
+					 //console.log('pitchTradepro',myArray);
 				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
-							if(err){
+						if(err){
 								return res.json({
 								  message: httpResponseMessage.USER_NOT_FOUND,
 								  code: httpResponseMessage.BAD_REQUEST
@@ -914,32 +915,68 @@ const returnTrade = (req, res) => {
  */
 ///function to save return trade feedback from user side.
 const switchedProduct = (req, res) => { 
- const id =  mongoose.mongo.ObjectId(req.params.id);
-	 //var result = [];
-        Trade.findOne({_id:id})
-        .populate({path:'tradePitchProductId',model:'Product',populate:[{path:"userId",model:"User"}]})
-        //.populate({path:'userId',model:'User'})
-         .exec(function(err, tradeProresult){
-			 console.log('rrrrllllllllllllllllllllllllll',tradeProresult)
+ const id =  mongoose.mongo.ObjectId(req.params.id); 
+     TradePitchProduct.findOne({offerTradeId:id}).select('_id')
+         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         .exec(function(err, result){			
 		     if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
 					message: httpResponseMessage.INTERNAL_SERVER_ERROR
 					})
 				} else {
-				if (!tradeProresult) {
+				if (!result) {
 					res.json({
 					message: httpResponseMessage.USER_NOT_FOUND,
 					code: httpResponseMessage.BAD_REQUEST
 					});
 				} else {
-					return res.json({
-					code: httpResponseCode.EVERYTHING_IS_OK,
-					result: tradeProresult
-					});
-				}
+				   return res.json({
+					 code: httpResponseCode.EVERYTHING_IS_OK,
+					 result: result
+				   });
 			}
+		     }
     })
+}
+
+
+/** Auther	: KS
+ *  Date	: July 2, 2018
+ */
+
+const submitPitchAgain = (req, res) => {
+	var form = new multiparty.Form();
+	  form.parse(req, function(err, data, files) {
+		 const pitchTradepro = {};
+		 pitchTradepro.offerTradeId = data.offerTradeId;
+		 pitchTradepro.status = 0;
+		 var proIDS = data.productIDS;
+		 var myArray = proIDS[0].split(',');
+		 pitchTradepro.products = myArray;
+		 TradePitchProduct.create(pitchTradepro, (err,offerResult) => {
+		 if(err){
+			return res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+			   });
+		    }
+			 OfferTrade.update({ _id:data.offerTradeId }, { "$set": { "status": 0 } }, { new:true }, (err,statusUpdate) => {
+			   if(err){
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: statusUpdate
+				  });
+			   }
+		    })
+		})
+	});
 }
 
 /** Auther	: Rajiv kumar
@@ -954,12 +991,6 @@ const tradeStatus = (req, res) => {
 		result: resultAdd
 	});
 }
-
-
-
-
-
-
 module.exports = {
   listTrades,
   newTrades,
@@ -987,6 +1018,7 @@ module.exports = {
   submitReview,
   returnTrade,
   switchedProduct,
+  submitPitchAgain,
   tradeStatus,
   updateShippingStatus
 }
