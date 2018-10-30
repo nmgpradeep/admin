@@ -169,81 +169,7 @@ const addProduct = (req, res) => {
                                             });
                                         })
                             });
-<<<<<<< HEAD
-                            uploadedFiles.push({
-                                productId: result._id,
-                                imageName: productImages[i].filename,
-                                imageStatus: 1,
-                                imageURL: constant.product_path + productImages[i].filename
-                            });
-                        }
-                        try {
-                            ProductImage.insertMany(uploadedFiles);
-                        } catch (e) {
-                            res.send(e);
-                            return;
-                        }
-                        //~ ProductImage.create(uploadedFiles, function (err, jellybean, snickers) {
-                        //~ if (err) {
-                        //~ res.send(err);
-                        //~ return;
-                        //~ }
-                        //~ });
-                        Product.update({_id: result._id}, {"$set": {"productImages": productImages[0].filename}}, {new : true}).then(pimage => {
 
-                            console.log("pimage", pimage)
-                        })
-
-                    }
-                    //console.log('Created-Page',err, result);
-                    // check file and upload if exist
-                    if ((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
-                        var fileName = files.productImages[0].originalFilename;
-                        var ext = path.extname(fileName);
-                        var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
-                        fs.readFile(files.productImages[0].path, function (err, fileData) {
-                            if (err) {
-                                res.send(err);
-                                return;
-                            }
-                            fileName = files.productImages[0].originalFilename;
-                            ext = path.extname(fileName);
-                            newfilename = newfilename;
-                            pathNew = constant.product_path + newfilename;
-                            //return res.json(process.cwd());
-                            fs.writeFile(pathNew, fileData, function (err) {
-                                if (err) {
-                                    res.send(err);
-                                    return;
-                                }
-
-                            });
-                        });
-                    }
-                    //console.log('resultImgas',result);
-                    Product.update({_id: result._id}, {"$set": {"productImages": newfilename}}, {new : true}, (err, fileupdate) => {
-                        if (err) {
-                            return res.send({
-                                code: httpResponseCode.BAD_REQUEST,
-                                message: httpResponseMessage.FILE_UPLOAD_ERROR
-                            });
-                        } else {
-                            result.productImages = newfilename;
-                            return res.send({
-                                code: httpResponseCode.EVERYTHING_IS_OK,
-                                message: httpResponseMessage.SUCCESSFULLY_DONE,
-                                result: result
-                            })
-                        }
-                    })
-                    ///end file update///
-                }
-            })
-        });
-    } else {
-        return res.status(403).send({code: 403, message: 'Unauthorized.'});
-    }
-=======
                       })
                   });
 									uploadedFiles.push({
@@ -312,7 +238,7 @@ const addProduct = (req, res) => {
         } else {
        	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
        	}
->>>>>>> 64beb0daf14197085e1f49fe648bed4596c71a27
+
 }
 
 /** Auther	: Rajiv kumar
@@ -469,19 +395,6 @@ const activeProducts = (req, res) => {
             });
 }
 
-<<<<<<< HEAD
-const filterBycategory = (req, res) => {
-    var form = new multiparty.Form();
-    form.parse(req, function (err, data, files) {
-        const typeData = data.type[0];
-        const catIds = data.ids[0];
-        // console.log('typeData',typeData);
-        //  console.log('catIds',catIds);
-        if (catIds.indexOf(",") > -1) {
-            catID = catIds.split(',');
-        } else {
-            catID = catIds;
-=======
 const filterBycategory = (req,res) => {
 	  var form = new multiparty.Form();
 	  form.parse(req, function(err, data, files) {
@@ -520,7 +433,7 @@ const filterBycategory = (req,res) => {
 			 result: result
 		   });
 		 }
->>>>>>> 64beb0daf14197085e1f49fe648bed4596c71a27
+
         }
         var typeObject = {};
         typeObject[typeData] = catID;
@@ -1413,32 +1326,7 @@ const clearWishlist = (req, res) => {
     }
 }
 
-
 module.exports = {
-<<<<<<< HEAD
-    create,
-    allProducts,
-    viewProduct,
-    updateProduct,
-    deleteProduct,
-    changeStatus,
-    popularItems,
-    switchTodays,
-    myTreasureChest,
-    addProduct,
-    tepmUpload,
-    activeProducts,
-    searchresult,
-    myTreasureChestFilterBy,
-    filterBycategory,
-    productDetails,
-    productImages,
-    wishList,
-    addToWishList,
-    clearWishlist,
-    relatedCategoryProduct,
-    checkExists
-=======
   create,
   allProducts,
   viewProduct,
@@ -1464,5 +1352,4 @@ module.exports = {
   removeFromWishList,
   tradeMatch,
   tradeMatchFilterBy
->>>>>>> 64beb0daf14197085e1f49fe648bed4596c71a27
 }
