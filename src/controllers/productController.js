@@ -169,6 +169,7 @@ const addProduct = (req, res) => {
                                             });
                                         })
                             });
+<<<<<<< HEAD
                             uploadedFiles.push({
                                 productId: result._id,
                                 imageName: productImages[i].filename,
@@ -242,6 +243,76 @@ const addProduct = (req, res) => {
     } else {
         return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
+=======
+                      })
+                  });
+									uploadedFiles.push({
+										productId:result._id,
+										imageName: productImages[i].filename,
+										imageStatus: 1,
+										imageURL: constant.product_path+productImages[i].filename
+									});
+								}
+								try {
+									ProductImage.insertMany(uploadedFiles);
+								} catch (e) {
+									res.send(e);return;
+								}
+								 Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
+
+                                 console.log("pimage",pimage)
+                               })
+
+						 }
+          			  //console.log('Created-Page',err, result);
+          			 // check file and upload if exist
+          			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
+          				var fileName = files.productImages[0].originalFilename;
+          				var ext = path.extname(fileName);
+          				var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
+          				fs.readFile(files.productImages[0].path, function(err, fileData) {
+          				  if (err) {
+          					res.send(err);
+          					return;
+          				  }
+          				  fileName = files.productImages[0].originalFilename;
+          				  ext = path.extname(fileName);
+          				  newfilename = newfilename;
+          				  pathNew = constant.product_path + newfilename;
+          				  //return res.json(process.cwd());
+          				  fs.writeFile(pathNew, fileData, function(err) {
+          					if (err) {
+          					  res.send(err);
+          					  return;
+          					}
+
+          				  });
+          				});
+          			  }
+          			  //console.log('resultImgas',result);
+          			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
+          				if(err){
+          					return res.send({
+          						code: httpResponseCode.BAD_REQUEST,
+          						message: httpResponseMessage.FILE_UPLOAD_ERROR
+          					});
+          				} else {
+          					result.productImages = newfilename;
+          					return res.send({
+          						code: httpResponseCode.EVERYTHING_IS_OK,
+          						message: httpResponseMessage.SUCCESSFULLY_DONE,
+          						result: result
+          					})
+          				  }
+          			   })
+          			  ///end file update///
+          			}
+          		  })
+              });
+        } else {
+       	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+       	}
+>>>>>>> 64beb0daf14197085e1f49fe648bed4596c71a27
 }
 
 /** Auther	: Rajiv kumar
@@ -398,6 +469,7 @@ const activeProducts = (req, res) => {
             });
 }
 
+<<<<<<< HEAD
 const filterBycategory = (req, res) => {
     var form = new multiparty.Form();
     form.parse(req, function (err, data, files) {
@@ -409,6 +481,46 @@ const filterBycategory = (req, res) => {
             catID = catIds.split(',');
         } else {
             catID = catIds;
+=======
+const filterBycategory = (req,res) => {
+	  var form = new multiparty.Form();
+	  form.parse(req, function(err, data, files) {
+	  const typeData = data.type[0];
+	  const catIds = data.ids[0];
+	  if(catIds.indexOf(",") > -1){
+			 catID = catIds.split(',');
+	  } else {
+			 catID = catIds;
+	  }
+	   var typeObject = {};
+	   typeObject[typeData] = catID;
+	   Product.find(typeObject, data)
+	  .populate('productCategory',['title'])
+	  .populate({path:'userId',model:'User'})
+	  .populate({path:'brand',model:'brandName'})
+	  .populate({path:'size',model:'size'})
+	  .exec(function(err, result){
+      if(err){
+		return res.send({
+			code: httpResponseCode.BAD_REQUEST,
+			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+			err:err
+		  });
+     } else {
+      if (!result) {
+        res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+        });
+      }
+       else {
+		   return res.json({
+			  code: httpResponseCode.EVERYTHING_IS_OK,
+			  message: httpResponseMessage.SUCCESSFULLY_DONE,
+			 result: result
+		   });
+		 }
+>>>>>>> 64beb0daf14197085e1f49fe648bed4596c71a27
         }
         var typeObject = {};
         typeObject[typeData] = catID;
@@ -1017,6 +1129,124 @@ const myTreasureChestFilterBy = (req, res) => {
 
 
 /** Auther	: Rajiv kumar
+ *  Date	: October 26, 2018
+ *	Description : Function to get tradeMatch for front-user
+ **/
+const tradeMatch = (req, res) => {
+  var perPage = constant.PER_PAGE_RECORD;
+  var page = req.params.page || 1;
+   var token = getToken(req.headers);
+    if (token) {
+    decoded = jwt.verify(token,settings.secret);
+    var userId = decoded._id;
+       Product.find({ userId: { $ne: userId }})
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+      .populate('brand',['brandName'])
+  		.populate('size',['size'])
+       .skip((perPage * page) - perPage)
+       .limit(perPage)
+       .sort({createdAt:-1})
+       .exec(function(err, products) {
+        if (err) {
+        return res.send({
+          code: httpResponseCode.BAD_REQUEST,
+          message: httpResponseMessage.INTERNAL_SERVER_ERROR
+        })
+        } else {
+        if (!products) {
+          res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+          });
+        }  else {
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+             result: products
+           });
+          }
+        }
+      });
+     } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+     }
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 26, 2018
+ *	Description : Function to get tradeMatchFilterBy for front-user
+ **/
+const tradeMatchFilterBy = (req, res) => {
+  var sortObject = {};
+  var condObject = {};
+  var stype = "productName";
+  var sdir = 1;
+  if(req.body.sortBy != "" || req.body.sortBy !=undefined){
+      if(req.body.sortBy == 1){
+        var stype = "createdAt";
+        var sdir = 1;
+      } else if(req.body.sortBy == 2){
+        var stype = "productName";
+        var sdir = -1;
+      } else if(req.body.sortBy == 3){
+        var stype = "productName";
+        var sdir = 1;
+      } else if(req.body.sortBy == 4){
+        var stype = "createdAt";
+        var sdir = -1;
+      }
+  }
+  sortObject[stype] = sdir;
+  //console.log("Request Data",req.body)
+  var perPage = constant.PER_PAGE_RECORD;
+  var page = req.params.page || 1;
+
+   var token = getToken(req.headers);
+    if (token) {
+    decoded = jwt.verify(token,settings.secret);
+    var userId = decoded._id;
+    //    condObject["userId"] = userId;
+      if(req.body.category !== ''){
+          condObject["productCategory"] = req.body.category;
+      }
+
+       Product.find(condObject)
+      .populate({ path: "productCategory", model: "Category"})
+      .populate({ path: "userId", model: "User"})
+       .skip((perPage * page) - perPage)
+       .limit(perPage)
+       .sort(sortObject)
+       .exec(function(err, products) {
+        if (err) {
+        return res.send({
+          code: httpResponseCode.BAD_REQUEST,
+          message: httpResponseMessage.INTERNAL_SERVER_ERROR
+        })
+        } else {
+        if (!products) {
+          res.json({
+          message: httpResponseMessage.USER_NOT_FOUND,
+          code: httpResponseMessage.BAD_REQUEST
+          });
+        }  else {
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+             result: products
+           });
+          }
+        }
+      });
+     } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+     }
+}
+
+
+
+/** Auther	: Rajiv kumar
  *  Date	: Sept 7, 2018
  *	Description : Function to upload temp image  for front-user
  **/
@@ -1080,6 +1310,44 @@ const addToWishList = (req, res) => {
     } else {
         return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
+}
+
+
+/** Auther	: Rajiv kumar
+ *  Date	: October 03, 2018
+ *	Description : Function to add product into user wishlist
+ **/
+const removeFromWishList = (req, res) => {
+  var token = getToken(req.headers);
+  if (token) {
+       decoded = jwt.verify(token,settings.secret);
+       var userId = decoded._id;
+       try {
+          WishList.deleteMany( { userId:req.body.userId, productId: req.body.productId}, (err,result) => {
+            if(err){
+            return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+          return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result
+              });
+          })
+          // db.orders.( { "_id" : ObjectId("563237a41a4d68582c2509da") } );
+        } catch (e) {
+          return res.json({
+                message: httpResponseMessage.ITEM_NOT_FOUND,
+                code: httpResponseMessage.NOT_FOUND,
+                error : e
+              });
+        }
+
+  } else {
+      return res.status(403).send({code: 403, message: 'Unauthorized.'});
+  }
 }
 
 
@@ -1147,6 +1415,7 @@ const clearWishlist = (req, res) => {
 
 
 module.exports = {
+<<<<<<< HEAD
     create,
     allProducts,
     viewProduct,
@@ -1169,4 +1438,31 @@ module.exports = {
     clearWishlist,
     relatedCategoryProduct,
     checkExists
+=======
+  create,
+  allProducts,
+  viewProduct,
+  updateProduct,
+  deleteProduct,
+  changeStatus,
+  popularItems,
+  switchTodays,
+  myTreasureChest,
+  addProduct,
+  tepmUpload,
+  activeProducts,
+  searchresult,
+  myTreasureChestFilterBy,
+  filterBycategory,
+  productDetails,
+  productImages,
+  wishList,
+  addToWishList,
+  clearWishlist,
+  relatedCategoryProduct,
+  checkExists,
+  removeFromWishList,
+  tradeMatch,
+  tradeMatchFilterBy
+>>>>>>> 64beb0daf14197085e1f49fe648bed4596c71a27
 }

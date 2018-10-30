@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, Car
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import Trade from './Trade'
-
+var FD = require('form-data');
 
 class Trades extends Component {
   constructor(props){
@@ -58,28 +58,71 @@ class Trades extends Component {
       this.loadCommentsFromServer();
   }
   
-  changeStatusHandler(trade){
-    trade.status = (1 - parseInt(trade.Status)).toString();
-    console.log("CHANGE-STATUS",trade)
-    axios.post('/trade/updateStatus',trade).then(result => {
-      if(result.data.code === 200){
-        let trades = this.state.trades;
-        let tradeIndex = trades.findIndex(x => x._id === trade._id);
-        trades[tradeIndex].Status = trade.Status.toString();
-        this.setState({ trades: trades });
-        this.loadCommentsFromServer();
-      }
-    });
+  //~ changeStatusHandler(trade){
+    //~ trade.status = (1 - parseInt(trade.status)).toString();
+    //~ console.log("CHANGE-STATUS",trade)
+    //~ axios.post('/trade/updateStatus',trade).then(result => {
+      //~ if(result.data.code === 200){
+        //~ let trades = this.state.trades;
+        //~ let tradeIndex = trades.findIndex(x => x._id === trade._id);
+        //~ trades[tradeIndex].status = trade.status.toString();
+        //~ this.setState({ trades: trades });
+        //~ this.loadCommentsFromServer();
+      //~ }
+    //~ });
+  //~ }
+  
+   shippingStatus = (e, objId) => {
+     const updateData = new FD();
+     var objectValue = e.target.value;
+     updateData.append('_id',objId);
+     updateData.append('value', objectValue);
+     updateData.append('field','shippingStatus');     
+        axios.post('/trade/updateShippingStatus',updateData).then(result => {
+         if(result.data.code === 200){
+              var objIndex = this.state.trades.findIndex((trade)=>{
+                return objId === trade._id;
+              });
+              const trades = [...this.state.trades];
+              if(objectValue =="4"){
+				  trades[objIndex].status = "2";
+			  }
+              trades[objIndex].shippingStatus = objectValue;
+              this.setState({
+                trades: trades
+              });
+            }
+      });
   }
   
-  returnRaisedHandler(trade){
-    trade.id = trade._id;
-    axios.post('/trade/returnraised',trade).then(result => {
-      if(result.data.code === 200){
-        this.loadCommentsFromServer();
-      }
-    });
+   returnRaisedStatus = (e, objId) => {
+     const updateData = new FD();
+     var objectValue = e.target.value;
+     updateData.append('_id',objId);
+     updateData.append('value', objectValue);
+     updateData.append('field','status');     
+        axios.post('/trade/updateShippingStatus',updateData).then(result => {
+         if(result.data.code === 200){
+              var objIndex = this.state.trades.findIndex((trade)=>{
+                return objId === trade._id;
+              });
+              const trades = [...this.state.trades];
+              trades[objIndex].status = objectValue;
+              this.setState({
+                trades: trades
+              });
+            }
+      });
   }
+  
+  //~ returnRaisedHandler(trade){
+    //~ trade.id = trade._id;
+    //~ axios.post('/trade/returnraised',trade).then(result => {
+      //~ if(result.data.code === 200){
+        //~ this.loadCommentsFromServer();
+      //~ }
+    //~ });
+  //~ }
   
   toggle() {
     this.setState({
@@ -91,7 +134,8 @@ class Trades extends Component {
    let trades;
      if(this.state.trades){
        let tradeList = this.state.trades;
-       trades = tradeList.map((trade,index) => <Trade sequenceNo={index} key={trade._id}  updateStatus={(trade) => this.changeStatusHandler(trade)} returnRaised = {(trade) => this.returnRaisedHandler(trade)}   trade={trade}/>);
+      // trades = tradeList.map((trade,index) => <Trade sequenceNo={index} key={trade._id}  updateStatus={(trade) => this.changeStatusHandler(trade)} returnRaised = {(trade) => this.returnRaisedHandler(trade)}   trade={trade}/>);
+       trades = tradeList.map((trade,index) => <Trade sequenceNo={index} key={trade._id}  changeShippingStatus={this.shippingStatus} returnRaised = {this.returnRaisedStatus}   trade={trade}/>);
      }
 
      let paginationItems =[];
@@ -115,6 +159,7 @@ class Trades extends Component {
                     <th>Receiver Name</th> 
                     <th>Receiver Product</th> 
                     <th>Date</th>           
+                    <th>Shipping Status</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>

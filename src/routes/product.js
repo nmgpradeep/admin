@@ -19,11 +19,13 @@ router.post('/filterBycategory',productController.filterBycategory)
 router.get('/productDetails/:id',productController.productDetails)
 router.get('/productImages/:id',productController.productDetails)
 router.get('/relatedCategoryProduct/:id',productController.relatedCategoryProduct)
-
+router.get('/tradeMatch',productController.tradeMatch)
+router.post('/tradeMatchFilterBy',productController.tradeMatchFilterBy)
 
 /*Routes related to user wishlist functionality added on 03 October 2018 */
 router.get('/wishlist',productController.wishList)
 router.post('/addToWishList',productController.addToWishList)
+router.post('/removeFromWishList',productController.removeFromWishList)
 router.delete('/clearWishlist',productController.clearWishlist)
 router.post('/checkExists',productController.checkExists)
 module.exports = router;

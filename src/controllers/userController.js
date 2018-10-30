@@ -5,6 +5,7 @@ const Donation = require('../models/donation')
 const Trade = require('../models/trade')
 const FlagUser = require('../models/flagUser')
 const UserTradeRating = require('../models/userTradeRating')
+const WishList = require('../models/wishList')
 const Notification = require('../models/notification')
 const UserSubscription = require('../models/userSubscription')
 const Subscription = require('../models/subscription')
@@ -81,7 +82,6 @@ var transporter = nodemailer.createTransport({
 const signup = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
-	  //console.log('ddddddddddd',data);
       User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
@@ -96,12 +96,11 @@ const signup = (req, res) => {
       User.create(data, (err, result) => {
       if (err) {
           return res.send({
-			      errr : err,
+			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
         } else {
-			 // check Profile Pic and upload if exist
 			 if ((files.profilePic) && files.profilePic.length > 0 && files.profilePic != '') {
 					var fileName = files.profilePic[0].originalFilename;
 					var ext = path.extname(fileName);
@@ -1274,7 +1273,7 @@ const newTradeUserRating = (req, res) => {
  *	Description : Function to delete the user
  **/
 const mostTrustedUsers = (req, res) => {
-//console.log("mostTrustedUsers")
+console.log("mostTrustedUsers")
 UserTradeRating.aggregate([{
            $unwind: '$userId'
 		}, {
@@ -1283,9 +1282,10 @@ UserTradeRating.aggregate([{
 				totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
 				 count: { $sum: 1 }
 			}
-		}])
+		}])  
     .exec(function(err, transactions) {
         // Don't forget your error handling
+        console.log("transactions",transactions)
         UserTradeRating.populate(transactions, {path: '_id',model:'User'}, function(err, populatedTransactions) {
             return res.send({
             code: httpResponseCode.EVERYTHING_IS_OK,
@@ -1628,6 +1628,44 @@ userSubscription = (req, res) => {
 }
 
 
+/** Auther	: Rajiv Kumar
+ *  Date	: October 25, 2018
+ *	Description : Function to get the user getUserWishListProducts
+ **/
+getUserWishListProducts = (req, res) => {
+  var token = getToken(req.headers);
+    var arrOfVals = [];
+  if (token) {
+       decoded = jwt.verify(token,settings.secret);
+       var userId = decoded._id;
+        WishList.find({})
+          .where('userId').equals(userId)
+          .select({ productId: 1})
+          .exec(function(err, result){
+            if(err){
+            return res.json({
+                  message: httpResponseMessage.USER_NOT_FOUND,
+                  code: httpResponseMessage.BAD_REQUEST
+                });
+            }
+            if (result.length > 0) {
+               result.forEach(function(countElement){
+                  arrOfVals.push(countElement.productId );
+               });
+             }
+          return res.json({
+                      code: httpResponseCode.EVERYTHING_IS_OK,
+                      message: httpResponseMessage.SUCCESSFULLY_DONE,
+                     result: result,
+                     wishlistProducts:arrOfVals
+              });
+          })
+
+    } else {
+     return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
+}
+
 
 module.exports = {
 	signup,
@@ -1657,6 +1695,7 @@ module.exports = {
   activeUser,
   userTradeStates,
   searchCity,
-  userSubscription
+  userSubscription,
+  getUserWishListProducts
 
 }

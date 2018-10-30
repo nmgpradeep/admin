@@ -170,6 +170,19 @@ const getConstant = (req, res) => {
 		result: resultAdd
 	});
 }
+/** Auther	: Rajiv kumar
+ *  Date	: June 22, 2018
+ */
+/// function to list all dinated products
+const getReturnOption = (req, res) => {
+	resultAdd = constant.returnReason;
+	console.log('resultAdd',resultAdd)
+	return res.json({
+		code: httpResponseCode.EVERYTHING_IS_OK,
+		message: httpResponseMessage.SUCCESSFULLY_DONE,
+		result: resultAdd
+	});
+}
 /** Auther	: karnika sharma
  *  Date	: august 16, 2018
  */
@@ -601,5 +614,6 @@ module.exports = {
   getdonationshippingStatus,
   viewuser,
   donatedProducts,
-  donateProduct
+  donateProduct,
+  getReturnOption
 }

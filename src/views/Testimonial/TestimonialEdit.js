@@ -161,8 +161,8 @@ class TestimonialEdit extends Component {
                     <Col xs="4" sm="12">
 					   <FormGroup>
 						  <Label htmlFor="author">User</Label>									  
-						  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editTestimonial.author?this.state.editTestimonial.author._id:''}/>						
-					  </FormGroup>
+						  <UserSelectBox onSelectUser={this.handleUser} reference={(author)=> this.author = author} value={this.state.editTestimonial.author?this.state.editTestimonial.author._id:''}/>				
+						  </FormGroup>
                     </Col>
                     <Col xs="4" sm="12">
                       <FormGroup>                  
