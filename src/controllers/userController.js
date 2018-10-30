@@ -222,6 +222,7 @@ const signup = (req, res) => {
 const userSignup = (req, res) => {
   var form = new multiparty.Form();
   form.parse(req, function(err, data, files) {
+	  //console.log(data)
   User.findOne({ email: data.email }, (err, result) => {
     if (result) {
       return res.send({
@@ -234,6 +235,8 @@ const userSignup = (req, res) => {
       let salt = data.user_contact + unix_time
       let accessToken = md5(salt)
       req.body.accessToken = accessToken
+	  data.loc = [data.latitude[0], data.longitude[0]];
+	  //console.log(data.latitude[0]);
       User.create(data, (err, result) => {
 		//  console.log('RES-FIND',err, result);
       if (err) {
