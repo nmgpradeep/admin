@@ -114,6 +114,10 @@ longitude: {
 	 type: String,
 	 trim: true
 },
+loc: {
+    type: [Number],  // [<longitude>, <latitude>]
+    index: '2d'      // create the geospatial index
+},
 emailVerified:{
 	 type:String,
 	 trim:true,
