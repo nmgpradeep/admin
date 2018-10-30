@@ -3,7 +3,11 @@ module.exports = {
     'PER_PAGE_RECORD': 10,
     'SMTP_HOST':'smtp.sendgrid.net',
     'SMTP_PORT': 587,
-    
+    'SMTP_USERNAME': 'rajiv_nmg',
+    'SMTP_PASSWORD': 'rajiv@12345!',
+    'SMTP_FROM_EMAIL': 'rajiv.kumar@newmediaguru.net',
+    'StripeKeyPublic' : 'pk_test_hd6ILRIbYiaz8udjz91j4orh',
+	'StripeKeySecret' : 'sk_test_8IgE3GaQ3C6jBSP5ZUBpdXhy',
     'profileimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/ProfilePic/',
     'cmsimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/cmsPageImage/',
     'donationimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/donationImage/',
