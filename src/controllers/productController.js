@@ -393,18 +393,23 @@ const filterBycategory = (req,res) => {
 	  form.parse(req, function(err, data, files) {
 	  const typeData = data.type[0];
 	  const catIds = data.ids[0];
-	  if(catIds.indexOf(",") > -1){
-			 catID = catIds.split(',');
-	  } else {
-			 catID = catIds;
-	  }
-	   var typeObject = {};
-	   typeObject[typeData] = catID;
+    if(catIds != null){
+  	  if(catIds.indexOf(",") > -1){
+  			 catID = catIds.split(',');
+  	  } else {
+  			 catID = catIds;
+  	  }
+  	  var typeObject = {};
+  	  typeObject[typeData] = catID;
+    }else{
+      typeObject[typeData] = [];
+      data = {};
+    }
 	   Product.find(typeObject, data)
-	  .populate('productCategory',['title'])
-	  .populate({path:'userId',model:'User'})
-	  .populate({path:'brand',model:'brandName'})
-	  .populate({path:'size',model:'size'})
+     .populate('productCategory',['title'])
+     .populate({path:'userId',model:'User', select: 'firstName  lastName' })
+     .populate({path:'brand',model:'Brand'})
+     .populate({path:'size',model:'Size'})
 	  .exec(function(err, result){
       if(err){
 		return res.send({
