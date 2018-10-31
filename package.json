@@ -16,6 +16,7 @@
     "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
     "@coreui/icons": "^0.2.0",
     "@coreui/react": "^2.0.1",
+    "@easypost/api": "^3.6.4",
     "access-token": "^0.2.2",
     "ajv": "^6.5.1",
     "antd": "^3.9.1",
