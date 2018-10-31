@@ -118,6 +118,7 @@ class UserEdit extends Component {
   cancelHandler(){
     this.props.history.push("/users");
   }
+  
   submitHandler(e){
       e.preventDefault();
       let formSubmitFlag = true;
@@ -166,10 +167,8 @@ class UserEdit extends Component {
       }
 
       if(formSubmitFlag){
-		  
         const data = new FD()
         data.append('_id', this.props.match.params.id)
-
         data.append('firstName', this.firstName.value)
         data.append('middleName', this.middleName.value)
         data.append('lastName', this.lastName.value)
@@ -183,12 +182,9 @@ class UserEdit extends Component {
         data.append('country',this.country.value)
         data.append('zipCode', this.zipCode.value)
         data.append('subscriptionPlan',this.subscriptionPlan.value)
-
         if(this.state.selectedFile){
           data.append('profilePic', this.state.selectedFile)
         }
-
-        //console.log("DATA",data,this.firstName.value, this.state.selectedFile)
         axios.post('/user/updateUser', data).then(result => {
           if(result.data.code == '200'){
             this.props.history.push("/users");

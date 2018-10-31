@@ -20,5 +20,4 @@ module.exports = {
     'shippingStatus':[{'id':'0','name':'Picked up'},{'id':'1','name':'Shipped'},{'id':'2','name':'Delivered'}],
     'returnReason':[{'id':'0','name':'Item Defective'},{'id':'1','name':'Bought By Mistake'},{'id':'2','name':'No longer needed'},{'id':'3','name':'Too small'},{'id':'4','name':'Ordered In wrong size'},{'id':'5','name':'Product not as expected'}],
     'tradeStatus':[{'id':'1','name':'Switched'},{'id':'2','name':'Completed'},{'id':'3','name':'Return'},{'id':'4','name':'Returned'}]
-
 };

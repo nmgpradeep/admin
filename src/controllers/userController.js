@@ -912,18 +912,13 @@ const updateUser = (req, res) => {
   var form = new multiparty.Form();
 	form.parse(req, function(err, data, files) {
 	let now = new Date();
-	//console.log('USER DATA', data,files)
-
     User.findOneAndUpdate({ _id:data._id }, data,(err,result) => {
     if(err){
-	//	console.log('ERROR', err);
 		return res.send({
 			code: httpResponseCode.BAD_REQUEST,
 			message: httpResponseMessage.INTERNAL_SERVER_ERROR
 		  });
-
-    }else {
-	//	console.log('RESULT', result);
+    }  else {
 		  if (!result) {
 			res.json({
 			  message: httpResponseMessage.USER_NOT_FOUND,
