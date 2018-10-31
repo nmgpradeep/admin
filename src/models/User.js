@@ -19,112 +19,116 @@ lastName:{
     trim:true
 },
 userName:{
- type:String,
- sparse: true,
- required:true,
- lowercase:true,
+	 type:String,
+	 sparse: true,
+	 required:true,
+	 lowercase:true,
 },
 email:{
-type:String,
-sparse: true,
-lowercase:true,
-required:true
+	type:String,
+	sparse: true,
+	lowercase:true,
+	required:true
 },
 password:{
-type:String,
-trim:true,
-required:true
+	type:String,
+	trim:true,
+	required:true
 },
 phoneNumber:{
-type:String,
-trim:true,
-sparse:true
+	type:String,
+	trim:true,
+	sparse:true
 },
 dob:{
-type:String,
-trim:true,
-sparse:true
+	type:String,
+	trim:true,
+	sparse:true
 },
 profilePic:{
-type:String,
-trim:true,
-sparse:true,
-default:0
+	type:String,
+	trim:true,
+	sparse:true,
+	default:0
 },
 profileMessage:{
-type:String,
-trim:true
+	type:String,
+	trim:true
 },
 address:{
-type:String,
-trim:true
+	type:String,
+	trim:true
 },
 address2:{
-type:String,
-trim:true
+	type:String,
+	trim:true
 },
 city:{
-type:Schema.Types.ObjectId,
-ref: 'City'
+	type:Schema.Types.ObjectId,
+	ref: 'City'
 },
 state:{
-type:Schema.Types.ObjectId,
-ref: 'State'
+	type:Schema.Types.ObjectId,
+	ref: 'State'
 },
 country:{
-type:Schema.Types.ObjectId,
-ref:'Country'
+	type:Schema.Types.ObjectId,
+	ref:'Country'
 },
 zipCode:{
-type:String,
-trim:true
+	type:String,
+	trim:true
 },
 subscriptionPlan: null || {
-type:Schema.Types.ObjectId,
-ref:'Subscription'
+	type:Schema.Types.ObjectId,
+	ref:'Subscription'
 },
 subscriptionStatus:{
-  type:String,
-  trim:true,
-  default:0
+   type:String,
+   trim:true,
+   default:0
 },
 accessToken:{
- type:String,
- trim:true
+   type:String,
+   trim:true
 },
 
 //User type has 2 option 1=>admin,0=>users
 userType:{
-type:String,
-trim:true,
-default:0
+	type:String,
+	trim:true,
+	default:0
 },
 
 userStatus:{
- type:String,
- trim:true,
- sparse:true,
- default:0
+	 type:String,
+	 trim:true,
+	 sparse:true,
+	 default:0
 },
 latitude: {
- type: String,
- trim: true
+	 type: String,
+	 trim: true
 },
 longitude: {
- type: String,
- trim: true
+	 type: String,
+	 trim: true
+},
+loc: {
+    type: [Number],  // [<longitude>, <latitude>]
+    index: '2d'      // create the geospatial index
 },
 emailVerified:{
- type:String,
- trim:true,
- sparse:true,
- default:0
+	 type:String,
+	 trim:true,
+	 sparse:true,
+	 default:0
 },
 emailNotification:{
- type:String,
- trim:true,
- sparse:true,
- default:0
+	 type:String,
+	 trim:true,
+	 sparse:true,
+	 default:0
 }
 },
 {
@@ -132,7 +136,7 @@ timestamps:true
 });
 
 UserSchema.pre('save', function (next) {
-    var user = this;
+   var user = this;
     if (this.isModified('password') || this.isNew) {
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {

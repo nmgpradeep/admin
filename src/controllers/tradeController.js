@@ -265,7 +265,7 @@ const offerTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({ditchCount:0}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({'ditchCount': {$ne : "4"}}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -327,10 +327,15 @@ const ditchOfferTrade = (req, res) => {
   //console.log("ditchOfferTrade req.body",req.body)
   const data = req.body;
       let now = new Date();
-       OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"2","ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
-        //console.log("responce",err,result)
+      var status = 2; 
+      if(req.body.ditchCount == 3 ){
+		  var status = 5; 
+	   }
+      
+       OfferTrade.update({ _id:req.body._id },  { "$set": { "status":status,"ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
+        
         if (err) {
-          //console.log("responce",err,result)
+         
           return res.send({
 			errr : err,
             code: httpResponseCode.BAD_REQUEST,
@@ -495,7 +500,7 @@ const ditchTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({'status': {$ne : "0"}}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({'status': {$ne : "0"}}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  },{ 'SwitchUserId': userId }])
     .where('ditchCount').gt(0).lt(4)
    
     .skip((perPage * page) - perPage)
