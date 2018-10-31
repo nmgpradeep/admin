@@ -187,7 +187,7 @@ const signup = (req, res) => {
               var htmlToSend = template(replacements);
               let mailOptions = {
                 from: constant.SMTP_FROM_EMAIL, // sender address
-                to: result.email+',rajiv.kumar@newmediaguru.net', // list of receivers
+                to: result.email+',rajiv.kumar@nmgtechnologies.com', // list of receivers
                 subject: 'Please confirm your Email account ✔', // Subject line
                 text: 'Hello world?', // plain text body
                 html : htmlToSend
@@ -310,7 +310,7 @@ const userSignup = (req, res) => {
 					// setup email data with unicode symbols
 					let mailOptions = {
 						from: constant.SMTP_FROM_EMAIL, // sender address
-						to: result.email+',rajiv.kumar@newmediaguru.net', // list of receivers
+						to: result.email+',rajiv.kumar@nmgtechnologies.com', // list of receivers
 						subject: 'Please confirm your Email account ✔', // Subject line
 						text: 'Hello world?', // plain text body
 						html : htmlToSend
@@ -1427,7 +1427,7 @@ const dashboardStates = (req, res) => {
        var htmlToSend = template(replacements);
        let mailOptions = {
          from: req.body.email, // sender address
-         to: constant.SMTP_FROM_EMAIL+',rajiv.kumar@newmediaguru.net', // list of receivers
+         to: constant.SMTP_FROM_EMAIL+',rajiv.kumar@nmgtechnologies.com', // list of receivers
          subject: 'ContactUs ✔', // Subject line
          html : htmlToSend
        };
