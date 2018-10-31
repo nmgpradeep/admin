@@ -8,6 +8,7 @@ const UserTradeRating = require('../models/userTradeRating')
 const WishList = require('../models/wishList')
 const Notification = require('../models/notification')
 const UserSubscription = require('../models/userSubscription')
+const UserSubscriptionAddon = require('../models/userSubscriptionAddons')
 const Subscription = require('../models/subscription')
 const OfferTrade =  require('../models/offerTrade')
 const httpResponseCode = require('../helpers/httpResponseCode')
@@ -1624,6 +1625,43 @@ userSubscription = (req, res) => {
 	}
 }
 
+/** Auther	: Rajiv Kumar
+ *  Date	: Sept 26, 2018
+ *	Description : Function to get the user userSubscriptionAddon plans and addOn's
+ **/
+userSubscriptionAddon = (req, res) => {
+	var token = getToken(req.headers);
+	if (token) {
+		var totalNotifications  = 0;
+		decoded = jwt.verify(token,settings.secret);
+		var userId = decoded._id;
+    //console.log("decoded.subscriptionPlan",decoded)
+    UserSubscriptionAddon.find({userId:userId})
+    .populate({path:'userSubscriptionId',model:'UserSubscription'})
+    .populate({path:'userId',model:'User'})
+    .populate({path:'addonId',model:'Addon'})
+    .limit(1)
+    .sort({createdAt:-1})
+    .exec(function(error,uSubscriptionAddon){
+        if(error){
+          return res.json({
+            code: httpResponseCode.INTERNAL_SERVER_ERROR,
+            message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+            error:error
+          });
+        }else{
+          return res.json({
+            code: httpResponseCode.EVERYTHING_IS_OK,
+            message: httpResponseMessage.SUCCESSFULLY_DONE,
+            userSubacriptionAddons: uSubscriptionAddon
+          });
+        }
+    })
+  } else {
+	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
+	}
+}
+
 
 /** Auther	: Rajiv Kumar
  *  Date	: October 25, 2018
@@ -1693,6 +1731,7 @@ module.exports = {
   userTradeStates,
   searchCity,
   userSubscription,
-  getUserWishListProducts
+  getUserWishListProducts,
+  userSubscriptionAddon
 
 }
