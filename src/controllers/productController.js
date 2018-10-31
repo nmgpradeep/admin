@@ -125,49 +125,46 @@ const create = (req, res) => {
  */
 ///function to save new product in the list by front user
 const addProduct = (req, res) => {
-    var token = getToken(req.headers);
-    if (token) {
-        decoded = jwt.verify(token, settings.secret);
-        var userId = decoded._id;
-        var form = new multiparty.Form();
-        form.parse(req, function (err, data, files) {
-            // console.log('postdata', data);
-            if (!data.productName) {
-                return res.send({
-                    code: httpResponseCode.BAD_REQUEST,
-                    message: httpResponseMessage.REQUIRED_DATA
-                })
-            }
-            const flag = validation.validate_all_request(data, ['productName']);
-            if (flag) {
-                return res.json(flag);
-            }
-            data.userId = userId;
-            let now = new Date();
-            Product.create(data, (err, result) => {
-                if (err) {
-                    return res.send({
-                        errr: err,
-                        code: httpResponseCode.BAD_REQUEST,
-                        message: httpResponseMessage.INTERNAL_SERVER_ERROR
-                    })
-                } else {
-                    var uploadedFiles = [];
-                    if (data.files != '') {
-                        var productImages = JSON.parse(data.files);
-                        //console.log('productImages', productImages,productImages['filename']);
-                        for (var i = 0; i < productImages.length; i++) {
-                            var uidv1 = uuidv1()
-                            //	console.log("productImages",productImages[i].filename);
-                            fsExtra.move(constant.tepmUpload_path + productImages[i].filename, constant.product_path + productImages[i].filename).then(uploadedfile => {
-                                fs.rename(constant.product_path + productImages[i].filename, constant.product_path + uidv1 + productImages[i].filename)
-                                        .then(renameFile => {
-                                            fs.remove(constant.product_path + productImages[i], err => {
-                                                if (err)
-                                                    return console.error(err)
-                                                console.log('success!')
-                                            });
-                                        })
+  var token = getToken(req.headers);
+   if (token) {
+         decoded = jwt.verify(token,settings.secret);
+         var userId = decoded._id;
+            var form = new multiparty.Form();
+            form.parse(req, function(err, data, files) {
+          	// console.log('postdata', data);
+          	  if (!data.productName) {
+          		return res.send({
+          		  code: httpResponseCode.BAD_REQUEST,
+          		  message: httpResponseMessage.REQUIRED_DATA
+          		})
+          	  }
+          	  const flag = validation.validate_all_request(data, ['productName']);
+          	  if (flag) {
+          		    return res.json(flag);
+          	  }
+                data.userId = userId;
+              	  let now = new Date();
+          		  Product.create(data, (err, result) => {
+          			if (err) {
+          			  return res.send({
+          				errr : err,
+          				code: httpResponseCode.BAD_REQUEST,
+          				message: httpResponseMessage.INTERNAL_SERVER_ERROR
+          			  })
+          			} else {
+						var uploadedFiles = [];
+						 if(data.files != ''){
+							 var productImages = JSON.parse(data.files);
+							//console.log('productImages', productImages,productImages['filename']);
+								for(var i=0;i<productImages.length;i++){
+                  var uidv1 = uuidv1()
+								//	console.log("productImages",productImages[i].filename);
+                  fsExtra.move(constant.tepmUpload_path+productImages[i].filename, constant.product_path + productImages[i].filename).then(uploadedfile =>{
+                    fs.rename(constant.product_path + productImages[i].filename,constant.product_path     +uidv1+productImages[i].filename)
+                    .then(renameFile =>{
+                            fs.remove(constant.product_path + productImages[i], err => {
+                              if (err) return console.error(err)
+                              console.log('success!')
                             });
 
                       })
@@ -338,7 +335,7 @@ const changeStatus = (req, res) => {
 /** Auther	: Rajiv kumar
  *  Date	: June 21, 2018
  *	Description : Function to view the available product
- **/
+**/
 const viewProduct = (req, res) => {
     const id = req.params.id;
     Product.findById({_id: id})
@@ -394,7 +391,6 @@ const activeProducts = (req, res) => {
                 }
             });
 }
-
 const filterBycategory = (req,res) => {
 	  var form = new multiparty.Form();
 	  form.parse(req, function(err, data, files) {
@@ -433,40 +429,12 @@ const filterBycategory = (req,res) => {
 			 result: result
 		   });
 		 }
-
         }
-        var typeObject = {};
-        typeObject[typeData] = catID;
-        Product.find(typeObject, data)
-                .populate('productCategory', ['title'])
-                .populate({path: 'userId', model: 'User'})
-                .populate({path: 'brand', model: 'brandName'})
-                .populate({path: 'size', model: 'size'})
-                .exec(function (err, result) {
-                    if (err) {
-                        return res.send({
-                            code: httpResponseCode.BAD_REQUEST,
-                            message: httpResponseMessage.INTERNAL_SERVER_ERROR,
-                            err: err
-                        });
-                    } else {
-                        if (!result) {
-                            res.json({
-                                message: httpResponseMessage.USER_NOT_FOUND,
-                                code: httpResponseMessage.BAD_REQUEST
-                            });
-                        } else {
-                            return res.json({
-                                code: httpResponseCode.EVERYTHING_IS_OK,
-                                message: httpResponseMessage.SUCCESSFULLY_DONE,
-                                result: result
-                            });
-                        }
-                    }
-                    //console.log('r',result);
-                })
-    })
+        //console.log('r',result);
+      })
+	})
 }
+
 
 
 /** Auther	: Rajiv Kumar
@@ -1325,6 +1293,7 @@ const clearWishlist = (req, res) => {
         return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
+
 
 module.exports = {
   create,
