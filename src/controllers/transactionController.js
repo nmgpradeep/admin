@@ -22,7 +22,8 @@ const listTransaction = (req, res) => {
       .skip((perPage * page) - perPage)
       .limit(perPage)
       .sort({createdAt:-1})
-      .populate('parent',['title'])
+      //.populate('parent',['title'])
+      .populate({path:'userId',model:'User'})
       .exec(function (err, country){
           Transaction.count().exec(function(err, count) {
             if (err) return next(err)
@@ -83,13 +84,12 @@ const viewTransaction = (req, res) => {
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
         });
-      }else {
+      } else {
         return res.json({
               code: httpResponseCode.EVERYTHING_IS_OK,
               message: httpResponseMessage.SUCCESSFULLY_DONE,
              result: result
         });
-
       }
     }
   })
@@ -98,7 +98,6 @@ const viewTransaction = (req, res) => {
 
 
 const changeStatus = (req, res) => {
-	console.log('asdfasfd',req.body.status);
   Transaction.update(
     { _id: req.body._id },
     { $set: { status: req.body.status } },

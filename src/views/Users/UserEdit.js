@@ -166,7 +166,7 @@ class UserEdit extends Component {
       }
 
       if(formSubmitFlag){
-		  console.log('EDIT', this.state.selectedFile);
+		  
         const data = new FD()
         data.append('_id', this.props.match.params.id)
 

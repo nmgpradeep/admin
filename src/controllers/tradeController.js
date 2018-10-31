@@ -117,12 +117,13 @@ const viewTrades = (req, res) => {
   })
 }
 
-/** Author	: Saurabh Agarwal
+/** Author	: Rajiv Kumar
  *  Date	: July 17, 2018
  **/
 //Function to update the Trades status.
 const updateStatus = (req, res) => {
-  Trade.update({ _id:req.body._id },  { "$set": { "Status": req.body.status } }, { new:true }, (err,result) => {
+	
+  Trade.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 	 return res.send({
 			code: httpResponseCode.BAD_REQUEST,
@@ -143,6 +144,47 @@ const updateStatus = (req, res) => {
       }
     }
   })
+}
+/** Author	: Rajiv Kumar
+ *  Date	: July 17, 2018
+ **/
+//Function to update the Trades updateShippingStatus.
+const updateShippingStatus = (req, res) => {	
+ var form = new multiparty.Form();
+   form.parse(req, function(err, data, files) {
+	   //console.log('fields value',data.field,data.value)
+	   if(data.field[0] =='shippingStatus' && data.value[0] =="4"){
+		   Trade.update({ _id:data._id },  { "$set": { "status": 2 } }, { new:true }, (err,result) => {
+			  console.log("trad status updated")
+		  })
+	   }
+	   var update={};
+		update[data.field[0]]=data.value[0];
+		//console.log("update",update)
+        Trade.update({ _id:data._id },  { "$set": update}, { new:true }, (err,result) => {
+			if(err){
+				return res.send({
+					code: httpResponseCode.BAD_REQUEST,
+					message: httpResponseMessage.INTERNAL_SERVER_ERROR
+				  });
+			} else {			 
+  
+				 if (!result) {
+					res.json({
+					  message: httpResponseMessage.USER_NOT_FOUND,
+					  code: httpResponseMessage.BAD_REQUEST
+					});
+			  } else {
+				return res.json({
+				code: httpResponseCode.EVERYTHING_IS_OK,
+				message: httpResponseMessage.CHANGE_STATUS_SUCCESSFULLY,
+				result: result
+				});
+			 }
+		   }
+	    })
+    });
+  
 }
 
 
@@ -224,7 +266,7 @@ const offerTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({ditchCount:0}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({'ditchCount': {$ne : "4"}}).or([{ 'status':0  }, { 'status': 3 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -286,10 +328,15 @@ const ditchOfferTrade = (req, res) => {
   //console.log("ditchOfferTrade req.body",req.body)
   const data = req.body;
       let now = new Date();
-       OfferTrade.update({ _id:req.body._id },  { "$set": { "status":"2","ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
-        //console.log("responce",err,result)
+      var status = 2; 
+      if(req.body.ditchCount == 3 ){
+		  var status = 5; 
+	   }
+      
+       OfferTrade.update({ _id:req.body._id },  { "$set": { "status":status,"ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
+        
         if (err) {
-          //console.log("responce",err,result)
+         
           return res.send({
 			errr : err,
             code: httpResponseCode.BAD_REQUEST,
@@ -454,8 +501,9 @@ const ditchTrades = (req, res) => {
    if (token) {
     decoded = jwt.verify(token,settings.secret);
     var userId = decoded._id;
-    OfferTrade.find({}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  }, { 'SwitchUserId': userId }])
+    OfferTrade.find({'status': {$ne : "0"}}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  },{ 'SwitchUserId': userId }])
     .where('ditchCount').gt(0).lt(4)
+   
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -519,7 +567,7 @@ const offerTradeProduct = (req, res) => {
          .exec(function(err, offerTradeProduct) {
 		 if (err) {
           return res.send({
-			      errr : err,
+			errr : err,
             code: httpResponseCode.BAD_REQUEST,
             message: httpResponseMessage.INTERNAL_SERVER_ERROR
           })
@@ -671,8 +719,12 @@ const submitPitchProduct = (req, res) => {
 					 var proIDS = data.productIDS;
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
+<<<<<<< HEAD
+=======
+					 //console.log('pitchTradepro',myArray);
+>>>>>>> dcd31216c09503ae8092e76c1857194f6cca2273
 				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
-							if(err){
+						if(err){
 								return res.json({
 								  message: httpResponseMessage.USER_NOT_FOUND,
 								  code: httpResponseMessage.BAD_REQUEST
@@ -870,6 +922,7 @@ const returnTrade = (req, res) => {
  *  Date	: September 13, 2018
  */
 ///function to save return trade feedback from user side.
+<<<<<<< HEAD
 const switchedProduct = (req, res) => {
  const id =  mongoose.mongo.ObjectId(req.params.id);
 	 //var result = [];
@@ -878,30 +931,88 @@ const switchedProduct = (req, res) => {
         //.populate({path:'userId',model:'User'})
          .exec(function(err, tradeProresult){
 			 //console.log('rrrrllllllllllllllllllllllllll',tradeProresult)
+=======
+const switchedProduct = (req, res) => { 
+ const id =  mongoose.mongo.ObjectId(req.params.id); 
+     TradePitchProduct.findOne({offerTradeId:id}).select('_id')
+         .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         .exec(function(err, result){			
+>>>>>>> dcd31216c09503ae8092e76c1857194f6cca2273
 		     if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
 					message: httpResponseMessage.INTERNAL_SERVER_ERROR
 					})
 				} else {
-				if (!tradeProresult) {
+				if (!result) {
 					res.json({
 					message: httpResponseMessage.USER_NOT_FOUND,
 					code: httpResponseMessage.BAD_REQUEST
 					});
 				} else {
-					return res.json({
-					code: httpResponseCode.EVERYTHING_IS_OK,
-					result: tradeProresult
-					});
-				}
+				   return res.json({
+					 code: httpResponseCode.EVERYTHING_IS_OK,
+					 result: result
+				   });
 			}
+		     }
     })
 }
 
 
+/** Auther	: KS
+ *  Date	: July 2, 2018
+ */
 
+const submitPitchAgain = (req, res) => {
+	var form = new multiparty.Form();
+	  form.parse(req, function(err, data, files) {
+		 const pitchTradepro = {};
+		 pitchTradepro.offerTradeId = data.offerTradeId;
+		 pitchTradepro.status = 0;
+		 var proIDS = data.productIDS;
+		 var myArray = proIDS[0].split(',');
+		 pitchTradepro.products = myArray;
+		 TradePitchProduct.create(pitchTradepro, (err,offerResult) => {
+		 if(err){
+			return res.json({
+					message: httpResponseMessage.USER_NOT_FOUND,
+					code: httpResponseMessage.BAD_REQUEST
+			   });
+		    }
+			 OfferTrade.update({ _id:data.offerTradeId }, { "$set": { "status": 0 } }, { new:true }, (err,statusUpdate) => {
+			   if(err){
+					return res.send({
+						code: httpResponseCode.BAD_REQUEST,
+						message: httpResponseMessage.FILE_UPLOAD_ERROR
+					});
+				} else {
+					return res.send({
+						code: httpResponseCode.EVERYTHING_IS_OK,
+						message: httpResponseMessage.SUCCESSFULLY_DONE,
+						result: statusUpdate
+				  });
+			   }
+		    })
+		})
+	});
+}
 
+<<<<<<< HEAD
+=======
+/** Auther	: Rajiv kumar
+ *  Date	: Oct 28, 2018
+ */
+/// function to list all status
+const tradeStatus = (req, res) => {
+	resultAdd = constant.tradeStatus;
+	return res.json({
+		code: httpResponseCode.EVERYTHING_IS_OK,
+		message: httpResponseMessage.SUCCESSFULLY_DONE,
+		result: resultAdd
+	});
+}
+>>>>>>> dcd31216c09503ae8092e76c1857194f6cca2273
 module.exports = {
   listTrades,
   newTrades,
@@ -928,5 +1039,8 @@ module.exports = {
   pitchedProductList,
   submitReview,
   returnTrade,
-  switchedProduct
+  switchedProduct,
+  submitPitchAgain,
+  tradeStatus,
+  updateShippingStatus
 }

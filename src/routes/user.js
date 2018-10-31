@@ -32,5 +32,6 @@ router.post('/newTradeUserRating',userController.newTradeUserRating);
 router.get('/activeUser',userController.activeUser);
 router.post('/searchCity',userController.searchCity);
 router.get('/userSubscription',userController.userSubscription);
+router.get('/userSubscriptionAddon',userController.userSubscriptionAddon);
 router.get('/getUserWishListProducts/:id',userController.getUserWishListProducts);
 module.exports = router;

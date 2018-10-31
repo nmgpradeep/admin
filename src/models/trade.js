@@ -44,11 +44,17 @@ switchDate:{
   type: Date, default: Date.now
 },
 
+shippingStatus:{
+  type:String,
+  trim:true,
+  sparse:true,
+   default: 0 //0 => Payment Received , 1 =>Picked up , 2 => Shipped, 3=>Out for delivery,4=>Delivered
+ }, 
 status:{
   type:String,
   trim:true,
   sparse:true,
-   default:0 //1->switch,2->completed,3->return request,4->returned
+   default:1 //1->switch,2->completed,3->return request,4->returned
  }
 },
 {
