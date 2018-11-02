@@ -35,8 +35,7 @@ mongoose.connect(constant.DATABASE)
 //mongoose.connect('mongodb://pitchswitch:nmg251@ds213183.mlab.com:13183/pitch-switch-demo');
 //mongoose.connect('mongodb://pitchnswitch:pitchnswitch123456@10.0.0.24:27017/pitch-switch-demo');
 //mongoose.connect('mongodb://localhost:27017/pitch-and-switch');
-//Local Database
-//mongoose.connect('mongodb://localhost:27017/pitch-and-switch');
+
 app.set('port', (5000));
 app.use(cors());
 app.get('/',(req,res)=>{
