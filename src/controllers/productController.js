@@ -12,6 +12,7 @@ const Brand = require('../models/brand')
 const httpResponseCode = require('../helpers/httpResponseCode')
 const httpResponseMessage = require('../helpers/httpResponseMessage')
 const validation = require('../middlewares/validation')
+
 //const moment = require('moment-timezone');
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
@@ -30,6 +31,8 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 const uuidv1 = require('uuid/v1'); // package  to get unique string or number
 var ObjectId = require('mongodb').ObjectID;
+//var Location = require('../middlewares/location');
+var async = require('async');
 
 
 
@@ -45,6 +48,68 @@ getToken = function (headers) {
         return null;
     }
 };
+
+
+
+
+
+/*function getUser (latitude,longitude,distance ,callback) {
+ 
+ var responseData=[];
+ 
+ var query = User.find({'loc': {
+ $nearSphere: [
+ latitude,
+ longitude
+ ],
+ $maxDistance: distance
+ 
+ }
+ // branchId is the array [108,109,110]
+ }, {_id: 1});
+ 
+ 
+ return query.exec(function (err, challenge) {
+ if (err) {
+ return responseData;
+ 
+ }
+ 
+ if (!challenge) {
+ return responseData;
+ } else {
+ 
+ 
+ // console.log(challenge);
+ if (challenge.length) {
+ 
+ Object.keys(challenge).forEach(function (key) {
+ 
+ responseData[key] = {};
+ responseData[key] = ObjectId(challenge[key]._id);
+ 
+ 
+ });
+ 
+ 
+ return callback(responseData);
+ }
+ 
+ //;
+ 
+ }
+ 
+ });
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ }*/
 
 
 /** Auther	: Rajiv kumar
@@ -125,116 +190,118 @@ const create = (req, res) => {
  */
 ///function to save new product in the list by front user
 const addProduct = (req, res) => {
-  var token = getToken(req.headers);
-   if (token) {
-         decoded = jwt.verify(token,settings.secret);
-         var userId = decoded._id;
-            var form = new multiparty.Form();
-            form.parse(req, function(err, data, files) {
-          	// console.log('postdata', data);
-          	  if (!data.productName) {
-          		return res.send({
-          		  code: httpResponseCode.BAD_REQUEST,
-          		  message: httpResponseMessage.REQUIRED_DATA
-          		})
-          	  }
-          	  const flag = validation.validate_all_request(data, ['productName']);
-          	  if (flag) {
-          		    return res.json(flag);
-          	  }
-                data.userId = userId;
-              	  let now = new Date();
-          		  Product.create(data, (err, result) => {
-          			if (err) {
-          			  return res.send({
-          				errr : err,
-          				code: httpResponseCode.BAD_REQUEST,
-          				message: httpResponseMessage.INTERNAL_SERVER_ERROR
-          			  })
-          			} else {
-						var uploadedFiles = [];
-						 if(data.files != ''){
-							 var productImages = JSON.parse(data.files);
-							//console.log('productImages', productImages,productImages['filename']);
-								for(var i=0;i<productImages.length;i++){
-                  var uidv1 = uuidv1()
-								//	console.log("productImages",productImages[i].filename);
-                  fsExtra.move(constant.tepmUpload_path+productImages[i].filename, constant.product_path + productImages[i].filename).then(uploadedfile =>{
-                    fs.rename(constant.product_path + productImages[i].filename,constant.product_path     +uidv1+productImages[i].filename)
-                    .then(renameFile =>{
-                            fs.remove(constant.product_path + productImages[i], err => {
-                              if (err) return console.error(err)
-                              console.log('success!')
+    var token = getToken(req.headers);
+    if (token) {
+        decoded = jwt.verify(token, settings.secret);
+        var userId = decoded._id;
+        var form = new multiparty.Form();
+        form.parse(req, function (err, data, files) {
+            // console.log('postdata', data);
+            if (!data.productName) {
+                return res.send({
+                    code: httpResponseCode.BAD_REQUEST,
+                    message: httpResponseMessage.REQUIRED_DATA
+                })
+            }
+            const flag = validation.validate_all_request(data, ['productName']);
+            if (flag) {
+                return res.json(flag);
+            }
+            data.userId = userId;
+            let now = new Date();
+            Product.create(data, (err, result) => {
+                if (err) {
+                    return res.send({
+                        errr: err,
+                        code: httpResponseCode.BAD_REQUEST,
+                        message: httpResponseMessage.INTERNAL_SERVER_ERROR
+                    })
+                } else {
+                    var uploadedFiles = [];
+                    if (data.files != '') {
+                        var productImages = JSON.parse(data.files);
+                        //console.log('productImages', productImages,productImages['filename']);
+                        for (var i = 0; i < productImages.length; i++) {
+                            var uidv1 = uuidv1()
+                            //	console.log("productImages",productImages[i].filename);
+                            fsExtra.move(constant.tepmUpload_path + productImages[i].filename, constant.product_path + productImages[i].filename).then(uploadedfile => {
+                                fs.rename(constant.product_path + productImages[i].filename, constant.product_path + uidv1 + productImages[i].filename)
+                                        .then(renameFile => {
+                                            fs.remove(constant.product_path + productImages[i], err => {
+                                                if (err)
+                                                    return console.error(err)
+                                                console.log('success!')
+                                            });
+
+                                        })
                             });
+                            uploadedFiles.push({
+                                productId: result._id,
+                                imageName: productImages[i].filename,
+                                imageStatus: 1,
+                                imageURL: constant.product_path + productImages[i].filename
+                            });
+                        }
+                        try {
+                            ProductImage.insertMany(uploadedFiles);
+                        } catch (e) {
+                            res.send(e);
+                            return;
+                        }
+                        Product.update({_id: result._id}, {"$set": {"productImages": productImages[0].filename}}, {new : true}).then(pimage => {
 
-                      })
-                  });
-									uploadedFiles.push({
-										productId:result._id,
-										imageName: productImages[i].filename,
-										imageStatus: 1,
-										imageURL: constant.product_path+productImages[i].filename
-									});
-								}
-								try {
-									ProductImage.insertMany(uploadedFiles);
-								} catch (e) {
-									res.send(e);return;
-								}
-								 Product.update({ _id:result._id },  { "$set": { "productImages": productImages[0].filename } }, { new:true }).then(pimage =>{
+                            console.log("pimage", pimage)
+                        })
 
-                                 console.log("pimage",pimage)
-                               })
+                    }
+                    //console.log('Created-Page',err, result);
+                    // check file and upload if exist
+                    if ((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
+                        var fileName = files.productImages[0].originalFilename;
+                        var ext = path.extname(fileName);
+                        var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
+                        fs.readFile(files.productImages[0].path, function (err, fileData) {
+                            if (err) {
+                                res.send(err);
+                                return;
+                            }
+                            fileName = files.productImages[0].originalFilename;
+                            ext = path.extname(fileName);
+                            newfilename = newfilename;
+                            pathNew = constant.product_path + newfilename;
+                            //return res.json(process.cwd());
+                            fs.writeFile(pathNew, fileData, function (err) {
+                                if (err) {
+                                    res.send(err);
+                                    return;
+                                }
 
-						 }
-          			  //console.log('Created-Page',err, result);
-          			 // check file and upload if exist
-          			 if((files.productImages) && files.productImages.length > 0 && files.productImages != '') {
-          				var fileName = files.productImages[0].originalFilename;
-          				var ext = path.extname(fileName);
-          				var newfilename = files.productImages[0].fieldName + '-' + Date.now() + ext;
-          				fs.readFile(files.productImages[0].path, function(err, fileData) {
-          				  if (err) {
-          					res.send(err);
-          					return;
-          				  }
-          				  fileName = files.productImages[0].originalFilename;
-          				  ext = path.extname(fileName);
-          				  newfilename = newfilename;
-          				  pathNew = constant.product_path + newfilename;
-          				  //return res.json(process.cwd());
-          				  fs.writeFile(pathNew, fileData, function(err) {
-          					if (err) {
-          					  res.send(err);
-          					  return;
-          					}
-
-          				  });
-          				});
-          			  }
-          			  //console.log('resultImgas',result);
-          			  Product.update({ _id:result._id },  { "$set": { "productImages": newfilename } }, { new:true }, (err,fileupdate) => {
-          				if(err){
-          					return res.send({
-          						code: httpResponseCode.BAD_REQUEST,
-          						message: httpResponseMessage.FILE_UPLOAD_ERROR
-          					});
-          				} else {
-          					result.productImages = newfilename;
-          					return res.send({
-          						code: httpResponseCode.EVERYTHING_IS_OK,
-          						message: httpResponseMessage.SUCCESSFULLY_DONE,
-          						result: result
-          					})
-          				  }
-          			   })
-          			  ///end file update///
-          			}
-          		  })
-              });
-        } else {
-       	 return res.status(403).send({code: 403, message: 'Unauthorized.'});
-       	}
+                            });
+                        });
+                    }
+                    //console.log('resultImgas',result);
+                    Product.update({_id: result._id}, {"$set": {"productImages": newfilename}}, {new : true}, (err, fileupdate) => {
+                        if (err) {
+                            return res.send({
+                                code: httpResponseCode.BAD_REQUEST,
+                                message: httpResponseMessage.FILE_UPLOAD_ERROR
+                            });
+                        } else {
+                            result.productImages = newfilename;
+                            return res.send({
+                                code: httpResponseCode.EVERYTHING_IS_OK,
+                                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                                result: result
+                            })
+                        }
+                    })
+                    ///end file update///
+                }
+            })
+        });
+    } else {
+        return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
 
 }
 
@@ -335,7 +402,7 @@ const changeStatus = (req, res) => {
 /** Auther	: Rajiv kumar
  *  Date	: June 21, 2018
  *	Description : Function to view the available product
-**/
+ **/
 const viewProduct = (req, res) => {
     const id = req.params.id;
     Product.findById({_id: id})
@@ -391,48 +458,47 @@ const activeProducts = (req, res) => {
                 }
             });
 }
-const filterBycategory = (req,res) => {
-	  var form = new multiparty.Form();
-	  form.parse(req, function(err, data, files) {
-	  const typeData = data.type[0];
-	  const catIds = data.ids[0];
-	  if(catIds.indexOf(",") > -1){
-			 catID = catIds.split(',');
-	  } else {
-			 catID = catIds;
-	  }
-	   var typeObject = {};
-	   typeObject[typeData] = catID;
-	   Product.find(typeObject, data)
-	  .populate('productCategory',['title'])
-	  .populate({path:'userId',model:'User'})
-	  .populate({path:'brand',model:'brandName'})
-	  .populate({path:'size',model:'size'})
-	  .exec(function(err, result){
-      if(err){
-		return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
-			err:err
-		  });
-     } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      }
-       else {
-		   return res.json({
-			  code: httpResponseCode.EVERYTHING_IS_OK,
-			  message: httpResponseMessage.SUCCESSFULLY_DONE,
-			 result: result
-		   });
-		 }
+const filterBycategory = (req, res) => {
+    var form = new multiparty.Form();
+    form.parse(req, function (err, data, files) {
+        const typeData = data.type[0];
+        const catIds = data.ids[0];
+        if (catIds.indexOf(",") > -1) {
+            catID = catIds.split(',');
+        } else {
+            catID = catIds;
         }
-        //console.log('r',result);
-      })
-	})
+        var typeObject = {};
+        typeObject[typeData] = catID;
+        Product.find(typeObject, data)
+                .populate('productCategory', ['title'])
+                .populate({path: 'userId', model: 'User'})
+                .populate({path: 'brand', model: 'brandName'})
+                .populate({path: 'size', model: 'size'})
+                .exec(function (err, result) {
+                    if (err) {
+                        return res.send({
+                            code: httpResponseCode.BAD_REQUEST,
+                            message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+                            err: err
+                        });
+                    } else {
+                        if (!result) {
+                            res.json({
+                                message: httpResponseMessage.USER_NOT_FOUND,
+                                code: httpResponseMessage.BAD_REQUEST
+                            });
+                        } else {
+                            return res.json({
+                                code: httpResponseCode.EVERYTHING_IS_OK,
+                                message: httpResponseMessage.SUCCESSFULLY_DONE,
+                                result: result
+                            });
+                        }
+                    }
+                    //console.log('r',result);
+                })
+    })
 }
 
 
@@ -650,34 +716,33 @@ const deleteProduct = (req, res) => {
  *	Description : Function to search product listing
  **/
 const searchresult = (req, res) => {
-	console.log(req.params.latitude);
-	
-	
-    const id = req.params.id;
-	var latitude = req.params.latitude;
-	var longitude = req.params.longitude;
-	const distance = 100 / 6371;
-	if (latitude && latitude.trim().length) {
-		latitude = req.params.latitude;
-		longitude =req.params.longitude;
-	}
-	
-	
-	if (latitude && latitude.trim().length) {
-		var query = User.find({'loc': {
-				$nearSphere: [
-					latitude,
-					longitude
-				],
-				$maxDistance: distance
+    console.log(req.params.latitude);
 
-			}
-			// branchId is the array [108,109,110]
-		}, {_id: 1});
-	}
-	else{
-	var query = User.find({});
-	}
+
+    const id = req.params.id;
+    var latitude = req.params.latitude;
+    var longitude = req.params.longitude;
+    const distance = 100 / 6371;
+	
+    if (latitude && latitude.trim().length) {
+        latitude = req.params.latitude;
+        longitude = req.params.longitude;
+    }
+
+	if (latitude && latitude.trim().length) {
+        var query = User.find({'loc': {
+                $nearSphere: [
+                    latitude,
+                    longitude
+                ],
+                $maxDistance: distance
+
+            }
+            // branchId is the array [108,109,110]
+        }, {_id: 1});
+    } else {
+        var query = User.find({});
+    }
 
     query.exec(function (err, challenge) {
         if (err) {
@@ -688,41 +753,31 @@ const searchresult = (req, res) => {
         if (!challenge) {
             console.log('Cant www: Found city:' + challenge)
         } else {
-				var responseData = [];
+            var responseData = [];
 
-				if (challenge.length) {
-					Object.keys(challenge).forEach(function (key) {
-						responseData[key] = {};
-						responseData[key] = ObjectId(challenge[key]._id);
+            if (challenge.length) {
+                Object.keys(challenge).forEach(function (key) {
+                    responseData[key] = {};
+                    responseData[key] = ObjectId(challenge[key]._id);
 
-					});
-				}
-				if (id && id.trim().length && latitude && latitude.trim().length){
-					var searchvalue = {productCategory:ObjectId(id),productStatus:"1",userId: {$in: responseData}};	
-				}
-				
-				else if((!(id) || id.trim().length ==0) && latitude && latitude.trim().length){
-					var searchvalue = {productStatus:"1",userId: {$in: responseData}};
-				}
-				else if(id && id.trim().length){
-					
-					var searchvalue = {productCategory:ObjectId(id),productStatus:"1",userId: {$in: responseData}};	
-				}
-				
-				
+                });
+            }
+            if (id && id.trim().length && latitude && latitude.trim().length) {
+                var searchvalue = {productCategory: ObjectId(id), productStatus: "1", userId: {$in: responseData}};
+            } else if ((!(id) || id.trim().length == 0) && latitude && latitude.trim().length) {
+                var searchvalue = {productStatus: "1", userId: {$in: responseData}};
+            } else if (id && id.trim().length) {
 
-				else{
-					console.log("OUTTTT");
-					var searchvalue = {};
-				}
+                var searchvalue = {productCategory: ObjectId(id), productStatus: "1", userId: {$in: responseData}};
+            } else {
+                console.log("OUTTTT");
+                var searchvalue = {};
+            }
 
 
             Product.aggregate([
-			
-		{$match: searchvalue},
-	
-	
-                
+
+                {$match: searchvalue},
 
                 {
                     $lookup: {
@@ -1014,44 +1069,44 @@ const myTreasureChestFilterBy = (req, res) => {
  *	Description : Function to get tradeMatch for front-user
  **/
 const tradeMatch = (req, res) => {
-  var perPage = constant.PER_PAGE_RECORD;
-  var page = req.params.page || 1;
-   var token = getToken(req.headers);
+    var perPage = constant.PER_PAGE_RECORD;
+    var page = req.params.page || 1;
+    var token = getToken(req.headers);
     if (token) {
-    decoded = jwt.verify(token,settings.secret);
-    var userId = decoded._id;
-       Product.find({ userId: { $ne: userId }})
-      .populate({ path: "productCategory", model: "Category"})
-      .populate({ path: "userId", model: "User"})
-      .populate('brand',['brandName'])
-  		.populate('size',['size'])
-       .skip((perPage * page) - perPage)
-       .limit(perPage)
-       .sort({createdAt:-1})
-       .exec(function(err, products) {
-        if (err) {
-        return res.send({
-          code: httpResponseCode.BAD_REQUEST,
-          message: httpResponseMessage.INTERNAL_SERVER_ERROR
-        })
-        } else {
-        if (!products) {
-          res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-          });
-        }  else {
-          return res.json({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.LOGIN_SUCCESSFULLY,
-             result: products
-           });
-          }
-        }
-      });
-     } else {
-     return res.status(403).send({code: 403, message: 'Unauthorized.'});
-     }
+        decoded = jwt.verify(token, settings.secret);
+        var userId = decoded._id;
+        Product.find({userId: {$ne: userId}})
+                .populate({path: "productCategory", model: "Category"})
+                .populate({path: "userId", model: "User"})
+                .populate('brand', ['brandName'])
+                .populate('size', ['size'])
+                .skip((perPage * page) - perPage)
+                .limit(perPage)
+                .sort({createdAt: -1})
+                .exec(function (err, products) {
+                    if (err) {
+                        return res.send({
+                            code: httpResponseCode.BAD_REQUEST,
+                            message: httpResponseMessage.INTERNAL_SERVER_ERROR
+                        })
+                    } else {
+                        if (!products) {
+                            res.json({
+                                message: httpResponseMessage.USER_NOT_FOUND,
+                                code: httpResponseMessage.BAD_REQUEST
+                            });
+                        } else {
+                            return res.json({
+                                code: httpResponseCode.EVERYTHING_IS_OK,
+                                message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+                                result: products
+                            });
+                        }
+                    }
+                });
+    } else {
+        return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
 }
 
 
@@ -1059,71 +1114,268 @@ const tradeMatch = (req, res) => {
  *  Date	: October 26, 2018
  *	Description : Function to get tradeMatchFilterBy for front-user
  **/
-const tradeMatchFilterBy = (req, res) => {
-  var sortObject = {};
-  var condObject = {};
-  var stype = "productName";
-  var sdir = 1;
-  if(req.body.sortBy != "" || req.body.sortBy !=undefined){
-      if(req.body.sortBy == 1){
-        var stype = "createdAt";
-        var sdir = 1;
-      } else if(req.body.sortBy == 2){
-        var stype = "productName";
-        var sdir = -1;
-      } else if(req.body.sortBy == 3){
-        var stype = "productName";
-        var sdir = 1;
-      } else if(req.body.sortBy == 4){
-        var stype = "createdAt";
-        var sdir = -1;
-      }
-  }
-  sortObject[stype] = sdir;
-  //console.log("Request Data",req.body)
-  var perPage = constant.PER_PAGE_RECORD;
-  var page = req.params.page || 1;
+/*const tradeMatchFilterBy = (req, res) => {
+ 
+ var sortObject = {};
+ var condObject = {};
+ var stype = "productName";
+ var sdir = 1;
+ if (req.body.sortBy != "" || req.body.sortBy != undefined) {
+ if (req.body.sortBy == 1) {
+ var stype = "createdAt";
+ var sdir = 1;
+ } else if (req.body.sortBy == 2) {
+ var stype = "productName";
+ var sdir = -1;
+ } else if (req.body.sortBy == 3) {
+ var stype = "productName";
+ var sdir = 1;
+ } else if (req.body.sortBy == 4) {
+ var stype = "createdAt";
+ var sdir = -1;
+ 
+ }
+ }
+ sortObject[stype] = sdir;
+ //console.log("Request Data",req.body)
+ var perPage = constant.PER_PAGE_RECORD;
+ var page = req.params.page || 1;
+ var responseData = [];
+ var token = getToken(req.headers);
+ if (token) {
+ decoded = jwt.verify(token, settings.secret);
+ var userId = decoded._id;
+ //    condObject["userId"] = userId;
+ console.log("userInfo", decoded.loc[1]);
+ if (req.body.category !== '') {
+ condObject["productCategory"] = req.body.category;
+ }
+ if (req.body.sortBy == 4) {
+ const distance = 10000 / 6371;
+ 
+ var latitude = decoded.loc[1];
+ var longitude = decoded.loc[0];
+ 
+ 
+ var returnValue = getUser(latitude,longitude,distance, function(response){
+ // Here you have access to your variable
+ console.log('value',response);
+ return response;
+ });
+ 
+ 
+ // const parameterMatch =  Location(latitude,longitude,distance);
+ 
+ 
+ 
+ 
+ 
+ }
+ 
+ 
+ Product.find(condObject)
+ .populate({path: "productCategory", model: "Category"})
+ .populate({path: "userId", model: "User"})
+ .skip((perPage * page) - perPage)
+ .limit(perPage)
+ .sort(sortObject)
+ .exec(function (err, products) {
+ if (err) {
+ return res.send({
+ code: httpResponseCode.BAD_REQUEST,
+ message: httpResponseMessage.INTERNAL_SERVER_ERROR
+ })
+ } else {
+ if (!products) {
+ res.json({
+ message: httpResponseMessage.USER_NOT_FOUND,
+ code: httpResponseMessage.BAD_REQUEST
+ });
+ } else {
+ return res.json({
+ code: httpResponseCode.EVERYTHING_IS_OK,
+ message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+ result: products
+ });
+ }
+ }
+ });
+ } else {
+ return res.status(403).send({code: 403, message: 'Unauthorized.'});
+ }
+ }*/
 
-   var token = getToken(req.headers);
-    if (token) {
-    decoded = jwt.verify(token,settings.secret);
-    var userId = decoded._id;
-    //    condObject["userId"] = userId;
-      if(req.body.category !== ''){
-          condObject["productCategory"] = req.body.category;
-      }
+/** Auther	: Rahul 
+ *  Date	: Nov 01, 2018
+ *	Description : Function to get tradeMatchFilterBy for front-user
+ **/
 
-       Product.find(condObject)
-      .populate({ path: "productCategory", model: "Category"})
-      .populate({ path: "userId", model: "User"})
-       .skip((perPage * page) - perPage)
-       .limit(perPage)
-       .sort(sortObject)
-       .exec(function(err, products) {
-        if (err) {
-        return res.send({
-          code: httpResponseCode.BAD_REQUEST,
-          message: httpResponseMessage.INTERNAL_SERVER_ERROR
-        })
-        } else {
-        if (!products) {
-          res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-          });
-        }  else {
-          return res.json({
-            code: httpResponseCode.EVERYTHING_IS_OK,
-            message: httpResponseMessage.LOGIN_SUCCESSFULLY,
-             result: products
-           });
-          }
+const tradeMatchFilterBy = function (req, res) {
+    async.waterfall([
+        function (done) {
+            var token = getToken(req.headers);
+            if (token) {
+                decoded = jwt.verify(token, settings.secret);
+                var userId = decoded._id;
+
+                if (req.body.sortBy == 4) {
+                    const distance = 10000 / 6371;
+
+                    var latitude = decoded.loc[1];
+                    var longitude = decoded.loc[0];
+					console.log(userId);
+
+
+                    User.find({_id: { $ne: ObjectId(userId) },'loc': {
+                            $nearSphere: [
+                                latitude,
+                                longitude
+                            ],
+                            $maxDistance: distance
+
+                        }
+                        // branchId is the array [108,109,110]
+                    }, {_id: 1})
+
+
+                            .exec(function (err, challenge) {
+                                if (err) {
+                                    return responseData;
+
+                                }
+
+                                if (!challenge) {
+                                    return responseData;
+                                } else {
+
+
+
+                                    done(err, challenge);
+
+                                    //;
+
+                                }
+
+                            });
+
+                } else {
+                    User.find({_id: { $ne: ObjectId(userId) }}).exec(function (err, challenge) {
+                                if (err) {
+                                    return responseData;
+
+                                }
+
+                                if (!challenge) {
+                                    return responseData;
+                                } else {
+
+
+
+                                    done(err, challenge);
+
+                                    //;
+
+                                }
+
+                            });
+                }
+
+            }
+        },
+        function (user, done) {
+             console.log(user.length);
+            var sortObject = {};
+            var condObject = {};
+            var stype = "productName";
+            var sdir = 1;
+            if (req.body.category !== '') {
+                condObject["productCategory"] = req.body.category;
+            }
+            if (req.body.sortBy != "" || req.body.sortBy != undefined) {
+                if (req.body.sortBy == 1) {
+                    var stype = "createdAt";
+                    var sdir = 1;
+                } else if (req.body.sortBy == 2) {
+                    var stype = "productName";
+                    var sdir = -1;
+                } else if (req.body.sortBy == 3) {
+                    var stype = "productName";
+                    var sdir = 1;
+                } else if (req.body.sortBy == 4) {
+                    var stype = "createdAt";
+                    var sdir = -1;
+
+                }
+            }
+            sortObject[stype] = sdir;
+
+            var perPage = constant.PER_PAGE_RECORD;
+            var page = req.params.page || 1;
+            var responseData = [];
+            if (user.length) {
+
+                Object.keys(user).forEach(function (key) {
+
+                    responseData[key] = {};
+                    responseData[key] = ObjectId(user[key]._id);
+
+
+                });
+
+                condObject["userId"] = responseData;
+
+            }
+			if(user.length==0 && req.body.sortBy == 4){
+				responseData[0] = ObjectId("5b97b82a734e06514bc00000");
+				condObject["userId"] = responseData;
+			}
+			condObject[""] = 
+			
+			
+
+            
+
+
+            Product.find(condObject)
+                    .populate({path: "productCategory", model: "Category"})
+                    .populate({path: "userId", model: "User"})
+                    .skip((perPage * page) - perPage)
+                    .limit(perPage)
+                    .sort(sortObject)
+                    .exec(function (err, products) {
+                        if (err) {
+                            return res.send({
+                                code: httpResponseCode.BAD_REQUEST,
+                                message: httpResponseMessage.INTERNAL_SERVER_ERROR
+                            })
+                            console.log("error");
+                        } else {
+                            if (!products) {
+                                console.log("error1");
+                                res.json({
+                                    message: httpResponseMessage.USER_NOT_FOUND,
+                                    code: httpResponseMessage.BAD_REQUEST
+                                });
+                            } else {
+                                console.log("error2");
+                                return res.json({
+                                    code: httpResponseCode.EVERYTHING_IS_OK,
+                                    message: httpResponseMessage.LOGIN_SUCCESSFULLY,
+                                    result: products
+                                });
+                            }
+                        }
+                    });
+
         }
-      });
-     } else {
-     return res.status(403).send({code: 403, message: 'Unauthorized.'});
-     }
-}
+    ], function (err) {
+        console.log('error');
+    });
+};
+
+
+
+
 
 
 
@@ -1199,36 +1451,36 @@ const addToWishList = (req, res) => {
  *	Description : Function to add product into user wishlist
  **/
 const removeFromWishList = (req, res) => {
-  var token = getToken(req.headers);
-  if (token) {
-       decoded = jwt.verify(token,settings.secret);
-       var userId = decoded._id;
-       try {
-          WishList.deleteMany( { userId:req.body.userId, productId: req.body.productId}, (err,result) => {
-            if(err){
-            return res.json({
-                  message: httpResponseMessage.USER_NOT_FOUND,
-                  code: httpResponseMessage.BAD_REQUEST
+    var token = getToken(req.headers);
+    if (token) {
+        decoded = jwt.verify(token, settings.secret);
+        var userId = decoded._id;
+        try {
+            WishList.deleteMany({userId: req.body.userId, productId: req.body.productId}, (err, result) => {
+                if (err) {
+                    return res.json({
+                        message: httpResponseMessage.USER_NOT_FOUND,
+                        code: httpResponseMessage.BAD_REQUEST
+                    });
+                }
+                return res.json({
+                    code: httpResponseCode.EVERYTHING_IS_OK,
+                    message: httpResponseMessage.SUCCESSFULLY_DONE,
+                    result: result
                 });
-            }
-          return res.json({
-                      code: httpResponseCode.EVERYTHING_IS_OK,
-                      message: httpResponseMessage.SUCCESSFULLY_DONE,
-                     result: result
-              });
-          })
-          // db.orders.( { "_id" : ObjectId("563237a41a4d68582c2509da") } );
+            })
+            // db.orders.( { "_id" : ObjectId("563237a41a4d68582c2509da") } );
         } catch (e) {
-          return res.json({
+            return res.json({
                 message: httpResponseMessage.ITEM_NOT_FOUND,
                 code: httpResponseMessage.NOT_FOUND,
-                error : e
-              });
+                error: e
+            });
         }
 
-  } else {
-      return res.status(403).send({code: 403, message: 'Unauthorized.'});
-  }
+    } else {
+        return res.status(403).send({code: 403, message: 'Unauthorized.'});
+    }
 }
 
 
@@ -1296,29 +1548,29 @@ const clearWishlist = (req, res) => {
 
 
 module.exports = {
-  create,
-  allProducts,
-  viewProduct,
-  updateProduct,
-  deleteProduct,
-  changeStatus,
-  popularItems,
-  switchTodays,
-  myTreasureChest,
-  addProduct,
-  tepmUpload,
-  activeProducts,
-  searchresult,
-  myTreasureChestFilterBy,
-  filterBycategory,
-  productDetails,
-  productImages,
-  wishList,
-  addToWishList,
-  clearWishlist,
-  relatedCategoryProduct,
-  checkExists,
-  removeFromWishList,
-  tradeMatch,
-  tradeMatchFilterBy
+    create,
+    allProducts,
+    viewProduct,
+    updateProduct,
+    deleteProduct,
+    changeStatus,
+    popularItems,
+    switchTodays,
+    myTreasureChest,
+    addProduct,
+    tepmUpload,
+    activeProducts,
+    searchresult,
+    myTreasureChestFilterBy,
+    filterBycategory,
+    productDetails,
+    productImages,
+    wishList,
+    addToWishList,
+    clearWishlist,
+    relatedCategoryProduct,
+    checkExists,
+    removeFromWishList,
+    tradeMatch,
+    tradeMatchFilterBy
 }

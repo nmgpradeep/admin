@@ -236,7 +236,10 @@ const userSignup = (req, res) => {
       let accessToken = md5(salt)
       req.body.accessToken = accessToken
 	  data.loc = [data.latitude[0], data.longitude[0]];
-	  //console.log(data.latitude[0]);
+	  data.loct = {};
+	  data.loct.coordinates = [...data.loc];
+	  data.loct.type = "Point";
+	  console.log(data);
       User.create(data, (err, result) => {
 		//  console.log('RES-FIND',err, result);
       if (err) {
