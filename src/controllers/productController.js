@@ -477,36 +477,6 @@ const filterBycategory = (req,res) => {
       data = {};
     }
 	   Product.find(typeObject, data)
-     .populate('productCategory',['title'])
-     .populate({path:'userId',model:'User', select: 'firstName  lastName' })
-     .populate({path:'brand',model:'Brand'})
-     .populate({path:'size',model:'Size'})
-	  .exec(function(err, result){
-      if(err){
-		return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
-			err:err
-		  });
-     } else {
-      if (!result) {
-        res.json({
-          message: httpResponseMessage.USER_NOT_FOUND,
-          code: httpResponseMessage.BAD_REQUEST
-        });
-      }
-       else {
-		   return res.json({
-			  code: httpResponseCode.EVERYTHING_IS_OK,
-			  message: httpResponseMessage.SUCCESSFULLY_DONE,
-			 result: result
-		   });
-		 }
->>>>>>> 2ca38ef9f84b4a52d1fbbd3bf7254ac24c570c8c
-        }
-        var typeObject = {};
-        typeObject[typeData] = catID;
-        Product.find(typeObject, data)
                 .populate('productCategory', ['title'])
                 .populate({path: 'userId', model: 'User'})
                 .populate({path: 'brand', model: 'brandName'})
