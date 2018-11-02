@@ -1226,9 +1226,15 @@ const tradeMatchFilterBy = function (req, res) {
 
                 if (req.body.sortBy == 4) {
                     const distance = 10000 / 6371;
-
+                     
+	                if(decoded.loc!=undefined && decoded.loc ){
                     var latitude = decoded.loc[1];
                     var longitude = decoded.loc[0];
+					}
+					else{
+						var latitude = '77.1024901999999';
+                    var longitude = '28.7040592';
+					}
 					console.log(userId);
 
 
