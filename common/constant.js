@@ -1,6 +1,7 @@
 module.exports = {
 	'PUBLIC_URL':'http://localhost:3006/',
     'PER_PAGE_RECORD': 10,
+    'DATABASE':'mongodb://localhost:27017/pitch-and-switch',
     'SMTP_HOST':'smtp.sendgrid.net',
     'SMTP_PORT': 587,
     'SMTP_USERNAME': 'sharma.karnika',

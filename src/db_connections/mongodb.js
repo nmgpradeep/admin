@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 global.Promise = mongoose.Promise;
 const log = console.log;
-const db_name = require('../config').db.name;
+const DB_URL = require('../config').db.name;
 //const DB_URL = `mongodb://127.0.0.1/${db_name}`
-const DB_URL = `mongodb://pitchnswitch:nmg251@ds147450.mlab.com:47450/pitch-switch`
 
 mongoose.connection.openUri(DB_URL);
 /************************************ Events of mongoose connection. ******************************************************/
