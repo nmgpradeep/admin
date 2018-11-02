@@ -11,8 +11,9 @@ const constant = require("../../common/constant");
 const moment = require('moment-timezone');
 const md5 = require('md5')
 const nodemailer = require('nodemailer');
-const Notification = require('../models/notification')
-const UserTradeRating = require('../models/userTradeRating')
+const Notification = require('../models/notification');
+const UserTradeRating = require('../models/userTradeRating');
+
 var settings = require('../config/settings'); // get settings file
 var passport = require('passport');
 require('../config/passport')(passport);
@@ -121,7 +122,7 @@ const viewTrades = (req, res) => {
  **/
 //Function to update the Trades status.
 const updateStatus = (req, res) => {
-	
+
   Trade.update({ _id:req.body._id },  { "$set": { "status": req.body.status } }, { new:true }, (err,result) => {
     if(err){
 	 return res.send({
@@ -148,7 +149,7 @@ const updateStatus = (req, res) => {
  *  Date	: July 17, 2018
  **/
 //Function to update the Trades updateShippingStatus.
-const updateShippingStatus = (req, res) => {	
+const updateShippingStatus = (req, res) => {
  var form = new multiparty.Form();
    form.parse(req, function(err, data, files) {
 	   //console.log('fields value',data.field,data.value)
@@ -166,8 +167,8 @@ const updateShippingStatus = (req, res) => {
 					code: httpResponseCode.BAD_REQUEST,
 					message: httpResponseMessage.INTERNAL_SERVER_ERROR
 				  });
-			} else {			 
-  
+			} else {
+
 				 if (!result) {
 					res.json({
 					  message: httpResponseMessage.USER_NOT_FOUND,
@@ -183,7 +184,7 @@ const updateShippingStatus = (req, res) => {
 		   }
 	    })
     });
-  
+
 }
 
 
@@ -327,15 +328,15 @@ const ditchOfferTrade = (req, res) => {
   //console.log("ditchOfferTrade req.body",req.body)
   const data = req.body;
       let now = new Date();
-      var status = 2; 
+      var status = 2;
       if(req.body.ditchCount == 3 ){
-		  var status = 5; 
+		  var status = 5;
 	   }
-      
+
        OfferTrade.update({ _id:req.body._id },  { "$set": { "status":status,"ditchCount":req.body.ditchCount} }, { new:true }, (err,result) => {
-        
+
         if (err) {
-         
+
           return res.send({
 			errr : err,
             code: httpResponseCode.BAD_REQUEST,
@@ -502,7 +503,7 @@ const ditchTrades = (req, res) => {
     var userId = decoded._id;
     OfferTrade.find({'status': {$ne : "0"}}).or([{ 'status':3  }, { 'status': 2 }]).or([{ 'pitchUserId':userId  },{ 'SwitchUserId': userId }])
     .where('ditchCount').gt(0).lt(4)
-   
+
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({createdAt:-1})
@@ -510,7 +511,7 @@ const ditchTrades = (req, res) => {
     .populate('SwitchUserId')
     .populate('SwitchUserProductId')
     .exec(function(err, offerTrades) {
-	  console.log('offerTrades',offerTrades)
+	  //console.log('offerTrades',offerTrades)
         OfferTrade.count().exec(function(err, count) {
           if (err) return next(err)
             return res.json({
@@ -718,8 +719,7 @@ const submitPitchProduct = (req, res) => {
 					 var proIDS = data.productIDS;
 					 var myArray = proIDS[0].split(',');
 					 pitchTradepro.products = myArray;
-					 //console.log('pitchTradepro',myArray);
-				     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
+			     TradePitchProduct.create(pitchTradepro,(err,pitchResult) => {
 						if(err){
 								return res.json({
 								  message: httpResponseMessage.USER_NOT_FOUND,
@@ -832,7 +832,7 @@ const pitchedProductList = (req, res) => {
          .sort({_id:-1})
          .limit(1)
          .exec(function(err, result){
-			 console.log('result',result);
+			        //console.log('result',result);
 		     if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,
@@ -911,19 +911,26 @@ const returnTrade = (req, res) => {
 				 }
 			  }
           })
-     })
-
+     });
 }
 
 /** Auther	: KS
  *  Date	: September 13, 2018
  */
 ///function to save return trade feedback from user side.
-const switchedProduct = (req, res) => { 
- const id =  mongoose.mongo.ObjectId(req.params.id); 
+// const switchedProduct = (req, res) => {
+//  const id =  mongoose.mongo.ObjectId(req.params.id);
+// 	 //var result = [];
+//         Trade.findOne({_id:id})
+//         .populate({path:'tradePitchProductId',model:'Product',populate:[{path:"userId",model:"User"}]})
+//         //.populate({path:'userId',model:'User'})
+//          .exec(function(err, tradeProresult){
+			 //console.log('rrrrllllllllllllllllllllllllll',tradeProresult)
+const switchedProduct = (req, res) => {
+ const id =  mongoose.mongo.ObjectId(req.params.id);
      TradePitchProduct.findOne({offerTradeId:id}).select('_id')
          .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
-         .exec(function(err, result){			
+         .exec(function(err, result){
 		     if (err) {
 					return res.send({
 					code: httpResponseCode.BAD_REQUEST,

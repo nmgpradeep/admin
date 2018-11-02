@@ -3,10 +3,10 @@ module.exports = {
     'PER_PAGE_RECORD': 10,
     'SMTP_HOST':'smtp.sendgrid.net',
     'SMTP_PORT': 587,
-    'SMTP_USERNAME': 'XXXXXXXX',
-    'SMTP_PASSWORD': 'XXXXXXXXX!',
-    'SMTP_FROM_EMAIL': 'rajiv.kumar@newmediaguru.net',
-    'StripeKeyPublic' : 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    'SMTP_USERNAME': 'sharma.karnika',
+    'SMTP_PASSWORD': 'atit1234#',
+    'SMTP_FROM_EMAIL': 'rajiv.kumar@nmgtechnologies.com',
+    'StripeKeyPublic' : 'pk_test_hd6ILRIbYiaz8udjz91j4orh',
 	'StripeKeySecret' : 'sk_test_8IgE3GaQ3C6jBSP5ZUBpdXhy',
     'profileimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/ProfilePic/',
     'cmsimage_path':'/var/www/html/Node_ReactProject/admin/public/assets/uploads/cmsPageImage/',
@@ -20,5 +20,4 @@ module.exports = {
     'shippingStatus':[{'id':'0','name':'Picked up'},{'id':'1','name':'Shipped'},{'id':'2','name':'Delivered'}],
     'returnReason':[{'id':'0','name':'Item Defective'},{'id':'1','name':'Bought By Mistake'},{'id':'2','name':'No longer needed'},{'id':'3','name':'Too small'},{'id':'4','name':'Ordered In wrong size'},{'id':'5','name':'Product not as expected'}],
     'tradeStatus':[{'id':'1','name':'Switched'},{'id':'2','name':'Completed'},{'id':'3','name':'Return'},{'id':'4','name':'Returned'}]
-
 };
