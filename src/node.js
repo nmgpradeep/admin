@@ -23,18 +23,18 @@ const notification = require("./routes/notification")
 const morgan=require('morgan')
 const http = require('http');
 const fs = require('fs');
+const constant = require('../common/constant')
 var cookieParser = require('cookie-parser');
 var session = require('express-session')
 var auth = require('./routes/auth');
-//mongoose.connect(config.db)
-//mongoose.connect('mongodb://pitchswitch:nmg251@ds155252.mlab.com:55252/pitch-switch-restore');
+
+//database connection
+mongoose.connect(constant.DATABASE)
+
 //mongoose.connect('mongodb://pitchswitch:nmg251@ds251622.mlab.com:51622/pitch-switch');
 //mongoose.connect('mongodb://pitchswitch:nmg251@ds213183.mlab.com:13183/pitch-switch-demo');
 //mongoose.connect('mongodb://pitchnswitch:pitchnswitch123456@10.0.0.24:27017/pitch-switch-demo');
-// demo database url
-//mongoose.connect('mongodb://pitchnswitch:pitchnswitch123456@10.0.0.24:27017/pitch-and-switch',{ useNewUrlParser: true });
-//mongoose.connect('mongodb://localhost:27017/pitch-and-switch');
-mongoose.connect('mongodb://pitchnswitch:pitchnswitch123456@10.0.0.24:27017/pitch-and-switch',{ useNewUrlParser: true });
+
 app.set('port', (5000));
 app.use(cors());
 app.get('/',(req,res)=>{

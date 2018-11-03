@@ -1,8 +1,10 @@
 module.exports = {
   'PUBLIC_URL':'http://localhost:3006/',
   'PER_PAGE_RECORD': 10,
+  //'DATABASE':'mongodb://localhost:27017/pitch-and-switch',
+  'DATABASE':'mongodb://pitchnswitch:pitchnswitch123456@10.0.0.24:27017/pitch-and-switch',
   'SMTP_HOST':'smtp.sendgrid.net',
-  'SMTP_PORT': 587,
+  'SMTP_PORT': 58,   
   'SMTP_USERNAME': 'rajiv_nmg',
   'SMTP_PASSWORD': 'rajiv@12345!',
   'SMTP_FROM_EMAIL': 'rajiv.kumar@newmediaguru.net',

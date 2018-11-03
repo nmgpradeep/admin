@@ -118,6 +118,11 @@ loc: {
     type: [Number],  // [<longitude>, <latitude>]
     index: '2d'      // create the geospatial index
 },
+loct: {
+    type: {type:String},
+    coordinates: [Number]
+	 
+  },
 emailVerified:{
 	 type:String,
 	 trim:true,

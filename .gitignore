@@ -4,7 +4,8 @@
 node_modules/*
 package-lock.json
 sessions/*
-#common/constant.js
+common/constant.js
+src/node.js
 # production
 /build
 
