@@ -930,6 +930,8 @@ const switchedProduct = (req, res) => {
  const id =  mongoose.mongo.ObjectId(req.params.id);
      TradePitchProduct.findOne({offerTradeId:id}).select('_id')
          .populate({path:'products',model:'Product',populate:[{path:"productCategory",model:"Category"}]})
+         .populate({path:'tradePitchProductId',model:'Product',populate:[{path:"userId",model:"User"}]})
+         //.populate({path:'userId',model:'User'})
          .exec(function(err, result){
 		     if (err) {
 					return res.send({

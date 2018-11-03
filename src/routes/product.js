@@ -14,6 +14,7 @@ router.post('/addProduct',productController.addProduct)
 router.post('/tepmUpload',productController.tepmUpload)
 router.get('/activeProducts',productController.activeProducts)
 router.get('/searchresult/:id?/:latitude?/:longitude?',productController.searchresult)
+router.get('/searchresult/:id?',productController.searchresult)
 router.post('/filterBy',productController.myTreasureChestFilterBy)
 router.post('/filterBycategory',productController.filterBycategory)
 router.get('/productDetails/:id',productController.productDetails)
@@ -28,4 +29,5 @@ router.post('/addToWishList',productController.addToWishList)
 router.post('/removeFromWishList',productController.removeFromWishList)
 router.delete('/clearWishlist',productController.clearWishlist)
 router.post('/checkExists',productController.checkExists)
+router.get('/getColors',productController.getColors);
 module.exports = router;

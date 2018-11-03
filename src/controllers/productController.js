@@ -1,17 +1,18 @@
-const bodyParser = require('body-parser')
-const Category = require('../models/category')
-const Product = require('../models/product')
-const WishList = require('../models/wishList')
-const TradePitchProduct = require('../models/tradePitchProduct')
-const Trade = require('../models/trade')
-const OfferTrade = require('../models/offerTrade')
-const ProductImage = require('../models/productImage')
-const User = require('../models/User')
-const Size = require('../models/size')
-const Brand = require('../models/brand')
-const httpResponseCode = require('../helpers/httpResponseCode')
-const httpResponseMessage = require('../helpers/httpResponseMessage')
-const validation = require('../middlewares/validation')
+const bodyParser = require('body-parser');
+const Category = require('../models/category');
+const Product = require('../models/product');
+const WishList = require('../models/wishList');
+const TradePitchProduct = require('../models/tradePitchProduct');
+const Trade = require('../models/trade');
+const OfferTrade = require('../models/offerTrade');
+const ProductImage = require('../models/productImage');
+const UserTradeRating = require('../models/userTradeRating');
+const User = require('../models/User');
+const Size = require('../models/size');
+const Brand = require('../models/brand');
+const httpResponseCode = require('../helpers/httpResponseCode');
+const httpResponseMessage = require('../helpers/httpResponseMessage');
+const validation = require('../middlewares/validation');
 //const moment = require('moment-timezone');
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
@@ -393,35 +394,105 @@ const activeProducts = (req, res) => {
 }
 const filterBycategory = (req,res) => {
 	  var form = new multiparty.Form();
+    var conditionObject = {};
 	  form.parse(req, function(err, data, files) {
-	  const typeData = data.type[0];
-	  const catIds = data.ids[0];
-    if(catIds != null){
-  	  if(catIds.indexOf(",") > -1){
-  			 catID = catIds.split(',');
-  	  } else {
-  			 catID = catIds;
-  	  }
-  	  var typeObject = {};
-  	  typeObject[typeData] = catID;
-    }else{
-      typeObject[typeData] = [];
-      data = {};
-    }
-	   Product.find(typeObject, data)
+      console.log('filterBycategory', data)
+      if(data.category_type){
+        conditionObject[data.category_type] = {$in: data.category_ids[0].split(',')};
+      }
+      if(data.brand_type){
+        conditionObject[data.brand_type] = {$in: data.brand_ids[0].split(',')};
+      }
+      if(data.size_type){
+        conditionObject[data.size_type] = {$in: data.size_ids[0].split(',')};
+      }
+      if(data.user_type){
+        conditionObject[data.user_type] = {$in: data.user_ids[0].split(',')};
+      }
+      if(data.condition_type){
+        conditionObject[data.condition_type] = {$in: data.condition_ids[0].split(',')};
+      }
+
+      if(data.color_type){
+        conditionObject[data.color_type] = {$in: data.color_ids[0].split(',')};
+      }
+      if(data.age_type){
+        conditionObject[data.age_type] = {$in: data.age_ids[0].split(',')};
+      }
+
+      if(data.location_type){
+        var location = data.location_ids[0].split(',');
+        //conditionObject[data.location_type] = {$in: };
+        if (data.latitude && data.latitude[0].replace(" ", "").length) {
+          var latitude = data.latitude[0].replace(" ", "");
+          var longitude = data.longitude[0].replace(" ", "");
+          const maxDistance = location[1] / 6371;
+          const minDistance = location[0] / 6371;
+          var query = User.find({'loc': {
+              $nearSphere: [
+                latitude,
+                longitude
+              ],
+              $minDistance: minDistance,
+              $maxDistance: maxDistance
+            }
+          }, {_id: 1}).exec(function(err, result){
+            if(err){
+
+            }else{
+              console.log('MAX Distance User', result)
+              if(result.length){
+                conditionObject["userId"] = {$in: result};
+              }
+            }
+          });
+        }
+      }
+      if(data.rating_type){
+        //data.rating_ids
+
+        // var ratings = data.rating_ids[0].split(',');
+        // var ratingsArray = [];
+        // ratings.map(r => {
+        //   ratingsArray.push(parseInt(r));
+        // });
+        // console.log('URRR', ratingsArray)
+        // UserTradeRating.aggregate([{
+        //   $unwind: '$userId'
+        // }, {
+        // $group: {
+        //   _id: '$userId',
+        //   totalRating:{ $avg: { $divide: [ "$review", 10 ] } },
+        //   //ceilingValue: { $ceil: "$totalRating" },
+        // //  $match: { ceilingValue: { $in: ratingsArray} },
+        //   count: { $sum: 1 }
+        // },
+        // $project: {
+        //   _id: 1,
+        //   totalRating: 1,
+        //   ceilingValue: {$ceil: "$totalRating" }
+        // }
+        // }])
+        // .exec(function(err, transactions) {
+        //   console.log('UserTradeRating r', transactions);
+        // });
+      }
+      //console.log('conditionObject', conditionObject)
+	   Product.find(conditionObject)
      .populate('productCategory',['title'])
-     .populate({path:'userId',model:'User', select: 'firstName  lastName' })
+     .populate({path:'userId',model:'User', select: 'firstName lastName profilePic' })
      .populate({path:'brand',model:'Brand'})
      .populate({path:'size',model:'Size'})
 	  .exec(function(err, result){
+      console.log('RESULT', result, err)
       if(err){
-		return res.send({
-			code: httpResponseCode.BAD_REQUEST,
-			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
-			err:err
-		  });
+    		return res.send({
+    			code: httpResponseCode.BAD_REQUEST,
+    			message: httpResponseMessage.INTERNAL_SERVER_ERROR,
+    			err:err
+    		  });
      } else {
-      if (!result) {
+      if (result === undefined) {
         res.json({
           message: httpResponseMessage.USER_NOT_FOUND,
           code: httpResponseMessage.BAD_REQUEST
@@ -437,7 +508,7 @@ const filterBycategory = (req,res) => {
         }
         //console.log('r',result);
       })
-	})
+	});
 }
 
 
@@ -655,33 +726,27 @@ const deleteProduct = (req, res) => {
  *	Description : Function to search product listing
  **/
 const searchresult = (req, res) => {
-	console.log(req.params.latitude);
-	
-	
-    const id = req.params.id;
-	var latitude = req.params.latitude;
-	var longitude = req.params.longitude;
-	const distance = 100 / 6371;
-	if (latitude && latitude.trim().length) {
-		latitude = req.params.latitude;
-		longitude =req.params.longitude;
-	}
-	
-	
-	if (latitude && latitude.trim().length) {
+	 const id = req.params.id;
+	if (req.params.latitude && req.params.latitude.trim().length) {
+    var latitude = req.params.latitude;
+  	var longitude = req.params.longitude;
+  	const distance = 100 / 6371;
+  	if (latitude && latitude.trim().length) {
+  		latitude = req.params.latitude;
+  		longitude =req.params.longitude;
+  	}
 		var query = User.find({'loc': {
 				$nearSphere: [
 					latitude,
 					longitude
 				],
 				$maxDistance: distance
-
 			}
 			// branchId is the array [108,109,110]
 		}, {_id: 1});
 	}
 	else{
-	var query = User.find({});
+	   var query = User.find({});
 	}
 
     query.exec(function (err, challenge) {
@@ -703,33 +768,22 @@ const searchresult = (req, res) => {
 					});
 				}
 				if (id && id.trim().length && latitude && latitude.trim().length){
-					var searchvalue = {productCategory:ObjectId(id),productStatus:"1",userId: {$in: responseData}};	
+					var searchvalue = {productCategory:ObjectId(id),productStatus:"1",userId: {$in: responseData}};
 				}
-				
+
 				else if((!(id) || id.trim().length ==0) && latitude && latitude.trim().length){
 					var searchvalue = {productStatus:"1",userId: {$in: responseData}};
 				}
 				else if(id && id.trim().length){
-					
-					var searchvalue = {productCategory:ObjectId(id),productStatus:"1",userId: {$in: responseData}};	
-				}
-				
-				
 
-				else{
+					var searchvalue = {productCategory:ObjectId(id),productStatus:"1",userId: {$in: responseData}};
+				}else{
 					console.log("OUTTTT");
 					var searchvalue = {};
 				}
-
-
-            Product.aggregate([
-			
-		{$match: searchvalue},
-	
-	
-                
-
-                {
+        Product.aggregate([
+              {$match: searchvalue},
+              {
                     $lookup: {
                         from: "categories",
                         localField: "productCategory",
@@ -738,7 +792,6 @@ const searchresult = (req, res) => {
 
                     }
                 },
-
                 {
                     $lookup: {
                         from: "users",
@@ -746,7 +799,25 @@ const searchresult = (req, res) => {
                         foreignField: "_id",
                         as: "userId"
                     }
+                },
+                {$unwind: '$userId'},
+                {
+                "$project": {
+                  "_id": 1,
+                  "productImages": 1,
+                  "productStatus": 1,
+                  "productName": 1,
+                  "size": 1,
+                  "color": 1,
+                  "brand": 1,
+                  "productAge": 1,
+                  "condition": 1,
+                  "productCategory.title": 1,
+                  "userId.firstName": 1,
+                  "userId.lastName": 1,
+                  "userId.profilePic": 1
                 }
+              }
             ], function (err, result) {
 
                 Product.count().exec(function (err, count) {
@@ -1298,7 +1369,18 @@ const clearWishlist = (req, res) => {
         return res.status(403).send({code: 403, message: 'Unauthorized.'});
     }
 }
-
+/** Auther	: Rajiv kumar
+ *  Date	: June 22, 2018
+ */
+/// function to list all dinated products
+const getColors = (req, res) => {
+	resultAdd = constant.colors;
+	return res.json({
+		code: httpResponseCode.EVERYTHING_IS_OK,
+		message: httpResponseMessage.SUCCESSFULLY_DONE,
+		result: resultAdd
+	});
+}
 
 module.exports = {
   create,
@@ -1325,5 +1407,6 @@ module.exports = {
   checkExists,
   removeFromWishList,
   tradeMatch,
-  tradeMatchFilterBy
+  tradeMatchFilterBy,
+  getColors
 }
