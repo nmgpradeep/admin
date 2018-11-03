@@ -993,8 +993,6 @@ const searchresult = (req, res) => {
 
 }
 
-}
-
 /** Auther	: KS
  *  Date	: september 13, 2018
  *	Description : Function to search product listing
